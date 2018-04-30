@@ -31,33 +31,5 @@ package resources;
  *
  */
 public enum LocalizedStrings {
-    About,
-    BeginnerMode,
-    BestTimes,
-    Cancel,
-    Clear,
-    ClearPreferences,
-    CustomMode,
-    Debug,
-    DebugEmptyTiles,
-    DebugNeighbours,
-    DebugNew,
-    DebugWindow,
-    ExpertMode,
-    Exit,
-    Game,
-    GameIcon,
-    Generate,
-    GitHub,
-    Help,
-    HideButtons,
-    HighScores,
-    IntermediateMode,
-    Marks,
-    Mines,
-    New,
-    ResetScores,
-    OK,
-    Seconds,
     Title 
 }
