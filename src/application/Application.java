@@ -27,27 +27,34 @@ package application;
 import java.awt.EventQueue;
 import java.awt.GraphicsEnvironment;
 
+import engine.core.navigation.MenuBuilder;
 import engine.core.system.AbstractApplication;
 import engine.core.system.EngineProperties;
 import engine.core.system.EngineProperties.Property;
 import engine.utils.globalisation.Localization;
+import menu.AboutMenuItem;
+import menu.DeckMenuItem;
+import menu.ExitMenuItem;
+import menu.NewGameMenuItem;
+import menu.OptionsMenuItem;
+import menu.UndoMenuItem;
 import resources.LocalizedStrings;
 
 public class Application extends AbstractApplication {
-    
+
     public Application() {
         // Set the default size of the application to be the size of the screen
         GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();  
         setSize(env.getMaximumWindowBounds().width, env.getMaximumWindowBounds().height);
     }
-    
+
     @Override public void destructor() {
     }
-    
+
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
             @Override public void run() {
-                
+
                 // Get the debug mode state based on the arguments passed into the application
                 boolean debugMode = false;
                 for(String arg : args) {
@@ -56,11 +63,27 @@ public class Application extends AbstractApplication {
                         break;
                     }
                 }
-                
+
                 // Initialize the application
-                Application.initialize(Application.class,  debugMode);
+                Application.initialize(Application.class, debugMode);
             }
         });
+    }
+
+    private void populateMenu() {
+        MenuBuilder.start(getJMenuBar())
+        .addMenu(Localization.instance().getLocalizedString("Game"))
+        .addMenuItem(NewGameMenuItem.class)
+        .addSeparator()
+        .addMenuItem(UndoMenuItem.class)
+        .addMenuItem(DeckMenuItem.class)
+        .addMenuItem(OptionsMenuItem.class)
+        .addSeparator()
+        .addMenuItem(ExitMenuItem.class);
+        
+        MenuBuilder.start(getJMenuBar())
+        .addMenu(Localization.instance().getLocalizedString("Help"))
+        .addMenuItem(AboutMenuItem.class);
     }
 
     @Override protected void onBeforeEngineDataInitialized() {
@@ -70,12 +93,17 @@ public class Application extends AbstractApplication {
         EngineProperties.instance().setProperty(Property.ENGINE_OUTPUT, "true");
         EngineProperties.instance().setProperty(Property.LOCALIZATION_PATH_CVS, "resources/localization_solitaire.csv");
     }
-    
+
     @Override protected void onWindowInitialized() {
         super.onWindowInitialized();
+
+        // Set the title
         setTitle(Localization.instance().getLocalizedString(LocalizedStrings.Title));
+
+        // Populate the menu system
+        populateMenu();
     }
-    
+
     @Override public void clear() {
     }
 }
