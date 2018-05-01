@@ -33,6 +33,7 @@ import engine.core.system.EngineProperties;
 import engine.core.system.EngineProperties.Property;
 import engine.utils.globalisation.Localization;
 import menu.AboutMenuItem;
+import menu.DebugNewGameMenuItem;
 import menu.DeckMenuItem;
 import menu.ExitMenuItem;
 import menu.NewGameMenuItem;
@@ -71,6 +72,8 @@ public class Application extends AbstractApplication {
     }
 
     private void populateMenu() {
+        
+        // Game Menu
         MenuBuilder.start(getJMenuBar())
         .addMenu(Localization.instance().getLocalizedString("Game"))
         .addMenuItem(NewGameMenuItem.class)
@@ -81,6 +84,14 @@ public class Application extends AbstractApplication {
         .addSeparator()
         .addMenuItem(ExitMenuItem.class);
         
+        // Debug Menu
+        if(isDebug()) {
+            MenuBuilder.start(getJMenuBar())
+            .addMenu(Localization.instance().getLocalizedString("Debug"))
+            .addMenuItem(DebugNewGameMenuItem.class);
+        }
+        
+        // Help Menu
         MenuBuilder.start(getJMenuBar())
         .addMenu(Localization.instance().getLocalizedString("Help"))
         .addMenuItem(AboutMenuItem.class);
