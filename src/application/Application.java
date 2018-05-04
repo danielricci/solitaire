@@ -26,12 +26,15 @@ package application;
 
 import java.awt.EventQueue;
 import java.awt.GraphicsEnvironment;
+import java.io.File;
 
+import engine.core.factories.AbstractFactory;
 import engine.core.navigation.MenuBuilder;
 import engine.core.system.AbstractApplication;
 import engine.core.system.EngineProperties;
 import engine.core.system.EngineProperties.Property;
 import engine.utils.globalisation.Localization;
+import game.core.factories.ViewFactory;
 import menu.AboutMenuItem;
 import menu.DebugInsertCardMenuItem;
 import menu.DebugNewGameMenuItem;
@@ -41,6 +44,7 @@ import menu.NewGameMenuItem;
 import menu.OptionsMenuItem;
 import menu.UndoMenuItem;
 import resources.LocalizedStrings;
+import views.GameView;
 
 public class Application extends AbstractApplication {
 
@@ -101,9 +105,9 @@ public class Application extends AbstractApplication {
     }
 
     @Override protected void onBeforeEngineDataInitialized() {
-        //EngineProperties.instance().setProperty(Property.DATA_PATH_XML, "/generated/tilemap.xml");
-        //EngineProperties.instance().setProperty(Property.DATA_PATH_SHEET, "/generated/tilemap.png");
-        //EngineProperties.instance().setProperty(Property.LOG_DIRECTORY,  System.getProperty("user.home") + File.separator + "desktop" + File.separator);
+        EngineProperties.instance().setProperty(Property.DATA_PATH_XML, "/generated/tilemap.xml");
+        EngineProperties.instance().setProperty(Property.DATA_PATH_SHEET, "/generated/tilemap.png");
+        EngineProperties.instance().setProperty(Property.LOG_DIRECTORY,  System.getProperty("user.home") + File.separator + "desktop" + File.separator);
         EngineProperties.instance().setProperty(Property.ENGINE_OUTPUT, "true");
         EngineProperties.instance().setProperty(Property.LOCALIZATION_PATH_CVS, "resources/localization_solitaire.csv");
     }
@@ -116,6 +120,9 @@ public class Application extends AbstractApplication {
 
         // Populate the menu system
         populateMenu();
+
+        GameView gameView = AbstractFactory.getFactory(ViewFactory.class).add(new GameView(), false);
+        gameView.render();
     }
 
     @Override public void clear() {

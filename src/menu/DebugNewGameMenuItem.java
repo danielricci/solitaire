@@ -50,6 +50,5 @@ public class DebugNewGameMenuItem extends AbstractMenuItem {
     }
 
     @Override public void onExecute(ActionEvent actionEvent) {
-        
     }
 }
