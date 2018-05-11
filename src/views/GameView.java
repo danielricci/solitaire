@@ -24,8 +24,11 @@
 
 package views;
 
+import controllers.GameController;
+import engine.core.factories.AbstractFactory;
 import engine.core.mvc.view.PanelView;
 import engine.core.mvc.view.layout.DraggableLayout;
+import game.core.factories.ControllerFactory;
 
 /**
  * The game view wraps a draggable layout around the entire game
@@ -39,7 +42,12 @@ public class GameView extends PanelView {
      * Creates a new instance of this class type
      */
     public GameView() {
+        
+        // Set the draggable layout so that child views can be dragged around
         setLayout(new DraggableLayout());
+        
+        // Set the controller that will be used by this view
+        getViewProperties().setEntity(AbstractFactory.getFactory(ControllerFactory.class).add(new GameController()));
     }
 
     @Override public void onViewInitialized() {

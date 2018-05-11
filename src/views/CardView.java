@@ -24,7 +24,6 @@
 
 package views;
 
-import java.awt.Color;
 import java.awt.Dimension;
 
 import engine.core.mvc.view.PanelView;
@@ -38,18 +37,17 @@ import engine.core.mvc.view.layout.DraggableListener;
  */
 public class CardView extends PanelView {
 
+    private DraggableListener draggableListener = new DraggableListener(this);
+    
     /**
      * Creates a new instance of this class type
      */
     public CardView() {
-        setBackground(Color.red);
+        //setBackground(Color.red);
         setPreferredSize(new Dimension(400, 400));
     }
 
     @Override public void onViewInitialized() {
-        DraggableListener drag = new DraggableListener();
-        addMouseListener(drag);
-        addMouseMotionListener(drag);
     }
     
     @Override public void clear() {       
