@@ -5,6 +5,5 @@
 	<classpathentry kind="src" path="properties"/>
 	<classpathentry kind="src" path="data"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/Gosling"/>
-	<classpathentry exported="true" kind="lib" path="data/generated/tilemap.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
