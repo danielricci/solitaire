@@ -121,7 +121,9 @@ public class Application extends AbstractApplication {
         // Populate the menu system
         populateMenu();
 
-        GameView gameView = AbstractFactory.getFactory(ViewFactory.class).add(new GameView(), false);
+        // Create the game view and set it as the content pane of the application
+        GameView gameView = AbstractFactory.getFactory(ViewFactory.class).add(new GameView(), true);
+        setContentPane(gameView);
         gameView.render();
     }
 

@@ -24,25 +24,32 @@
 
 package views;
 
+import java.awt.Color;
+import java.awt.Dimension;
+
 import engine.core.mvc.view.PanelView;
-import engine.core.mvc.view.layout.DraggableLayout;
+import engine.core.mvc.view.layout.DraggableListener;
 
 /**
- * The game view wraps a draggable layout around the entire game
+ * The main window view is the outer most shell that wraps everything
  * 
  * @author {@literal Daniel Ricci <thedanny09@gmail.com>}
  *
  */
-public class GameView extends PanelView {
+public class CardView extends PanelView {
 
     /**
      * Creates a new instance of this class type
      */
-    public GameView() {
-        setLayout(new DraggableLayout());
+    public CardView() {
+        setBackground(Color.red);
+        setPreferredSize(new Dimension(400, 400));
     }
 
     @Override public void onViewInitialized() {
+        DraggableListener drag = new DraggableListener();
+        addMouseListener(drag);
+        addMouseMotionListener(drag);
     }
     
     @Override public void clear() {       

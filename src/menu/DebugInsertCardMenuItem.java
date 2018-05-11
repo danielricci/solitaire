@@ -31,8 +31,12 @@ import javax.swing.JMenuItem;
 
 import application.Application;
 import engine.core.factories.AbstractFactory;
+import engine.core.factories.AbstractSignalFactory;
 import engine.core.navigation.AbstractMenuItem;
 import engine.utils.globalisation.Localization;
+import game.core.factories.ViewFactory;
+import views.CardView;
+import views.GameView;
 
 /**
  * Menu item for starting a new game
@@ -41,7 +45,7 @@ import engine.utils.globalisation.Localization;
  *
  */
 public class DebugInsertCardMenuItem extends AbstractMenuItem {
-
+    
     /**
      * Constructs a new instance of this class type
      *
@@ -51,11 +55,15 @@ public class DebugInsertCardMenuItem extends AbstractMenuItem {
         super(new JMenuItem(Localization.instance().getLocalizedString("Insert Card")), parent);
     }
 
-    @Override public void onExecute(ActionEvent actionEvent) {
-        
-    }
-    
     @Override protected boolean enabled() {
         return Application.instance().isDebug() && AbstractFactory.isRunning();
     }
+    
+    @Override public void onExecute(ActionEvent actionEvent) {
+        GameView gameView = AbstractFactory.getFactory(ViewFactory.class).get(GameView.class);
+        CardView view = AbstractSignalFactory.getFactory(ViewFactory.class).add(new CardView(), false);
+        gameView.add(view);
+        view.render();
+    }
+    
 }
