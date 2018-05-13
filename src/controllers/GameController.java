@@ -24,23 +24,7 @@
 
 package controllers;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import engine.core.mvc.controller.BaseController;
-import models.CardModel;
 
 public class GameController extends BaseController {
-
-    /**
-     * The list of card models within the game
-     */
-    private final List<CardModel> _cards = new ArrayList();
-    
-    /**
-     * Constructs a new instance of this class type
-     */
-    public GameController() {
-        
-    }
 }

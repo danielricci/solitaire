@@ -36,7 +36,7 @@ import game.core.factories.ControllerFactory;
  * @author {@literal Daniel Ricci <thedanny09@gmail.com>}
  *
  */
-public class GameView extends PanelView {
+public final class GameView extends PanelView {
 
     /**
      * Creates a new instance of this class type
@@ -51,8 +51,6 @@ public class GameView extends PanelView {
     }
 
     @Override public void onViewInitialized() {
-    }
-    
-    @Override public void clear() {       
+        
     }
 }

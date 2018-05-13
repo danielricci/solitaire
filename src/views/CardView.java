@@ -24,10 +24,12 @@
 
 package views;
 
+import java.awt.Color;
 import java.awt.Dimension;
 
 import engine.core.mvc.view.PanelView;
 import engine.core.mvc.view.layout.DraggableListener;
+import engine.core.physics.CollisionListener;
 
 /**
  * The main window view is the outer most shell that wraps everything
@@ -37,17 +39,23 @@ import engine.core.mvc.view.layout.DraggableListener;
  */
 public class CardView extends PanelView {
 
-    private DraggableListener draggableListener = new DraggableListener(this);
+    /**
+     * Draggable listener that listens in on this class for draggable events and handles them accordingly
+     */
+    private DraggableListener _draggableListener = new DraggableListener(this);
+        
+    private CollisionListener _collisionListener = new CollisionListener(this);
     
     /**
      * Creates a new instance of this class type
      */
     public CardView() {
-        //setBackground(Color.red);
+        setBackground(Color.red);
         setPreferredSize(new Dimension(400, 400));
     }
-
+    
     @Override public void onViewInitialized() {
+        
     }
     
     @Override public void clear() {       
