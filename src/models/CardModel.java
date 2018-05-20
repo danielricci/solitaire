@@ -25,7 +25,10 @@
 package models;
 
 import engine.core.mvc.model.BaseModel;
+import entities.AbstractCardEntity;
+import entities.DiamondCardEntity;
+import generated.DataLookup.DIAMONDS;
 
 public class CardModel extends BaseModel {
-
+    public AbstractCardEntity _cardEntity = new DiamondCardEntity(DIAMONDS.D4);
 }
