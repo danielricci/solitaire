@@ -27,4 +27,5 @@ package models;
 import engine.core.mvc.model.BaseModel;
 
 public class CardModel extends BaseModel {
+
 }
