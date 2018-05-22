@@ -25,41 +25,30 @@
 package views;
 
 import java.awt.Color;
+import java.awt.Dimension;
 
-import controllers.GameController;
-import engine.core.factories.AbstractFactory;
 import engine.core.mvc.view.PanelView;
-import engine.core.mvc.view.layout.DraggableLayout;
-import game.core.factories.ControllerFactory;
+import engine.core.mvc.view.layout.DraggableListener;
+import engine.core.physics.CollisionListener;
 
-/**
- * The game view wraps a draggable layout around the entire game
- * 
- * @author {@literal Daniel Ricci <thedanny09@gmail.com>}
- *
- */
-public final class GameView extends PanelView {
+public final class CardPlaceholderView extends PanelView {
 
+    private CollisionListener _collisionListener = new CollisionListener(this);
+    
+    private DraggableListener _draggableListener = new DraggableListener(this);
+    
     /**
      * Creates a new instance of this class type
      */
-    public GameView() {
-        
-        // Set the draggable layout so that child views can be dragged around
-        setLayout(new DraggableLayout());
-        
-        // Set the background color to green
-        setBackground(new Color(0, 128, 0));
+    public CardPlaceholderView() {
+        setBackground(Color.gray);
+        setPreferredSize(new Dimension(200, 200));
     }
-
+    
     @Override public void onViewInitialized() {
         
-        // Set the controller that will be used by this view
-        getViewProperties().setEntity(AbstractFactory.getFactory(ControllerFactory.class).add(new GameController()));
-        
-        // 
-        CardPlaceholderView view = new CardPlaceholderView();
-        this.add(view);
-        view.render();
+    }
+    
+    @Override public void clear() {       
     }
 }
