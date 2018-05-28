@@ -24,6 +24,7 @@
 
 package application;
 
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.GraphicsEnvironment;
 import java.io.File;
@@ -52,6 +53,9 @@ public class Application extends AbstractApplication {
         // Set the default size of the application to be the size of the screen
         GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();  
         setSize(env.getMaximumWindowBounds().width, env.getMaximumWindowBounds().height);
+        
+        
+        setMinimumSize(new Dimension(620, 436));
     }
 
     @Override public void destructor() {

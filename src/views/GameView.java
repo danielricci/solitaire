@@ -25,12 +25,15 @@
 package views;
 
 import java.awt.Color;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 
 import controllers.GameController;
 import engine.core.factories.AbstractFactory;
 import engine.core.mvc.view.PanelView;
 import engine.core.mvc.view.layout.DraggableLayout;
 import game.core.factories.ControllerFactory;
+import game.core.factories.ViewFactory;
 
 /**
  * The game view wraps a draggable layout around the entire game
@@ -44,12 +47,34 @@ public final class GameView extends PanelView {
      * Creates a new instance of this class type
      */
     public GameView() {
+
+        // Set the background color to green
+        setBackground(new Color(0, 128, 0));
         
         // Set the draggable layout so that child views can be dragged around
         setLayout(new DraggableLayout());
         
-        // Set the background color to green
-        setBackground(new Color(0, 128, 0));
+        GridBagConstraints gbc = new GridBagConstraints();
+        
+        //gbc.fill = GridBagConstraints.BOTH;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.anchor = GridBagConstraints.NORTH;
+        
+        GridBagLayout layout = new GridBagLayout();
+        this.setLayout(layout);
+                
+        int x = 1000;
+        for(int row = 0, rowSize = 2; row < rowSize; ++row) {
+            for(int col = 0, colSize = 7; col < colSize; ++col) {
+                CardPlaceholderView view = AbstractFactory.getFactory(ViewFactory.class).add(new CardPlaceholderView(), false);
+                gbc.gridx = col;
+                gbc.gridy = row;
+                this.add(view, gbc);
+                view.render();
+                this.setComponentZOrder(view, col);
+            }
+        }
     }
 
     @Override public void onViewInitialized() {
@@ -58,8 +83,8 @@ public final class GameView extends PanelView {
         getViewProperties().setEntity(AbstractFactory.getFactory(ControllerFactory.class).add(new GameController()));
         
         // 
-        CardPlaceholderView view = new CardPlaceholderView();
-        this.add(view);
-        view.render();
+        //CardPlaceholderView view = new CardPlaceholderView();
+        //this.add(view);
+        //view.render();
     }
 }
