@@ -50,12 +50,8 @@ import views.GameView;
 public class Application extends AbstractApplication {
 
     public Application() {
-        // Set the default size of the application to be the size of the screen
-        GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();  
-        setSize(env.getMaximumWindowBounds().width, env.getMaximumWindowBounds().height);
-        
-        
         setMinimumSize(new Dimension(620, 436));
+        setLocationRelativeTo(null);
     }
 
     @Override public void destructor() {
