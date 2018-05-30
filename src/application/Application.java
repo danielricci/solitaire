@@ -26,7 +26,6 @@ package application;
 
 import java.awt.Dimension;
 import java.awt.EventQueue;
-import java.awt.GraphicsEnvironment;
 import java.io.File;
 
 import engine.core.factories.AbstractFactory;

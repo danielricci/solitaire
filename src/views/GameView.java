@@ -27,11 +27,11 @@ package views;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 
 import controllers.GameController;
 import engine.core.factories.AbstractFactory;
 import engine.core.mvc.view.PanelView;
-import engine.core.mvc.view.layout.DraggableLayout;
 import game.core.factories.ControllerFactory;
 import game.core.factories.ViewFactory;
 
@@ -48,43 +48,45 @@ public final class GameView extends PanelView {
      */
     public GameView() {
 
-        // Set the background color to green
-        setBackground(new Color(0, 128, 0));
+        this.setLayout(new GridBagLayout());
+        this.setBackground(new Color(0, 128, 0));
         
-        // Set the draggable layout so that child views can be dragged around
-        setLayout(new DraggableLayout());
-        
-        GridBagConstraints gbc = new GridBagConstraints();
-        
-        //gbc.fill = GridBagConstraints.BOTH;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
-        gbc.anchor = GridBagConstraints.NORTH;
-        
-        GridBagLayout layout = new GridBagLayout();
-        this.setLayout(layout);
-                
-        int x = 1000;
-        for(int row = 0, rowSize = 2; row < rowSize; ++row) {
-            for(int col = 0, colSize = 7; col < colSize; ++col) {
-                CardPlaceholderView view = AbstractFactory.getFactory(ViewFactory.class).add(new CardPlaceholderView(), false);
-                gbc.gridx = col;
-                gbc.gridy = row;
-                this.add(view, gbc);
-                view.render();
-                this.setComponentZOrder(view, col);
-            }
-        }
+        getViewProperties().setEntity(AbstractFactory.getFactory(ControllerFactory.class).add(new GameController()));
     }
-
+    
     @Override public void onViewInitialized() {
         
-        // Set the controller that will be used by this view
-        getViewProperties().setEntity(AbstractFactory.getFactory(ControllerFactory.class).add(new GameController()));
+        // Create the initial constaints
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.weightx = 1.0;
+        gbc.weighty = 0;
+        gbc.anchor = GridBagConstraints.NORTH;
+        gbc.insets = new Insets(10, 0, 0, 0);
         
-        // 
-        //CardPlaceholderView view = new CardPlaceholderView();
-        //this.add(view);
-        //view.render();
+        for(int row = 0, rowSize = 2; row < rowSize; ++row) {
+            
+            gbc.gridy = row;
+
+            if(row == 1)
+            {
+                gbc.weighty = 1;
+                gbc.insets = new Insets(40, 0, 20, 0);
+                gbc.fill = GridBagConstraints.VERTICAL;
+            }
+            
+            for(int col = 0, colSize = 7; col < colSize; ++col) {
+
+                // Do not render within columns 1 and 2
+                if(row == 0 && (col == 1 || col == 2)) 
+                {
+                    continue;
+                }
+                
+                CardPlaceholderView view = AbstractFactory.getFactory(ViewFactory.class).add(new CardPlaceholderView(), false);
+                gbc.gridx = col;
+                this.add(view, gbc);
+                view.render();                
+            }
+        }
     }
 }

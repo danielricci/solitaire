@@ -26,48 +26,29 @@ package views;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
 
 import javax.swing.BorderFactory;
 
 import engine.core.mvc.view.PanelView;
-import engine.core.mvc.view.layout.DraggableListener;
+import engine.core.physics.CollisionListener;
 
 public final class CardPlaceholderView extends PanelView {
 
-    //private CollisionListener _collisionListener = new CollisionListener(this);
-    
-    private DraggableListener _draggableListener = new DraggableListener(this);
+    /**
+     * The collision listener associated to this view
+     */
+    private CollisionListener _collisionListener = new CollisionListener(this);
     
     /**
      * Creates a new instance of this class type
      */
     public CardPlaceholderView() {
-        //setBackground(Color.gray);
-        //setPreferredSize(new Dimension(200, 200));
         setPreferredSize(new Dimension(71, 96));
-        setBorder(BorderFactory.createLineBorder(Color.red));
-        setBackground(Color.gray);
+        setBorder(BorderFactory.createLineBorder(Color.RED));
+        setBackground(Color.LIGHT_GRAY);
     }
     
     @Override public void onViewInitialized() {
-        addMouseMotionListener(new MouseMotionAdapter() {
-            @Override public void mouseDragged(MouseEvent e) {
-                System.out.println("Setting to " + (CardPlaceholderView.this.getParent().getComponentCount() - 1));
-//                CardPlaceholderView.this.getParent().setComponentZOrder(
-//                    CardPlaceholderView.this, 
-//                    CardPlaceholderView.this.getParent().getComponentCount() - 1
-//                );
-            }
-        });
-        addMouseListener(new MouseAdapter() {
-            
-            @Override public void mouseReleased(MouseEvent e) {
-                
-            }
-        });
     }
     
     @Override public void clear() {       
