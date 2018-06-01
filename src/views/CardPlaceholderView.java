@@ -29,15 +29,22 @@ import java.awt.Dimension;
 
 import javax.swing.BorderFactory;
 
+import engine.communication.internal.signal.ISignalReceiver;
+import engine.communication.internal.signal.arguments.BooleanEventArgs;
 import engine.core.mvc.view.PanelView;
 import engine.core.physics.CollisionListener;
 
 public final class CardPlaceholderView extends PanelView {
 
     /**
+     * The event associated to toggling the placeholder views
+     */
+    public static final String EVENT_TOGGLE_PLACEHOLDERS = "EVENT_TOGGLE_PLACEHOLDERS";
+    
+    /**
      * The collision listener associated to this view
      */
-    private CollisionListener _collisionListener = new CollisionListener(this);
+    private final CollisionListener _collisionListener = new CollisionListener(this);
     
     /**
      * Creates a new instance of this class type
@@ -48,9 +55,24 @@ public final class CardPlaceholderView extends PanelView {
         setBackground(Color.LIGHT_GRAY);
     }
     
+    @Override public void render() {
+        super.render();
+        
+        // Disable visibility by default, this will be toggled afterwards
+        this.setVisible(false);
+    }
+    
     @Override public void onViewInitialized() {
     }
     
     @Override public void clear() {       
+    }
+
+    @Override public void registerSignalListeners() {
+        addSignalListener(CardPlaceholderView.EVENT_TOGGLE_PLACEHOLDERS, new ISignalReceiver<BooleanEventArgs>() {
+            @Override public void signalReceived(BooleanEventArgs event) {
+                CardPlaceholderView.this.setVisible(event.getResult());
+            }
+        });
     }
 }

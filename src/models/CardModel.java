@@ -24,6 +24,7 @@
 
 package models;
 
+import engine.communication.internal.signal.arguments.AbstractEventArgs;
 import engine.core.mvc.model.BaseModel;
 import entities.AbstractCardEntity;
 import entities.DiamondCardEntity;
@@ -31,4 +32,8 @@ import generated.DataLookup.DIAMONDS;
 
 public class CardModel extends BaseModel {
     public AbstractCardEntity _cardEntity = new DiamondCardEntity(DIAMONDS.D4);
+
+    @Override public void update(AbstractEventArgs signalEvent) {
+        
+    }
 }

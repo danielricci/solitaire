@@ -38,6 +38,7 @@ import game.core.factories.ViewFactory;
 import menu.AboutMenuItem;
 import menu.DebugInsertCardMenuItem;
 import menu.DebugNewGameMenuItem;
+import menu.DebugTogglePlaceholderView;
 import menu.DeckMenuItem;
 import menu.ExitMenuItem;
 import menu.NewGameMenuItem;
@@ -94,7 +95,9 @@ public class Application extends AbstractApplication {
             .addMenu(Localization.instance().getLocalizedString("Debug"))
             .addMenuItem(DebugNewGameMenuItem.class)
             .addSeparator()
-            .addMenuItem(DebugInsertCardMenuItem.class);
+            .addMenuItem(DebugInsertCardMenuItem.class)
+            .addSeparator()
+            .addMenuItem(DebugTogglePlaceholderView.class);
         }
         
         // Help Menu

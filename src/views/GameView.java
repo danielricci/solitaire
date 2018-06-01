@@ -85,8 +85,15 @@ public final class GameView extends PanelView {
                 CardPlaceholderView view = AbstractFactory.getFactory(ViewFactory.class).add(new CardPlaceholderView(), false);
                 gbc.gridx = col;
                 this.add(view, gbc);
-                view.render();                
+                view.render();
             }
         }
+    }
+
+    
+    @Override public void registerSignalListeners() {
+    }
+
+    @Override public void clear() {
     }
 }

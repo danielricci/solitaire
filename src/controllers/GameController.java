@@ -24,7 +24,16 @@
 
 package controllers;
 
+import engine.communication.internal.signal.arguments.AbstractEventArgs;
 import engine.core.mvc.controller.BaseController;
 
 public class GameController extends BaseController {
+
+    @Override public void update(AbstractEventArgs signalEvent) {
+        
+    }
+
+    @Override public void registerSignalListeners() {
+        
+    }
 }
