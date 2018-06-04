@@ -5,6 +5,6 @@
 	<classpathentry kind="src" path="properties"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/Gosling"/>
-	<classpathentry kind="lib" path="data/generated/tilemap.jar"/>
+	<classpathentry exported="true" kind="lib" path="data/generated/tilemap.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

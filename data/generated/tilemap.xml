@@ -469,6 +469,15 @@
 &lt;/root&gt;
 </value>
         </entry>
+        <entry>
+            <key>generated.TileMapData</key>
+            <value>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+&lt;root identifier="c89dfa47-5c49-4c56-836b-19b7dd6e5651" name="original_backside" layers="040cb294-c4ad-47a5-abbb-6a7c8d1f3482" friendly=""&gt;
+    &lt;p1 y="0.0" x="6500.0"/&gt;
+    &lt;p2 y="726.0" x="7000.0"/&gt;
+&lt;/root&gt;
+</value>
+        </entry>
     </data>
 </root>
 
