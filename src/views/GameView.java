@@ -73,7 +73,7 @@ public final class GameView extends PanelView {
         _constraints.insets = new Insets(10, 0, 0, 0);
 
         // Set the controller associated to this view
-        getViewProperties().setEntity(AbstractFactory.getFactory(ControllerFactory.class).add(new GameController()));
+        getViewProperties().setEntity(AbstractFactory.getFactory(ControllerFactory.class).add(new GameController(), true));
     }
 
     /**
