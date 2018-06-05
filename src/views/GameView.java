@@ -44,52 +44,102 @@ import game.core.factories.ViewFactory;
 public final class GameView extends PanelView {
 
     /**
+     * The row size of this view
+     */
+    private final int _rowSize = 2;
+
+    /**
+     * The column size of this view
+     */
+    private final int _columnSize = 7;
+
+    /**
+     * The constaints associated to this view
+     */
+    private final GridBagConstraints _constraints = new GridBagConstraints();
+
+    /**
      * Creates a new instance of this class type
      */
     public GameView() {
 
         this.setLayout(new GridBagLayout());
         this.setBackground(new Color(0, 128, 0));
-        
+
+        // Configure constraint initial values
+        _constraints.weightx = 1.0;
+        _constraints.weighty = 0;
+        _constraints.anchor = GridBagConstraints.NORTH;
+        _constraints.insets = new Insets(10, 0, 0, 0);
+
+        // Set the controller associated to this view
         getViewProperties().setEntity(AbstractFactory.getFactory(ControllerFactory.class).add(new GameController()));
     }
-    
-    @Override public void onViewInitialized() {
-        
-        // Create the initial constaints
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.weightx = 1.0;
-        gbc.weighty = 0;
-        gbc.anchor = GridBagConstraints.NORTH;
-        gbc.insets = new Insets(10, 0, 0, 0);
-        
-        for(int row = 0, rowSize = 2; row < rowSize; ++row) {
-            
-            gbc.gridy = row;
 
-            if(row == 1)
+    /**
+     * Renders an instance of the card placeholder view
+     */
+    private CardPlaceholderView renderCardPlaceholderView() {
+        CardPlaceholderView cardPlaceholderView = AbstractFactory.getFactory(ViewFactory.class).add(new CardPlaceholderView(), false);
+        this.add(cardPlaceholderView, _constraints);
+        cardPlaceholderView.render();
+        return cardPlaceholderView;
+    }
+
+    /**
+     * Renders a singular instance of the stock view
+     */
+    private StockView renderStockView() {
+        StockView stockView = AbstractFactory.getFactory(ViewFactory.class).add(new StockView(), true);
+        this.add(stockView, _constraints);
+        stockView.render();
+        return stockView;
+    }
+
+    private void handleRendering() {
+       
+        // Render a placeholder view so long as the constraints are not on the first row and occupying the first 3 cells
+        if(!(_constraints.gridy == 0 && (_constraints.gridx >= 0 && _constraints.gridx <= 2))) {
+            renderCardPlaceholderView();
+        }
+        
+        if(_constraints.gridy == 0)
+        {
+            switch(_constraints.gridx)
             {
-                gbc.weighty = 1;
-                gbc.insets = new Insets(40, 0, 20, 0);
-                gbc.fill = GridBagConstraints.VERTICAL;
+            case 0:
+            {
+                renderStockView();
+                break;
             }
+            }
+        }
+        else
+        {
             
-            for(int col = 0, colSize = 7; col < colSize; ++col) {
-
-                // Do not render within columns 1 and 2
-                if(row == 0 && (col == 1 || col == 2)) 
-                {
-                    continue;
-                }
-                
-                CardPlaceholderView view = AbstractFactory.getFactory(ViewFactory.class).add(new CardPlaceholderView(), false);
-                gbc.gridx = col;
-                this.add(view, gbc);
-                view.render();
-            }
         }
     }
 
+    @Override public void onViewInitialized() {
+
+        for(int row = 0; row < _rowSize; ++row) {
+            _constraints.gridy = row;
+
+            // If the rendering pass is on row 2 (0th based) then make sure the constraints are properly reflected
+            if(_constraints.gridy ==  1) {
+                _constraints.weighty = 1;
+                _constraints.insets = new Insets(40, 0, 20, 0);
+                _constraints.fill = GridBagConstraints.VERTICAL;
+            }
+            
+            for(int col = 0; col < _columnSize; ++col) {
+                _constraints.gridx = col;
+
+                // Perform a render based on the updated constaints
+                handleRendering();
+            }
+        }
+    }
     
     @Override public void registerSignalListeners() {
     }

@@ -24,34 +24,33 @@
 
 package views;
 
-import java.awt.Color;
-import java.awt.Dimension;
+import controllers.GameController;
+import engine.communication.internal.signal.arguments.AbstractEventArgs;
+import engine.core.factories.AbstractFactory;
+import engine.core.mvc.view.PanelView;
+import game.core.factories.ControllerFactory;
 
-import engine.communication.internal.signal.ISignalReceiver;
-import engine.communication.internal.signal.arguments.BooleanEventArgs;
-import engine.core.mvc.view.TransparentPanelView;
-import engine.core.physics.CollisionListener;
-
-public final class CardPlaceholderView extends TransparentPanelView {
+/**
+ * This view handles the stock. The stock is a view that contains the leftover cards after the cards have been 
+ * properly distributed on the board. Clicking on the stock view will display a card within another view.
+ *
+ * @author Daniel Ricci <thedanny09@gmail.com>
+ *
+ */
+public final class StockView extends PanelView {
 
     /**
-     * The event associated to toggling the placeholder views
+     * Hold a reference to the game controller
      */
-    public static final String EVENT_TOGGLE_PLACEHOLDERS = "EVENT_TOGGLE_PLACEHOLDERS";
-    
-    /**
-     * The collision listener associated to this view
-     */
-    private final CollisionListener _collisionListener = new CollisionListener(this);
+    private GameController _gameController = AbstractFactory.getFactory(ControllerFactory.class).get(GameController.class);
     
     /**
      * Creates a new instance of this class type
      */
-    public CardPlaceholderView() {
-        setPreferredSize(new Dimension(71, 96));
-        setBackground(Color.LIGHT_GRAY);
+    public StockView() {
+        _gameController.addSignalListener(this);
     }
-       
+        
     @Override public void onViewInitialized() {
     }
     
@@ -59,11 +58,9 @@ public final class CardPlaceholderView extends TransparentPanelView {
     }
 
     @Override public void registerSignalListeners() {
-        addSignalListener(CardPlaceholderView.EVENT_TOGGLE_PLACEHOLDERS, new ISignalReceiver<BooleanEventArgs>() {
-            @Override public void signalReceived(BooleanEventArgs event) {
-                CardPlaceholderView.this.setOpaque(event.getResult());
-//                CardPlaceholderView.this.repaint();
-            }
-        });
+    }
+    
+    @Override public void update(AbstractEventArgs event) {
+        System.out.print("StockView::update");
     }
 }

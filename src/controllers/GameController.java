@@ -24,16 +24,15 @@
 
 package controllers;
 
-import engine.communication.internal.signal.arguments.AbstractEventArgs;
+import java.util.List;
+
+import engine.api.IModel;
 import engine.core.mvc.controller.BaseController;
 
 public class GameController extends BaseController {
 
-    @Override public void update(AbstractEventArgs signalEvent) {
-        
+    @Override public List<IModel> getControllerModels() {
+        return null;
     }
-
-    @Override public void registerSignalListeners() {
-        
-    }
+    
 }
