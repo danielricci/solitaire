@@ -49,7 +49,7 @@ public class CardView extends PanelView {
      */
     public CardView() {
         setBackground(Color.red);
-        setPreferredSize(new Dimension(400, 400));
+        setPreferredSize(new Dimension(71, 96));
         
         //CardModel model = new CardModel();
         //addRenderableContent(model._cardEntity);

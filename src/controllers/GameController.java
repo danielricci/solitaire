@@ -31,7 +31,9 @@ import engine.core.mvc.controller.BaseController;
 
 public class GameController extends BaseController {
 
-    @Override public List<IModel> getControllerModels() {
+    
+    
+    @Override protected List<IModel> getControllerModels() {
         return null;
     }
     

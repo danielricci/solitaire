@@ -57,7 +57,7 @@ public final class GameView extends PanelView {
      * The constaints associated to this view
      */
     private final GridBagConstraints _constraints = new GridBagConstraints();
-
+    
     /**
      * Creates a new instance of this class type
      */
@@ -72,8 +72,8 @@ public final class GameView extends PanelView {
         _constraints.anchor = GridBagConstraints.NORTH;
         _constraints.insets = new Insets(10, 0, 0, 0);
 
-        // Set the controller associated to this view
-        getViewProperties().setEntity(AbstractFactory.getFactory(ControllerFactory.class).add(new GameController(), true));
+        // Create a globally accessible game controller
+        AbstractFactory.getFactory(ControllerFactory.class).add(new GameController(), true);
     }
 
     /**
