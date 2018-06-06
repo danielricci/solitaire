@@ -9,7 +9,7 @@ public final class HeartCardEntity extends AbstractCardEntity {
         setActiveData(card.identifier);
     }
     @Override public boolean isOppositeSuite(AbstractCardEntity card) {
-        return card._layer == LAYER.SPADES || card._layer == LAYER.CLUBS; 
+        return card.layer == LAYER.SPADES || card.layer == LAYER.CLUBS; 
     }
 
     @Override public boolean isCardRankedBefore(AbstractCardEntity card) {

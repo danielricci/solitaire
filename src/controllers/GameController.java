@@ -24,17 +24,26 @@
 
 package controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import engine.api.IModel;
 import engine.core.mvc.controller.BaseController;
+import models.CardModel;
 
 public class GameController extends BaseController {
 
+    private List<CardModel> _cards = new ArrayList();
     
-    
-    @Override protected List<IModel> getControllerModels() {
-        return null;
+    public GameController() {
+        //_cards.add(new CardModel());
     }
     
+    @Override protected List<IModel> getControllerModels() {
+        List<IModel> models = new ArrayList();
+        for(CardModel model : _cards) {
+            models.add(model);
+        }
+        return models;
+    }    
 }

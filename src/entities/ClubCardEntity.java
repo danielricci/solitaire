@@ -10,7 +10,7 @@ public final class ClubCardEntity extends AbstractCardEntity {
     }
 
     @Override public boolean isOppositeSuite(AbstractCardEntity card) {
-        return card._layer == LAYER.HEARTS || card._layer == LAYER.DIAMONDS; 
+        return card.layer == LAYER.HEARTS || card.layer == LAYER.DIAMONDS; 
     }
 
     @Override public boolean isCardRankedBefore(AbstractCardEntity card) {

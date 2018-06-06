@@ -1,23 +1,46 @@
 package entities;
 
+import java.awt.Image;
+
 import game.gameplay.AbstractDataEntity;
 import generated.DataLookup;
 
 public abstract class AbstractCardEntity extends AbstractDataEntity {
+
+    /**
+     * The backside entity associated to this card
+     */
+    protected final BacksideCardEntity backsideCardEntity = new BacksideCardEntity();
     
     /**
      * The layer associated to this entity
      */
-    protected final DataLookup.LAYER _layer;
+    protected final DataLookup.LAYER layer;
+    
+    /**
+     * Constructs a new instance of this class type
+     */
+    protected AbstractCardEntity() {
+        super(null);
+        layer = null;
+    }
     
     /**
      * Constructs a new instance of this class type
      * 
      * @param layer The layer to set this card entity to
      */
-    public AbstractCardEntity(DataLookup.LAYER layer) {
+    protected AbstractCardEntity(DataLookup.LAYER layer) {
         super(layer.identifier);
-        _layer = layer;
+        this.layer = layer;
+    }
+    
+    @Override public Image getRenderableContent() {
+    
+        if(backsideCardEntity.getIsBacksideShowing()) {
+            return backsideCardEntity.getRenderableContent();
+        }
+        return super.getRenderableContent();
     }
     
     /**
@@ -28,7 +51,7 @@ public abstract class AbstractCardEntity extends AbstractDataEntity {
      * @return TRUE if this card and the card specified are of the SAME suit, FALSE otherwise
      */
     public final boolean isSameSuite(AbstractCardEntity card) {
-        return card._layer.equals(_layer);
+        return card.layer.equals(layer);
     }
     
     /**

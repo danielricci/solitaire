@@ -24,16 +24,21 @@
 
 package models;
 
-import engine.communication.internal.signal.arguments.AbstractEventArgs;
+import java.awt.Image;
+
+import engine.core.graphics.IRenderable;
 import engine.core.mvc.model.BaseModel;
 import entities.AbstractCardEntity;
-import entities.DiamondCardEntity;
-import generated.DataLookup.DIAMONDS;
 
-public class CardModel extends BaseModel {
-    public AbstractCardEntity _cardEntity = new DiamondCardEntity(DIAMONDS.D4);
-
-    @Override public void update(AbstractEventArgs signalEvent) {
+public class CardModel extends BaseModel implements IRenderable {
+    
+    private final AbstractCardEntity _cardEntity;
         
+    public CardModel(AbstractCardEntity cardEntity) {
+        _cardEntity = cardEntity;
+    }
+    
+    @Override public Image getRenderableContent() {
+        return _cardEntity.getRenderableContent();
     }
 }

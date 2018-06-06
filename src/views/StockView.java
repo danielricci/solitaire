@@ -29,8 +29,10 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import controllers.GameController;
+import controllers.StockController;
 import engine.communication.internal.signal.arguments.AbstractEventArgs;
 import engine.core.factories.AbstractFactory;
+import engine.core.graphics.IRenderable;
 import engine.core.mvc.view.PanelView;
 import game.core.factories.ControllerFactory;
 
@@ -49,17 +51,21 @@ public final class StockView extends PanelView {
     private GameController _gameController = AbstractFactory.getFactory(ControllerFactory.class).get(GameController.class);
     
     /**
+     * Hold a reference to the stock controller associated to this class
+     */
+    private StockController _stockController = AbstractFactory.getFactory(ControllerFactory.class).add(new StockController());
+    
+    /**
      * Creates a new instance of this class type
      */
     public StockView() {
-        _gameController.addSignalListener(this);
+        _stockController.addSignalListener(this);
         setPreferredSize(new Dimension(71, 96));
     }
     
     @Override public void onViewInitialized() {
         this.addMouseListener(new MouseAdapter() {
             @Override public void mouseReleased(MouseEvent event) {
-                System.out.println("StockView::mouseReleased");
             }
         });
     }
@@ -70,11 +76,7 @@ public final class StockView extends PanelView {
     @Override public void registerSignalListeners() {
     }
     
-    @Override public void render() {
-        super.render();
-    }
-    
     @Override public void update(AbstractEventArgs event) {
-        System.out.print("StockView::update");
+        addRenderableContent((IRenderable)event.getSource());
     }
 }
