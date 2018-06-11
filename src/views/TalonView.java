@@ -28,13 +28,10 @@ import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-import controllers.GameController;
-import controllers.StockController;
 import engine.communication.internal.signal.arguments.AbstractEventArgs;
-import engine.core.factories.AbstractFactory;
 import engine.core.graphics.IRenderable;
 import engine.core.mvc.view.PanelView;
-import game.core.factories.ControllerFactory;
+import engine.core.mvc.view.layout.DraggableListener;
 
 /**
  * This view handles the stock. The stock is a view that contains the leftover cards after the cards have been 
@@ -43,31 +40,20 @@ import game.core.factories.ControllerFactory;
  * @author Daniel Ricci <thedanny09@gmail.com>
  *
  */
-public final class StockView extends PanelView {
+public final class TalonView extends PanelView {
 
-
-    /**
-     * Hold a reference to the game controller
-     */
-    private GameController _gameController = AbstractFactory.getFactory(ControllerFactory.class).get(GameController.class);
-
-    /**
-     * Hold a reference to the stock controller associated to this class
-     */
-    private StockController _stockController = AbstractFactory.getFactory(ControllerFactory.class).add(new StockController());
-
+    private final DraggableListener _draggableListener = new DraggableListener(this);
+    
     /**
      * Creates a new instance of this class type
      */
-    public StockView() {
-        _stockController.addSignalListener(this);
+    public TalonView() {
         setPreferredSize(new Dimension(71, 96));
     }
 
     @Override public void onViewInitialized() {
         this.addMouseListener(new MouseAdapter() {
             @Override public void mouseReleased(MouseEvent event) {
-                _gameController.popNewCard();
             }
         });
     }
@@ -79,8 +65,6 @@ public final class StockView extends PanelView {
     }
 
     @Override public void update(AbstractEventArgs event) {
-        super.update(event);
         addRenderableContent((IRenderable)event.getSource());
-        repaint();
     }
 }

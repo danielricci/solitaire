@@ -28,7 +28,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import engine.api.IModel;
+import engine.core.factories.AbstractFactory;
 import engine.core.mvc.controller.BaseController;
+import entities.ClubCardEntity;
+import entities.DiamondCardEntity;
+import entities.HeartCardEntity;
+import entities.SpadeCardEntity;
+import game.core.factories.ModelFactory;
+import generated.DataLookup;
 import models.CardModel;
 
 public class GameController extends BaseController {
@@ -36,7 +43,32 @@ public class GameController extends BaseController {
     private List<CardModel> _cards = new ArrayList();
     
     public GameController() {
-        //_cards.add(new CardModel());
+        
+        ModelFactory modelFactory = AbstractFactory.getFactory(ModelFactory.class);
+        
+        // Hearts
+        for(DataLookup.HEARTS heart : DataLookup.HEARTS.values()) {
+            _cards.add(modelFactory.add(new CardModel(new HeartCardEntity(heart))));
+        }
+        
+        // Clubs
+        for(DataLookup.CLUBS club : DataLookup.CLUBS.values()) {
+            _cards.add(modelFactory.add(new CardModel(new ClubCardEntity(club))));
+        }
+        
+        // Diamonds
+        for(DataLookup.DIAMONDS diamond : DataLookup.DIAMONDS.values()) {
+            _cards.add(modelFactory.add(new CardModel(new DiamondCardEntity(diamond))));
+        }
+        
+        // Spades
+        for(DataLookup.SPADES spade : DataLookup.SPADES.values()) {
+            _cards.add(modelFactory.add(new CardModel(new SpadeCardEntity(spade))));
+        }
+    }
+    
+    public void popNewCard() {
+        
     }
     
     @Override protected List<IModel> getControllerModels() {

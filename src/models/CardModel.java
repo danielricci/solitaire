@@ -26,11 +26,10 @@ package models;
 
 import java.awt.Image;
 
-import engine.core.graphics.IRenderable;
 import engine.core.mvc.model.BaseModel;
 import entities.AbstractCardEntity;
 
-public class CardModel extends BaseModel implements IRenderable {
+public class CardModel extends BaseModel {
     
     private final AbstractCardEntity _cardEntity;
         
