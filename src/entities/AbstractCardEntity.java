@@ -21,7 +21,6 @@ public abstract class AbstractCardEntity extends AbstractDataEntity {
      * Constructs a new instance of this class type
      */
     protected AbstractCardEntity() {
-        super(null);
         layer = null;
     }
     
@@ -31,7 +30,6 @@ public abstract class AbstractCardEntity extends AbstractDataEntity {
      * @param layer The layer to set this card entity to
      */
     protected AbstractCardEntity(DataLookup.LAYER layer) {
-        super(layer.identifier);
         this.layer = layer;
     }
     

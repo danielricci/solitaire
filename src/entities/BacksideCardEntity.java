@@ -8,7 +8,6 @@ public final class BacksideCardEntity extends AbstractDataEntity {
     private boolean _isBacksideVisible = false;
 
     public BacksideCardEntity() {
-        super(DataLookup.LAYER.BACKSIDES.identifier);
         super.setActiveData(DataLookup.BACKSIDES.ORIGINAL_BACKSIDE.identifier);
     }
     
