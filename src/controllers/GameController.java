@@ -40,7 +40,7 @@ import models.CardModel;
 
 public class GameController extends BaseController {
 
-    private List<CardModel> _cards = new ArrayList();
+    private final List<CardModel> _cards = new ArrayList<CardModel>();
     
     public GameController() {
         
@@ -67,15 +67,13 @@ public class GameController extends BaseController {
         }
     }
     
-    public void popNewCard() {
-        
+    public void nextCard() {
+        _cards.get(0).refresh();
     }
     
     @Override protected List<IModel> getControllerModels() {
-        List<IModel> models = new ArrayList();
-        for(CardModel model : _cards) {
-            models.add(model);
-        }
+        List<IModel> models = new ArrayList<IModel>();
+        _cards.parallelStream().forEach(z -> models.add(z));
         return models;
     }    
 }

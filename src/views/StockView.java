@@ -31,6 +31,7 @@ import java.awt.event.MouseEvent;
 import controllers.GameController;
 import controllers.StockController;
 import engine.communication.internal.signal.arguments.AbstractEventArgs;
+import engine.communication.internal.signal.arguments.ModelEventArgs;
 import engine.core.factories.AbstractFactory;
 import engine.core.graphics.IRenderable;
 import engine.core.mvc.view.PanelView;
@@ -67,7 +68,7 @@ public final class StockView extends PanelView {
     @Override public void onViewInitialized() {
         this.addMouseListener(new MouseAdapter() {
             @Override public void mouseReleased(MouseEvent event) {
-                _gameController.popNewCard();
+                _gameController.nextCard();
             }
         });
     }
@@ -80,6 +81,8 @@ public final class StockView extends PanelView {
 
     @Override public void update(AbstractEventArgs event) {
         super.update(event);
+        
+        ModelEventArgs modelEvent = (ModelEventArgs) event;
         addRenderableContent((IRenderable)event.getSource());
         repaint();
     }
