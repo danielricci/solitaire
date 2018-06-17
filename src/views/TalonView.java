@@ -25,13 +25,16 @@
 package views;
 
 import java.awt.Dimension;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
+import controllers.GameController;
 import engine.communication.internal.signal.arguments.AbstractEventArgs;
+import engine.communication.internal.signal.arguments.ModelEventArgs;
+import engine.core.factories.AbstractFactory;
 import engine.core.graphics.IRenderable;
 import engine.core.mvc.view.PanelView;
 import engine.core.mvc.view.layout.DraggableListener;
+import game.core.factories.ControllerFactory;
+import models.CardModel;
 
 /**
  * This view handles the stock. The stock is a view that contains the leftover cards after the cards have been 
@@ -42,6 +45,12 @@ import engine.core.mvc.view.layout.DraggableListener;
  */
 public final class TalonView extends PanelView {
 
+    /**
+     * Hold a reference to the game controller
+     */
+    private GameController _gameController = AbstractFactory.getFactory(ControllerFactory.class).get(GameController.class);
+
+    
     private final DraggableListener _draggableListener = new DraggableListener(this);
     
     /**
@@ -49,13 +58,10 @@ public final class TalonView extends PanelView {
      */
     public TalonView() {
         setPreferredSize(new Dimension(71, 96));
+        _gameController.addSignalListener(this);
     }
 
     @Override public void onViewInitialized() {
-        this.addMouseListener(new MouseAdapter() {
-            @Override public void mouseReleased(MouseEvent event) {
-            }
-        });
     }
 
     @Override public void clear() {       
@@ -65,6 +71,13 @@ public final class TalonView extends PanelView {
     }
 
     @Override public void update(AbstractEventArgs event) {
-        addRenderableContent((IRenderable)event.getSource());
+        
+        super.update(event);
+        
+        if(event instanceof ModelEventArgs && event.getSource() instanceof CardModel) {
+            CardModel cardModel = (CardModel)event.getSource();
+            addRenderableContent(cardModel);
+            repaint();
+        }
     }
 }

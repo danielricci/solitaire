@@ -25,11 +25,16 @@
 package controllers;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
+import java.util.logging.Level;
 
 import engine.api.IModel;
 import engine.core.factories.AbstractFactory;
 import engine.core.mvc.controller.BaseController;
+import engine.utils.logging.Tracelog;
 import entities.ClubCardEntity;
 import entities.DiamondCardEntity;
 import entities.HeartCardEntity;
@@ -40,40 +45,68 @@ import models.CardModel;
 
 public class GameController extends BaseController {
 
-    private final List<CardModel> _cards = new ArrayList<CardModel>();
+    /**
+     * The entire list of cards that are within the game.
+     */
+    private final ArrayList<CardModel> _cardsList = new ArrayList<CardModel>();
     
+    /**
+     * The sub-set list of cards that are currently being playable within the game
+     */
+    private final LinkedList<CardModel> _cardsQueue = new LinkedList<CardModel>();
+   
+    
+    /**
+     * Constructs a new instance of this class type
+     */
     public GameController() {
         
         ModelFactory modelFactory = AbstractFactory.getFactory(ModelFactory.class);
         
         // Hearts
         for(DataLookup.HEARTS heart : DataLookup.HEARTS.values()) {
-            _cards.add(modelFactory.add(new CardModel(new HeartCardEntity(heart))));
+            _cardsList.add(modelFactory.add(new CardModel(new HeartCardEntity(heart))));
         }
         
         // Clubs
         for(DataLookup.CLUBS club : DataLookup.CLUBS.values()) {
-            _cards.add(modelFactory.add(new CardModel(new ClubCardEntity(club))));
+            _cardsList.add(modelFactory.add(new CardModel(new ClubCardEntity(club))));
         }
         
         // Diamonds
         for(DataLookup.DIAMONDS diamond : DataLookup.DIAMONDS.values()) {
-            _cards.add(modelFactory.add(new CardModel(new DiamondCardEntity(diamond))));
+            _cardsList.add(modelFactory.add(new CardModel(new DiamondCardEntity(diamond))));
         }
         
         // Spades
         for(DataLookup.SPADES spade : DataLookup.SPADES.values()) {
-            _cards.add(modelFactory.add(new CardModel(new SpadeCardEntity(spade))));
+            _cardsList.add(modelFactory.add(new CardModel(new SpadeCardEntity(spade))));
+        }
+        
+        // Introduce some randomness into the ordering of the cards
+        Collections.shuffle(_cardsList);
+        
+        // Populate the playable cards 
+        _cardsQueue.addAll(_cardsList.subList(_cardsList.size() - 16, _cardsList.size()));
+    }
+
+    public void nextCard() {
+        
+        if(_cardsQueue.isEmpty()) {
+            Tracelog.log(Level.INFO, true, "Attempting to get the next card when there are no cards left to play");
+            return;
+        }
+        
+        if(_cardsQueue.size() == 1) {
+            
+        }
+        else {
+            _cardsQueue.addLast(_cardsQueue.pop());
+            _cardsQueue.element().refresh();
         }
     }
     
-    public void nextCard() {
-        _cards.get(0).refresh();
-    }
-    
     @Override protected List<IModel> getControllerModels() {
-        List<IModel> models = new ArrayList<IModel>();
-        _cards.parallelStream().forEach(z -> models.add(z));
-        return models;
+        return new ArrayList<IModel>(_cardsList);
     }    
 }

@@ -95,6 +95,13 @@ public final class GameView extends PanelView {
         stockView.render();
         return stockView;
     }
+    
+    private TalonView renderTalonView() {
+        TalonView talonView = AbstractFactory.getFactory(ViewFactory.class).add(new TalonView(), true);
+        this.add(talonView, _constraints);
+        talonView.render();
+        return talonView;
+    }
 
     private void handleRendering() {
        
@@ -110,6 +117,11 @@ public final class GameView extends PanelView {
             case 0:
             {
                 renderStockView();
+                break;
+            }
+            case 1:
+            {
+                renderTalonView();
                 break;
             }
             }

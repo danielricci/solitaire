@@ -53,15 +53,10 @@ public final class StockView extends PanelView {
     private GameController _gameController = AbstractFactory.getFactory(ControllerFactory.class).get(GameController.class);
 
     /**
-     * Hold a reference to the stock controller associated to this class
-     */
-    private StockController _stockController = AbstractFactory.getFactory(ControllerFactory.class).add(new StockController());
-
-    /**
      * Creates a new instance of this class type
      */
     public StockView() {
-        _stockController.addSignalListener(this);
+        _gameController.addSignalListener(this);
         setPreferredSize(new Dimension(71, 96));
     }
 
@@ -77,13 +72,5 @@ public final class StockView extends PanelView {
     }
 
     @Override public void registerSignalListeners() {
-    }
-
-    @Override public void update(AbstractEventArgs event) {
-        super.update(event);
-        
-        ModelEventArgs modelEvent = (ModelEventArgs) event;
-        addRenderableContent((IRenderable)event.getSource());
-        repaint();
     }
 }
