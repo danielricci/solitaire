@@ -31,7 +31,6 @@ import engine.communication.internal.signal.arguments.AbstractEventArgs;
 import engine.communication.internal.signal.arguments.ModelEventArgs;
 import engine.core.factories.AbstractFactory;
 import engine.core.mvc.view.PanelView;
-import engine.core.mvc.view.layout.DraggableListener;
 import game.core.factories.ControllerFactory;
 import models.CardModel;
 
@@ -49,9 +48,6 @@ public final class TalonView extends PanelView {
      */
     private GameController _gameController = AbstractFactory.getFactory(ControllerFactory.class).get(GameController.class);
 
-    
-    private final DraggableListener _draggableListener = new DraggableListener(this);
-    
     /**
      * Creates a new instance of this class type
      */

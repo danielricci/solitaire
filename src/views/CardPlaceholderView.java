@@ -30,7 +30,6 @@ import java.awt.Dimension;
 import engine.communication.internal.signal.ISignalReceiver;
 import engine.communication.internal.signal.arguments.BooleanEventArgs;
 import engine.core.mvc.view.TransparentPanelView;
-import engine.core.physics.CollisionListener;
 
 public final class CardPlaceholderView extends TransparentPanelView {
 
@@ -38,11 +37,6 @@ public final class CardPlaceholderView extends TransparentPanelView {
      * The event associated to toggling the placeholder views
      */
     public static final String EVENT_TOGGLE_PLACEHOLDERS = "EVENT_TOGGLE_PLACEHOLDERS";
-    
-    /**
-     * The collision listener associated to this view
-     */
-    private final CollisionListener _collisionListener = new CollisionListener(this);
     
     /**
      * Creates a new instance of this class type
