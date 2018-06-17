@@ -29,12 +29,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import controllers.GameController;
-import controllers.StockController;
-import engine.communication.internal.signal.arguments.AbstractEventArgs;
-import engine.communication.internal.signal.arguments.ModelEventArgs;
 import engine.core.factories.AbstractFactory;
-import engine.core.graphics.IRenderable;
 import engine.core.mvc.view.PanelView;
+import entities.BacksideCardEntity;
 import game.core.factories.ControllerFactory;
 
 /**
@@ -46,7 +43,11 @@ import game.core.factories.ControllerFactory;
  */
 public final class StockView extends PanelView {
 
-
+    /**
+     * The backside card entity
+     */
+    private final BacksideCardEntity _backside = new BacksideCardEntity();
+    
     /**
      * Hold a reference to the game controller
      */
@@ -56,7 +57,6 @@ public final class StockView extends PanelView {
      * Creates a new instance of this class type
      */
     public StockView() {
-        _gameController.addSignalListener(this);
         setPreferredSize(new Dimension(71, 96));
     }
 
@@ -72,5 +72,11 @@ public final class StockView extends PanelView {
     }
 
     @Override public void registerSignalListeners() {
+    }
+    
+    @Override public void render() {
+        super.render();
+        addRenderableContent(_backside);
+        repaint();
     }
 }

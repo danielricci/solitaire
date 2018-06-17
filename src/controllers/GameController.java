@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 import java.util.logging.Level;
 
 import engine.api.IModel;
@@ -90,20 +89,20 @@ public class GameController extends BaseController {
         _cardsQueue.addAll(_cardsList.subList(_cardsList.size() - 16, _cardsList.size()));
     }
 
-    public void nextCard() {
+    public boolean nextCard() {
         
         if(_cardsQueue.isEmpty()) {
             Tracelog.log(Level.INFO, true, "Attempting to get the next card when there are no cards left to play");
-            return;
+            return false;
         }
         
         if(_cardsQueue.size() == 1) {
-            
+            return false;
         }
-        else {
-            _cardsQueue.addLast(_cardsQueue.pop());
-            _cardsQueue.element().refresh();
-        }
+
+        _cardsQueue.addLast(_cardsQueue.pop());
+        _cardsQueue.element().refresh();
+        return true;
     }
     
     @Override protected List<IModel> getControllerModels() {
