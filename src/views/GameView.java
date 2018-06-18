@@ -80,11 +80,12 @@ public final class GameView extends PanelView {
      * Renders an instance of the card placeholder view
      */
     private CardPlaceholderView renderCardPlaceholderView() {
-        CardPlaceholderView cardPlaceholderView = AbstractFactory.getFactory(ViewFactory.class).add(new CardPlaceholderView(), false);
+        CardPlaceholderView cardPlaceholderView = AbstractFactory.getFactory(ViewFactory.class).add(new CardPlaceholderView());
         this.add(cardPlaceholderView, _constraints);
         cardPlaceholderView.render();
         return cardPlaceholderView;
     }
+
 
     /**
      * Renders a singular instance of the stock view
@@ -98,16 +99,18 @@ public final class GameView extends PanelView {
     
     private TalonView renderTalonView() {
         TalonView talonView = AbstractFactory.getFactory(ViewFactory.class).add(new TalonView(), true);
-        this.add(talonView, _constraints);
+        this.add(talonView);
         talonView.render();
         return talonView;
     }
-
-    private void handleRendering() {
-       
+    
+     private void handleRendering() {
+        
+        CardPlaceholderView placeHolder = null;
+        
         // Render a placeholder view so long as the constraints are not on the first row and occupying the first 3 cells
         if(!(_constraints.gridy == 0 && (_constraints.gridx >= 0 && _constraints.gridx <= 2))) {
-            renderCardPlaceholderView();
+            placeHolder = renderCardPlaceholderView();
         }
         
         if(_constraints.gridy == 0)
@@ -128,7 +131,16 @@ public final class GameView extends PanelView {
         }
         else
         {
-            
+            switch(_constraints.gridx) {
+            case 0:
+            case 1:
+            case 2:{
+                PileView pileView = AbstractFactory.getFactory(ViewFactory.class).add(new PileView(1));
+                placeHolder.add(pileView);
+                pileView.render();
+                break;
+            }
+            }
         }
     }
 

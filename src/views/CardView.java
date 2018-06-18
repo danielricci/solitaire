@@ -24,10 +24,20 @@
 
 package views;
 
-import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
+import application.Application;
 import engine.core.mvc.view.PanelView;
+import engine.core.mvc.view.layout.DraggableListener;
+import entities.DiamondCardEntity;
+import entities.SpadeCardEntity;
+import generated.DataLookup.DIAMONDS;
+import generated.DataLookup.SPADES;
+import models.CardModel;
 
 /**
  * The main window view is the outer most shell that wraps everything
@@ -40,23 +50,44 @@ public class CardView extends PanelView {
     /**
      * Draggable listener that listens in on this class for draggable events and handles them accordingly
      */
-    //private DraggableListener _draggableListener = new DraggableListener(this);
+    private DraggableListener _draggableListener = new DraggableListener(this);
         
     //private CollisionListener _collisionListener = new CollisionListener(this);
     
     /**
      * Creates a new instance of this class type
      */
-    public CardView() {
-        setBackground(Color.red);
+    public CardView(int i) {
         setPreferredSize(new Dimension(71, 96));
-        
-        //CardModel model = new CardModel();
-        //addRenderableContent(model._cardEntity);
+        CardModel model = new CardModel(i == 0 ? new DiamondCardEntity(DIAMONDS.D10) : new SpadeCardEntity(SPADES.S4));
+        addRenderableContent(model);
     }
     
     @Override public void onViewInitialized() {
-        
+        addMouseListener(new MouseAdapter() {
+            
+            private Container _realParent;
+            private int _index = 0;
+            
+            @Override public void mousePressed(MouseEvent e) {
+                _realParent = CardView.this.getParent();
+                Component[] components =_realParent.getComponents();
+                for(int i = 0; i < components.length; ++i) {
+                    if(components[i].equals(CardView.this)) {
+                        _index = i;
+                        break;
+                    }
+                }
+                _realParent.remove(CardView.this);
+                Application.instance().add(CardView.this);
+            }
+            @Override public void mouseReleased(MouseEvent e) {
+                Application.instance().remove(CardView.this);
+                Application.instance().repaint();
+                _realParent.add(CardView.this, _index);
+                _index = 0;
+            }
+        });
     }
     
     @Override public void clear() {       

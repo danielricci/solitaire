@@ -26,39 +26,45 @@ package views;
 
 import java.awt.Dimension;
 
-import javax.swing.BoxLayout;
+import controllers.GameController;
+import engine.core.factories.AbstractFactory;
+import engine.core.mvc.view.PanelView;
+import game.core.factories.ControllerFactory;
+import game.core.factories.ViewFactory;
 
-import engine.communication.internal.signal.ISignalReceiver;
-import engine.communication.internal.signal.arguments.BooleanEventArgs;
-import engine.core.mvc.view.TransparentPanelView;
-
-public final class CardPlaceholderView extends TransparentPanelView {
+/**
+ * This view handles the stock. The stock is a view that contains the leftover cards after the cards have been 
+ * properly distributed on the board. Clicking on the stock view will display a card within another view.
+ *
+ * @author Daniel Ricci <thedanny09@gmail.com>
+ *
+ */
+public final class PileView extends PanelView {
 
     /**
-     * The event associated to toggling the placeholder views
+     * Hold a reference to the game controller
      */
-    public static final String EVENT_TOGGLE_PLACEHOLDERS = "EVENT_TOGGLE_PLACEHOLDERS";
-    
+    private GameController _gameController = AbstractFactory.getFactory(ControllerFactory.class).get(GameController.class);
+
     /**
      * Creates a new instance of this class type
      */
-    //https://stackoverflow.com/questions/36585780/components-not-appearing-after-jlayeredpane
-    public CardPlaceholderView() {
-        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+    public PileView(int initialCapacity) {
         setPreferredSize(new Dimension(71, 96));
+        setOpaque(false);
+        for(int i = 0; i < 2; ++i) {
+            CardView view = AbstractFactory.getFactory(ViewFactory.class).add(new CardView(i));
+            add(view);
+            view.render();
+        }
     }
-       
+
     @Override public void onViewInitialized() {
     }
-    
+
     @Override public void clear() {       
     }
 
     @Override public void registerSignalListeners() {
-        addSignalListener(CardPlaceholderView.EVENT_TOGGLE_PLACEHOLDERS, new ISignalReceiver<BooleanEventArgs>() {
-            @Override public void signalReceived(BooleanEventArgs event) {
-                CardPlaceholderView.this.setOpaque(event.getResult());
-            }
-        });
     }
 }

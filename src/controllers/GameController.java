@@ -54,7 +54,6 @@ public class GameController extends BaseController {
      */
     private final LinkedList<CardModel> _cardsQueue = new LinkedList<CardModel>();
    
-    
     /**
      * Constructs a new instance of this class type
      */
