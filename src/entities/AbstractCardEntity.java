@@ -34,11 +34,19 @@ public abstract class AbstractCardEntity extends AbstractDataEntity {
     }
     
     @Override public Image getRenderableContent() {
-    
         if(backsideCardEntity.getIsBacksideShowing()) {
             return backsideCardEntity.getRenderableContent();
         }
         return super.getRenderableContent();
+    }
+    
+    /**
+     * Sets the visibility of the cards' bacside
+     * 
+     * @param isVisible TRUE if the backside of the card is visible, FALSE otherwise
+     */
+    public final void setBacksideVisible(boolean isVisible) {
+        backsideCardEntity.setIsBacksideShowing(isVisible);
     }
     
     /**

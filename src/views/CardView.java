@@ -31,16 +31,17 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import application.Application;
+import controllers.GameController;
+import engine.core.factories.AbstractFactory;
 import engine.core.mvc.view.PanelView;
 import engine.core.mvc.view.layout.DraggableListener;
-import entities.DiamondCardEntity;
 import entities.SpadeCardEntity;
-import generated.DataLookup.DIAMONDS;
+import game.core.factories.ControllerFactory;
 import generated.DataLookup.SPADES;
 import models.CardModel;
 
 /**
- * The main window view is the outer most shell that wraps everything
+ * A single card view represents a draggable and collision enabled entity within the game
  * 
  * @author {@literal Daniel Ricci <thedanny09@gmail.com>}
  *
@@ -52,19 +53,19 @@ public class CardView extends PanelView {
      */
     private DraggableListener _draggableListener = new DraggableListener(this);
         
-    //private CollisionListener _collisionListener = new CollisionListener(this);
-    
     /**
      * Creates a new instance of this class type
+     * 
+     * @param isBackside If the backside of the card should be enabled by default
      */
-    public CardView(int i) {
+    public CardView(boolean isBackside) {
         setPreferredSize(new Dimension(71, 96));
-        CardModel model = new CardModel(i == 0 ? new DiamondCardEntity(DIAMONDS.D10) : new SpadeCardEntity(SPADES.S4));
+
+        // TODO - remove this
+        SpadeCardEntity entity = new SpadeCardEntity(SPADES.S4);
+        entity.setBacksideVisible(isBackside);
+        CardModel model = new CardModel(entity);
         addRenderableContent(model);
-    }
-    
-    public CardView() {
-        this(10);
     }
     
     @Override public void onViewInitialized() {

@@ -24,6 +24,7 @@
 
 package views;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 
@@ -31,6 +32,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JLayeredPane;
 
 import controllers.GameController;
+import engine.api.IView;
 import engine.core.factories.AbstractFactory;
 import engine.core.mvc.view.TransparentPanelView;
 import game.core.factories.ControllerFactory;
@@ -48,23 +50,26 @@ public final class PileView extends TransparentPanelView {
     private final JLayeredPane _layeredPane = new JLayeredPane();
 
     /**
-     * Hold a reference to the game controller
-     */
-    private GameController _gameController = AbstractFactory.getFactory(ControllerFactory.class).get(GameController.class);
-
-    /**
      * Creates a new instance of this class type
      */
     public PileView(int initialCapacity) {
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         setPreferredSize(new Dimension(71, 96));
         add(_layeredPane);
+        
         for(int i = 0; i < initialCapacity; ++i) {
-            CardView view = AbstractFactory.getFactory(ViewFactory.class).add(new CardView());
-            Rectangle rect = new Rectangle(0, 12 * i, view.getPreferredSize().width, view.getPreferredSize().height);
-            view.setBounds(rect);
+            
+            // Create the card view
+            CardView view = AbstractFactory.getFactory(ViewFactory.class).add(new CardView(i + 1 < initialCapacity));
+
+            
+            // Add the view to the layered pane
             _layeredPane.add(view, new Integer(i));
-            view.render();
+            
+            // Set the bounds of the view within the layered pane
+            view.setBounds(
+                new Rectangle(0, 12 * i, view.getPreferredSize().width, view.getPreferredSize().height)
+            );
         } 
     }
 
@@ -75,5 +80,14 @@ public final class PileView extends TransparentPanelView {
     }
 
     @Override public void registerSignalListeners() {
+    }
+    
+    @Override public void render() {
+        super.render();
+        for(Component component : _layeredPane.getComponents()) {
+            if(component instanceof IView) {
+                ((IView)component).render();
+            }
+        }
     }
 }

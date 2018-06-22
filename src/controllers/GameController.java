@@ -50,10 +50,10 @@ public class GameController extends BaseController {
     private final ArrayList<CardModel> _cardsList = new ArrayList<CardModel>();
     
     /**
-     * The sub-set list of cards that are currently being playable within the game
+     * The sub-set list of cards that are currently being played within the game
      */
     private final LinkedList<CardModel> _cardsQueue = new LinkedList<CardModel>();
-   
+    
     /**
      * Constructs a new instance of this class type
      */
@@ -88,6 +88,7 @@ public class GameController extends BaseController {
         _cardsQueue.addAll(_cardsList.subList(_cardsList.size() - 16, _cardsList.size()));
     }
 
+    // TODO - put this within a controller associated to the particular view
     public boolean nextCard() {
         
         if(_cardsQueue.isEmpty()) {
