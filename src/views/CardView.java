@@ -63,6 +63,10 @@ public class CardView extends PanelView {
         addRenderableContent(model);
     }
     
+    public CardView() {
+        this(10);
+    }
+    
     @Override public void onViewInitialized() {
         addMouseListener(new MouseAdapter() {
             

@@ -131,16 +131,9 @@ public final class GameView extends PanelView {
         }
         else
         {
-            switch(_constraints.gridx) {
-            case 0:
-            case 1:
-            case 2:{
-                PileView pileView = AbstractFactory.getFactory(ViewFactory.class).add(new PileView(1));
-                placeHolder.add(pileView);
-                pileView.render();
-                break;
-            }
-            }
+            PileView view = AbstractFactory.getFactory(ViewFactory.class).add(new PileView(_constraints.gridx + 1));
+            placeHolder.add(view);
+            view.render();
         }
     }
 
@@ -152,14 +145,12 @@ public final class GameView extends PanelView {
             // If the rendering pass is on row 2 (0th based) then make sure the constraints are properly reflected
             if(_constraints.gridy ==  1) {
                 _constraints.weighty = 1;
-                _constraints.insets = new Insets(40, 0, 20, 0);
+                _constraints.insets = new Insets(20, 0, 20, 0);
                 _constraints.fill = GridBagConstraints.VERTICAL;
             }
             
             for(int col = 0; col < _columnSize; ++col) {
                 _constraints.gridx = col;
-
-                // Perform a render based on the updated constaints
                 handleRendering();
             }
         }

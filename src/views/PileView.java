@@ -25,10 +25,14 @@
 package views;
 
 import java.awt.Dimension;
+import java.awt.Rectangle;
+
+import javax.swing.BoxLayout;
+import javax.swing.JLayeredPane;
 
 import controllers.GameController;
 import engine.core.factories.AbstractFactory;
-import engine.core.mvc.view.PanelView;
+import engine.core.mvc.view.TransparentPanelView;
 import game.core.factories.ControllerFactory;
 import game.core.factories.ViewFactory;
 
@@ -39,7 +43,9 @@ import game.core.factories.ViewFactory;
  * @author Daniel Ricci <thedanny09@gmail.com>
  *
  */
-public final class PileView extends PanelView {
+public final class PileView extends TransparentPanelView {
+
+    private final JLayeredPane _layeredPane = new JLayeredPane();
 
     /**
      * Hold a reference to the game controller
@@ -50,13 +56,16 @@ public final class PileView extends PanelView {
      * Creates a new instance of this class type
      */
     public PileView(int initialCapacity) {
+        setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         setPreferredSize(new Dimension(71, 96));
-        setOpaque(false);
-        for(int i = 0; i < 2; ++i) {
-            CardView view = AbstractFactory.getFactory(ViewFactory.class).add(new CardView(i));
-            add(view);
+        add(_layeredPane);
+        for(int i = 0; i < initialCapacity; ++i) {
+            CardView view = AbstractFactory.getFactory(ViewFactory.class).add(new CardView());
+            Rectangle rect = new Rectangle(0, 12 * i, view.getPreferredSize().width, view.getPreferredSize().height);
+            view.setBounds(rect);
+            _layeredPane.add(view, new Integer(i));
             view.render();
-        }
+        } 
     }
 
     @Override public void onViewInitialized() {

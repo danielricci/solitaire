@@ -27,6 +27,7 @@ package views;
 import java.awt.Dimension;
 
 import javax.swing.BoxLayout;
+import javax.swing.JLayeredPane;
 
 import engine.communication.internal.signal.ISignalReceiver;
 import engine.communication.internal.signal.arguments.BooleanEventArgs;
@@ -34,6 +35,8 @@ import engine.core.mvc.view.TransparentPanelView;
 
 public final class CardPlaceholderView extends TransparentPanelView {
 
+    public JLayeredPane pane = new JLayeredPane();
+    
     /**
      * The event associated to toggling the placeholder views
      */
@@ -42,10 +45,10 @@ public final class CardPlaceholderView extends TransparentPanelView {
     /**
      * Creates a new instance of this class type
      */
-    //https://stackoverflow.com/questions/36585780/components-not-appearing-after-jlayeredpane
     public CardPlaceholderView() {
-        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         setPreferredSize(new Dimension(71, 96));
+        add(pane);
     }
        
     @Override public void onViewInitialized() {
