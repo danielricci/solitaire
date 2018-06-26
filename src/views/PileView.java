@@ -31,11 +31,9 @@ import java.awt.Rectangle;
 import javax.swing.BoxLayout;
 import javax.swing.JLayeredPane;
 
-import controllers.GameController;
 import engine.api.IView;
 import engine.core.factories.AbstractFactory;
 import engine.core.mvc.view.TransparentPanelView;
-import game.core.factories.ControllerFactory;
 import game.core.factories.ViewFactory;
 
 /**
@@ -47,6 +45,9 @@ import game.core.factories.ViewFactory;
  */
 public final class PileView extends TransparentPanelView {
 
+    /**
+     * The layered panel within this view that holds the card views
+     */
     private final JLayeredPane _layeredPane = new JLayeredPane();
 
     /**
@@ -62,14 +63,12 @@ public final class PileView extends TransparentPanelView {
             // Create the card view
             CardView view = AbstractFactory.getFactory(ViewFactory.class).add(new CardView(i + 1 < initialCapacity));
 
-            
             // Add the view to the layered pane
-            _layeredPane.add(view, new Integer(i));
+            _layeredPane.add(view, i);
+            _layeredPane.setLayer(view, i);
             
             // Set the bounds of the view within the layered pane
-            view.setBounds(
-                new Rectangle(0, 12 * i, view.getPreferredSize().width, view.getPreferredSize().height)
-            );
+            view.setBounds(new Rectangle(0, 12 * i, view.getPreferredSize().width, view.getPreferredSize().height));
         } 
     }
 

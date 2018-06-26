@@ -27,16 +27,14 @@ package views;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import application.Application;
-import controllers.GameController;
-import engine.core.factories.AbstractFactory;
 import engine.core.mvc.view.PanelView;
 import engine.core.mvc.view.layout.DraggableListener;
 import entities.SpadeCardEntity;
-import game.core.factories.ControllerFactory;
 import generated.DataLookup.SPADES;
 import models.CardModel;
 
@@ -49,16 +47,15 @@ import models.CardModel;
 public class CardView extends PanelView {
 
     /**
-     * Draggable listener that listens in on this class for draggable events and handles them accordingly
-     */
-    private DraggableListener _draggableListener = new DraggableListener(this);
-        
-    /**
      * Creates a new instance of this class type
      * 
      * @param isBackside If the backside of the card should be enabled by default
      */
     public CardView(boolean isBackside) {
+
+        // Add draggable functionality to this view
+        new DraggableListener(this);
+        
         setPreferredSize(new Dimension(71, 96));
 
         // TODO - remove this
@@ -77,19 +74,30 @@ public class CardView extends PanelView {
             @Override public void mousePressed(MouseEvent e) {
                 _realParent = CardView.this.getParent();
                 Component[] components =_realParent.getComponents();
-                for(int i = 0; i < components.length; ++i) {
+                for(int i = components.length - 1; i >= 0; --i, ++_index) {
                     if(components[i].equals(CardView.this)) {
-                        _index = i;
                         break;
                     }
                 }
-                _realParent.remove(CardView.this);
+                
                 Application.instance().add(CardView.this);
+                _realParent.remove(CardView.this);
+                
+                Application.instance().repaint();
+                _realParent.repaint();
             }
             @Override public void mouseReleased(MouseEvent e) {
+                
+                // Remove the application held card
                 Application.instance().remove(CardView.this);
                 Application.instance().repaint();
+                
+                // Put the card back into the position where it originally was
                 _realParent.add(CardView.this, _index);
+                
+                CardView.this.setBounds(new Rectangle(0, 12 * _index, CardView.this.getPreferredSize().width, CardView.this.getPreferredSize().height));
+                
+                // Reset the index back to it's default position
                 _index = 0;
             }
         });
