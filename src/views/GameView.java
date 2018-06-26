@@ -78,6 +78,8 @@ public final class GameView extends PanelView {
 
     @Override public void onViewInitialized() {
 
+        ViewFactory viewFactory = AbstractFactory.getFactory(ViewFactory.class);
+        
         for(int row = 0; row < _rowSize; ++row) {
             _constraints.gridy = row;
 
@@ -88,8 +90,6 @@ public final class GameView extends PanelView {
                 _constraints.fill = GridBagConstraints.VERTICAL;
             }
 
-            ViewFactory viewFactory = AbstractFactory.getFactory(ViewFactory.class);
-            
             for(int col = 0; col < _columnSize; ++col) {
                 _constraints.gridx = col;
                 
