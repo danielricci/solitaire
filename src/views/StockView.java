@@ -49,11 +49,6 @@ public final class StockView extends PanelView {
     private final BacksideCardEntity _backside = new BacksideCardEntity();
     
     /**
-     * Hold a reference to the game controller
-     */
-    private GameController _gameController = AbstractFactory.getFactory(ControllerFactory.class).get(GameController.class);
-
-    /**
      * Creates a new instance of this class type
      */
     public StockView() {
@@ -61,6 +56,7 @@ public final class StockView extends PanelView {
     }
 
     @Override public void onViewInitialized() {
+        GameController _gameController = AbstractFactory.getFactory(ControllerFactory.class).get(GameController.class);
         this.addMouseListener(new MouseAdapter() {
             @Override public void mouseReleased(MouseEvent event) {
                 _gameController.nextCard();

@@ -36,8 +36,6 @@ import engine.core.system.EngineProperties.Property;
 import engine.utils.globalisation.Localization;
 import game.core.factories.ViewFactory;
 import menu.AboutMenuItem;
-import menu.DebugNewGameMenuItem;
-import menu.DebugTogglePlaceholderView;
 import menu.DeckMenuItem;
 import menu.ExitMenuItem;
 import menu.NewGameMenuItem;
@@ -87,16 +85,7 @@ public class Application extends AbstractApplication {
         .addMenuItem(OptionsMenuItem.class)
         .addSeparator()
         .addMenuItem(ExitMenuItem.class);
-        
-        // Debug Menu
-        if(isDebug()) {
-            MenuBuilder.start(getJMenuBar())
-            .addMenu(Localization.instance().getLocalizedString("Debug"))
-            .addMenuItem(DebugNewGameMenuItem.class)
-            .addSeparator()
-            .addMenuItem(DebugTogglePlaceholderView.class);
-        }
-        
+                
         // Help Menu
         MenuBuilder.start(getJMenuBar())
         .addMenu(Localization.instance().getLocalizedString("Help"))

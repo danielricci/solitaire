@@ -59,6 +59,11 @@ public final class GameView extends PanelView {
     private final GridBagConstraints _constraints = new GridBagConstraints();
 
     /**
+     * The game controller
+     */
+    private final GameController _gameController = AbstractFactory.getFactory(ControllerFactory.class).add(new GameController(), true);
+    
+    /**
      * Creates a new instance of this class type
      */
     public GameView() {
@@ -71,9 +76,6 @@ public final class GameView extends PanelView {
         _constraints.weighty = 0;
         _constraints.anchor = GridBagConstraints.NORTH;
         _constraints.insets = new Insets(10, 0, 0, 0);
-
-        // Create a globally accessible game controller
-        AbstractFactory.getFactory(ControllerFactory.class).add(new GameController(), true);
     }
 
     @Override public void onViewInitialized() {
@@ -112,23 +114,18 @@ public final class GameView extends PanelView {
                     }
                 }
                 else {
-                    
-                    CardPlaceholderView cardPlaceholderView = viewFactory.add(new CardPlaceholderView());
-                    this.add(cardPlaceholderView, _constraints);
-
                     PileView view = viewFactory.add(new PileView(_constraints.gridx + 1));
-                    cardPlaceholderView.add(view);
-
-                    cardPlaceholderView.render();
+                    this.add(view, _constraints);
                     view.render();
                 }
             }
         }
+        
+        _gameController.registerCards(viewFactory.get(TalonView.class));
     }
 
     @Override public void registerSignalListeners() {
     }
-
     @Override public void clear() {
     }
 }

@@ -30,6 +30,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 import engine.api.IModel;
 import engine.communication.internal.signal.ISignalListener;
@@ -46,6 +47,11 @@ import models.CardModel;
 
 public class GameController extends BaseController {
 
+    /**
+     * Flag indicating if the game is running
+     */
+    private boolean _gameRunning;
+    
     /**
      * The entire list of cards that are within the game.
      */
@@ -93,9 +99,13 @@ public class GameController extends BaseController {
             cardModel.get().addListeners(listener);
         }
     }
-
-    //_cardsQueue.addAll(_cardsList.subList(_cardsList.size() - 16, _cardsList.size()));
     
+    public void registerCards(ISignalListener listener) {
+        for(CardModel cardModel : _cardsList.stream().filter(z -> z.getListener(listener.getClass()) == null).collect(Collectors.toList())) {
+            cardModel.addListeners(listener);
+        }
+    }
+
     public boolean nextCard() {
         
         if(_cardsQueue.isEmpty()) {
