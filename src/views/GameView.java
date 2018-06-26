@@ -76,42 +76,6 @@ public final class GameView extends PanelView {
         AbstractFactory.getFactory(ControllerFactory.class).add(new GameController(), true);
     }
 
-    /**
-     * Handles rendering of the different partial views within this view
-     */
-    private void handleRendering() {
-        
-        if(_constraints.gridy == 0) {
-            switch(_constraints.gridx) {
-            case 0: {
-                
-                StockView stockView = AbstractFactory.getFactory(ViewFactory.class).add(new StockView(), true);
-                this.add(stockView, _constraints);
-                stockView.render();
-                break;
-            }
-            case 1: {
-                
-                TalonView talonView = AbstractFactory.getFactory(ViewFactory.class).add(new TalonView(), true);
-                this.add(talonView, _constraints);
-                talonView.render();
-                break;
-            }
-            }
-        }
-        else {
-            
-            CardPlaceholderView cardPlaceholderView = AbstractFactory.getFactory(ViewFactory.class).add(new CardPlaceholderView());
-            this.add(cardPlaceholderView, _constraints);
-
-            PileView view = AbstractFactory.getFactory(ViewFactory.class).add(new PileView(_constraints.gridx + 1));
-            cardPlaceholderView.add(view);
-
-            cardPlaceholderView.render();
-            view.render();
-        }
-    }
-
     @Override public void onViewInitialized() {
 
         for(int row = 0; row < _rowSize; ++row) {
@@ -124,9 +88,40 @@ public final class GameView extends PanelView {
                 _constraints.fill = GridBagConstraints.VERTICAL;
             }
 
+            ViewFactory viewFactory = AbstractFactory.getFactory(ViewFactory.class);
+            
             for(int col = 0; col < _columnSize; ++col) {
                 _constraints.gridx = col;
-                handleRendering();
+                
+                if(_constraints.gridy == 0) {
+                    switch(_constraints.gridx) {
+                    case 0: {
+                        
+                        StockView stockView = viewFactory.add(new StockView(), true);
+                        this.add(stockView, _constraints);
+                        stockView.render();
+                        break;
+                    }
+                    case 1: {
+                        
+                        TalonView talonView = viewFactory.add(new TalonView(), true);
+                        this.add(talonView, _constraints);
+                        talonView.render();
+                        break;
+                    }
+                    }
+                }
+                else {
+                    
+                    CardPlaceholderView cardPlaceholderView = viewFactory.add(new CardPlaceholderView());
+                    this.add(cardPlaceholderView, _constraints);
+
+                    PileView view = viewFactory.add(new PileView(_constraints.gridx + 1));
+                    cardPlaceholderView.add(view);
+
+                    cardPlaceholderView.render();
+                    view.render();
+                }
             }
         }
     }
