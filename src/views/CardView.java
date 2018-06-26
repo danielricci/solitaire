@@ -32,10 +32,13 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import application.Application;
+import controllers.GameController;
+import engine.communication.internal.signal.arguments.AbstractEventArgs;
+import engine.communication.internal.signal.arguments.ModelEventArgs;
+import engine.core.factories.AbstractFactory;
 import engine.core.mvc.view.PanelView;
 import engine.core.mvc.view.layout.DraggableListener;
-import entities.SpadeCardEntity;
-import generated.DataLookup.SPADES;
+import game.core.factories.ControllerFactory;
 import models.CardModel;
 
 /**
@@ -48,21 +51,16 @@ public class CardView extends PanelView {
 
     /**
      * Creates a new instance of this class type
-     * 
-     * @param isBackside If the backside of the card should be enabled by default
      */
-    public CardView(boolean isBackside) {
+    public CardView() {
 
         // Add draggable functionality to this view
         new DraggableListener(this);
         
         setPreferredSize(new Dimension(71, 96));
 
-        // TODO - remove this
-        SpadeCardEntity entity = new SpadeCardEntity(SPADES.S4);
-        entity.setBacksideVisible(isBackside);
-        CardModel model = new CardModel(entity);
-        addRenderableContent(model);
+        // Register to an available card
+        AbstractFactory.getFactory(ControllerFactory.class).get(GameController.class).registerCard(this);
     }
     
     @Override public void onViewInitialized() {
@@ -103,9 +101,24 @@ public class CardView extends PanelView {
         });
     }
     
-    @Override public void clear() {       
+    @Override public void clear() {
+        
     }
 
     @Override public void registerSignalListeners() {
+    }
+
+    @Override public void update(AbstractEventArgs event) {
+        
+        super.update(event);
+        
+        if(event instanceof ModelEventArgs) {
+            ModelEventArgs args = (ModelEventArgs) event;
+            if(args.getSource() instanceof CardModel) {
+                addRenderableContent((CardModel)args.getSource()); 
+            }
+        }
+        
+        repaint();
     }
 }

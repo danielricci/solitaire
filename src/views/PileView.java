@@ -61,7 +61,7 @@ public final class PileView extends TransparentPanelView {
         for(int i = 0; i < initialCapacity; ++i) {
             
             // Create the card view
-            CardView view = AbstractFactory.getFactory(ViewFactory.class).add(new CardView(i + 1 < initialCapacity));
+            CardView view = AbstractFactory.getFactory(ViewFactory.class).add(new CardView(/*i + 1 < initialCapacity*/));
 
             // Add the view to the layered pane
             _layeredPane.add(view, i);

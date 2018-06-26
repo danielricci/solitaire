@@ -28,9 +28,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Level;
 
 import engine.api.IModel;
+import engine.communication.internal.signal.ISignalListener;
 import engine.core.factories.AbstractFactory;
 import engine.core.mvc.controller.BaseController;
 import engine.utils.logging.Tracelog;
@@ -83,12 +85,17 @@ public class GameController extends BaseController {
         
         // Introduce some randomness into the ordering of the cards
         Collections.shuffle(_cardsList);
-        
-        // Populate the playable cards 
-        _cardsQueue.addAll(_cardsList.subList(_cardsList.size() - 16, _cardsList.size()));
     }
 
-    // TODO - put this within a controller associated to the particular view
+    public void registerCard(ISignalListener listener) {
+        Optional<CardModel> cardModel = _cardsList.stream().filter(z -> z.getListener(listener.getClass()) == null).findFirst();
+        if(cardModel.isPresent()) {
+            cardModel.get().addListeners(listener);
+        }
+    }
+
+    //_cardsQueue.addAll(_cardsList.subList(_cardsList.size() - 16, _cardsList.size()));
+    
     public boolean nextCard() {
         
         if(_cardsQueue.isEmpty()) {

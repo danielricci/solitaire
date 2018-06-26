@@ -57,7 +57,7 @@ public final class GameView extends PanelView {
      * The constaints associated to this view
      */
     private final GridBagConstraints _constraints = new GridBagConstraints();
-    
+
     /**
      * Creates a new instance of this class type
      */
@@ -77,66 +77,37 @@ public final class GameView extends PanelView {
     }
 
     /**
-     * Renders an instance of the card placeholder view
-     */
-    private CardPlaceholderView renderCardPlaceholderView() {
-        CardPlaceholderView cardPlaceholderView = AbstractFactory.getFactory(ViewFactory.class).add(new CardPlaceholderView());
-        this.add(cardPlaceholderView, _constraints);
-        cardPlaceholderView.render();
-        return cardPlaceholderView;
-    }
-
-
-    /**
-     * Renders a singular instance of the stock view
-     * 
-     * @return Instance of the talon view
-     */
-    private StockView renderStockView() {
-        StockView stockView = AbstractFactory.getFactory(ViewFactory.class).add(new StockView(), true);
-        this.add(stockView, _constraints);
-        stockView.render();
-        return stockView;
-    }
-    
-    /**
-     * Renders a singular instance of the talon view
-     * 
-     * @return Instance of the talon view
-     */
-    private TalonView renderTalonView() {
-        TalonView talonView = AbstractFactory.getFactory(ViewFactory.class).add(new TalonView(), true);
-        this.add(talonView);
-        talonView.render();
-        return talonView;
-    }
-    
-    /**
      * Handles rendering of the different partial views within this view
      */
     private void handleRendering() {
-        if(_constraints.gridy == 0)
-        {
-            switch(_constraints.gridx)
-            {
-            case 0:
-            {
-                renderStockView();
+        
+        if(_constraints.gridy == 0) {
+            switch(_constraints.gridx) {
+            case 0: {
+                
+                StockView stockView = AbstractFactory.getFactory(ViewFactory.class).add(new StockView(), true);
+                this.add(stockView, _constraints);
+                stockView.render();
                 break;
             }
-            case 1:
-            {
-                renderTalonView();
+            case 1: {
+                
+                TalonView talonView = AbstractFactory.getFactory(ViewFactory.class).add(new TalonView(), true);
+                this.add(talonView, _constraints);
+                talonView.render();
                 break;
             }
             }
         }
-        else
-        {
-            CardPlaceholderView placeHolder = renderCardPlaceholderView();
+        else {
             
+            CardPlaceholderView cardPlaceholderView = AbstractFactory.getFactory(ViewFactory.class).add(new CardPlaceholderView());
+            this.add(cardPlaceholderView, _constraints);
+
             PileView view = AbstractFactory.getFactory(ViewFactory.class).add(new PileView(_constraints.gridx + 1));
-            placeHolder.add(view);
+            cardPlaceholderView.add(view);
+
+            cardPlaceholderView.render();
             view.render();
         }
     }
@@ -152,14 +123,14 @@ public final class GameView extends PanelView {
                 _constraints.insets = new Insets(20, 0, 20, 0);
                 _constraints.fill = GridBagConstraints.VERTICAL;
             }
-            
+
             for(int col = 0; col < _columnSize; ++col) {
                 _constraints.gridx = col;
                 handleRendering();
             }
         }
     }
-    
+
     @Override public void registerSignalListeners() {
     }
 

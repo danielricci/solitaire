@@ -34,26 +34,14 @@ import engine.core.mvc.view.PanelView;
 import game.core.factories.ControllerFactory;
 import models.CardModel;
 
-/**
- * This view handles the stock. The stock is a view that contains the leftover cards after the cards have been 
- * properly distributed on the board. Clicking on the stock view will display a card within another view.
- *
- * @author Daniel Ricci <thedanny09@gmail.com>
- *
- */
 public final class TalonView extends PanelView {
-
-    /**
-     * Hold a reference to the game controller
-     */
-    private GameController _gameController = AbstractFactory.getFactory(ControllerFactory.class).get(GameController.class);
 
     /**
      * Creates a new instance of this class type
      */
     public TalonView() {
         setPreferredSize(new Dimension(71, 96));
-        _gameController.addSignalListener(this);
+        AbstractFactory.getFactory(ControllerFactory.class).get(GameController.class).addSignalListener(this);
     }
 
     @Override public void onViewInitialized() {
@@ -66,13 +54,11 @@ public final class TalonView extends PanelView {
     }
 
     @Override public void update(AbstractEventArgs event) {
-        
         super.update(event);
-        
         if(event instanceof ModelEventArgs && event.getSource() instanceof CardModel) {
             CardModel cardModel = (CardModel)event.getSource();
             addRenderableContent(cardModel);
-            repaint();
         }
+        repaint();
     }
 }
