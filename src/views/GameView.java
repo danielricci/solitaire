@@ -119,7 +119,4 @@ public final class GameView extends PanelView {
             }
         }
     }
-
-    @Override public void registerSignalListeners() {
-    }
 }

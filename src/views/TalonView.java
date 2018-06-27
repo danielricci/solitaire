@@ -44,12 +44,6 @@ public final class TalonView extends PanelView {
         AbstractFactory.getFactory(ControllerFactory.class).get(GameController.class).addSignalListener(this);
     }
 
-    @Override public void onViewInitialized() {
-    }
-
-    @Override public void registerSignalListeners() {
-    }
-
     @Override public void update(AbstractEventArgs event) {
         if(event.getOperationName() == CardModel.EVENT_NEXT_CARD && event instanceof ModelEventArgs && event.getSource() instanceof CardModel) {
             super.update(event);

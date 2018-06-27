@@ -101,9 +101,6 @@ public class CardView extends PanelView {
         });
     }
  
-    @Override public void registerSignalListeners() {
-    }
-
     @Override public void update(AbstractEventArgs event) {
         
         super.update(event);

@@ -57,9 +57,6 @@ public final class StockView extends PanelView {
         });
     }
 
-    @Override public void registerSignalListeners() {
-    }
-    
     @Override public void render() {
         super.render();
         addRenderableContent(_backside);

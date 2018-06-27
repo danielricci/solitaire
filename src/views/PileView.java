@@ -72,12 +72,6 @@ public final class PileView extends PanelView {
         } 
     }
 
-    @Override public void onViewInitialized() {
-    }
-
-    @Override public void registerSignalListeners() {
-    }
-    
     @Override public void render() {
         super.render();
         for(Component component : _layeredPane.getComponents()) {
