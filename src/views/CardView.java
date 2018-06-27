@@ -33,12 +33,12 @@ import java.awt.event.MouseEvent;
 
 import application.Application;
 import controllers.GameController;
-import engine.communication.internal.signal.arguments.AbstractEventArgs;
-import engine.communication.internal.signal.arguments.ModelEventArgs;
-import engine.core.factories.AbstractFactory;
-import engine.core.mvc.view.PanelView;
-import engine.core.mvc.view.layout.DraggableListener;
-import game.core.factories.ControllerFactory;
+import framework.communication.internal.signal.arguments.AbstractEventArgs;
+import framework.communication.internal.signal.arguments.ModelEventArgs;
+import framework.core.factories.AbstractFactory;
+import framework.core.factories.ControllerFactory;
+import framework.core.mvc.view.PanelView;
+import framework.core.mvc.view.layout.DraggableListener;
 import models.CardModel;
 
 /**

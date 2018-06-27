@@ -1,6 +1,6 @@
 package entities;
 
-import game.gameplay.AbstractDataEntity;
+import framework.core.entity.AbstractDataEntity;
 import generated.DataLookup;
 
 public final class BacksideCardEntity extends AbstractDataEntity {

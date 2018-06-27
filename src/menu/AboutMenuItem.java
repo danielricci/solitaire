@@ -31,8 +31,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 
-import engine.core.navigation.AbstractMenuItem;
-import engine.utils.globalisation.Localization;
+import framework.core.navigation.AbstractMenuItem;
+import framework.utils.globalisation.Localization;
 
 /**
  * The about menu item that displays information about the application

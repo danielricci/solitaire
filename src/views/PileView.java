@@ -31,10 +31,10 @@ import java.awt.Rectangle;
 import javax.swing.BoxLayout;
 import javax.swing.JLayeredPane;
 
-import engine.api.IView;
-import engine.core.factories.AbstractFactory;
-import engine.core.mvc.view.PanelView;
-import game.core.factories.ViewFactory;
+import framework.api.IView;
+import framework.core.factories.AbstractFactory;
+import framework.core.factories.ViewFactory;
+import framework.core.mvc.view.PanelView;
 
 /**
  * This view handles the stock. The stock is a view that contains the leftover cards after the cards have been 

@@ -30,10 +30,10 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 
 import controllers.GameController;
-import engine.core.factories.AbstractFactory;
-import engine.core.mvc.view.PanelView;
-import game.core.factories.ControllerFactory;
-import game.core.factories.ViewFactory;
+import framework.core.factories.AbstractFactory;
+import framework.core.factories.ControllerFactory;
+import framework.core.factories.ViewFactory;
+import framework.core.mvc.view.PanelView;
 
 /**
  * The game view wraps a draggable layout around the entire game

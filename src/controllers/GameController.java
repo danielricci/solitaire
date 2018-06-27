@@ -30,16 +30,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 
-import engine.api.IModel;
-import engine.communication.internal.signal.ISignalListener;
-import engine.core.factories.AbstractFactory;
-import engine.core.mvc.controller.BaseController;
-import engine.utils.logging.Tracelog;
 import entities.ClubCardEntity;
 import entities.DiamondCardEntity;
 import entities.HeartCardEntity;
 import entities.SpadeCardEntity;
-import game.core.factories.ModelFactory;
+import framework.api.IModel;
+import framework.communication.internal.signal.ISignalListener;
+import framework.core.factories.AbstractFactory;
+import framework.core.factories.ModelFactory;
+import framework.core.mvc.controller.BaseController;
+import framework.utils.logging.Tracelog;
 import generated.DataLookup;
 import models.CardModel;
 

@@ -2,7 +2,7 @@ package entities;
 
 import java.awt.Image;
 
-import game.gameplay.AbstractDataEntity;
+import framework.core.entity.AbstractDataEntity;
 import generated.DataLookup;
 
 public abstract class AbstractCardEntity extends AbstractDataEntity {

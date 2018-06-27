@@ -26,8 +26,8 @@ package models;
 
 import java.awt.Image;
 
-import engine.core.mvc.model.BaseModel;
 import entities.AbstractCardEntity;
+import framework.core.mvc.model.BaseModel;
 
 public class CardModel extends BaseModel {
     
