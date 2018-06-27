@@ -22,7 +22,7 @@
  * IN THE SOFTWARE.
  */
 
-package views;
+package game.views;
 
 import java.awt.Component;
 import java.awt.Container;
@@ -31,15 +31,15 @@ import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-import application.Application;
-import controllers.GameController;
 import framework.communication.internal.signal.arguments.AbstractEventArgs;
 import framework.communication.internal.signal.arguments.ModelEventArgs;
 import framework.core.factories.AbstractFactory;
 import framework.core.factories.ControllerFactory;
 import framework.core.mvc.view.PanelView;
 import framework.core.mvc.view.layout.DraggableListener;
-import models.CardModel;
+import game.application.Application;
+import game.controllers.GameController;
+import game.models.CardModel;
 
 /**
  * A single card view represents a draggable and collision enabled entity within the game

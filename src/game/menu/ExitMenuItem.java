@@ -22,43 +22,36 @@
  * IN THE SOFTWARE.
  */
 
-package menu;
+package game.menu;
 
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 
 import framework.core.navigation.AbstractMenuItem;
 import framework.utils.globalisation.Localization;
 
 /**
- * The about menu item that displays information about the application
+ * Menu item for exiting the game
  * 
  * @author Daniel Ricci {@literal <thedanny09@gmail.com>}
  *
  */
-public class AboutMenuItem extends AbstractMenuItem {
+public class ExitMenuItem extends AbstractMenuItem {
 
     /**
      * Constructs a new instance of this class type
      *
      * @param parent The parent associated to this menu item
      */
-    public AboutMenuItem(JComponent parent) {
-        super(new JMenuItem(Localization.instance().getLocalizedString("About Solitaire")), parent);
-        super.getComponent(JMenuItem.class).setAccelerator(KeyStroke.getKeyStroke("F1"));
-
+    public ExitMenuItem(JComponent parent) {
+        super(new JMenuItem(Localization.instance().getLocalizedString("Exit")), parent);
+        super.getComponent(JMenuItem.class).setAccelerator(KeyStroke.getKeyStroke('X', Toolkit.getDefaultToolkit ().getMenuShortcutKeyMask()));
     }
 
     @Override public void onExecute(ActionEvent actionEvent) {
-        JOptionPane.showMessageDialog(
-            null,
-            Localization.instance().getLocalizedString("Github"),
-            Localization.instance().getLocalizedString("...text goes here..."),
-            JOptionPane.INFORMATION_MESSAGE
-        );
     }
 }

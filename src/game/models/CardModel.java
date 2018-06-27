@@ -22,12 +22,12 @@
 * IN THE SOFTWARE.
 */
 
-package models;
+package game.models;
 
 import java.awt.Image;
 
-import entities.AbstractCardEntity;
 import framework.core.mvc.model.BaseModel;
+import game.entities.AbstractCardEntity;
 
 public class CardModel extends BaseModel {
     

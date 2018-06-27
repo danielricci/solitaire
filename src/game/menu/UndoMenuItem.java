@@ -22,7 +22,7 @@
  * IN THE SOFTWARE.
  */
 
-package menu;
+package game.menu;
 
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;

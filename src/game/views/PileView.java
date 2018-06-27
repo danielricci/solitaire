@@ -22,7 +22,7 @@
  * IN THE SOFTWARE.
  */
 
-package views;
+package game.views;
 
 import java.awt.Component;
 import java.awt.Dimension;

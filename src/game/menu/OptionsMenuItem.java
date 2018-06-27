@@ -22,36 +22,36 @@
  * IN THE SOFTWARE.
  */
 
-package views;
+package game.menu;
 
-import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
 
-import controllers.GameController;
-import framework.communication.internal.signal.arguments.AbstractEventArgs;
-import framework.communication.internal.signal.arguments.ModelEventArgs;
-import framework.core.factories.AbstractFactory;
-import framework.core.factories.ControllerFactory;
-import framework.core.mvc.view.PanelView;
-import models.CardModel;
+import javax.swing.JComponent;
+import javax.swing.JMenuItem;
+import javax.swing.KeyStroke;
 
-public final class TalonView extends PanelView {
+import framework.core.navigation.AbstractMenuItem;
+import framework.utils.globalisation.Localization;
+
+/**
+ * Menu item for starting a new game
+ * 
+ * @author Daniel Ricci {@literal <thedanny09@gmail.com>}
+ *
+ */
+public class OptionsMenuItem extends AbstractMenuItem {
 
     /**
-     * Creates a new instance of this class type
+     * Constructs a new instance of this class type
+     *
+     * @param parent The parent associated to this menu item
      */
-    public TalonView() {
-        setPreferredSize(new Dimension(71, 96));
-        AbstractFactory.getFactory(ControllerFactory.class).get(GameController.class).addSignalListener(this);
+    public OptionsMenuItem(JComponent parent) {
+        super(new JMenuItem(Localization.instance().getLocalizedString("Options...")), parent);
+        super.getComponent(JMenuItem.class).setAccelerator(KeyStroke.getKeyStroke('O', Toolkit.getDefaultToolkit ().getMenuShortcutKeyMask()));
     }
 
-    @Override public void update(AbstractEventArgs event) {
-        if(event.getOperationName() == CardModel.EVENT_NEXT_CARD && event instanceof ModelEventArgs && event.getSource() instanceof CardModel) {
-            super.update(event);
-            
-            CardModel cardModel = (CardModel)event.getSource();
-            addRenderableContent(cardModel);
-            
-            repaint();
-        }
+    @Override public void onExecute(ActionEvent actionEvent) {
     }
 }

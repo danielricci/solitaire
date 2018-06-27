@@ -22,7 +22,7 @@
 * IN THE SOFTWARE.
 */
 
-package controllers;
+package game.controllers;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,18 +30,18 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 
-import entities.ClubCardEntity;
-import entities.DiamondCardEntity;
-import entities.HeartCardEntity;
-import entities.SpadeCardEntity;
 import framework.api.IModel;
 import framework.communication.internal.signal.ISignalListener;
 import framework.core.factories.AbstractFactory;
 import framework.core.factories.ModelFactory;
 import framework.core.mvc.controller.BaseController;
 import framework.utils.logging.Tracelog;
+import game.entities.ClubCardEntity;
+import game.entities.DiamondCardEntity;
+import game.entities.HeartCardEntity;
+import game.entities.SpadeCardEntity;
+import game.models.CardModel;
 import generated.DataLookup;
-import models.CardModel;
 
 public class GameController extends BaseController {
 

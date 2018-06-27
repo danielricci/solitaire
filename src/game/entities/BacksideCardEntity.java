@@ -1,4 +1,4 @@
-package entities;
+package game.entities;
 
 import framework.core.entity.AbstractDataEntity;
 import generated.DataLookup;

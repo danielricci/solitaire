@@ -22,7 +22,7 @@
  * IN THE SOFTWARE.
  */
 
-package application;
+package game.application;
 
 import java.awt.Dimension;
 import java.awt.EventQueue;
@@ -35,14 +35,14 @@ import framework.core.system.AbstractApplication;
 import framework.core.system.EngineProperties;
 import framework.core.system.EngineProperties.Property;
 import framework.utils.globalisation.Localization;
-import menu.AboutMenuItem;
-import menu.DeckMenuItem;
-import menu.ExitMenuItem;
-import menu.NewGameMenuItem;
-import menu.OptionsMenuItem;
-import menu.UndoMenuItem;
+import game.menu.AboutMenuItem;
+import game.menu.DeckMenuItem;
+import game.menu.ExitMenuItem;
+import game.menu.NewGameMenuItem;
+import game.menu.OptionsMenuItem;
+import game.menu.UndoMenuItem;
+import game.views.GameView;
 import resources.LocalizedStrings;
-import views.GameView;
 
 public class Application extends AbstractApplication {
 

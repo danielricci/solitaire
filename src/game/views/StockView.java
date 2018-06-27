@@ -22,36 +22,44 @@
  * IN THE SOFTWARE.
  */
 
-package menu;
+package game.views;
 
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
+import java.awt.Dimension;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
-import javax.swing.JComponent;
-import javax.swing.JMenuItem;
-import javax.swing.KeyStroke;
+import framework.core.factories.AbstractFactory;
+import framework.core.factories.ControllerFactory;
+import framework.core.mvc.view.PanelView;
+import game.controllers.GameController;
+import game.entities.BacksideCardEntity;
 
-import framework.core.navigation.AbstractMenuItem;
-import framework.utils.globalisation.Localization;
-
-/**
- * Menu item for starting a new game
- * 
- * @author Daniel Ricci {@literal <thedanny09@gmail.com>}
- *
- */
-public class DeckMenuItem extends AbstractMenuItem {
+public final class StockView extends PanelView {
 
     /**
-     * Constructs a new instance of this class type
-     *
-     * @param parent The parent associated to this menu item
+     * The backside card entity
      */
-    public DeckMenuItem(JComponent parent) {
-        super(new JMenuItem(Localization.instance().getLocalizedString("Deck...")), parent);
-        super.getComponent(JMenuItem.class).setAccelerator(KeyStroke.getKeyStroke('C', Toolkit.getDefaultToolkit ().getMenuShortcutKeyMask()));
+    private final BacksideCardEntity _backside = new BacksideCardEntity();
+    
+    /**
+     * Creates a new instance of this class type
+     */
+    public StockView() {
+        setPreferredSize(new Dimension(71, 96));
     }
 
-    @Override public void onExecute(ActionEvent actionEvent) {
+    @Override public void onViewInitialized() {
+        GameController _gameController = AbstractFactory.getFactory(ControllerFactory.class).get(GameController.class);
+        this.addMouseListener(new MouseAdapter() {
+            @Override public void mouseReleased(MouseEvent event) {
+                _gameController.nextCard();
+            }
+        });
+    }
+
+    @Override public void render() {
+        super.render();
+        addRenderableContent(_backside);
+        repaint();
     }
 }

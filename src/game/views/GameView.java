@@ -22,18 +22,18 @@
  * IN THE SOFTWARE.
  */
 
-package views;
+package game.views;
 
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
-import controllers.GameController;
 import framework.core.factories.AbstractFactory;
 import framework.core.factories.ControllerFactory;
 import framework.core.factories.ViewFactory;
 import framework.core.mvc.view.PanelView;
+import game.controllers.GameController;
 
 /**
  * The game view wraps a draggable layout around the entire game
