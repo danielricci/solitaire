@@ -60,7 +60,7 @@ public class CardView extends PanelView {
         setPreferredSize(new Dimension(71, 96));
 
         // Register to an available card
-        AbstractFactory.getFactory(ControllerFactory.class).get(GameController.class).registerCard(this);
+        AbstractFactory.getFactory(ControllerFactory.class).get(GameController.class).registerPileCard(this);
     }
     
     @Override public void onViewInitialized() {

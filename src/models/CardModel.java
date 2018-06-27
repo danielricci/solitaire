@@ -31,6 +31,8 @@ import entities.AbstractCardEntity;
 
 public class CardModel extends BaseModel {
     
+    public static final String EVENT_NEXT_CARD = "EVENT_NEXT_CARD";
+    
     private final AbstractCardEntity _cardEntity;
         
     public CardModel(AbstractCardEntity cardEntity) {

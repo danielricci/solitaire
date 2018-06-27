@@ -98,14 +98,12 @@ public final class GameView extends PanelView {
                 if(_constraints.gridy == 0) {
                     switch(_constraints.gridx) {
                     case 0: {
-                        
                         StockView stockView = viewFactory.add(new StockView(), true);
                         this.add(stockView, _constraints);
                         stockView.render();
                         break;
                     }
                     case 1: {
-                        
                         TalonView talonView = viewFactory.add(new TalonView(), true);
                         this.add(talonView, _constraints);
                         talonView.render();
@@ -120,8 +118,6 @@ public final class GameView extends PanelView {
                 }
             }
         }
-        
-        _gameController.registerCards(viewFactory.get(TalonView.class));
     }
 
     @Override public void registerSignalListeners() {

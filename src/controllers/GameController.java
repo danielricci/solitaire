@@ -28,9 +28,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
 
 import engine.api.IModel;
 import engine.communication.internal.signal.ISignalListener;
@@ -93,19 +91,12 @@ public class GameController extends BaseController {
         Collections.shuffle(_cardsList);
     }
 
-    public void registerCard(ISignalListener listener) {
-        Optional<CardModel> cardModel = _cardsList.stream().filter(z -> z.getListener(listener.getClass()) == null).findFirst();
-        if(cardModel.isPresent()) {
-            cardModel.get().addListeners(listener);
-        }
+    public void registerPileCard(ISignalListener listener) {
+        CardModel model = _cardsList.remove(_cardsList.size() - 1);
+        model.addListeners(listener);
+        _cardsQueue.add(model);
     }
     
-    public void registerCards(ISignalListener listener) {
-        for(CardModel cardModel : _cardsList.stream().filter(z -> z.getListener(listener.getClass()) == null).collect(Collectors.toList())) {
-            cardModel.addListeners(listener);
-        }
-    }
-
     public boolean nextCard() {
         
         if(_cardsQueue.isEmpty()) {
@@ -118,7 +109,7 @@ public class GameController extends BaseController {
         }
 
         _cardsQueue.addLast(_cardsQueue.pop());
-        _cardsQueue.element().refresh();
+        _cardsQueue.element().refresh(CardModel.EVENT_NEXT_CARD);
         return true;
     }
     

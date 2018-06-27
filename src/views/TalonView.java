@@ -30,11 +30,11 @@ import controllers.GameController;
 import engine.communication.internal.signal.arguments.AbstractEventArgs;
 import engine.communication.internal.signal.arguments.ModelEventArgs;
 import engine.core.factories.AbstractFactory;
-import engine.core.mvc.view.PanelView;
+import engine.core.mvc.view.TransparentPanelView;
 import game.core.factories.ControllerFactory;
 import models.CardModel;
 
-public final class TalonView extends PanelView {
+public final class TalonView extends TransparentPanelView {
 
     /**
      * Creates a new instance of this class type
@@ -54,11 +54,13 @@ public final class TalonView extends PanelView {
     }
 
     @Override public void update(AbstractEventArgs event) {
-        super.update(event);
-        if(event instanceof ModelEventArgs && event.getSource() instanceof CardModel) {
+        if(event.getOperationName() == CardModel.EVENT_NEXT_CARD && event instanceof ModelEventArgs && event.getSource() instanceof CardModel) {
+            super.update(event);
+            
             CardModel cardModel = (CardModel)event.getSource();
             addRenderableContent(cardModel);
+            
+            repaint();
         }
-        repaint();
     }
 }

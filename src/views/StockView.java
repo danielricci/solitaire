@@ -34,13 +34,6 @@ import engine.core.mvc.view.PanelView;
 import entities.BacksideCardEntity;
 import game.core.factories.ControllerFactory;
 
-/**
- * This view handles the stock. The stock is a view that contains the leftover cards after the cards have been 
- * properly distributed on the board. Clicking on the stock view will display a card within another view.
- *
- * @author Daniel Ricci <thedanny09@gmail.com>
- *
- */
 public final class StockView extends PanelView {
 
     /**
