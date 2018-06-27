@@ -30,11 +30,11 @@ import controllers.GameController;
 import engine.communication.internal.signal.arguments.AbstractEventArgs;
 import engine.communication.internal.signal.arguments.ModelEventArgs;
 import engine.core.factories.AbstractFactory;
-import engine.core.mvc.view.TransparentPanelView;
+import engine.core.mvc.view.PanelView;
 import game.core.factories.ControllerFactory;
 import models.CardModel;
 
-public final class TalonView extends TransparentPanelView {
+public final class TalonView extends PanelView {
 
     /**
      * Creates a new instance of this class type

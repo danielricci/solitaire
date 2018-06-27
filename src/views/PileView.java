@@ -33,7 +33,7 @@ import javax.swing.JLayeredPane;
 
 import engine.api.IView;
 import engine.core.factories.AbstractFactory;
-import engine.core.mvc.view.TransparentPanelView;
+import engine.core.mvc.view.PanelView;
 import game.core.factories.ViewFactory;
 
 /**
@@ -43,7 +43,7 @@ import game.core.factories.ViewFactory;
  * @author Daniel Ricci <thedanny09@gmail.com>
  *
  */
-public final class PileView extends TransparentPanelView {
+public final class PileView extends PanelView {
 
     /**
      * The layered panel within this view that holds the card views
