@@ -100,11 +100,7 @@ public class CardView extends PanelView {
             }
         });
     }
-    
-    @Override public void clear() {
-        
-    }
-
+ 
     @Override public void registerSignalListeners() {
     }
 

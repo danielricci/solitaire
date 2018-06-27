@@ -75,9 +75,6 @@ public final class PileView extends TransparentPanelView {
     @Override public void onViewInitialized() {
     }
 
-    @Override public void clear() {       
-    }
-
     @Override public void registerSignalListeners() {
     }
     

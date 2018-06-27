@@ -47,9 +47,6 @@ public final class TalonView extends TransparentPanelView {
     @Override public void onViewInitialized() {
     }
 
-    @Override public void clear() {       
-    }
-
     @Override public void registerSignalListeners() {
     }
 

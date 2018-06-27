@@ -57,9 +57,6 @@ public final class StockView extends PanelView {
         });
     }
 
-    @Override public void clear() {       
-    }
-
     @Override public void registerSignalListeners() {
     }
     

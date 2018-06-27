@@ -51,9 +51,6 @@ public class Application extends AbstractApplication {
         setLocationRelativeTo(null);
     }
 
-    @Override public void destructor() {
-    }
-
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
             @Override public void run() {
@@ -114,8 +111,5 @@ public class Application extends AbstractApplication {
         GameView gameView = AbstractFactory.getFactory(ViewFactory.class).add(new GameView(), true);
         setContentPane(gameView);
         gameView.render();
-    }
-
-    @Override public void clear() {
     }
 }
