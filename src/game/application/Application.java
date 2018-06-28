@@ -41,8 +41,8 @@ import game.menu.ExitMenuItem;
 import game.menu.NewGameMenuItem;
 import game.menu.OptionsMenuItem;
 import game.menu.UndoMenuItem;
+import game.resources.LocalizedStrings;
 import game.views.GameView;
-import resources.LocalizedStrings;
 
 public class Application extends AbstractApplication {
 

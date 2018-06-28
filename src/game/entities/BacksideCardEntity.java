@@ -3,6 +3,7 @@ package game.entities;
 import framework.core.entity.AbstractDataEntity;
 import generated.DataLookup;
 
+
 public final class BacksideCardEntity extends AbstractDataEntity {
     
     private boolean _isBacksideVisible = false;
