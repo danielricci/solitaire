@@ -22,7 +22,7 @@
  * IN THE SOFTWARE.
  */
 
-package game.resources;
+package resources;
 
 /**
  * The list of available keys for localization lookup

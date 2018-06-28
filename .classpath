@@ -5,5 +5,6 @@
 	<classpathentry kind="lib" path="data/generated/tilemap.jar"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="data"/>
+	<classpathentry kind="src" path="properties"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
