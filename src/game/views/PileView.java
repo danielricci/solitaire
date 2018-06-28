@@ -56,6 +56,8 @@ public final class PileView extends PanelView {
     public PileView(int initialCapacity) {
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         setPreferredSize(new Dimension(71, 96));
+        setOpaque(false);
+        
         add(_layeredPane);
         
         for(int i = 0; i < initialCapacity; ++i) {

@@ -41,6 +41,7 @@ public final class TalonView extends PanelView {
      */
     public TalonView() {
         setPreferredSize(new Dimension(71, 96));
+        setOpaque(false);
         AbstractFactory.getFactory(ControllerFactory.class).get(GameController.class).addSignalListener(this);
     }
 
