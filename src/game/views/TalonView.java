@@ -28,10 +28,7 @@ import java.awt.Dimension;
 
 import framework.communication.internal.signal.arguments.AbstractEventArgs;
 import framework.communication.internal.signal.arguments.ModelEventArgs;
-import framework.core.factories.AbstractFactory;
-import framework.core.factories.ControllerFactory;
 import framework.core.mvc.view.PanelView;
-import game.controllers.GameController;
 import game.models.CardModel;
 
 public final class TalonView extends PanelView {
@@ -42,7 +39,6 @@ public final class TalonView extends PanelView {
     public TalonView() {
         setPreferredSize(new Dimension(71, 96));
         setOpaque(false);
-        AbstractFactory.getFactory(ControllerFactory.class).get(GameController.class).addSignalListener(this);
     }
 
     @Override public void update(AbstractEventArgs event) {

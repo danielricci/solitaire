@@ -25,18 +25,44 @@
 package game.models;
 
 import java.awt.Image;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import framework.core.mvc.model.BaseModel;
 import game.entities.AbstractCardEntity;
+import game.entities.ClubCardEntity;
+import game.entities.DiamondCardEntity;
+import game.entities.HeartCardEntity;
+import game.entities.SpadeCardEntity;
+import generated.DataLookup;
 
-public class CardModel extends BaseModel {
+public final class CardModel extends BaseModel {
     
     public static final String EVENT_NEXT_CARD = "EVENT_NEXT_CARD";
     
     private final AbstractCardEntity _cardEntity;
         
-    public CardModel(AbstractCardEntity cardEntity) {
+    private CardModel(AbstractCardEntity cardEntity) {
         _cardEntity = cardEntity;
+    }
+    
+    public static List<CardModel> newInstances() {
+        List<CardModel> entities = new ArrayList<CardModel>();
+        for(DataLookup.HEARTS heart : DataLookup.HEARTS.values()) {
+            entities.add(new CardModel(new HeartCardEntity(heart)));
+        }
+        for(DataLookup.CLUBS club : DataLookup.CLUBS.values()) {
+            entities.add(new CardModel(new ClubCardEntity(club)));
+        }
+        for(DataLookup.DIAMONDS diamond : DataLookup.DIAMONDS.values()) {
+            entities.add(new CardModel(new DiamondCardEntity(diamond)));
+        }
+        for(DataLookup.SPADES spade : DataLookup.SPADES.values()) {
+            entities.add(new CardModel(new SpadeCardEntity(spade)));
+        }
+        Collections.shuffle(entities);
+        return entities;
     }
     
     @Override public Image getRenderableContent() {

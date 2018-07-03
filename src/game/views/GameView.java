@@ -28,12 +28,13 @@ import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.util.ArrayList;
+import java.util.List;
 
 import framework.core.factories.AbstractFactory;
-import framework.core.factories.ControllerFactory;
 import framework.core.factories.ViewFactory;
 import framework.core.mvc.view.PanelView;
-import game.controllers.GameController;
+import game.models.CardModel;
 
 /**
  * The game view wraps a draggable layout around the entire game
@@ -59,11 +60,6 @@ public final class GameView extends PanelView {
     private final GridBagConstraints _constraints = new GridBagConstraints();
 
     /**
-     * The game controller
-     */
-    private final GameController _gameController = AbstractFactory.getFactory(ControllerFactory.class).add(new GameController(), true);
-    
-    /**
      * Creates a new instance of this class type
      */
     public GameView() {
@@ -77,15 +73,17 @@ public final class GameView extends PanelView {
         _constraints.anchor = GridBagConstraints.NORTH;
         _constraints.insets = new Insets(10, 0, 0, 0);
     }
-
+    
     @Override public void onViewInitialized() {
 
         ViewFactory viewFactory = AbstractFactory.getFactory(ViewFactory.class);
         
+        // Create the total list of cards
+        List<CardModel> cards = CardModel.newInstances();
+
         for(int row = 0; row < _rowSize; ++row) {
             _constraints.gridy = row;
 
-            // If the rendering pass is on row 2 (0th based) then make sure the constraints are properly reflected
             if(_constraints.gridy ==  1) {
                 _constraints.weighty = 1;
                 _constraints.insets = new Insets(20, 0, 20, 0);
@@ -98,23 +96,24 @@ public final class GameView extends PanelView {
                 if(_constraints.gridy == 0) {
                     switch(_constraints.gridx) {
                     case 0: {
-                        StockView stockView = viewFactory.add(new StockView(), true);
-                        this.add(stockView, _constraints);
-                        stockView.render();
+                        //StockView stockView = viewFactory.add(new StockView(), true);
+                        //this.add(stockView, _constraints);
                         break;
                     }
                     case 1: {
-                        TalonView talonView = viewFactory.add(new TalonView(), true);
-                        this.add(talonView, _constraints);
-                        talonView.render();
+                        //TalonView talonView = viewFactory.add(new TalonView(), true);
+                        //this.add(talonView, _constraints);
                         break;
                     }
                     }
                 }
                 else {
-                    PileView view = viewFactory.add(new PileView(_constraints.gridx + 1));
+                    
+                    List<CardModel> subList = cards.subList(0, _constraints.gridx + 1);
+                    PileView view = viewFactory.add(new PileView(new ArrayList<CardModel>(subList)));
+                    subList.clear();
+                    
                     this.add(view, _constraints);
-                    view.render();
                 }
             }
         }

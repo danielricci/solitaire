@@ -27,29 +27,17 @@ package game.controllers;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.logging.Level;
 
-import framework.api.IModel;
 import framework.communication.internal.signal.ISignalListener;
 import framework.core.factories.AbstractFactory;
 import framework.core.factories.ModelFactory;
 import framework.core.mvc.controller.BaseController;
 import framework.utils.logging.Tracelog;
-import game.entities.ClubCardEntity;
-import game.entities.DiamondCardEntity;
-import game.entities.HeartCardEntity;
-import game.entities.SpadeCardEntity;
 import game.models.CardModel;
-import generated.DataLookup;
 
 public class GameController extends BaseController {
 
-    /**
-     * Flag indicating if the game is running
-     */
-    private boolean _gameRunning;
-    
     /**
      * The entire list of cards that are within the game.
      */
@@ -67,25 +55,25 @@ public class GameController extends BaseController {
         
         ModelFactory modelFactory = AbstractFactory.getFactory(ModelFactory.class);
         
-        // Hearts
-        for(DataLookup.HEARTS heart : DataLookup.HEARTS.values()) {
-            _cardsList.add(modelFactory.add(new CardModel(new HeartCardEntity(heart))));
-        }
-        
-        // Clubs
-        for(DataLookup.CLUBS club : DataLookup.CLUBS.values()) {
-            _cardsList.add(modelFactory.add(new CardModel(new ClubCardEntity(club))));
-        }
-        
-        // Diamonds
-        for(DataLookup.DIAMONDS diamond : DataLookup.DIAMONDS.values()) {
-            _cardsList.add(modelFactory.add(new CardModel(new DiamondCardEntity(diamond))));
-        }
-        
-        // Spades
-        for(DataLookup.SPADES spade : DataLookup.SPADES.values()) {
-            _cardsList.add(modelFactory.add(new CardModel(new SpadeCardEntity(spade))));
-        }
+//        // Hearts
+//        for(DataLookup.HEARTS heart : DataLookup.HEARTS.values()) {
+//            _cardsList.add(modelFactory.add(new CardModel(new HeartCardEntity(heart))));
+//        }
+//        
+//        // Clubs
+//        for(DataLookup.CLUBS club : DataLookup.CLUBS.values()) {
+//            _cardsList.add(modelFactory.add(new CardModel(new ClubCardEntity(club))));
+//        }
+//        
+//        // Diamonds
+//        for(DataLookup.DIAMONDS diamond : DataLookup.DIAMONDS.values()) {
+//            _cardsList.add(modelFactory.add(new CardModel(new DiamondCardEntity(diamond))));
+//        }
+//        
+//        // Spades
+//        for(DataLookup.SPADES spade : DataLookup.SPADES.values()) {
+//            _cardsList.add(modelFactory.add(new CardModel(new SpadeCardEntity(spade))));
+//        }
         
         // Introduce some randomness into the ordering of the cards
         Collections.shuffle(_cardsList);
@@ -112,8 +100,4 @@ public class GameController extends BaseController {
         _cardsQueue.element().refresh(CardModel.EVENT_NEXT_CARD);
         return true;
     }
-    
-    @Override protected List<IModel> getControllerModels() {
-        return new ArrayList<IModel>(_cardsList);
-    }    
 }

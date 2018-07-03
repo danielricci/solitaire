@@ -38,29 +38,29 @@ import framework.core.factories.ControllerFactory;
 import framework.core.mvc.view.PanelView;
 import framework.core.mvc.view.layout.DraggableListener;
 import game.application.Application;
-import game.controllers.GameController;
+import game.controllers.CardController;
 import game.models.CardModel;
 
-/**
- * A single card view represents a draggable and collision enabled entity within the game
- * 
- * @author {@literal Daniel Ricci <thedanny09@gmail.com>}
- *
- */
-public class CardView extends PanelView {
+public final class CardView extends PanelView {
 
+    private final CardController controller = AbstractFactory.getFactory(ControllerFactory.class).add(new CardController());
+    
+    private final DraggableListener _draggableListener = new DraggableListener(this);
+    
+    private CardModel _card;
+    
     /**
      * Creates a new instance of this class type
      */
-    public CardView() {
-
-        // Add draggable functionality to this view
-        new DraggableListener(this);
-        
+    public CardView(CardModel card) {
         setPreferredSize(new Dimension(71, 96));
+        setOpaque(false);
 
-        // Register to an available card
-        AbstractFactory.getFactory(ControllerFactory.class).get(GameController.class).registerPileCard(this);
+        // Set the card that is to be associated to this view and add this view 
+        // as a listener to the card
+        _card = card;
+        controller.setCard(card);
+        card.addListeners(this);
     }
     
     @Override public void onViewInitialized() {
@@ -84,6 +84,7 @@ public class CardView extends PanelView {
                 Application.instance().repaint();
                 _realParent.repaint();
             }
+            
             @Override public void mouseReleased(MouseEvent e) {
                 
                 // Remove the application held card
@@ -100,7 +101,12 @@ public class CardView extends PanelView {
             }
         });
     }
- 
+    
+    @Override public void render() {
+        super.render();
+        _card.refresh();
+    }
+    
     @Override public void update(AbstractEventArgs event) {
         
         super.update(event);

@@ -110,6 +110,8 @@ public class Application extends AbstractApplication {
         // Create the game view and set it as the content pane of the application
         GameView gameView = AbstractFactory.getFactory(ViewFactory.class).add(new GameView(), true);
         setContentPane(gameView);
+        
+        // TODO - this doesnt render the right stuff at the right time, make the view only call render in the render phase
         gameView.render();
     }
 }
