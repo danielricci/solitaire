@@ -114,6 +114,14 @@ public final class GameView extends PanelView {
                         this.add(talonView, _constraints);
                         break;
                     }
+                    case 3:
+                    case 4:
+                    case 5:
+                    case 6:
+                        // Create the foundation view
+                        FoundationView foundationView = viewFactory.add(new FoundationView());
+                        this.add(foundationView, _constraints);
+                    break;
                     }
                 }
                 else {
