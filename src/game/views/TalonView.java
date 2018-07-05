@@ -25,6 +25,7 @@
 package game.views;
 
 import java.awt.Dimension;
+import java.util.Collection;
 
 import framework.communication.internal.signal.arguments.AbstractEventArgs;
 import framework.communication.internal.signal.arguments.ModelEventArgs;
@@ -36,9 +37,11 @@ public final class TalonView extends PanelView {
     /**
      * Creates a new instance of this class type
      */
-    public TalonView() {
+    public TalonView(Collection<CardModel> cards) {
         setPreferredSize(new Dimension(71, 96));
         setOpaque(false);
+        
+        cards.forEach(z -> z.addListeners(this));
     }
     
     @Override public void onViewInitialized() {

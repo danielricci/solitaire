@@ -50,9 +50,11 @@ public final class StockView extends PanelView {
      * Creates a new instance of this class type
      */
     public StockView(Collection<CardModel> cards) {
-        
         setPreferredSize(new Dimension(71, 96));
         setOpaque(false);
+        
+        cards.forEach(z -> z.addListeners(this));
+        
         _stockController = ControllerFactory.getFactory(ControllerFactory.class).add(new StockController(cards), true);
     }
 

@@ -100,17 +100,13 @@ public final class GameView extends PanelView {
                         
                         // Create the stock view 
                         StockView stockView = viewFactory.add(new StockView(cards), true);
-                        cards.forEach(z -> z.addListeners(stockView));
                         this.add(stockView, _constraints);
                         break;
                     }
                     case 1: {
                         
                         // Create the talon view
-                        TalonView talonView = viewFactory.add(new TalonView(), true);
-                        
-                        // Register the view to listen to the list of remaining cards
-                        cards.forEach(z -> z.addListeners(talonView));
+                        TalonView talonView = viewFactory.add(new TalonView(cards), true);
                         this.add(talonView, _constraints);
                         break;
                     }
