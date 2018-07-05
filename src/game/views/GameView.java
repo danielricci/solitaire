@@ -63,31 +63,32 @@ public final class GameView extends PanelView {
      * Creates a new instance of this class type
      */
     public GameView() {
-
         this.setLayout(new GridBagLayout());
         this.setBackground(new Color(0, 128, 0));
-
-        // Configure constraint initial values
-        _constraints.weightx = 1.0;
-        _constraints.weighty = 0;
-        _constraints.anchor = GridBagConstraints.NORTH;
-        _constraints.insets = new Insets(10, 0, 0, 0);
     }
     
     @Override public void onViewInitialized() {
 
+        // Configure constraint initial values
+        _constraints.weightx = 1.0;
+        _constraints.anchor = GridBagConstraints.NORTH;
+        
         ViewFactory viewFactory = AbstractFactory.getFactory(ViewFactory.class);
         
         // Create the total list of cards
         List<CardModel> cards = CardModel.newInstances();
-
-        for(int row = 0; row < _rowSize; ++row) {
+        
+        for(int row = _rowSize - 1; row >= 0; --row) {
             _constraints.gridy = row;
 
             if(_constraints.gridy ==  1) {
                 _constraints.weighty = 1;
                 _constraints.insets = new Insets(20, 0, 20, 0);
                 _constraints.fill = GridBagConstraints.VERTICAL;
+            }
+            else {
+                _constraints.weighty = 0;
+                _constraints.insets = new Insets(10, 0, 0, 0);
             }
 
             for(int col = 0; col < _columnSize; ++col) {
@@ -96,13 +97,21 @@ public final class GameView extends PanelView {
                 if(_constraints.gridy == 0) {
                     switch(_constraints.gridx) {
                     case 0: {
-                        //StockView stockView = viewFactory.add(new StockView(), true);
-                        //this.add(stockView, _constraints);
+                        
+                        // Create the stock view 
+                        StockView stockView = viewFactory.add(new StockView(cards), true);
+                        cards.forEach(z -> z.addListeners(stockView));
+                        this.add(stockView, _constraints);
                         break;
                     }
                     case 1: {
-                        //TalonView talonView = viewFactory.add(new TalonView(), true);
-                        //this.add(talonView, _constraints);
+                        
+                        // Create the talon view
+                        TalonView talonView = viewFactory.add(new TalonView(), true);
+                        
+                        // Register the view to listen to the list of remaining cards
+                        cards.forEach(z -> z.addListeners(talonView));
+                        this.add(talonView, _constraints);
                         break;
                     }
                     }

@@ -40,15 +40,18 @@ public final class TalonView extends PanelView {
         setPreferredSize(new Dimension(71, 96));
         setOpaque(false);
     }
-
+    
+    @Override public void onViewInitialized() {
+        super.onViewInitialized();
+        
+    }
+    
     @Override public void update(AbstractEventArgs event) {
+        super.update(event);
         if(event.getOperationName() == CardModel.EVENT_NEXT_CARD && event instanceof ModelEventArgs && event.getSource() instanceof CardModel) {
-            super.update(event);
-            
             CardModel cardModel = (CardModel)event.getSource();
             addRenderableContent(cardModel);
-            
-            repaint();
         }
+        repaint();
     }
 }

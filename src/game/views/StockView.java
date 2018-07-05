@@ -27,12 +27,14 @@ package game.views;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Collection;
 
-import framework.core.factories.AbstractFactory;
+import framework.communication.internal.signal.arguments.AbstractEventArgs;
 import framework.core.factories.ControllerFactory;
 import framework.core.mvc.view.PanelView;
-import game.controllers.GameController;
+import game.controllers.StockController;
 import game.entities.BacksideCardEntity;
+import game.models.CardModel;
 
 public final class StockView extends PanelView {
 
@@ -41,18 +43,24 @@ public final class StockView extends PanelView {
      */
     private final BacksideCardEntity _backside = new BacksideCardEntity();
     
+    // Create the stock controller
+    private final StockController _stockController;
+    
     /**
      * Creates a new instance of this class type
      */
-    public StockView() {
+    public StockView(Collection<CardModel> cards) {
+        
         setPreferredSize(new Dimension(71, 96));
+        setOpaque(false);
+        _stockController = ControllerFactory.getFactory(ControllerFactory.class).add(new StockController(cards), true);
     }
 
     @Override public void onViewInitialized() {
-        GameController _gameController = AbstractFactory.getFactory(ControllerFactory.class).get(GameController.class);
+        // When the mouse button is released, request a new card
         this.addMouseListener(new MouseAdapter() {
             @Override public void mouseReleased(MouseEvent event) {
-                _gameController.nextCard();
+                _stockController.nextCard();
             }
         });
     }
@@ -60,6 +68,14 @@ public final class StockView extends PanelView {
     @Override public void render() {
         super.render();
         addRenderableContent(_backside);
+        repaint();
+    }
+    
+    @Override public void update(AbstractEventArgs event) {
+        super.update(event);
+        if(event.getOperationName().equalsIgnoreCase(CardModel.EVENT_NEXT_CARD)) {
+            addRenderableContent(_stockController.isNextCardEmpty() ? null : _backside);
+        }
         repaint();
     }
 }

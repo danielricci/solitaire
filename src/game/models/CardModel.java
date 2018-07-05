@@ -47,6 +47,14 @@ public final class CardModel extends BaseModel {
         _cardEntity = cardEntity;
     }
     
+    public static CardModel Empty() {
+        return new CardModel(null);
+    }
+    
+    public boolean isEmpty() {
+        return _cardEntity == null;
+    }
+    
     public static List<CardModel> newInstances() {
         List<CardModel> entities = new ArrayList<CardModel>();
         for(DataLookup.HEARTS heart : DataLookup.HEARTS.values()) {
@@ -62,10 +70,18 @@ public final class CardModel extends BaseModel {
             entities.add(new CardModel(new SpadeCardEntity(spade)));
         }
         Collections.shuffle(entities);
+
+        // Create an empty card model to denote the end of the pile
+        // TODO - See if we can avoid this shit
+        entities.add(CardModel.Empty());
+        
         return entities;
     }
     
     @Override public Image getRenderableContent() {
+        if(_cardEntity == null) {
+            return null;
+        }
         return _cardEntity.getRenderableContent();
     }
 }
