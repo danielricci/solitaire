@@ -30,6 +30,7 @@ import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Arrays;
 
 import framework.communication.internal.signal.arguments.AbstractEventArgs;
 import framework.communication.internal.signal.arguments.ModelEventArgs;
@@ -66,23 +67,25 @@ public final class CardView extends PanelView {
     @Override public void onViewInitialized() {
         addMouseListener(new MouseAdapter() {
             
-            private Container _realParent;
+            private Container _parent;
             private int _index = 0;
             
             @Override public void mousePressed(MouseEvent e) {
-                _realParent = CardView.this.getParent();
-                Component[] components =_realParent.getComponents();
+                _parent = CardView.this.getParent();
+                Component[] components =_parent.getComponents();
+                
                 for(int i = components.length - 1; i >= 0; --i, ++_index) {
                     if(components[i].equals(CardView.this)) {
+                  //      Arrays.copyOfRange(components, i, components.length, );
                         break;
                     }
                 }
                 
-                Application.instance().add(CardView.this);
-                _realParent.remove(CardView.this);
+                //CardModel[] cardViews = 
+                //PileView view = new PileView(cardViews)
                 
-                Application.instance().repaint();
-                _realParent.repaint();
+                //Application.instance().add(CardView.this);
+                //_parent.remove(CardView.this);
             }
             
             @Override public void mouseReleased(MouseEvent e) {
@@ -92,7 +95,7 @@ public final class CardView extends PanelView {
                 Application.instance().repaint();
                 
                 // Put the card back into the position where it originally was
-                _realParent.add(CardView.this, _index);
+                _parent.add(CardView.this, _index);
                 
                 CardView.this.setBounds(new Rectangle(0, 12 * _index, CardView.this.getPreferredSize().width, CardView.this.getPreferredSize().height));
                 

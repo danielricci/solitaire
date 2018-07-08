@@ -40,13 +40,15 @@ public final class PileView extends PanelView {
 
     private final JLayeredPane _layeredPane = new JLayeredPane();
 
-    public PileView(List<CardModel> cards) {
+    private PileView() {
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         setPreferredSize(new Dimension(71, 96));
         setOpaque(false);
-        
         add(_layeredPane);
-        
+    }
+    
+    public PileView(List<CardModel> cards) {
+        this();
         for(int i = 0; i < cards.size(); ++i) {
             
             // Create the card view
@@ -59,6 +61,21 @@ public final class PileView extends PanelView {
             // Set the bounds of the view within the layered pane
             view.setBounds(new Rectangle(0, 12 * i, view.getPreferredSize().width, view.getPreferredSize().height));
         } 
+    }
+    
+    public PileView(CardView[] cardViews) {
+        this();
+        for(int i = 0; i < cardViews.length; ++i) {
+
+            CardView view = cardViews[i];
+            
+            // Add the view to the layered pane
+            _layeredPane.add(view, i);
+            _layeredPane.setLayer(view, i);
+            
+            // Set the bounds of the view within the layered pane
+            view.setBounds(new Rectangle(0, 12 * i, view.getPreferredSize().width, view.getPreferredSize().height));
+        }
     }
 
     @Override public void render() {
