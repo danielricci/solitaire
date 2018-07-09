@@ -44,12 +44,10 @@ import game.models.CardModel;
 
 public final class CardView extends PanelView {
 
-    private final CardController controller = AbstractFactory.getFactory(ControllerFactory.class).add(new CardController());
+    private final CardController _controller = AbstractFactory.getFactory(ControllerFactory.class).add(new CardController());
     
     private final DraggableListener _draggableListener = new DraggableListener(this);
-    
-    private CardModel _card;
-    
+        
     /**
      * Creates a new instance of this class type
      */
@@ -57,10 +55,7 @@ public final class CardView extends PanelView {
         setPreferredSize(new Dimension(71, 96));
         setOpaque(false);
 
-        // Set the card that is to be associated to this view and add this view 
-        // as a listener to the card
-        _card = card;
-        controller.setCard(card);
+        _controller.setCard(card);
         card.addListeners(this);
     }
     
@@ -107,7 +102,7 @@ public final class CardView extends PanelView {
     
     @Override public void render() {
         super.render();
-        _card.refresh();
+        _controller.refresh();
     }
     
     @Override public void update(AbstractEventArgs event) {
