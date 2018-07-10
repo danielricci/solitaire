@@ -25,7 +25,6 @@
 package game.views;
 
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -104,17 +103,26 @@ public final class CardView extends PanelView {
             
             @Override public void mouseReleased(MouseEvent e) {
                 
+                // Get the list of components associated to the CardView.this reference. This list represents all the children associated
+                // to the said CardView.this reference.
                 List<Component> components = Arrays.asList(CardView.this._layeredPane.getComponents());
+                
+                // Reverse the list because layerd panes associate objects closer to layer 0 as being closer to the screen.
                 Collections.reverse(components);
 
                 // Get the initial count of the number of components in the layered pane.  It is assumed that they hold only
-                // CardView or the calculations wont work properly
+                // CardView or the calculations wont work properly.
+                // This number represents the number of cards that exist within the list after the drag operation had occured, so if
+                // you have a pile with 5 cards and you drag three out, then you would be left with 2 cards in the parent, CardView.this would
+                // represent the card actually being dragged, and the layered pane associated to CardView.this would attached itself.
                 int initialSize = _parent.getComponents().length;
                 
                 // Add this card view to the pane
-                _parent.add(CardView.this, Math.max(0, initialSize - 1));
-                _parent.setLayer(CardView.this, Math.max(0, initialSize - 1));
+                _parent.add(CardView.this, initialSize);
+                _parent.setLayer(CardView.this, initialSize);
                 CardView.this.setBounds(new Rectangle(0, 12 * initialSize, CardView.this.getPreferredSize().width, CardView.this.getPreferredSize().height));
+                Application.instance().remove(CardView.this);
+                ++initialSize;
                 
                 // Take the remainder of the components held by this card and put them back into the parents pane
                 for(int i = 0; i < components.size(); ++i) {
@@ -123,8 +131,6 @@ public final class CardView extends PanelView {
                     components.get(i).setBounds(new Rectangle(0, 12 * (i + initialSize), components.get(i).getPreferredSize().width, components.get(i).getPreferredSize().height));
                 }
                 
-                // Remove the reference of this card from the main application
-                Application.instance().remove(CardView.this);
                 
                 // Clear the card views that were added within this cards' layered pane
                 CardView.this._layeredPane.removeAll();
