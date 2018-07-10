@@ -70,30 +70,51 @@ public final class CardView extends PanelView {
     @Override public void onViewInitialized() {
         addMouseListener(new MouseAdapter() {
             
-            private JLayeredPane _parent;
-            private int _index = 0;
+            /**
+             * The parent associated to this card view
+             */
+            private JLayeredPane _parentSource;
             
-            @Override public void mousePressed(MouseEvent e) {
-                _parent = (JLayeredPane) CardView.this.getParent();
-                Component[] components =_parent.getComponents();
+            @Override public void mousePressed(MouseEvent event) {
                 
-                mainLabel : for(int i = components.length - 1; i >= 0; --i, ++_index) {
+                // Get the parent of this card view, used as a reference to go back to whatever we were coming from
+                _parentSource = (JLayeredPane) CardView.this.getParent();
+                
+                // Get the list of components that the parent owns
+                Component[] components =_parentSource.getComponents();
+                
+                // Find the card that is being dragged and take all the siblings below it and populate them into the
+                // layered pane composed by the CardView.this reference
+                mainLabel : for(int i = components.length - 1; i >= 0; --i) {
+                    
                     if(components[i].equals(CardView.this)) {
+
+                        // Remove the card view reference from it's initial parent
+                        _parentSource.remove(CardView.this);
+                        Application.instance().add(CardView.this, 0);
+                        
+                        // Get the siblings of cards within the components list (excluding CardView.this)
                         List<CardView> cardViews = Arrays.asList(Arrays.copyOfRange(components, 0, i, CardView[].class));
+                        
+                        // Reverse the list because layered panes associate objects closer to layer 0 as being closer to the screen.
                         Collections.reverse(cardViews);
                         
+                        // For each sibling add it into the associated layere pane and position it correctly within
+                        // the pane, accounting for the fact that CardView.this is the temporary 'root'
                         for(int j = 0; j < cardViews.size(); ++j) {
-                            _parent.remove(cardViews.get(j));
                             _layeredPane.add(cardViews.get(j), j);
                             _layeredPane.setLayer(cardViews.get(j), j);
                             cardViews.get(j).setBounds(new Rectangle(0, 12 * (j + 1), cardViews.get(j).getPreferredSize().width, cardViews.get(j).getPreferredSize().height));
+                            _parentSource.remove(cardViews.get(j));
                         }
 
-                        _parent.remove(CardView.this);
-                        
+                        // Position the card at the same place where the drag was attempted from, because when you
+                        // add to the application it will position the component at the origin which is not desired
                         Point initialLocation = CardView.this.getLocation();
-                        CardView.this.setBounds(new Rectangle(_parent.getParent().getLocation().x + initialLocation.x, _parent.getParent().getLocation().y + initialLocation.y, _layeredPane.getWidth(), _layeredPane.getHeight()));
-                        Application.instance().add(CardView.this, 0);
+                        CardView.this.setBounds(new Rectangle(_parentSource.getParent().getLocation().x + initialLocation.x, _parentSource.getParent().getLocation().y + initialLocation.y, _layeredPane.getWidth(), _layeredPane.getHeight()));
+                        
+                        
+                        // Repaint the application to show the changes
                         Application.instance().repaint();
                         
                         break mainLabel;
@@ -101,13 +122,13 @@ public final class CardView extends PanelView {
                 }
             }
             
-            @Override public void mouseReleased(MouseEvent e) {
+            @Override public void mouseReleased(MouseEvent event) {
                 
                 // Get the list of components associated to the CardView.this reference. This list represents all the children associated
                 // to the said CardView.this reference.
                 List<Component> components = Arrays.asList(CardView.this._layeredPane.getComponents());
                 
-                // Reverse the list because layerd panes associate objects closer to layer 0 as being closer to the screen.
+                // Reverse the list because layered panes associate objects closer to layer 0 as being closer to the screen.
                 Collections.reverse(components);
 
                 // Get the initial count of the number of components in the layered pane.  It is assumed that they hold only
@@ -115,33 +136,41 @@ public final class CardView extends PanelView {
                 // This number represents the number of cards that exist within the list after the drag operation had occured, so if
                 // you have a pile with 5 cards and you drag three out, then you would be left with 2 cards in the parent, CardView.this would
                 // represent the card actually being dragged, and the layered pane associated to CardView.this would attached itself.
-                int initialSize = _parent.getComponents().length;
+                int initialSize = _parentSource.getComponents().length;
                 
-                // Add this card view to the pane
-                _parent.add(CardView.this, initialSize);
-                _parent.setLayer(CardView.this, initialSize);
+                // Add this card view to the pane and update the layer within the component that it has been added to
+                _parentSource.add(CardView.this, initialSize);
+                _parentSource.setLayer(CardView.this, initialSize);
+                
+                // Set the bounds of this card so that it appears at the right position offset
                 CardView.this.setBounds(new Rectangle(0, 12 * initialSize, CardView.this.getPreferredSize().width, CardView.this.getPreferredSize().height));
+                
+                // Remove this card from the application which was used as a temporary measure to support the dragging
                 Application.instance().remove(CardView.this);
+                
+                // Increment the initial size to include the fact that CardView.this was added back to the parent
                 ++initialSize;
                 
                 // Take the remainder of the components held by this card and put them back into the parents pane
                 for(int i = 0; i < components.size(); ++i) {
-                    _parent.add(components.get(i), i + initialSize);
-                    _parent.setLayer(components.get(i), i + initialSize);
+                    
+                    // Add this card view to the pane and update the layer within the component that it has been added to
+                    _parentSource.add(components.get(i), i + initialSize);
+                    _parentSource.setLayer(components.get(i), i + initialSize);
+                    
+                    // Set the bounds of this card so that it appears at the right position offset                    
                     components.get(i).setBounds(new Rectangle(0, 12 * (i + initialSize), components.get(i).getPreferredSize().width, components.get(i).getPreferredSize().height));
                 }
-                
                 
                 // Clear the card views that were added within this cards' layered pane
                 CardView.this._layeredPane.removeAll();
                 
                 // Repaint the components accordingly
                 Application.instance().repaint();
-                _parent.repaint();
+                _parentSource.repaint();
                 
                 // Reset all reference
-                _index = 0;
-                _parent = null;
+                _parentSource = null;
             }
         });
     }
