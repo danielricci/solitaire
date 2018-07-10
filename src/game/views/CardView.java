@@ -27,10 +27,16 @@ package game.views;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import javax.swing.BoxLayout;
+import javax.swing.JLayeredPane;
 
 import framework.communication.internal.signal.arguments.AbstractEventArgs;
 import framework.communication.internal.signal.arguments.ModelEventArgs;
@@ -47,14 +53,17 @@ public final class CardView extends PanelView {
     private final CardController _controller = AbstractFactory.getFactory(ControllerFactory.class).add(new CardController());
     
     private final DraggableListener _draggableListener = new DraggableListener(this);
-        
+       
+    private final JLayeredPane _layeredPane = new JLayeredPane();
+    
     /**
      * Creates a new instance of this class type
      */
     public CardView(CardModel card) {
+        setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         setPreferredSize(new Dimension(71, 96));
         setOpaque(false);
-
+        add(_layeredPane);
         _controller.setCard(card);
         card.addListeners(this);
     }
@@ -62,40 +71,71 @@ public final class CardView extends PanelView {
     @Override public void onViewInitialized() {
         addMouseListener(new MouseAdapter() {
             
-            private Container _parent;
+            private JLayeredPane _parent;
             private int _index = 0;
             
             @Override public void mousePressed(MouseEvent e) {
-                _parent = CardView.this.getParent();
+                _parent = (JLayeredPane) CardView.this.getParent();
                 Component[] components =_parent.getComponents();
                 
-                for(int i = components.length - 1; i >= 0; --i, ++_index) {
+                mainLabel : for(int i = components.length - 1; i >= 0; --i, ++_index) {
                     if(components[i].equals(CardView.this)) {
-                  //      Arrays.copyOfRange(components, i, components.length, );
-                        break;
+                        List<CardView> cardViews = Arrays.asList(Arrays.copyOfRange(components, 0, i, CardView[].class));
+                        Collections.reverse(cardViews);
+                        
+                        for(int j = 0; j < cardViews.size(); ++j) {
+                            _parent.remove(cardViews.get(j));
+                            _layeredPane.add(cardViews.get(j), j);
+                            _layeredPane.setLayer(cardViews.get(j), j);
+                            cardViews.get(j).setBounds(new Rectangle(0, 12 * (j + 1), cardViews.get(j).getPreferredSize().width, cardViews.get(j).getPreferredSize().height));
+                        }
+
+                        _parent.remove(CardView.this);
+                        
+                        Point initialLocation = CardView.this.getLocation();
+                        CardView.this.setBounds(new Rectangle(_parent.getParent().getLocation().x + initialLocation.x, _parent.getParent().getLocation().y + initialLocation.y, _layeredPane.getWidth(), _layeredPane.getHeight()));
+                        Application.instance().add(CardView.this, 0);
+                        Application.instance().repaint();
+                        
+                        break mainLabel;
                     }
                 }
-                
-                //CardModel[] cardViews = 
-                //PileView view = new PileView(cardViews)
-                
-                //Application.instance().add(CardView.this);
-                //_parent.remove(CardView.this);
             }
             
             @Override public void mouseReleased(MouseEvent e) {
                 
-                // Remove the application held card
+                List<Component> components = Arrays.asList(CardView.this._layeredPane.getComponents());
+                Collections.reverse(components);
+
+                // Get the initial count of the number of components in the layered pane.  It is assumed that they hold only
+                // CardView or the calculations wont work properly
+                int initialSize = _parent.getComponents().length;
+                
+                // Add this card view to the pane
+                _parent.add(CardView.this, Math.max(0, initialSize - 1));
+                _parent.setLayer(CardView.this, Math.max(0, initialSize - 1));
+                CardView.this.setBounds(new Rectangle(0, 12 * initialSize, CardView.this.getPreferredSize().width, CardView.this.getPreferredSize().height));
+                
+                // Take the remainder of the components held by this card and put them back into the parents pane
+                for(int i = 0; i < components.size(); ++i) {
+                    _parent.add(components.get(i), i + initialSize);
+                    _parent.setLayer(components.get(i), i + initialSize);
+                    components.get(i).setBounds(new Rectangle(0, 12 * (i + initialSize), components.get(i).getPreferredSize().width, components.get(i).getPreferredSize().height));
+                }
+                
+                // Remove the reference of this card from the main application
                 Application.instance().remove(CardView.this);
+                
+                // Clear the card views that were added within this cards' layered pane
+                CardView.this._layeredPane.removeAll();
+                
+                // Repaint the components accordingly
                 Application.instance().repaint();
+                _parent.repaint();
                 
-                // Put the card back into the position where it originally was
-                _parent.add(CardView.this, _index);
-                
-                CardView.this.setBounds(new Rectangle(0, 12 * _index, CardView.this.getPreferredSize().width, CardView.this.getPreferredSize().height));
-                
-                // Reset the index back to it's default position
+                // Reset all reference
                 _index = 0;
+                _parent = null;
             }
         });
     }
