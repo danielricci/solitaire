@@ -67,6 +67,7 @@ public final class CardView extends PanelView {
     /**
      * Dragging listener
      */
+    @SuppressWarnings("unused")
     private final DraggableListener _draggableListener = new DraggableListener(this);
 
     /**
