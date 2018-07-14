@@ -24,12 +24,13 @@
 
 package game.views;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.List;
 
-import javax.swing.BoxLayout;
 import javax.swing.JLayeredPane;
 
 import framework.core.factories.ViewFactory;
@@ -38,13 +39,15 @@ import game.models.CardModel;
 
 public final class PileView extends PanelView {
 
+    public static final int PILE_CARD_OFFSET = 12;
+    
     private final JLayeredPane _layeredPane = new JLayeredPane();
 
     private PileView() {
-        setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-        setPreferredSize(new Dimension(71, 96));
+        setLayout(new BorderLayout());
+        setPreferredSize(new Dimension(CardView.CARD_WIDTH, this.getPreferredSize().height));
         setOpaque(false);
-        add(_layeredPane);
+        add(_layeredPane, BorderLayout.CENTER);
     }
     
     public PileView(List<CardModel> cards) {
@@ -59,7 +62,8 @@ public final class PileView extends PanelView {
             _layeredPane.setLayer(view, i);
             
             // Set the bounds of the view within the layered pane
-            view.setBounds(new Rectangle(0, 12 * i, view.getPreferredSize().width, view.getPreferredSize().height));
+            //view.setLocation(new Point(0, 12 * i));
+            view.setBounds(new Rectangle(0, PILE_CARD_OFFSET * i, view.getPreferredSize().width, view.getPreferredSize().height));
         } 
     }
     
@@ -74,7 +78,8 @@ public final class PileView extends PanelView {
             _layeredPane.setLayer(view, i);
             
             // Set the bounds of the view within the layered pane
-            view.setBounds(new Rectangle(0, 12 * i, view.getPreferredSize().width, view.getPreferredSize().height));
+            //view.setLocation(new Point(0, 12 * i));
+            view.setBounds(new Rectangle(0, PILE_CARD_OFFSET * i, view.getPreferredSize().width, view.getPreferredSize().height));
         }
     }
 
@@ -84,5 +89,6 @@ public final class PileView extends PanelView {
             CardView view = (CardView) component;
             view.render();
         }
+        repaint();
     }
 }
