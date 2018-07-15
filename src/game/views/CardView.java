@@ -84,17 +84,17 @@ public final class CardView extends PanelView {
      * Constructs a new instance of this class type
      */
     private CardView() {
-        //this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setOpaque(false);
+
         // Card Panel View
         _cardPanelView.setPreferredSize(new Dimension(CARD_WIDTH, CARD_HEIGHT));
-        add(_cardPanelView);
         _cardPanelView.setOpaque(false);
-
-        add(_childrenCardsLayeredPane);   
+        add(_cardPanelView);
+        
+        // Children Cards View
         _childrenCardsLayeredPane.setPreferredSize(new Dimension(CARD_WIDTH, CARD_HEIGHT));
         _childrenCardsLayeredPane.setOpaque(false);
-
+        //add(_childrenCardsLayeredPane);
     }
 
     /**
@@ -132,30 +132,42 @@ public final class CardView extends PanelView {
                         // Remove the card view reference from it's initial parent
                         _parentSource.remove(CardView.this);
                         Application.instance().add(CardView.this, 0);
-
+                        CardView.this.add(_childrenCardsLayeredPane);
+                        
                         // Get the siblings of cards within the components list (excluding CardView.this)
                         List<CardView> cardViews = Arrays.asList(Arrays.copyOfRange(components, 0, i, CardView[].class));
 
                         // Reverse the list because layered panes associate objects closer to layer 0 as being closer to the screen.
                         Collections.reverse(cardViews);
 
-                        // For each sibling add it into the associated layere pane and position it correctly within
+                        // For each sibling add it into the associated layered pane and position it correctly within
                         // the pane, accounting for the fact that CardView.this is the temporary 'root'
                         for(int j = 0; j < cardViews.size(); ++j) {
                             _childrenCardsLayeredPane.add(cardViews.get(j), j);
                             _childrenCardsLayeredPane.setLayer(cardViews.get(j), j);
-                            cardViews.get(j).setLocation(new Point(0, PileView.PILE_CARD_OFFSET * (j + 1)));
+                            cardViews.get(j).setBounds(new Rectangle(
+                                0, 
+                                PileView.PILE_CARD_OFFSET * (j + 1),
+                                cardViews.get(j).getPreferredSize().width, 
+                                cardViews.get(j).getPreferredSize().height
+                            ));
                             _parentSource.remove(cardViews.get(j));
                         }
 
                         // Position the card at the same place where the drag was attempted from, because when you
                         // add to the application it will position the component at the origin which is not desired
                         Point initialLocation = CardView.this.getLocation();
-                        CardView.this.setBounds(new Rectangle(_parentSource.getParent().getLocation().x + initialLocation.x, _parentSource.getParent().getLocation().y + initialLocation.y, CardView.this.getPreferredSize().width, CardView.this.getPreferredSize().height));
+                        CardView.this.setBounds(new Rectangle(
+                            _parentSource.getParent().getLocation().x + initialLocation.x,
+                            _parentSource.getParent().getLocation().y + initialLocation.y, 
+                            CardView.this.getPreferredSize().width, 
+                            CardView.this.getPreferredSize().height
+                        ));
 
 
                         // Repaint the application to show the changes
                         Application.instance().repaint();
+                        CardView.this.repaint();
 
                         break mainLabel;
                     }
@@ -233,6 +245,4 @@ public final class CardView extends PanelView {
 
         repaint();
     }
-
-
 }

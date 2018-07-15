@@ -27,7 +27,6 @@ package game.views;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.List;
 
@@ -35,6 +34,7 @@ import javax.swing.JLayeredPane;
 
 import framework.core.factories.ViewFactory;
 import framework.core.mvc.view.PanelView;
+
 import game.models.CardModel;
 
 public final class PileView extends PanelView {
