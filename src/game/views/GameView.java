@@ -107,7 +107,7 @@ public final class GameView extends PanelView {
                         
                         // Create the talon view
                         TalonView talonView = viewFactory.add(new TalonView(cards), true);
-                        this.add(talonView, _constraints);
+                        this.add(talonView, _constraints, 0);
                         break;
                     }
                     case 3:

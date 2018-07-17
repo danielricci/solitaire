@@ -30,6 +30,8 @@ import java.util.Collection;
 import framework.communication.internal.signal.arguments.AbstractEventArgs;
 import framework.communication.internal.signal.arguments.ModelEventArgs;
 import framework.core.mvc.view.PanelView;
+import framework.core.mvc.view.layout.DragListener;
+
 import game.models.CardModel;
 
 public final class TalonView extends PanelView {
@@ -40,13 +42,8 @@ public final class TalonView extends PanelView {
     public TalonView(Collection<CardModel> cards) {
         setPreferredSize(new Dimension(71, 96));
         setOpaque(false);
-        
+        new DragListener(this);
         cards.forEach(z -> z.addListeners(this));
-    }
-    
-    @Override public void onViewInitialized() {
-        super.onViewInitialized();
-        
     }
     
     @Override public void update(AbstractEventArgs event) {
