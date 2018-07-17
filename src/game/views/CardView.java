@@ -42,7 +42,7 @@ import framework.communication.internal.signal.arguments.ModelEventArgs;
 import framework.core.factories.AbstractFactory;
 import framework.core.factories.ControllerFactory;
 import framework.core.mvc.view.PanelView;
-import framework.core.mvc.view.layout.DraggableListener;
+import framework.core.mvc.view.layout.DragListener;
 
 import game.application.Application;
 import game.controllers.CardController;
@@ -62,31 +62,33 @@ public final class CardView extends PanelView {
 
     private final CardController _controller = AbstractFactory.getFactory(ControllerFactory.class).add(new CardController());
     
-    private final DraggableListener _draggableListener = new DraggableListener(this);
+    private final DragListener _draggableListener = new DragListener(this);
        
     private final JLayeredPane _layeredPane = new JLayeredPane();
     
     /**
      * Creates a new instance of this class type
      */
-    public CardView(CardModel card) {
+    public CardView(CardModel card, boolean isBackside) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setPreferredSize(new Dimension(71, 96));
         setOpaque(false);
         add(_layeredPane);
         _controller.setCard(card);
         card.addListeners(this);
+        card.setBackside(isBackside);
     }
     
     @Override public void onViewInitialized() {
         addMouseListener(new MouseAdapter() {
-            
+        
             /**
              * The parent associated to this card view
              */
             private JLayeredPane _parentSource;
             
             @Override public void mousePressed(MouseEvent event) {
+
                 
                 // Get the parent of this card view, used as a reference to go back to whatever we were coming from
                 _parentSource = (JLayeredPane) CardView.this.getParent();
@@ -192,12 +194,13 @@ public final class CardView extends PanelView {
     }
     
     @Override public void update(AbstractEventArgs event) {
-        
         super.update(event);
         
         if(event instanceof ModelEventArgs) {
             ModelEventArgs args = (ModelEventArgs) event;
             if(args.getSource() instanceof CardModel) {
+                CardModel card = (CardModel)args.getSource();
+                _draggableListener.setEnabled(!card.getIsBackside());
                 addRenderableContent((CardModel)args.getSource()); 
             }
         }

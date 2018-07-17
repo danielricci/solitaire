@@ -55,6 +55,14 @@ public final class CardModel extends BaseModel {
         return _cardEntity == null;
     }
     
+    public void setBackside(boolean backside) {
+        _cardEntity.setBacksideVisible(backside);
+    }
+    
+    public boolean getIsBackside() {
+        return _cardEntity.getBacksideVisible();
+    }
+    
     public static List<CardModel> newInstances() {
         List<CardModel> entities = new ArrayList<CardModel>();
         for(DataLookup.HEARTS heart : DataLookup.HEARTS.values()) {
