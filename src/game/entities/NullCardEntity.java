@@ -9,8 +9,4 @@ public final class NullCardEntity extends AbstractCardEntity {
     @Override public boolean isOppositeSuite(AbstractCardEntity card) {
         return false; 
     }
-
-    @Override public boolean isCardRankedBefore(AbstractCardEntity card) {
-        return false;
-    }
 }

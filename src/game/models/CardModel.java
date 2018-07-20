@@ -86,6 +86,17 @@ public final class CardModel extends BaseModel {
         return entities;
     }
     
+    /**
+     * Checks if the passed in card is ordinally before and of opposite suite to this card
+     * @param card The card
+     * 
+     * @return TRUE if the card passed in is both ordinally before and of opposite suite to this card, FALSE otherwise
+     */
+    public boolean isCardBeforeAndSameSuite(CardModel card) {
+       // System.out.println("Attempting to place " + card._cardEntity.toString() + " over " + _cardEntity.toString());
+        return  !card._cardEntity.getBacksideVisible() && card._cardEntity.isOppositeSuite(_cardEntity) && card._cardEntity.isCardRankedBefore(_cardEntity);
+    }
+    
     @Override public Image getRenderableContent() {
         if(_cardEntity == null) {
             return null;

@@ -1,9 +1,14 @@
 package game.entities;
 
 import java.awt.Image;
+import java.util.UUID;
+import java.util.logging.Level;
 
 import framework.core.entity.AbstractDataEntity;
+import framework.utils.logging.Tracelog;
+
 import generated.DataLookup;
+import generated.DataLookup.LAYER;
 
 
 public abstract class AbstractCardEntity extends AbstractDataEntity {
@@ -16,22 +21,40 @@ public abstract class AbstractCardEntity extends AbstractDataEntity {
     /**
      * The layer associated to this entity
      */
-    protected final DataLookup.LAYER layer;
+    protected final LAYER layer;
+    
+    /**
+     * The UUID associated to the entity data
+     */
+    protected final UUID identifier;
+    
+    /**
+     * The ordinal associated to the entity data
+     */
+    protected final int ordinal;
     
     /**
      * Constructs a new instance of this class type
      */
     protected AbstractCardEntity() {
         layer = null;
+        identifier = null;
+        ordinal = -1;
     }
     
     /**
      * Constructs a new instance of this class type
      * 
      * @param layer The layer to set this card entity to
+     * @param ordinal The oridinal position of the card
+     * @param the uuid associated to the card
      */
-    protected AbstractCardEntity(DataLookup.LAYER layer) {
+    protected AbstractCardEntity(LAYER layer, int ordinal, UUID identifier) {
         this.layer = layer;
+        this.identifier = identifier;
+        this.ordinal = ordinal;
+        
+        setActiveData(identifier);
     }
     
     /**
@@ -43,8 +66,10 @@ public abstract class AbstractCardEntity extends AbstractDataEntity {
      * 
      * @return TRUE if the card is ranked before the one specified, false otherwise
      */
-    public abstract boolean isCardRankedBefore(AbstractCardEntity card);
-
+    public final boolean isCardRankedBefore(AbstractCardEntity card) {
+        return ordinal + 1 == card.ordinal;
+    }
+    
     /**
      * Indicates if this card's suite is opposite to the card specified. An opposite suite is one that is of different color
      *  
@@ -86,4 +111,9 @@ public abstract class AbstractCardEntity extends AbstractDataEntity {
         }
         return super.getRenderableContent();
     }
+    
+    @Override public String toString() {
+        return layer.toString() + ": " + (ordinal + 1);
+    }
+    
 }

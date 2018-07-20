@@ -1,5 +1,5 @@
 /**
- * Daniel Ricci <thedanny09@gmail.com>
+ *   Ricci <thedanny09@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -25,31 +25,36 @@
 package game.views;
 
 import java.awt.Dimension;
-import java.util.Collection;
 
 import framework.communication.internal.signal.arguments.AbstractEventArgs;
-import framework.communication.internal.signal.arguments.ModelEventArgs;
+import framework.core.factories.AbstractFactory;
+import framework.core.factories.ControllerFactory;
 import framework.core.mvc.view.PanelView;
 import framework.core.mvc.view.layout.DragListener;
+import framework.core.physics.CollisionListener;
 
+import game.controllers.CardController;
 import game.models.CardModel;
 
 public final class TalonView extends PanelView {
 
-    /**
-     * Creates a new instance of this class type
-     */
-    public TalonView(Collection<CardModel> cards) {
+    private final CardController _controller = AbstractFactory.getFactory(ControllerFactory.class).add(new CardController());
+    
+    public TalonView() {
         setPreferredSize(new Dimension(71, 96));
         setOpaque(false);
+
         new DragListener(this);
-        cards.forEach(z -> z.addListeners(this));
+        new CollisionListener(this);
+        
+        getViewProperties().setEntity(_controller);
     }
     
     @Override public void update(AbstractEventArgs event) {
         super.update(event);
-        if(event.getOperationName() == CardModel.EVENT_NEXT_CARD && event instanceof ModelEventArgs && event.getSource() instanceof CardModel) {
+        if(event.getOperationName() == CardModel.EVENT_NEXT_CARD) {
             CardModel cardModel = (CardModel)event.getSource();
+            _controller.setCard(cardModel);
             addRenderableContent(cardModel);
         }
         repaint();

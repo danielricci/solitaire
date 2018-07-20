@@ -34,7 +34,11 @@ public class CardController extends BaseController {
     public void setCard(CardModel card) {
         _card = card;
     }
-
+    
+    public CardModel getCard() {
+        return _card;
+    }
+    
     public void refresh() {
         _card.refresh();
     }

@@ -43,6 +43,7 @@ import framework.core.factories.AbstractFactory;
 import framework.core.factories.ControllerFactory;
 import framework.core.mvc.view.PanelView;
 import framework.core.mvc.view.layout.DragListener;
+import framework.core.physics.CollisionListener;
 
 import game.application.Application;
 import game.controllers.CardController;
@@ -63,6 +64,8 @@ public final class CardView extends PanelView {
     private final CardController _controller = AbstractFactory.getFactory(ControllerFactory.class).add(new CardController());
     
     private final DragListener _draggableListener = new DragListener(this);
+    
+    private final CollisionListener _collisionListener = new CollisionListener(this);
        
     private final JLayeredPane _layeredPane = new JLayeredPane();
     
@@ -77,6 +80,7 @@ public final class CardView extends PanelView {
         _controller.setCard(card);
         card.addListeners(this);
         card.setBackside(isBackside);
+        getViewProperties().setEntity(_controller);
     }
     
     @Override public void onViewInitialized() {
