@@ -27,7 +27,6 @@ package game.views;
 import java.awt.Dimension;
 
 import framework.core.mvc.view.PanelView;
-import game.models.CardModel;
 
 public final class FoundationView extends PanelView {
 

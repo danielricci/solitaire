@@ -2,12 +2,9 @@ package game.entities;
 
 import java.awt.Image;
 import java.util.UUID;
-import java.util.logging.Level;
 
 import framework.core.entity.AbstractDataEntity;
-import framework.utils.logging.Tracelog;
 
-import generated.DataLookup;
 import generated.DataLookup.LAYER;
 
 
