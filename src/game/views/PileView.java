@@ -35,12 +35,11 @@ import javax.swing.JLayeredPane;
 import framework.api.IView;
 import framework.core.factories.ViewFactory;
 import framework.core.mvc.view.PanelView;
-import framework.core.physics.ICollidable;
+import framework.core.physics.ICollide;
 
-import game.controllers.CardController;
 import game.models.CardModel;
 
-public final class PileView extends PanelView implements ICollidable {
+public final class PileView extends PanelView implements ICollide {
 
     public static final int PILE_CARD_OFFSET = 12;
     
@@ -94,30 +93,13 @@ public final class PileView extends PanelView implements ICollidable {
         repaint();
     }
 
-    @Override public boolean isValidCollider(IView source) {
+    @Override public boolean isValidCollision(IView source) {
         
-        // This wont work eventually when we attempt to drag in a king
         if(_layeredPane.getComponentCount() == 0) {
             return false;
         }
         
-        // Get the contents of this view
         CardView cardView = (CardView) _layeredPane.getComponent(0);
-        CardController cardViewController = cardView.getViewProperties().getEntity(CardController.class);
-        
-        // Check if what is attempting to collide into this card is valid
-        boolean compatible = cardViewController.getCard().isCardBeforeAndSameSuite(
-            source.getViewProperties().getEntity(CardController.class).getCard()
-        );
-        
-        // Verify compatibility and return appropriately
-        if(compatible) {
-            System.out.println("YES!");
-            return true;
-        }
-        else {
-            System.out.println("NO!");
-            return false;            
-        }
+        return cardView.isValidCollision(source);
     }
 }

@@ -36,7 +36,9 @@ import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JLayeredPane;
+import javax.swing.SwingUtilities;
 
+import framework.api.IView;
 import framework.communication.internal.signal.arguments.AbstractEventArgs;
 import framework.communication.internal.signal.arguments.ModelEventArgs;
 import framework.core.factories.AbstractFactory;
@@ -44,12 +46,13 @@ import framework.core.factories.ControllerFactory;
 import framework.core.mvc.view.PanelView;
 import framework.core.mvc.view.layout.DragListener;
 import framework.core.physics.CollisionListener;
+import framework.core.physics.ICollide;
 
 import game.application.Application;
 import game.controllers.CardController;
 import game.models.CardModel;
 
-public final class CardView extends PanelView {
+public final class CardView extends PanelView implements ICollide {
 
     /**
      * The preferred width of this card
@@ -210,5 +213,41 @@ public final class CardView extends PanelView {
         }
         
         repaint();
+    }
+
+    @Override public boolean isValidCollision(IView source) {
+        
+      System.out.println("Source: " + source.getContainerClass().getBounds());
+      System.out.println("Destination: " + this.getBounds());
+      System.out.println("Intersects: " + source.getContainerClass().getBounds().intersects(this.getBounds()));
+      
+      Point pt = source.getContainerClass().getLocationOnScreen();
+      System.out.println(pt);
+      SwingUtilities.convertPointFromScreen(pt, source.getContainerClass());
+      System.out.println(pt);
+      
+      
+      
+      // Ensure that a proper intersection has occured before continuing
+      if(!source.getContainerClass().getBounds().intersects(this.getBounds())) {
+          return false;
+      }
+          
+      CardController cardViewController = this.getViewProperties().getEntity(CardController.class);
+      
+      // Check if what is attempting to collide into this card is valid
+      boolean compatible = cardViewController.getCard().isCardBeforeAndSameSuite(
+          source.getViewProperties().getEntity(CardController.class).getCard()
+      );
+      
+      // Verify compatibility and return appropriately
+      if(compatible) {
+          System.out.println("YES!");
+          return true;
+      }
+      else {
+          System.out.println("NO!");
+          return false;            
+      }
     }
 }
