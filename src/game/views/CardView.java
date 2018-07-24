@@ -30,13 +30,13 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JLayeredPane;
-import javax.swing.SwingUtilities;
 
 import framework.api.IView;
 import framework.communication.internal.signal.arguments.AbstractEventArgs;
@@ -193,6 +193,18 @@ public final class CardView extends PanelView implements ICollide {
                 _parentSource = null;
             }
         });
+        
+        addMouseMotionListener(new MouseAdapter() {
+            @Override public void mouseDragged(MouseEvent e) {
+                IView collidedView = _collisionListener.getCollision();
+                if(collidedView != null) {
+                    System.out.println("YES!");
+                }
+                else {
+                    System.out.println("NO!");
+                }
+            }
+        });
     }
     
     @Override public void render() {
@@ -216,38 +228,13 @@ public final class CardView extends PanelView implements ICollide {
     }
 
     @Override public boolean isValidCollision(IView source) {
-        
-      System.out.println("Source: " + source.getContainerClass().getBounds());
-      System.out.println("Destination: " + this.getBounds());
-      System.out.println("Intersects: " + source.getContainerClass().getBounds().intersects(this.getBounds()));
       
-      Point pt = source.getContainerClass().getLocationOnScreen();
-      System.out.println(pt);
-      SwingUtilities.convertPointFromScreen(pt, source.getContainerClass());
-      System.out.println(pt);
-      
-      
-      
-      // Ensure that a proper intersection has occured before continuing
-      if(!source.getContainerClass().getBounds().intersects(this.getBounds())) {
-          return false;
-      }
-          
+      // Get the controller associated to this instance
       CardController cardViewController = this.getViewProperties().getEntity(CardController.class);
       
       // Check if what is attempting to collide into this card is valid
-      boolean compatible = cardViewController.getCard().isCardBeforeAndSameSuite(
+      return cardViewController.getCard().isCardBeforeAndSameSuite(
           source.getViewProperties().getEntity(CardController.class).getCard()
       );
-      
-      // Verify compatibility and return appropriately
-      if(compatible) {
-          System.out.println("YES!");
-          return true;
-      }
-      else {
-          System.out.println("NO!");
-          return false;            
-      }
     }
 }

@@ -95,11 +95,30 @@ public final class PileView extends PanelView implements ICollide {
 
     @Override public boolean isValidCollision(IView source) {
         
+        //  FIXME - Support any component size, including 0
         if(_layeredPane.getComponentCount() == 0) {
             return false;
         }
         
+        // Get the bottom most card within the pile view.
         CardView cardView = (CardView) _layeredPane.getComponent(0);
-        return cardView.isValidCollision(source);
+        
+        // Verify that a proper collision with a singular card has occured
+        Rectangle thisBounds = this.getBounds();
+        Rectangle thatBounds = cardView.getBounds();
+        Rectangle rect = new Rectangle(
+            thisBounds.x + thatBounds.x, 
+            thisBounds.y + thatBounds.y, 
+            cardView.getWidth(),
+            cardView.getHeight()
+        );
+        
+        // If the intersection is valid then verify if the card allows
+        // for the collision
+        if(source.getContainerClass().getBounds().intersects(rect)) {
+            return cardView.isValidCollision(source); 
+        }
+        
+        return false;
     }
 }
