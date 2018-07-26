@@ -25,7 +25,10 @@
 package game.views;
 
 import java.awt.Dimension;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
+import framework.api.IView;
 import framework.communication.internal.signal.arguments.AbstractEventArgs;
 import framework.core.factories.AbstractFactory;
 import framework.core.factories.ControllerFactory;
@@ -40,15 +43,33 @@ public final class TalonView extends PanelView {
 
     private final CardController _controller = AbstractFactory.getFactory(ControllerFactory.class).add(new CardController());
     
+    private CollisionListener _collisionListener = new CollisionListener(this);
+    
     public TalonView() {
         setPreferredSize(new Dimension(71, 96));
         setOpaque(false);
 
         new DragListener(this);
-        new CollisionListener(this);
         
         getViewProperties().setEntity(_controller);
     }
+    
+    @Override public void onViewInitialized() {
+        super.onViewInitialized();
+        
+        addMouseMotionListener(new MouseAdapter() {
+            @Override public void mouseDragged(MouseEvent e) {
+                IView collidedView = _collisionListener.getCollision();
+                if(collidedView != null) {
+                    System.out.println("YES!");
+                }
+                else {
+                    System.out.println("NO!");
+                }
+            }
+        });
+    }
+    
     
     @Override public void update(AbstractEventArgs event) {
         super.update(event);
