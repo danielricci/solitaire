@@ -30,10 +30,11 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.logging.Level;
 
 import javax.swing.BoxLayout;
 import javax.swing.JLayeredPane;
@@ -47,6 +48,7 @@ import framework.core.mvc.view.PanelView;
 import framework.core.mvc.view.layout.DragListener;
 import framework.core.physics.CollisionListener;
 import framework.core.physics.ICollide;
+import framework.utils.logging.Tracelog;
 
 import game.application.Application;
 import game.controllers.CardController;
@@ -79,7 +81,9 @@ public final class CardView extends PanelView implements ICollide {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setPreferredSize(new Dimension(71, 96));
         setOpaque(false);
+        
         add(_layeredPane);
+        
         _controller.setCard(card);
         card.addListeners(this);
         card.setBackside(isBackside);
@@ -88,7 +92,6 @@ public final class CardView extends PanelView implements ICollide {
     
     @Override public void onViewInitialized() {
         addMouseListener(new MouseAdapter() {
-        
             /**
              * The parent associated to this card view
              */
@@ -96,7 +99,6 @@ public final class CardView extends PanelView implements ICollide {
             
             @Override public void mousePressed(MouseEvent event) {
 
-                
                 // Get the parent of this card view, used as a reference to go back to whatever we were coming from
                 _parentSource = (JLayeredPane) CardView.this.getParent();
                 
@@ -144,6 +146,21 @@ public final class CardView extends PanelView implements ICollide {
             
             @Override public void mouseReleased(MouseEvent event) {
                 
+                // If there is a valid collider, set that as the new parent
+                if(_collisionListener.getCollision() != null) {
+                    IView collision = _collisionListener.getCollision();
+                    PileView pileView = (PileView) collision;
+                    
+                    Optional<Component> layeredPane = Arrays.asList(pileView.getComponents()).stream().filter(z -> z.getClass() == JLayeredPane.class).findFirst();
+                    if(layeredPane.isPresent()) {
+                        _parentSource = (JLayeredPane) layeredPane.get();
+                    }
+                    else {
+                        Tracelog.log(Level.SEVERE, true, "Could not find JLayeredPane within the CardView mouseReleased event...");
+                        return;
+                    }
+                }
+                       
                 // Get the list of components associated to the CardView.this reference. This list represents all the children associated
                 // to the said CardView.this reference.
                 List<Component> components = Arrays.asList(CardView.this._layeredPane.getComponents());
@@ -191,18 +208,6 @@ public final class CardView extends PanelView implements ICollide {
                 
                 // Reset all reference
                 _parentSource = null;
-            }
-        });
-        
-        addMouseMotionListener(new MouseAdapter() {
-            @Override public void mouseDragged(MouseEvent e) {
-                IView collidedView = _collisionListener.getCollision();
-                if(collidedView != null) {
-                    System.out.println("YES!");
-                }
-                else {
-                    System.out.println("NO!");
-                }
             }
         });
     }

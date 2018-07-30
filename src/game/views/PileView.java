@@ -83,6 +83,10 @@ public final class PileView extends PanelView implements ICollide {
             view.setBounds(new Rectangle(0, PILE_CARD_OFFSET * i, view.getPreferredSize().width, view.getPreferredSize().height));
         }
     }
+    
+    public JLayeredPane getLayeredPane() {
+        return _layeredPane;
+    }
 
     @Override public void render() {
         super.render();
