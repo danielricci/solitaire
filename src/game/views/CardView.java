@@ -30,6 +30,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -66,12 +67,24 @@ public final class CardView extends PanelView implements ICollide {
      */
     public static final int CARD_HEIGHT = 100;
 
+    /**
+     * The controller associated to this card view
+     */
     private final CardController _controller = AbstractFactory.getFactory(ControllerFactory.class).add(new CardController());
     
+    /**
+     * The draggable listener associated to this view
+     */
     private final DragListener _draggableListener = new DragListener(this);
     
+    /**
+     * The collision listener associated to this view
+     */
     private final CollisionListener _collisionListener = new CollisionListener(this);
        
+    /**
+     * The layered pane that holds the potential list of card that would be dragged along-side this card vuew
+     */
     private final JLayeredPane _layeredPane = new JLayeredPane();
     
     /**
@@ -90,12 +103,34 @@ public final class CardView extends PanelView implements ICollide {
         getViewProperties().setEntity(_controller);
     }
     
+    @Override public boolean isValidCollision(Component source) {
+    
+      // Get the controller associated to this instance
+      CardController cardViewController = this.getViewProperties().getEntity(CardController.class);
+    
+      // TODO Can this be removed, and somehow better done so that there is no IView dependency
+      IView view = (IView) source;
+      
+      // Check if what is attempting to collide into this card is valid
+      return cardViewController.getCard().isCardBeforeAndSameSuite(
+          view.getViewProperties().getEntity(CardController.class).getCard()
+      );
+    }
+
     @Override public void onViewInitialized() {
         addMouseListener(new MouseAdapter() {
             /**
              * The parent associated to this card view
              */
             private JLayeredPane _parentSource;
+            
+            @Override public void mouseClicked(MouseEvent event) {
+                
+                // Only try to uncover the bottom-most card
+                if(CardView.this.getParent().getComponents()[0].equals(CardView.this)) {
+                    _controller.handleSingleClickAction();
+                }
+            }
             
             @Override public void mousePressed(MouseEvent event) {
 
@@ -148,7 +183,7 @@ public final class CardView extends PanelView implements ICollide {
                 
                 // If there is a valid collider, set that as the new parent
                 if(_collisionListener.getCollision() != null) {
-                    IView collision = _collisionListener.getCollision();
+                    ICollide collision = _collisionListener.getCollision();
                     PileView pileView = (PileView) collision;
                     
                     Optional<Component> layeredPane = Arrays.asList(pileView.getComponents()).stream().filter(z -> z.getClass() == JLayeredPane.class).findFirst();
@@ -225,21 +260,11 @@ public final class CardView extends PanelView implements ICollide {
             if(args.getSource() instanceof CardModel) {
                 CardModel card = (CardModel)args.getSource();
                 _draggableListener.setEnabled(!card.getIsBackside());
+                _collisionListener.setEnabled(!card.getIsBackside());
                 addRenderableContent((CardModel)args.getSource()); 
             }
         }
         
         repaint();
-    }
-
-    @Override public boolean isValidCollision(IView source) {
-      
-      // Get the controller associated to this instance
-      CardController cardViewController = this.getViewProperties().getEntity(CardController.class);
-      
-      // Check if what is attempting to collide into this card is valid
-      return cardViewController.getCard().isCardBeforeAndSameSuite(
-          source.getViewProperties().getEntity(CardController.class).getCard()
-      );
     }
 }

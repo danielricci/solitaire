@@ -28,13 +28,13 @@ import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-import framework.api.IView;
 import framework.communication.internal.signal.arguments.AbstractEventArgs;
 import framework.core.factories.AbstractFactory;
 import framework.core.factories.ControllerFactory;
 import framework.core.mvc.view.PanelView;
 import framework.core.mvc.view.layout.DragListener;
 import framework.core.physics.CollisionListener;
+import framework.core.physics.ICollide;
 
 import game.controllers.CardController;
 import game.models.CardModel;
@@ -59,7 +59,7 @@ public final class TalonView extends PanelView {
         
         addMouseMotionListener(new MouseAdapter() {
             @Override public void mouseDragged(MouseEvent e) {
-                IView collidedView = _collisionListener.getCollision();
+                ICollide collidedView = _collisionListener.getCollision();
                 if(collidedView != null) {
                     System.out.println("YES!");
                 }

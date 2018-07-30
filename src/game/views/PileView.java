@@ -97,7 +97,7 @@ public final class PileView extends PanelView implements ICollide {
         repaint();
     }
 
-    @Override public boolean isValidCollision(IView source) {
+    @Override public boolean isValidCollision(Component source) {
         
         //  FIXME - Support any component size, including 0
         if(_layeredPane.getComponentCount() == 0) {
@@ -119,7 +119,7 @@ public final class PileView extends PanelView implements ICollide {
         
         // If the intersection is valid then verify if the card allows
         // for the collision
-        if(source.getContainerClass().getBounds().intersects(rect)) {
+        if(source.getBounds().intersects(rect)) {
             return cardView.isValidCollision(source); 
         }
         

@@ -31,15 +31,24 @@ public class CardController extends BaseController {
 
     private CardModel _card;
     
+    // TODO This might be better off being in the constructor, each card view should have its own card controller
     public void setCard(CardModel card) {
         _card = card;
     }
     
+    // TODO Remove this shit
     public CardModel getCard() {
         return _card;
     }
     
     public void refresh() {
         _card.refresh();
+    }
+
+    public void handleSingleClickAction() {
+        if(_card.getIsBackside()) {
+            _card.setBackside(false);
+            _card.refresh();
+        }
     }
 }
