@@ -32,7 +32,6 @@ import java.util.List;
 
 import javax.swing.JLayeredPane;
 
-import framework.api.IView;
 import framework.core.factories.ViewFactory;
 import framework.core.mvc.view.PanelView;
 import framework.core.physics.ICollide;
