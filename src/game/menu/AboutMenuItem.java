@@ -58,7 +58,7 @@ public class AboutMenuItem extends AbstractMenuItem {
     @Override public void onExecute(ActionEvent actionEvent) {
         JOptionPane.showMessageDialog(
             null,
-            Localization.instance().getLocalizedString("Github"),
+            Localization.instance().getLocalizedString(LocalizationStrings.GITHUB),
             Localization.instance().getLocalizedString("...text goes here..."),
             JOptionPane.INFORMATION_MESSAGE
         );

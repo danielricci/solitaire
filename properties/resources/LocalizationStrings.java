@@ -32,6 +32,6 @@ package resources;
  */
 public class LocalizationStrings {
      public static String ABOUT = "About";
-     public static String GITHUB = "GitHub";
+     public static String GITHUB = "Github";
      public static String TITLE = "Title";
 }
