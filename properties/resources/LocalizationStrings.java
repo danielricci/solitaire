@@ -34,4 +34,11 @@ public class LocalizationStrings {
      public static String ABOUT = "About";
      public static String GITHUB = "Github";
      public static String TITLE = "Title";
+     public static String GAME = "Game";
+     public static String HELP = "Help";
+     public static String DEAL = "Deal";
+     public static String UNDO = "Undo";
+     public static String DECK = "Deck";
+     public static String OPTIONS = "Options";
+     public static String EXIT = "Exit";
 }

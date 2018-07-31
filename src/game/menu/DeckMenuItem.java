@@ -24,15 +24,15 @@
 
 package game.menu;
 
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
-import javax.swing.KeyStroke;
 
 import framework.core.navigation.AbstractMenuItem;
 import framework.utils.globalisation.Localization;
+
+import resources.LocalizationStrings;
 
 /**
  * Menu item for starting a new game
@@ -48,8 +48,7 @@ public class DeckMenuItem extends AbstractMenuItem {
      * @param parent The parent associated to this menu item
      */
     public DeckMenuItem(JComponent parent) {
-        super(new JMenuItem(Localization.instance().getLocalizedString("Deck...")), parent);
-        super.getComponent(JMenuItem.class).setAccelerator(KeyStroke.getKeyStroke('C', Toolkit.getDefaultToolkit ().getMenuShortcutKeyMask()));
+        super(new JMenuItem(Localization.instance().getLocalizedString(LocalizationStrings.DECK)), parent);
     }
 
     @Override public void onExecute(ActionEvent actionEvent) {

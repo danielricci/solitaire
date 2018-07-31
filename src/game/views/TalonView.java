@@ -36,6 +36,7 @@ public final class TalonView extends PanelView {
 
     //private final CardController _controller = AbstractFactory.getFactory(ControllerFactory.class).add(new CardController(null));
     
+    @SuppressWarnings("unused")
     private CollisionListener _collisionListener = new CollisionListener(this);
     
     public TalonView() {

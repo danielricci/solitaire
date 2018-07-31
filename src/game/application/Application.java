@@ -81,7 +81,7 @@ public final class Application extends AbstractApplication {
         
         // Game Menu
         MenuBuilder.start(getJMenuBar())
-        .addMenu(Localization.instance().getLocalizedString("Game"))
+        .addMenu(Localization.instance().getLocalizedString(LocalizationStrings.GAME))
         .addMenuItem(NewGameMenuItem.class)
         .addSeparator()
         .addMenuItem(UndoMenuItem.class)
@@ -92,7 +92,7 @@ public final class Application extends AbstractApplication {
                 
         // Help Menu
         MenuBuilder.start(getJMenuBar())
-        .addMenu(Localization.instance().getLocalizedString("Help"))
+        .addMenu(Localization.instance().getLocalizedString(LocalizationStrings.HELP))
         .addMenuItem(AboutMenuItem.class);
     }
 

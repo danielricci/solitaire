@@ -24,12 +24,10 @@
 
 package game.menu;
 
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
-import javax.swing.KeyStroke;
 
 import framework.core.navigation.AbstractMenuItem;
 import framework.utils.globalisation.Localization;
@@ -49,7 +47,6 @@ public class UndoMenuItem extends AbstractMenuItem {
      */
     public UndoMenuItem(JComponent parent) {
         super(new JMenuItem(Localization.instance().getLocalizedString("Undo")), parent);
-        super.getComponent(JMenuItem.class).setAccelerator(KeyStroke.getKeyStroke('U', Toolkit.getDefaultToolkit ().getMenuShortcutKeyMask()));
     }
 
     @Override public void onExecute(ActionEvent actionEvent) {

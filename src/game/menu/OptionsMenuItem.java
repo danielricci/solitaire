@@ -24,15 +24,15 @@
 
 package game.menu;
 
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
-import javax.swing.KeyStroke;
 
 import framework.core.navigation.AbstractMenuItem;
 import framework.utils.globalisation.Localization;
+
+import resources.LocalizationStrings;
 
 /**
  * Menu item for starting a new game
@@ -48,8 +48,7 @@ public class OptionsMenuItem extends AbstractMenuItem {
      * @param parent The parent associated to this menu item
      */
     public OptionsMenuItem(JComponent parent) {
-        super(new JMenuItem(Localization.instance().getLocalizedString("Options...")), parent);
-        super.getComponent(JMenuItem.class).setAccelerator(KeyStroke.getKeyStroke('O', Toolkit.getDefaultToolkit ().getMenuShortcutKeyMask()));
+        super(new JMenuItem(Localization.instance().getLocalizedString(LocalizationStrings.OPTIONS)), parent);
     }
 
     @Override public void onExecute(ActionEvent actionEvent) {

@@ -24,12 +24,10 @@
 
 package game.menu;
 
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
-import javax.swing.KeyStroke;
 
 import framework.core.navigation.AbstractMenuItem;
 import framework.utils.globalisation.Localization;
@@ -49,7 +47,6 @@ public class ExitMenuItem extends AbstractMenuItem {
      */
     public ExitMenuItem(JComponent parent) {
         super(new JMenuItem(Localization.instance().getLocalizedString("Exit")), parent);
-        super.getComponent(JMenuItem.class).setAccelerator(KeyStroke.getKeyStroke('X', Toolkit.getDefaultToolkit ().getMenuShortcutKeyMask()));
     }
 
     @Override public void onExecute(ActionEvent actionEvent) {
