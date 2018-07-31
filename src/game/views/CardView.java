@@ -69,7 +69,7 @@ public final class CardView extends PanelView implements ICollide {
     /**
      * The controller associated to this card view
      */
-    private final CardController _controller = AbstractFactory.getFactory(ControllerFactory.class).add(new CardController());
+    private final CardController _controller;
     
     /**
      * The draggable listener associated to this view
@@ -89,16 +89,14 @@ public final class CardView extends PanelView implements ICollide {
     /**
      * Creates a new instance of this class type
      */
-    public CardView(CardModel card, boolean isBackside) {
+    public CardView(CardModel card) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setPreferredSize(new Dimension(71, 96));
         setOpaque(false);
         
         add(_layeredPane);
         
-        _controller.setCard(card);
-        card.addListeners(this);
-        card.setBackside(isBackside);
+        _controller = AbstractFactory.getFactory(ControllerFactory.class).add(new CardController(card));
         getViewProperties().setEntity(_controller);
     }
     

@@ -28,6 +28,8 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.io.File;
 
+import javax.swing.AbstractButton;
+
 import framework.core.factories.AbstractFactory;
 import framework.core.factories.ViewFactory;
 import framework.core.navigation.MenuBuilder;
@@ -35,6 +37,7 @@ import framework.core.system.AbstractApplication;
 import framework.core.system.EngineProperties;
 import framework.core.system.EngineProperties.Property;
 import framework.utils.globalisation.Localization;
+
 import game.menu.AboutMenuItem;
 import game.menu.DeckMenuItem;
 import game.menu.ExitMenuItem;
@@ -42,9 +45,10 @@ import game.menu.NewGameMenuItem;
 import game.menu.OptionsMenuItem;
 import game.menu.UndoMenuItem;
 import game.views.GameView;
+
 import resources.LocalizedStrings;
 
-public class Application extends AbstractApplication {
+public final class Application extends AbstractApplication {
 
     public Application() {
         setMinimumSize(new Dimension(620, 436));
@@ -68,6 +72,11 @@ public class Application extends AbstractApplication {
                 Application.initialize(Application.class, debugMode);
             }
         });
+    }
+    
+    public void restartApplication() {
+        AbstractFactory.clearFactories();
+        this.removeAll();
     }
 
     private void populateMenu() {
@@ -107,11 +116,7 @@ public class Application extends AbstractApplication {
         // Populate the menu system
         populateMenu();
 
-        // Create the game view and set it as the content pane of the application
-        GameView gameView = AbstractFactory.getFactory(ViewFactory.class).add(new GameView(), true);
-        setContentPane(gameView);
-        
-        // TODO - this doesnt render the right stuff at the right time, make the view only call render in the render phase
-        gameView.render();
+        // New Game
+        MenuBuilder.search(getJMenuBar(), NewGameMenuItem.class).getComponent(AbstractButton.class).doClick();
     }
 }

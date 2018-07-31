@@ -31,8 +31,13 @@ import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
+import framework.core.factories.AbstractFactory;
+import framework.core.factories.ViewFactory;
 import framework.core.navigation.AbstractMenuItem;
 import framework.utils.globalisation.Localization;
+
+import game.application.Application;
+import game.views.GameView;
 
 /**
  * Menu item for starting a new game
@@ -54,5 +59,8 @@ public class NewGameMenuItem extends AbstractMenuItem {
     }
 
     @Override public void onExecute(ActionEvent actionEvent) {
+        GameView gameView = AbstractFactory.getFactory(ViewFactory.class).add(new GameView(), true);
+        Application.instance().setContentPane(gameView);
+        gameView.render();
     }
 }

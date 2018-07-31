@@ -25,23 +25,16 @@
 package game.views;
 
 import java.awt.Dimension;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 import framework.communication.internal.signal.arguments.AbstractEventArgs;
-import framework.core.factories.AbstractFactory;
-import framework.core.factories.ControllerFactory;
 import framework.core.mvc.view.PanelView;
-import framework.core.mvc.view.layout.DragListener;
 import framework.core.physics.CollisionListener;
-import framework.core.physics.ICollide;
 
-import game.controllers.CardController;
 import game.models.CardModel;
 
 public final class TalonView extends PanelView {
 
-    private final CardController _controller = AbstractFactory.getFactory(ControllerFactory.class).add(new CardController());
+    //private final CardController _controller = AbstractFactory.getFactory(ControllerFactory.class).add(new CardController(null));
     
     private CollisionListener _collisionListener = new CollisionListener(this);
     
@@ -49,25 +42,25 @@ public final class TalonView extends PanelView {
         setPreferredSize(new Dimension(71, 96));
         setOpaque(false);
 
-        new DragListener(this);
+        //new DragListener(this);
         
-        getViewProperties().setEntity(_controller);
+        //getViewProperties().setEntity(_controller);
     }
     
     @Override public void onViewInitialized() {
         super.onViewInitialized();
         
-        addMouseMotionListener(new MouseAdapter() {
-            @Override public void mouseDragged(MouseEvent e) {
-                ICollide collidedView = _collisionListener.getCollision();
-                if(collidedView != null) {
-                    System.out.println("YES!");
-                }
-                else {
-                    System.out.println("NO!");
-                }
-            }
-        });
+//        addMouseMotionListener(new MouseAdapter() {
+//            @Override public void mouseDragged(MouseEvent e) {
+//                ICollide collidedView = _collisionListener.getCollision();
+//                if(collidedView != null) {
+//                    System.out.println("YES!");
+//                }
+//                else {
+//                    System.out.println("NO!");
+//                }
+//            }
+//        });
     }
     
     
@@ -75,7 +68,7 @@ public final class TalonView extends PanelView {
         super.update(event);
         if(event.getOperationName() == CardModel.EVENT_NEXT_CARD) {
             CardModel cardModel = (CardModel)event.getSource();
-            _controller.setCard(cardModel);
+            //_controller.setCard(cardModel);
             addRenderableContent(cardModel);
         }
         repaint();

@@ -29,22 +29,37 @@ import game.models.CardModel;
 
 public class CardController extends BaseController {
 
-    private CardModel _card;
+    /**
+     * The card model associated to this controller
+     */
+    private final CardModel _card;
     
-    // TODO This might be better off being in the constructor, each card view should have its own card controller
-    public void setCard(CardModel card) {
+    /**
+     * Constructs a new instance of this class type
+     * 
+     * @param card The card model to associate to this controller
+     */
+    public CardController(CardModel card) {
         _card = card;
     }
-    
-    // TODO Remove this shit
+
+    /**
+     * @return The card associated to this view 
+     */
     public CardModel getCard() {
         return _card;
     }
-    
+
+    /**
+     * Refreshes the content of the controller
+     */
     public void refresh() {
         _card.refresh();
     }
 
+    /**
+     * Handles when a click event is performed on the view associated to this controller
+     */
     public void handleSingleClickAction() {
         if(_card.getIsBackside()) {
             _card.setBackside(false);
