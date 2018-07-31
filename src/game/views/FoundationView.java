@@ -26,14 +26,39 @@ package game.views;
 
 import java.awt.Dimension;
 
+import javax.swing.JLayeredPane;
+
+import framework.communication.internal.signal.arguments.AbstractEventArgs;
 import framework.core.mvc.view.PanelView;
 
-public final class FoundationView extends PanelView {
+public final class FoundationView extends PanelView /* IMPLMENT ICOLLIDE */ {
 
+    /*
+     * Add collision and dragging support here!
+     * */
+    
+    /*
+     * Investigation what we can do for a little bit of code reuse 
+     * */
+    
+    private JLayeredPane _cardList = new JLayeredPane();
+    
     /**
      * Creates a new instance of this class type
      */
     public FoundationView() {
-        setPreferredSize(new Dimension(71, 96));
+        setPreferredSize(new Dimension(CardView.CARD_WIDTH, CardView.CARD_HEIGHT));
+    }
+    
+    @Override public void render() {
+        super.render();
+        // foundation controller refresh();
+    }
+    
+    
+    @Override public void update(AbstractEventArgs event) {
+        super.update(event);
+        this.setOpaque(_cardList.getComponentCount() > 0);
+        repaint();
     }
 }
