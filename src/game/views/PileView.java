@@ -38,19 +38,33 @@ import framework.core.physics.ICollide;
 
 import game.models.CardModel;
 
-public final class PileView extends PanelView implements ICollide {
+public class PileView extends PanelView implements ICollide {
 
-    public static final int PILE_CARD_OFFSET = 12;
+    /**
+     * Specifies the offset of each card within this view
+     */
+    private final int PILE_CARD_OFFSET = 12;
     
-    private final JLayeredPane _layeredPane = new JLayeredPane();
+    /**
+     * The layered pane that holds the list of cards
+     */
+    protected final JLayeredPane _layeredPane = new JLayeredPane();
 
-    private PileView() {
+    /**
+     * Constructs a new instance of this class type
+     */
+    protected PileView() {
         setLayout(new BorderLayout());
         setPreferredSize(new Dimension(CardView.CARD_WIDTH, this.getPreferredSize().height));
         setOpaque(false);
         add(_layeredPane, BorderLayout.CENTER);
     }
     
+    /**
+     * Constructs a new instance of this class type
+     * 
+     * @param cards A list of card models to associate to this pile view
+     */
     public PileView(List<CardModel> cards) {
         this();
         for(int i = 0; i < cards.size(); ++i) {
@@ -71,6 +85,11 @@ public final class PileView extends PanelView implements ICollide {
         } 
     }
     
+    /**
+     * Constructs a new instance of this class type
+     * 
+     * @param cardViews The card views to associate to this view
+     */
     public PileView(CardView[] cardViews) {
         this();
         for(int i = 0; i < cardViews.length; ++i) {
@@ -86,10 +105,6 @@ public final class PileView extends PanelView implements ICollide {
         }
     }
     
-    public JLayeredPane getLayeredPane() {
-        return _layeredPane;
-    }
-
     @Override public void render() {
         super.render();
         for(Component component : _layeredPane.getComponents()) {

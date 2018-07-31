@@ -24,41 +24,30 @@
 
 package game.views;
 
-import java.awt.Dimension;
-
-import javax.swing.JLayeredPane;
+import java.awt.Component;
 
 import framework.communication.internal.signal.arguments.AbstractEventArgs;
-import framework.core.mvc.view.PanelView;
 
-public final class FoundationView extends PanelView /* IMPLMENT ICOLLIDE */ {
-
-    /*
-     * Add collision and dragging support here!
-     * */
-    
-    /*
-     * Investigation what we can do for a little bit of code reuse 
-     * */
-    
-    private JLayeredPane _cardList = new JLayeredPane();
+public final class FoundationView extends PileView {
     
     /**
      * Creates a new instance of this class type
      */
     public FoundationView() {
-        setPreferredSize(new Dimension(CardView.CARD_WIDTH, CardView.CARD_HEIGHT));
+        setOpaque(true);
     }
-    
-    @Override public void render() {
-        super.render();
-        // foundation controller refresh();
-    }
-    
     
     @Override public void update(AbstractEventArgs event) {
         super.update(event);
-        this.setOpaque(_cardList.getComponentCount() > 0);
         repaint();
+    }
+
+    @Override public boolean isValidCollision(Component source) {
+        
+        // TODO - implement me
+        
+        
+        System.out.println(String.format("%s has collided with a FoundationView", source.getClass().toString()));
+        return false;
     }
 }
