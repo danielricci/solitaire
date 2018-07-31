@@ -30,6 +30,8 @@ package resources;
  * @author {@literal Daniel Ricci <thedanny09@gmail.com>}
  *
  */
-public enum LocalizationStrings {
-    Title 
+public class LocalizationStrings {
+     public static String ABOUT = "About";
+     public static String GITHUB = "GitHub";
+     public static String TITLE = "Title";
 }

@@ -34,6 +34,8 @@ import javax.swing.KeyStroke;
 import framework.core.navigation.AbstractMenuItem;
 import framework.utils.globalisation.Localization;
 
+import resources.LocalizationStrings;
+
 /**
  * The about menu item that displays information about the application
  * 
@@ -48,7 +50,7 @@ public class AboutMenuItem extends AbstractMenuItem {
      * @param parent The parent associated to this menu item
      */
     public AboutMenuItem(JComponent parent) {
-        super(new JMenuItem(Localization.instance().getLocalizedString("About Solitaire")), parent);
+        super(new JMenuItem(Localization.instance().getLocalizedString(LocalizationStrings.ABOUT)), parent);
         super.getComponent(JMenuItem.class).setAccelerator(KeyStroke.getKeyStroke("F1"));
 
     }

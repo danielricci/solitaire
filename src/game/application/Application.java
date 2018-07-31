@@ -109,7 +109,7 @@ public final class Application extends AbstractApplication {
         super.onWindowInitialized();
 
         // Set the title
-        setTitle(Localization.instance().getLocalizedString(LocalizationStrings.Title));
+        setTitle(Localization.instance().getLocalizedString(LocalizationStrings.TITLE));
 
         // Populate the menu system
         populateMenu();
