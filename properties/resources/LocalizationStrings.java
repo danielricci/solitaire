@@ -30,6 +30,6 @@ package resources;
  * @author {@literal Daniel Ricci <thedanny09@gmail.com>}
  *
  */
-public enum LocalizedStrings {
+public enum LocalizationStrings {
     Title 
 }

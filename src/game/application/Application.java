@@ -31,7 +31,6 @@ import java.io.File;
 import javax.swing.AbstractButton;
 
 import framework.core.factories.AbstractFactory;
-import framework.core.factories.ViewFactory;
 import framework.core.navigation.MenuBuilder;
 import framework.core.system.AbstractApplication;
 import framework.core.system.EngineProperties;
@@ -44,9 +43,8 @@ import game.menu.ExitMenuItem;
 import game.menu.NewGameMenuItem;
 import game.menu.OptionsMenuItem;
 import game.menu.UndoMenuItem;
-import game.views.GameView;
 
-import resources.LocalizedStrings;
+import resources.LocalizationStrings;
 
 public final class Application extends AbstractApplication {
 
@@ -103,7 +101,7 @@ public final class Application extends AbstractApplication {
         EngineProperties.instance().setProperty(Property.DATA_PATH_SHEET, "/generated/tilemap.png");
         EngineProperties.instance().setProperty(Property.LOG_DIRECTORY,  System.getProperty("user.home") + File.separator + "desktop" + File.separator);
         EngineProperties.instance().setProperty(Property.ENGINE_OUTPUT, "true");
-        EngineProperties.instance().setProperty(Property.LOCALIZATION_PATH_CVS, "resources/localization_solitaire.csv");
+        EngineProperties.instance().setProperty(Property.LOCALIZATION_PATH_CVS, "resources/localization.csv");
         EngineProperties.instance().setProperty(Property.SUPPRESS_SIGNAL_REGISTRATION_OUTPUT, "true");
     }
 
@@ -111,7 +109,7 @@ public final class Application extends AbstractApplication {
         super.onWindowInitialized();
 
         // Set the title
-        setTitle(Localization.instance().getLocalizedString(LocalizedStrings.Title));
+        setTitle(Localization.instance().getLocalizedString(LocalizationStrings.Title));
 
         // Populate the menu system
         populateMenu();
