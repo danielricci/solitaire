@@ -25,6 +25,8 @@
 package game.controllers;
 
 import framework.core.mvc.controller.BaseController;
+
+import game.entities.AbstractCardEntity;
 import game.models.CardModel;
 
 public class CardController extends BaseController {
@@ -65,5 +67,11 @@ public class CardController extends BaseController {
             _card.setBackside(false);
             _card.refresh();
         }
+    }
+
+    public boolean isValidFoundationMove(CardModel card) {
+        AbstractCardEntity thisCardEntity = _card.getCardEntity();
+        AbstractCardEntity cardEntity = card.getCardEntity();
+        return cardEntity.isSameSuite(thisCardEntity) && cardEntity.isCardRankedAfter(thisCardEntity); 
     }
 }

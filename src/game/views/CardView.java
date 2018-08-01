@@ -91,7 +91,7 @@ public final class CardView extends PanelView implements ICollide {
      */
     public CardView(CardModel card) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        setPreferredSize(new Dimension(71, 96));
+        setPreferredSize(new Dimension(CARD_WIDTH, CARD_HEIGHT));
         setOpaque(false);
         
         add(_layeredPane);
@@ -192,6 +192,10 @@ public final class CardView extends PanelView implements ICollide {
                         return;
                     }
                 }
+                
+                // Get the offset that was set, and use this within our calculations
+                PileView parent = (PileView) _parentSource.getParent();
+                int offset =  parent.CARD_OFFSET;
                        
                 // Get the list of components associated to the CardView.this reference. This list represents all the children associated
                 // to the said CardView.this reference.
@@ -212,7 +216,7 @@ public final class CardView extends PanelView implements ICollide {
                 _parentSource.setLayer(CardView.this, initialSize);
                 
                 // Set the bounds of this card so that it appears at the right position offset
-                CardView.this.setBounds(new Rectangle(0, 12 * initialSize, CardView.this.getPreferredSize().width, CardView.this.getPreferredSize().height));
+                CardView.this.setBounds(new Rectangle(0, offset * initialSize, CardView.this.getPreferredSize().width, CardView.this.getPreferredSize().height));
                 
                 // Remove this card from the application which was used as a temporary measure to support the dragging
                 Application.instance().remove(CardView.this);
@@ -228,7 +232,7 @@ public final class CardView extends PanelView implements ICollide {
                     _parentSource.setLayer(components.get(i), i + initialSize);
                     
                     // Set the bounds of this card so that it appears at the right position offset                    
-                    components.get(i).setBounds(new Rectangle(0, 12 * (i + initialSize), components.get(i).getPreferredSize().width, components.get(i).getPreferredSize().height));
+                    components.get(i).setBounds(new Rectangle(0, offset * (i + initialSize), components.get(i).getPreferredSize().width, components.get(i).getPreferredSize().height));
                 }
                 
                 // Clear the card views that were added within this cards' layered pane

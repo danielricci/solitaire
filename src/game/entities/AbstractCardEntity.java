@@ -55,7 +55,7 @@ public abstract class AbstractCardEntity extends AbstractDataEntity {
     }
     
     /**
-     * Indicates if this card is before the one specified. A card that is before is one that has one rank higher than the one specified
+     * Indicates if this card is before the one specified.
      * 
      * Note: This method is suite agnostic
      * 
@@ -65,6 +65,26 @@ public abstract class AbstractCardEntity extends AbstractDataEntity {
      */
     public final boolean isCardRankedBefore(AbstractCardEntity card) {
         return ordinal + 1 == card.ordinal;
+    }
+    
+    /**
+     * Indicates if this card is after the one specified.
+     * 
+     * Note: This method is suite agnostic
+     * 
+     * @param card The card to check rank against
+     * 
+     * @return TRUE if the card is ranked after the one specified, false otherwise
+     */
+    public final boolean isCardRankedAfter(AbstractCardEntity card) {
+        return ordinal - 1 == card.ordinal;
+    }
+
+    /**
+     * @return TRUE if this card is an ACE, false otherwise
+     */
+    public final boolean isAceCard() {
+        return ordinal == 0;
     }
     
     /**
@@ -112,5 +132,4 @@ public abstract class AbstractCardEntity extends AbstractDataEntity {
     @Override public String toString() {
         return layer.toString() + ": " + (ordinal + 1);
     }
-    
 }

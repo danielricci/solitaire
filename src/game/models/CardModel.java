@@ -86,6 +86,10 @@ public final class CardModel extends BaseModel {
         return entities;
     }
     
+    public AbstractCardEntity getCardEntity() {
+        return _cardEntity;
+    }
+    
     /**
      * Checks if the passed in card is ordinally before and of opposite suite to this card
      * @param card The card

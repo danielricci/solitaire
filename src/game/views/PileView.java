@@ -43,7 +43,7 @@ public class PileView extends PanelView implements ICollide {
     /**
      * Specifies the offset of each card within this view
      */
-    private final int PILE_CARD_OFFSET = 12;
+    public int CARD_OFFSET = 12;
     
     /**
      * The layered pane that holds the list of cards
@@ -81,7 +81,7 @@ public class PileView extends PanelView implements ICollide {
             
             // Set the bounds of the view within the layered pane
             //view.setLocation(new Point(0, 12 * i));
-            view.setBounds(new Rectangle(0, PILE_CARD_OFFSET * i, view.getPreferredSize().width, view.getPreferredSize().height));
+            view.setBounds(new Rectangle(0, CARD_OFFSET * i, view.getPreferredSize().width, view.getPreferredSize().height));
         } 
     }
     
@@ -101,7 +101,7 @@ public class PileView extends PanelView implements ICollide {
             _layeredPane.setLayer(view, i);
             
             // Set the bounds of the view within the layered pane
-            view.setBounds(new Rectangle(0, PILE_CARD_OFFSET * i, view.getPreferredSize().width, view.getPreferredSize().height));
+            view.setBounds(new Rectangle(0, CARD_OFFSET * i, view.getPreferredSize().width, view.getPreferredSize().height));
         }
     }
     

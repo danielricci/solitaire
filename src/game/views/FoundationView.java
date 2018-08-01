@@ -26,7 +26,11 @@ package game.views;
 
 import java.awt.Component;
 
+import framework.api.IView;
 import framework.communication.internal.signal.arguments.AbstractEventArgs;
+
+import game.controllers.CardController;
+import game.models.CardModel;
 
 public final class FoundationView extends PileView {
     
@@ -34,6 +38,7 @@ public final class FoundationView extends PileView {
      * Creates a new instance of this class type
      */
     public FoundationView() {
+        CARD_OFFSET = 0;
         setOpaque(true);
     }
     
@@ -43,11 +48,22 @@ public final class FoundationView extends PileView {
     }
 
     @Override public boolean isValidCollision(Component source) {
+
+        IView sourceView = (IView) source;
+        boolean valid = false;
+        CardModel sourceCardModel = sourceView.getViewProperties().getEntity(CardController.class).getCard();
         
-        // TODO - implement me
+        if(_layeredPane.getComponentCount() == 0) {
+            valid = sourceCardModel.getCardEntity().isAceCard();
+        }
+        else {
+            CardView thisCardView = (CardView) _layeredPane.getComponent(0);
+            CardController thisCardViewController = thisCardView.getViewProperties().getEntity(CardController.class);
+
+            valid = thisCardViewController.isValidFoundationMove(sourceCardModel);
+        }
         
-        
-        System.out.println(String.format("%s has collided with a FoundationView", source.getClass().toString()));
-        return false;
+        System.out.println("FoundationView: " + (valid ? "YES" : "NO"));
+        return valid;
     }
 }
