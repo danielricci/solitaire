@@ -27,14 +27,15 @@ package game.views;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Collection;
 
 import framework.communication.internal.signal.arguments.AbstractEventArgs;
+import framework.communication.internal.signal.arguments.EmptyEventArgs;
+import framework.core.factories.AbstractFactory;
 import framework.core.factories.ControllerFactory;
 import framework.core.mvc.view.PanelView;
-import game.controllers.StockController;
+
+import game.controllers.GameController;
 import game.entities.BacksideCardEntity;
-import game.models.CardModel;
 
 public final class StockView extends PanelView {
 
@@ -43,41 +44,35 @@ public final class StockView extends PanelView {
      */
     private final BacksideCardEntity _backside = new BacksideCardEntity();
     
-    // Create the stock controller
-    private final StockController _stockController;
-    
     /**
-     * Creates a new instance of this class type
+     * The controller reference to the game controller
      */
-    public StockView(Collection<CardModel> cards) {
-        setPreferredSize(new Dimension(71, 96));
-        setOpaque(false);
-        
-        cards.forEach(z -> z.addListeners(this));
-        
-        _stockController = ControllerFactory.getFactory(ControllerFactory.class).add(new StockController(cards), true);
+    private final GameController _gameController = AbstractFactory.getFactory(ControllerFactory.class).get(GameController.class); 
+    
+    @Override public Dimension getPreferredSize() {
+        return new Dimension(CardView.CARD_WIDTH, CardView.CARD_HEIGHT);
     }
 
     @Override public void onViewInitialized() {
-        // When the mouse button is released, request a new card
+        setOpaque(false);
+        
         this.addMouseListener(new MouseAdapter() {
             @Override public void mouseReleased(MouseEvent event) {
-                _stockController.nextCard();
+                AbstractFactory.getFactory(ControllerFactory.class).get(GameController.class).nextCard();
+                update(new EmptyEventArgs());
             }
         });
     }
 
     @Override public void render() {
         super.render();
-        addRenderableContent(_backside);
-        repaint();
+        // Note: update calls repaint
+        update(new EmptyEventArgs());
     }
     
     @Override public void update(AbstractEventArgs event) {
         super.update(event);
-        if(event.getOperationName().equalsIgnoreCase(CardModel.EVENT_NEXT_CARD)) {
-            addRenderableContent(_stockController.isNextCardEmpty() ? null : _backside);
-        }
+        addRenderableContent(_gameController.isNextCardEmpty() ?  null : _backside);
         repaint();
     }
 }

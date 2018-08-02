@@ -30,16 +30,16 @@ import java.util.Collections;
 import java.util.List;
 
 import framework.core.mvc.model.BaseModel;
+
 import game.entities.AbstractCardEntity;
 import game.entities.ClubCardEntity;
 import game.entities.DiamondCardEntity;
 import game.entities.HeartCardEntity;
 import game.entities.SpadeCardEntity;
+
 import generated.DataLookup;
 
 public final class CardModel extends BaseModel {
-    
-    public static final String EVENT_NEXT_CARD = "EVENT_NEXT_CARD";
     
     private final AbstractCardEntity _cardEntity;
         

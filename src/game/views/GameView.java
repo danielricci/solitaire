@@ -32,8 +32,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import framework.core.factories.AbstractFactory;
+import framework.core.factories.ControllerFactory;
 import framework.core.factories.ViewFactory;
 import framework.core.mvc.view.PanelView;
+
+import game.controllers.GameController;
 import game.models.CardModel;
 
 /**
@@ -59,6 +62,11 @@ public final class GameView extends PanelView {
      */
     private final GridBagConstraints _constraints = new GridBagConstraints();
 
+    /**
+     * The controller associated to this view
+     */
+    private final GameController _gameController = AbstractFactory.getFactory(ControllerFactory.class).add(new GameController(), true); 
+    
     /**
      * Creates a new instance of this class type
      */
@@ -91,7 +99,7 @@ public final class GameView extends PanelView {
                 _constraints.insets = new Insets(10, 0, 0, 0);
             }
 
-            for(int col = 0; col < _columnSize; ++col) {
+            for(int col = _columnSize - 1; col >= 0; --col) {
                 _constraints.gridx = col;
                 
                 if(_constraints.gridy == 0) {
@@ -99,7 +107,7 @@ public final class GameView extends PanelView {
                     case 0: {
                         
                         // Create the stock view 
-                        StockView stockView = viewFactory.add(new StockView(cards), true);
+                        StockView stockView = viewFactory.add(new StockView(), true);
                         this.add(stockView, _constraints);
                         break;
                     }
@@ -108,6 +116,7 @@ public final class GameView extends PanelView {
                         // Create the talon view
                         TalonView talonView = viewFactory.add(new TalonView(), true);
                         cards.forEach(z -> z.addListeners(talonView));
+                        _gameController.setCards(cards);
                         this.add(talonView, _constraints, 0);
                         break;
                     }

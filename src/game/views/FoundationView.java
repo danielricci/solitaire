@@ -25,6 +25,7 @@
 package game.views;
 
 import java.awt.Component;
+import java.awt.Dimension;
 
 import framework.api.IView;
 import framework.communication.internal.signal.arguments.AbstractEventArgs;
@@ -32,7 +33,7 @@ import framework.communication.internal.signal.arguments.AbstractEventArgs;
 import game.controllers.CardController;
 import game.models.CardModel;
 
-public final class FoundationView extends PileView {
+public class FoundationView extends PileView {
     
     /**
      * Creates a new instance of this class type
@@ -40,6 +41,10 @@ public final class FoundationView extends PileView {
     public FoundationView() {
         CARD_OFFSET = 0;
         setOpaque(true);
+    }
+    
+    @Override public Dimension getPreferredSize() {
+        return new Dimension(CardView.CARD_WIDTH, CardView.CARD_HEIGHT);
     }
     
     @Override public void update(AbstractEventArgs event) {

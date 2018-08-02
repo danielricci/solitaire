@@ -30,21 +30,18 @@ import java.util.logging.Level;
 
 import framework.core.mvc.controller.BaseController;
 import framework.utils.logging.Tracelog;
+
 import game.models.CardModel;
 
-public class StockController extends BaseController {
+public final class GameController extends BaseController {
 
-    /**
-     * The sub-set list of cards that are currently being played within the game
-     */
     private final LinkedList<CardModel> _cardsQueue = new LinkedList<CardModel>();
 
-    public StockController(Collection<CardModel> cards) {
+    public void setCards(Collection<CardModel> cards) {
         _cardsQueue.addAll(cards);
     }
     
     public void nextCard() {
-        
         if(_cardsQueue.isEmpty()) {
             Tracelog.log(Level.INFO, true, "Attempting to get the next card when there are no cards left to play");
             return;
@@ -52,7 +49,7 @@ public class StockController extends BaseController {
         
         // Take the card and put it at the end of the list
         _cardsQueue.addLast(_cardsQueue.pop());
-        _cardsQueue.element().refresh(CardModel.EVENT_NEXT_CARD);
+        _cardsQueue.element().refresh();
     }
 
     public boolean isNextCardEmpty() {

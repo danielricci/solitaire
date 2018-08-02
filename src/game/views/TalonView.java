@@ -24,54 +24,20 @@
 
 package game.views;
 
-import java.awt.Dimension;
-
 import framework.communication.internal.signal.arguments.AbstractEventArgs;
-import framework.core.mvc.view.PanelView;
-import framework.core.physics.CollisionListener;
 
 import game.models.CardModel;
 
-public final class TalonView extends PanelView {
+public final class TalonView extends FoundationView {
 
-    //private final CardController _controller = AbstractFactory.getFactory(ControllerFactory.class).add(new CardController(null));
-    
-    @SuppressWarnings("unused")
-    private CollisionListener _collisionListener = new CollisionListener(this);
-    
-    public TalonView() {
-        setPreferredSize(new Dimension(71, 96));
-        setOpaque(false);
-
-        //new DragListener(this);
-        
-        //getViewProperties().setEntity(_controller);
-    }
-    
     @Override public void onViewInitialized() {
         super.onViewInitialized();
-        
-//        addMouseMotionListener(new MouseAdapter() {
-//            @Override public void mouseDragged(MouseEvent e) {
-//                ICollide collidedView = _collisionListener.getCollision();
-//                if(collidedView != null) {
-//                    System.out.println("YES!");
-//                }
-//                else {
-//                    System.out.println("NO!");
-//                }
-//            }
-//        });
+        setOpaque(false);
     }
-    
     
     @Override public void update(AbstractEventArgs event) {
         super.update(event);
-        if(event.getOperationName() == CardModel.EVENT_NEXT_CARD) {
-            CardModel cardModel = (CardModel)event.getSource();
-            //_controller.setCard(cardModel);
-            addRenderableContent(cardModel);
-        }
+        addRenderableContent((CardModel)event.getSource());
         repaint();
     }
 }
