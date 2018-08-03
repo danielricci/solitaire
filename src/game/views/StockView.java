@@ -29,7 +29,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import framework.communication.internal.signal.arguments.AbstractEventArgs;
-import framework.communication.internal.signal.arguments.EmptyEventArgs;
+import framework.communication.internal.signal.arguments.ViewEventArgs;
 import framework.core.factories.AbstractFactory;
 import framework.core.factories.ControllerFactory;
 import framework.core.mvc.view.PanelView;
@@ -59,15 +59,14 @@ public final class StockView extends PanelView {
         this.addMouseListener(new MouseAdapter() {
             @Override public void mouseReleased(MouseEvent event) {
                 AbstractFactory.getFactory(ControllerFactory.class).get(GameController.class).nextCard();
-                update(new EmptyEventArgs());
+                update(new ViewEventArgs(StockView.this, ""));
             }
         });
     }
 
     @Override public void render() {
         super.render();
-        // Note: update calls repaint
-        update(new EmptyEventArgs());
+        update(new ViewEventArgs(this, ""));
     }
     
     @Override public void update(AbstractEventArgs event) {
