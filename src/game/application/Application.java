@@ -48,16 +48,30 @@ import resources.LocalizationStrings;
 
 public final class Application extends AbstractApplication {
 
+    /**
+     * Constructs a new instance of this class type
+     */
     public Application() {
         setMinimumSize(new Dimension(620, 436));
         setLocationRelativeTo(null);
     }
 
+    /**
+     * Performs a reset of the application
+     */
+    public void restartApplication() {
+        AbstractFactory.clearFactories();
+        this.removeAll();
+    }
+
+    /**
+     * Main entrypoint method
+     * 
+     * @param args The arguments associated to the application entry point
+     */
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
             @Override public void run() {
-
-                // Get the debug mode state based on the arguments passed into the application
                 boolean debugMode = false;
                 for(String arg : args) {
                     if(arg.trim().equalsIgnoreCase("-debug")) {
@@ -65,37 +79,11 @@ public final class Application extends AbstractApplication {
                         break;
                     }
                 }
-
-                // Initialize the application
                 Application.initialize(Application.class, debugMode);
             }
         });
     }
     
-    public void restartApplication() {
-        AbstractFactory.clearFactories();
-        this.removeAll();
-    }
-
-    private void populateMenu() {
-        
-        // Game Menu
-        MenuBuilder.start(getJMenuBar())
-        .addMenu(Localization.instance().getLocalizedString(LocalizationStrings.GAME))
-        .addMenuItem(NewGameMenuItem.class)
-        .addSeparator()
-        .addMenuItem(UndoMenuItem.class)
-        .addMenuItem(DeckMenuItem.class)
-        .addMenuItem(OptionsMenuItem.class)
-        .addSeparator()
-        .addMenuItem(ExitMenuItem.class);
-                
-        // Help Menu
-        MenuBuilder.start(getJMenuBar())
-        .addMenu(Localization.instance().getLocalizedString(LocalizationStrings.HELP))
-        .addMenuItem(AboutMenuItem.class);
-    }
-
     @Override protected void onBeforeEngineDataInitialized() {
         EngineProperties.instance().setProperty(Property.DATA_PATH_XML, "/generated/tilemap.xml");
         EngineProperties.instance().setProperty(Property.DATA_PATH_SHEET, "/generated/tilemap.png");
@@ -112,7 +100,21 @@ public final class Application extends AbstractApplication {
         setTitle(Localization.instance().getLocalizedString(LocalizationStrings.TITLE));
 
         // Populate the menu system
-        populateMenu();
+        // Game Menu
+        MenuBuilder.start(getJMenuBar())
+        .addMenu(Localization.instance().getLocalizedString(LocalizationStrings.GAME))
+        .addMenuItem(NewGameMenuItem.class)
+        .addSeparator()
+        .addMenuItem(UndoMenuItem.class)
+        .addMenuItem(DeckMenuItem.class)
+        .addMenuItem(OptionsMenuItem.class)
+        .addSeparator()
+        .addMenuItem(ExitMenuItem.class);
+                
+        // Help Menu
+        MenuBuilder.start(getJMenuBar())
+        .addMenu(Localization.instance().getLocalizedString(LocalizationStrings.HELP))
+        .addMenuItem(AboutMenuItem.class);
 
         // New Game
         MenuBuilder.search(getJMenuBar(), NewGameMenuItem.class).getComponent(AbstractButton.class).doClick();
