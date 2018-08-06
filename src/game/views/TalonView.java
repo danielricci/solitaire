@@ -1,5 +1,5 @@
 /**
- *   Ricci <thedanny09@gmail.com>
+ * Daniel Ricci <thedanny09@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -24,6 +24,8 @@
 
 package game.views;
 
+import java.util.List;
+
 import framework.communication.internal.signal.arguments.AbstractEventArgs;
 import framework.core.mvc.view.layout.DragListener;
 import framework.core.physics.CollisionListener;
@@ -32,22 +34,49 @@ import game.models.CardModel;
 
 public final class TalonView extends FoundationView {
 
-    @Override public void onViewInitialized() {
-        super.onViewInitialized();
-        setOpaque(false);
-        
+    /**
+     * Constructs a new instance of this class type
+     * 
+     * @param cards The card models to load within this view
+     */
+    public TalonView(List<CardModel> cards) {
         new DragListener(this);
         new CollisionListener(this);
+        setOpaque(true);
+        CARD_OFFSET = 0;
+        
+        cards.forEach(z -> z.addListeners(this));
     }
     
     @Override public void update(AbstractEventArgs event) {
         super.update(event);
         
-        // Look within the layered pane, and see if there is a card view associated to this card model, if there
-        // is not then create one and add it to the layered pane. Dont forget to cycle the cards!
-        //if(Arrays.asList(_layeredPane.getComponents())
-        //CardView view = new CardView((CardModel)event.getSource());
-        
+        // FIXME This should be done on the constructor, have it done in one shot
+//        CardModel cardModel = (CardModel)event.getSource();
+//        CardView cardView = null;
+//        
+//        boolean found = false;
+//        for(Component comp : _layeredPane.getComponents()) {
+//            CardView cardView = (CardView) comp;
+//            CardController cardController = cardView.getViewProperties().getEntity(CardController.class);
+//            if(cardController.getCard().equals(cardModel)) {
+//                found = true;
+//                break;
+//            }
+//        }
+//        
+//        
+//        if(!found) {
+//            
+//        }
+//        
+//        
+//        //Arrays.stream(_layeredPane.getComponents()).collect(Collectors.to)
+//        // Look within the layered pane, and see if there is a card view associated to this card model, if there
+//        // is not then create one and add it to the layered pane. Dont forget to cycle the cards!
+//        //if(Arrays.asList(_layeredPane.getComponents())
+//        //CardView view = new CardView((CardModel)event.getSource());
+//        
         addRenderableContent((CardModel)event.getSource());
         repaint();
     }
