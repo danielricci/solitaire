@@ -41,6 +41,8 @@ import generated.DataLookup;
 
 public final class CardModel extends BaseModel {
     
+    public static final String NEXT_CARD = "NEXT_CARD";
+    
     private final AbstractCardEntity _cardEntity;
         
     private CardModel(AbstractCardEntity cardEntity) {

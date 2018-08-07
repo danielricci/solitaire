@@ -40,7 +40,6 @@ public class FoundationView extends PileView {
      */
     public FoundationView() {
         CARD_OFFSET = 0;
-        setOpaque(true);
     }
     
     @Override public Dimension getPreferredSize() {

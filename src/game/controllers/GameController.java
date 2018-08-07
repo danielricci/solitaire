@@ -47,9 +47,9 @@ public final class GameController extends BaseController {
             return;
         }
         
-        // Take the card and put it at the end of the list
-        _cardsQueue.addLast(_cardsQueue.pop());
-        _cardsQueue.element().refresh();
+        CardModel model = _cardsQueue.pop();
+        _cardsQueue.addLast(model);
+        model.refresh(CardModel.NEXT_CARD);
     }
 
     public boolean isNextCardEmpty() {

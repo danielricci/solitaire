@@ -24,9 +24,12 @@
 
 package game.views;
 
+import java.awt.Rectangle;
 import java.util.List;
 
 import framework.communication.internal.signal.arguments.AbstractEventArgs;
+import framework.core.factories.AbstractFactory;
+import framework.core.factories.ViewFactory;
 import framework.core.mvc.view.layout.DragListener;
 import framework.core.physics.CollisionListener;
 
@@ -42,7 +45,6 @@ public final class TalonView extends FoundationView {
     public TalonView(List<CardModel> cards) {
         new DragListener(this);
         new CollisionListener(this);
-        setOpaque(true);
         CARD_OFFSET = 0;
         
         cards.forEach(z -> z.addListeners(this));
@@ -50,34 +52,25 @@ public final class TalonView extends FoundationView {
     
     @Override public void update(AbstractEventArgs event) {
         super.update(event);
-        
-        // FIXME This should be done on the constructor, have it done in one shot
-//        CardModel cardModel = (CardModel)event.getSource();
-//        CardView cardView = null;
-//        
-//        boolean found = false;
-//        for(Component comp : _layeredPane.getComponents()) {
-//            CardView cardView = (CardView) comp;
-//            CardController cardController = cardView.getViewProperties().getEntity(CardController.class);
-//            if(cardController.getCard().equals(cardModel)) {
-//                found = true;
-//                break;
-//            }
-//        }
-//        
-//        
-//        if(!found) {
-//            
-//        }
-//        
-//        
-//        //Arrays.stream(_layeredPane.getComponents()).collect(Collectors.to)
-//        // Look within the layered pane, and see if there is a card view associated to this card model, if there
-//        // is not then create one and add it to the layered pane. Dont forget to cycle the cards!
-//        //if(Arrays.asList(_layeredPane.getComponents())
-//        //CardView view = new CardView((CardModel)event.getSource());
-//        
-        addRenderableContent((CardModel)event.getSource());
+
+        if(event.getOperationName() == CardModel.NEXT_CARD)
+        {
+            CardModel model = (CardModel) event.getSource();
+            if(model.isEmpty()) {
+                // FIXME: Destroy the views appropriately
+                _layeredPane.removeAll();
+            }
+            else {
+                CardView cardView = AbstractFactory.getFactory(ViewFactory.class).add(new CardView(model));
+                model.addListeners(cardView);
+                cardView.setBounds(new Rectangle(0, 0, cardView.getPreferredSize().width, cardView.getPreferredSize().height));
+
+                cardView.render();
+                _layeredPane.add(cardView, _layeredPane.getComponentCount());
+                _layeredPane.setLayer(cardView, _layeredPane.getComponentCount());
+            }    
+        }
+                
         repaint();
     }
 }
