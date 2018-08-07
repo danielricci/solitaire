@@ -68,7 +68,6 @@ public class FoundationView extends PileView {
             valid = thisCardViewController.isValidFoundationMove(sourceCardModel);
         }
         
-        System.out.println("FoundationView: " + (valid ? "YES" : "NO"));
         return valid;
     }
 }
