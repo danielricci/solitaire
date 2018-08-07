@@ -24,6 +24,7 @@
 
 package game.views;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.util.List;
@@ -58,7 +59,10 @@ public final class TalonView extends PileView {
         {
             CardModel model = (CardModel) event.getSource();
             if(model.isEmpty()) {
-                // FIXME: Destroy the views appropriately
+                for(Component view : _layeredPane.getComponents()) {
+                    CardView cardView = (CardView) view;
+                    AbstractFactory.getFactory(ViewFactory.class).remove(cardView);
+                }
                 _layeredPane.removeAll();
             }
             else {

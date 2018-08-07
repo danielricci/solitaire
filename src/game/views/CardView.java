@@ -42,8 +42,6 @@ import javax.swing.JLayeredPane;
 import framework.api.IView;
 import framework.communication.internal.signal.arguments.AbstractEventArgs;
 import framework.communication.internal.signal.arguments.ModelEventArgs;
-import framework.core.factories.AbstractFactory;
-import framework.core.factories.ControllerFactory;
 import framework.core.mvc.view.PanelView;
 import framework.core.mvc.view.layout.DragListener;
 import framework.core.physics.CollisionListener;
@@ -98,7 +96,7 @@ public final class CardView extends PanelView implements ICollide {
         
         card.addListeners(this);
         
-        _controller = AbstractFactory.getFactory(ControllerFactory.class).add(new CardController(card));
+        _controller = new CardController(card);
         getViewProperties().setEntity(_controller);
     }
     

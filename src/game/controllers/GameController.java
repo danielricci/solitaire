@@ -53,6 +53,6 @@ public final class GameController extends BaseController {
     }
 
     public boolean isNextCardEmpty() {
-        return _cardsQueue.isEmpty() || _cardsQueue.size() <= 1 || _cardsQueue.get(1).isEmpty();
+        return _cardsQueue.size() <= 1 || _cardsQueue.get(0).isEmpty();
     }
 }
