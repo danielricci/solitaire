@@ -24,18 +24,17 @@
 
 package game.views;
 
+import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.util.List;
 
 import framework.communication.internal.signal.arguments.AbstractEventArgs;
 import framework.core.factories.AbstractFactory;
 import framework.core.factories.ViewFactory;
-import framework.core.mvc.view.layout.DragListener;
-import framework.core.physics.CollisionListener;
 
 import game.models.CardModel;
 
-public final class TalonView extends FoundationView {
+public final class TalonView extends PileView {
 
     /**
      * Constructs a new instance of this class type
@@ -43,11 +42,13 @@ public final class TalonView extends FoundationView {
      * @param cards The card models to load within this view
      */
     public TalonView(List<CardModel> cards) {
-        new DragListener(this);
-        new CollisionListener(this);
         CARD_OFFSET = 0;
-        
+        setOpaque(true);
         cards.forEach(z -> z.addListeners(this));
+    }
+    
+    @Override public Dimension getPreferredSize() {
+        return new Dimension(CardView.CARD_WIDTH, CardView.CARD_HEIGHT);
     }
     
     @Override public void update(AbstractEventArgs event) {
@@ -62,7 +63,6 @@ public final class TalonView extends FoundationView {
             }
             else {
                 CardView cardView = AbstractFactory.getFactory(ViewFactory.class).add(new CardView(model));
-                model.addListeners(cardView);
                 cardView.setBounds(new Rectangle(0, 0, cardView.getPreferredSize().width, cardView.getPreferredSize().height));
 
                 cardView.render();

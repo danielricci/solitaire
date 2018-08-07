@@ -96,6 +96,8 @@ public final class CardView extends PanelView implements ICollide {
         
         add(_layeredPane);
         
+        card.addListeners(this);
+        
         _controller = AbstractFactory.getFactory(ControllerFactory.class).add(new CardController(card));
         getViewProperties().setEntity(_controller);
     }
