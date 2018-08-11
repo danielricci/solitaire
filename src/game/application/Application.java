@@ -30,7 +30,6 @@ import java.io.File;
 
 import javax.swing.AbstractButton;
 
-import framework.core.factories.AbstractFactory;
 import framework.core.navigation.MenuBuilder;
 import framework.core.system.AbstractApplication;
 import framework.core.system.EngineProperties;
@@ -55,15 +54,7 @@ public final class Application extends AbstractApplication {
         setMinimumSize(new Dimension(620, 436));
         setLocationRelativeTo(null);
     }
-
-    /**
-     * Performs a reset of the application
-     */
-    public void restartApplication() {
-        AbstractFactory.clearFactories();
-        this.removeAll();
-    }
-
+   
     /**
      * Main entrypoint method
      * 
