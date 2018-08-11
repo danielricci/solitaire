@@ -60,11 +60,14 @@ public class NewGameMenuItem extends AbstractMenuItem {
 
     @Override public void onExecute(ActionEvent actionEvent) {
         
-        // Clear the factory of it's contents
-        AbstractFactory.clearFactories();
-        
-        // Remove everything from the application UI
-        Application.instance().getContentPane().removeAll();
+        if(AbstractFactory.isRunning())
+        {
+            // Clear the factory of it's contents
+            AbstractFactory.clearFactories();
+            
+            // Remove everything from the application UI
+            Application.instance().getContentPane().removeAll();            
+        }
 
         // Spawn a new game view and render its contents
         GameView gameView = AbstractFactory.getFactory(ViewFactory.class).add(new GameView(), true);
