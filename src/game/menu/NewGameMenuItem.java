@@ -60,8 +60,8 @@ public class NewGameMenuItem extends AbstractMenuItem {
 
     @Override public void onExecute(ActionEvent actionEvent) {
         
-        if(AbstractFactory.isRunning())
-        {
+        if(AbstractFactory.isRunning()) {
+            
             // Clear the factory of it's contents
             AbstractFactory.clearFactories();
             
