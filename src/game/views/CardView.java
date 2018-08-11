@@ -234,17 +234,17 @@ public final class CardView extends PanelView implements ICollide {
     }
     
     @Override public boolean isValidCollision(Component source) {
-    
-      // Get the controller associated to this instance
-      CardController cardViewController = this.getViewProperties().getEntity(CardController.class);
-    
-      // TODO Can this be removed, and somehow better done so that there is no IView dependency
-      IView view = (IView) source;
+        
+        // Get the controller associated to this instance
+        CardController cardViewController = this.getViewProperties().getEntity(CardController.class);
+        
+        // TODO Can this be removed, and somehow better done so that there is no IView dependency
+        IView view = (IView) source;
       
-      // Check if what is attempting to collide into this card is valid
-      return cardViewController.getCard().isCardBeforeAndSameSuite(
-          view.getViewProperties().getEntity(CardController.class).getCard()
-      );
+        // Check if what is attempting to collide into this card is valid
+        return cardViewController.getCard().isCardBeforeAndSameSuite(
+            view.getViewProperties().getEntity(CardController.class).getCard()
+        );
     }
 
     @Override public void render() {

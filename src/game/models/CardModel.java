@@ -100,7 +100,7 @@ public final class CardModel extends BaseModel {
      */
     public boolean isCardBeforeAndSameSuite(CardModel card) {
         //System.out.println("Attempting to place " + card._cardEntity.toString() + " over " + _cardEntity.toString());
-        return !card._cardEntity.getBacksideVisible() && card._cardEntity.isOppositeSuite(_cardEntity) && card._cardEntity.isCardRankedBefore(_cardEntity);
+        return !_cardEntity.getBacksideVisible() && !card._cardEntity.getBacksideVisible() && card._cardEntity.isOppositeSuite(_cardEntity) && card._cardEntity.isCardRankedBefore(_cardEntity);
     }
     
     @Override public Image getRenderableContent() {
