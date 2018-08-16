@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import framework.core.entity.AbstractDataEntity;
 
+import generated.DataLookup;
 import generated.DataLookup.LAYER;
 
 
@@ -120,6 +121,13 @@ public abstract class AbstractCardEntity extends AbstractDataEntity {
      */
     public boolean getBacksideVisible() {
         return backsideCardEntity.getIsBacksideShowing();
+    }
+    
+    /**
+     * @return TRUE if this card is a king, FALSE otherwise
+     */
+    public final boolean isCardKing() {
+        return ordinal == 12;
     }
     
     @Override public Image getRenderableContent() {

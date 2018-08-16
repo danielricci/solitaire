@@ -36,6 +36,7 @@ import framework.core.factories.ViewFactory;
 import framework.core.mvc.view.PanelView;
 import framework.core.physics.ICollide;
 
+import game.controllers.CardController;
 import game.models.CardModel;
 
 public class PileView extends PanelView implements ICollide {
@@ -112,23 +113,25 @@ public class PileView extends PanelView implements ICollide {
     }
 
     @Override public boolean isValidCollision(Component source) {
-        
-        //  FIXME - Support any component size, including 0
+
+        // If there are no components then only allow a king to be placed
         if(_layeredPane.getComponentCount() == 0) {
-            return false;
+            CardView cardView = (CardView) source;
+            return cardView.getViewProperties().getEntity(CardController.class).getCard().getCardEntity().isCardKing();
         }
-        
+            
         // Get the bottom most card within the pile view.
         CardView cardView = (CardView) _layeredPane.getComponent(0);
-        
-        // Verify that a proper collision with a singular card has occured
+
+        // Get the bounds associated to this pile view
         Rectangle thisBounds = this.getBounds();
+        
         Rectangle thatBounds = cardView.getBounds();
         Rectangle rect = new Rectangle(
             thisBounds.x + thatBounds.x, 
             thisBounds.y + thatBounds.y, 
-            cardView.getWidth(),
-            cardView.getHeight()
+            source.getWidth(),
+            source.getHeight()
         );
         
         // If the intersection is valid then verify if the card allows
