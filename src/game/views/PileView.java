@@ -75,7 +75,7 @@ public class PileView extends PanelView implements ICollide {
             cards.get(i).setBackside(i + 1 < cards.size());
             
             // Add the view to the layered pane
-            _layeredPane.add(view, i);
+            _layeredPane.add(view);
             _layeredPane.setLayer(view, i);
             
             // Set the bounds of the view within the layered pane
@@ -95,7 +95,7 @@ public class PileView extends PanelView implements ICollide {
             CardView view = cardViews[i];
             
             // Add the view to the layered pane
-            _layeredPane.add(view, i);
+            _layeredPane.add(view);
             _layeredPane.setLayer(view, i);
             
             // Set the bounds of the view within the layered pane

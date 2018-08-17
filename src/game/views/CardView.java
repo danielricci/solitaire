@@ -87,7 +87,7 @@ public final class CardView extends PanelView implements ICollide {
                     // For each sibling add it into the associated layere pane and position it correctly within
                     // the pane, accounting for the fact that CardView.this is the temporary 'root'
                     for(int j = 0; j < cardViews.size(); ++j) {
-                        _layeredPane.add(cardViews.get(j), j);
+                        _layeredPane.add(cardViews.get(j));
                         _layeredPane.setLayer(cardViews.get(j), j);
                         cardViews.get(j).setBounds(new Rectangle(0, 12 * (j + 1), cardViews.get(j).getPreferredSize().width, cardViews.get(j).getPreferredSize().height));
                         _parentSource.remove(cardViews.get(j));
@@ -97,7 +97,6 @@ public final class CardView extends PanelView implements ICollide {
                     // add to the application it will position the component at the origin which is not desired
                     Point initialLocation = CardView.this.getLocation();
                     CardView.this.setBounds(new Rectangle(_parentSource.getParent().getLocation().x + initialLocation.x, _parentSource.getParent().getLocation().y + initialLocation.y, _layeredPane.getWidth(), _layeredPane.getHeight()));
-                    
                     
                     // Repaint the application to show the changes
                     Application.instance().repaint();
@@ -126,7 +125,7 @@ public final class CardView extends PanelView implements ICollide {
             
             // Get the offset that was set, and use this within our calculations
             PileView parent = (PileView) _parentSource.getParent();
-            int offset =  parent.CARD_OFFSET;
+            int offset = parent.CARD_OFFSET;
                    
             // Get the list of components associated to the CardView.this reference. This list represents all the children associated
             // to the said CardView.this reference.
@@ -143,8 +142,8 @@ public final class CardView extends PanelView implements ICollide {
             int initialSize = _parentSource.getComponents().length;
             
             // Add this card view to the pane and update the layer within the component that it has been added to
-            _parentSource.add(CardView.this, initialSize);
-            _parentSource.setLayer(CardView.this, initialSize);
+            _parentSource.add(CardView.this);
+            _parentSource.setLayer(CardView.this, initialSize); // BUG HERE, talon needs + 1?
             
             // Set the bounds of this card so that it appears at the right position offset
             CardView.this.setBounds(new Rectangle(0, offset * initialSize, CardView.this.getPreferredSize().width, CardView.this.getPreferredSize().height));
@@ -159,7 +158,7 @@ public final class CardView extends PanelView implements ICollide {
             for(int i = 0; i < components.size(); ++i) {
                 
                 // Add this card view to the pane and update the layer within the component that it has been added to
-                _parentSource.add(components.get(i), i + initialSize);
+                _parentSource.add(components.get(i));
                 _parentSource.setLayer(components.get(i), i + initialSize);
                 
                 // Set the bounds of this card so that it appears at the right position offset                    

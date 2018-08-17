@@ -68,10 +68,11 @@ public final class TalonView extends PileView {
             else {
                 CardView cardView = AbstractFactory.getFactory(ViewFactory.class).add(new CardView(model));
                 cardView.setBounds(new Rectangle(0, 0, cardView.getPreferredSize().width, cardView.getPreferredSize().height));
-
+                
+                int layerPos = _layeredPane.getComponentCount();
+                _layeredPane.add(cardView);
+                _layeredPane.setLayer(cardView, layerPos);
                 cardView.render();
-                _layeredPane.add(cardView, _layeredPane.getComponentCount());
-                _layeredPane.setLayer(cardView, _layeredPane.getComponentCount());
             }    
         }
                 
