@@ -32,11 +32,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import framework.core.factories.AbstractFactory;
-import framework.core.factories.ControllerFactory;
 import framework.core.factories.ViewFactory;
 import framework.core.mvc.view.PanelView;
 
-import game.controllers.GameController;
 import game.models.CardModel;
 
 /**
@@ -62,11 +60,6 @@ public final class GameView extends PanelView {
      */
     private final GridBagConstraints _constraints = new GridBagConstraints();
 
-    /**
-     * The controller associated to this view
-     */
-    private final GameController _gameController = AbstractFactory.getFactory(ControllerFactory.class).add(new GameController(), true); 
-    
     /**
      * Creates a new instance of this class type
      */
@@ -115,7 +108,6 @@ public final class GameView extends PanelView {
                         
                         // Create the talon view
                         TalonView talonView = viewFactory.add(new TalonView(cards), true);
-                        _gameController.setCards(cards);
                         this.add(talonView, _constraints, 0);
                         break;
                     }

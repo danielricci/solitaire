@@ -45,7 +45,6 @@ public final class TalonView extends PileView {
     public TalonView(List<CardModel> cards) {
         CARD_OFFSET = 0;
         setOpaque(true);
-        cards.forEach(z -> z.addListeners(this));
     }
     
     @Override public Dimension getPreferredSize() {
