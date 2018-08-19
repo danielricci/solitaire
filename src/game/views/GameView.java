@@ -66,10 +66,7 @@ public final class GameView extends PanelView {
     public GameView() {
         this.setLayout(new GridBagLayout());
         this.setBackground(new Color(0, 128, 0));
-    }
     
-    @Override public void onViewInitialized() {
-
         // Configure constraint initial values
         _constraints.weightx = 1.0;
         _constraints.anchor = GridBagConstraints.NORTH;

@@ -39,12 +39,15 @@ public final class StockView extends PanelView {
      */
     private final BacksideCardEntity _backside = new BacksideCardEntity();
     
+    /**
+     * Constructs a new instance of this class type
+     */
+    public StockView() {
+        setOpaque(false);
+    }
+    
     @Override public Dimension getPreferredSize() {
         return new Dimension(CardView.CARD_WIDTH, CardView.CARD_HEIGHT);
-    }
-
-    @Override public void onViewInitialized() {
-        setOpaque(false);
     }
 
     @Override public void render() {
