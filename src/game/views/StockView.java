@@ -25,9 +25,13 @@
 package game.views;
 
 import java.awt.Dimension;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import framework.communication.internal.signal.arguments.AbstractEventArgs;
 import framework.communication.internal.signal.arguments.ViewEventArgs;
+import framework.core.factories.AbstractFactory;
+import framework.core.factories.ViewFactory;
 import framework.core.mvc.view.PanelView;
 
 import game.entities.BacksideCardEntity;
@@ -44,6 +48,12 @@ public final class StockView extends PanelView {
      */
     public StockView() {
         setOpaque(false);
+        addMouseListener(new MouseAdapter() {
+            @Override public void mouseReleased(MouseEvent args) {
+                TalonView talonView = AbstractFactory.getFactory(ViewFactory.class).get(TalonView.class);
+                talonView.showNextCard();
+            }
+        });
     }
     
     @Override public Dimension getPreferredSize() {

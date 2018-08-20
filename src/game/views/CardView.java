@@ -62,6 +62,8 @@ public final class CardView extends PanelView implements ICollide {
         
         @Override public void mousePressed(MouseEvent event) {
            
+            System.out.println("DSKLDKLKLJD");
+            
             // Get the parent of this card view, used as a reference to go back to whatever we were coming from
             _parentSource = (JLayeredPane) CardView.this.getParent();
             
@@ -231,6 +233,14 @@ public final class CardView extends PanelView implements ICollide {
             }
         });
     }
+    
+    @Override public void removeAll() {
+        super.removeAll();
+        
+        _draggableListener.setEnabled(false);
+        _collisionListener.setEnabled(false);
+    }
+
     
     @Override public boolean isValidCollision(Component source) {
         

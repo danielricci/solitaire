@@ -5,7 +5,6 @@ import java.util.UUID;
 
 import framework.core.entity.AbstractDataEntity;
 
-import generated.DataLookup;
 import generated.DataLookup.LAYER;
 
 

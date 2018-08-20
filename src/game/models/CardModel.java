@@ -39,20 +39,16 @@ import game.entities.SpadeCardEntity;
 
 import generated.DataLookup;
 
-public final class CardModel extends BaseModel {
+public class CardModel extends BaseModel {
     
     public static final String NEXT_CARD = "NEXT_CARD";
     
     private final AbstractCardEntity _cardEntity;
         
-    private CardModel(AbstractCardEntity cardEntity) {
+    public CardModel(AbstractCardEntity cardEntity) {
         _cardEntity = cardEntity;
     }
-    
-    public static CardModel Empty() {
-        return new CardModel(null);
-    }
-    
+        
     public boolean isEmpty() {
         return _cardEntity == null;
     }
@@ -80,11 +76,6 @@ public final class CardModel extends BaseModel {
             entities.add(new CardModel(new SpadeCardEntity(spade)));
         }
         Collections.shuffle(entities);
-
-        // Create an empty card model to denote the end of the pile
-        // TODO - See if we can avoid this shit
-        entities.add(CardModel.Empty());
-        
         return entities;
     }
     

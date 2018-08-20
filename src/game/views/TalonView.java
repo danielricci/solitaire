@@ -24,14 +24,18 @@
 
 package game.views;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Rectangle;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.Arrays;
 import java.util.List;
 
-import framework.communication.internal.signal.arguments.AbstractEventArgs;
 import framework.core.factories.AbstractFactory;
 import framework.core.factories.ViewFactory;
+import framework.core.mvc.view.PanelView;
 
 import game.models.CardModel;
 
@@ -44,37 +48,50 @@ public final class TalonView extends PileView {
      */
     public TalonView(List<CardModel> cards) {
         CARD_OFFSET = 0;
-        setOpaque(true);
+        
+        for(int i = 0; i < cards.size(); ++ i) {
+            CardView cardView = AbstractFactory.getFactory(ViewFactory.class).add(new CardView(cards.get(i)));
+            cardView.setBounds(new Rectangle(0, 0, cardView.getPreferredSize().width, cardView.getPreferredSize().height));
+            
+            // Take the layer test before adding the component
+            int layerPos = _layeredPane.getComponentCount();
+            _layeredPane.add(cardView);
+            _layeredPane.setLayer(cardView, layerPos);
+        }
+        
+        // Create a blank panel view and blend it to the background of the game
+        PanelView pv = new PanelView();
+        pv.setBackground(new Color(0, 128, 0));
+        pv.setBounds(new Rectangle(0, 0, CardView.CARD_WIDTH, CardView.CARD_HEIGHT));
+        pv.setVisible(true);
+        
+        // Note: Adding a mouse listener to the blank card prevents the card immediately behind it from being clicked 
+        pv.addMouseListener(new MouseAdapter() {
+            @Override public void mousePressed(MouseEvent e) {
+            }
+        });
+        
+        // Add it to the top
+        _layeredPane.add(pv);
+        _layeredPane.setLayer(pv, _layeredPane.getComponentCount());
+    }
+    
+    /**
+     * Cycles to the next card
+     */
+    public void showNextCard() {
+        List<Component> components = Arrays.asList(_layeredPane.getComponents());
+        int indexOfEmpty = components.indexOf(components.stream().filter(z -> !(z instanceof CardView)).findFirst().get());
+        if(indexOfEmpty == components.size() - 1) {
+            // end
+        }
+        else {
+            // swap
+        }
+        System.out.println("Index is " + indexOfEmpty);
     }
     
     @Override public Dimension getPreferredSize() {
         return new Dimension(CardView.CARD_WIDTH, CardView.CARD_HEIGHT);
-    }
-    
-    @Override public void update(AbstractEventArgs event) {
-        super.update(event);
-
-        if(event.getOperationName() == CardModel.NEXT_CARD)
-        {
-            CardModel model = (CardModel) event.getSource();
-            if(model.isEmpty()) {
-                for(Component view : _layeredPane.getComponents()) {
-                    CardView cardView = (CardView) view;
-                    AbstractFactory.getFactory(ViewFactory.class).remove(cardView);
-                }
-                _layeredPane.removeAll();
-            }
-            else {
-                CardView cardView = AbstractFactory.getFactory(ViewFactory.class).add(new CardView(model));
-                cardView.setBounds(new Rectangle(0, 0, cardView.getPreferredSize().width, cardView.getPreferredSize().height));
-                
-                int layerPos = _layeredPane.getComponentCount();
-                _layeredPane.add(cardView);
-                _layeredPane.setLayer(cardView, layerPos);
-                cardView.render();
-            }    
-        }
-                
-        repaint();
     }
 }

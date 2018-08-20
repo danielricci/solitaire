@@ -106,8 +106,10 @@ public class PileView extends PanelView implements ICollide {
     @Override public void render() {
         super.render();
         for(Component component : _layeredPane.getComponents()) {
-            CardView view = (CardView) component;
-            view.render();
+            if(component instanceof CardView) {
+                CardView view = (CardView) component;
+                view.render();
+            }
         }
         repaint();
     }
