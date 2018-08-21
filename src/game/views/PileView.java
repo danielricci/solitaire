@@ -121,7 +121,11 @@ public class PileView extends PanelView implements ICollide {
             CardView cardView = (CardView) source;
             return cardView.getViewProperties().getEntity(CardController.class).getCard().getCardEntity().isCardKing();
         }
-            
+        
+        if(!(_layeredPane.getComponent(0) instanceof CardView) ){
+            return false;
+        }
+        
         // Get the bottom most card within the pile view.
         CardView cardView = (CardView) _layeredPane.getComponent(0);
 

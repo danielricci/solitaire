@@ -53,7 +53,6 @@ public final class TalonView extends PileView {
             CardView cardView = AbstractFactory.getFactory(ViewFactory.class).add(new CardView(cards.get(i)));
             cardView.setBounds(new Rectangle(0, 0, cardView.getPreferredSize().width, cardView.getPreferredSize().height));
             
-            // Take the layer test before adding the component
             int layerPos = _layeredPane.getComponentCount();
             _layeredPane.add(cardView);
             _layeredPane.setLayer(cardView, layerPos);
@@ -71,24 +70,45 @@ public final class TalonView extends PileView {
             }
         });
         
-        // Add it to the top
+        // Add it to the top, but make sure that the layer number is unique
         _layeredPane.add(pv);
-        _layeredPane.setLayer(pv, _layeredPane.getComponentCount());
+        _layeredPane.setLayer(pv, _layeredPane.getComponentCount() - 1);
     }
     
     /**
      * Cycles to the next card
      */
     public void showNextCard() {
+        
         List<Component> components = Arrays.asList(_layeredPane.getComponents());
+        
+        System.out.println("BEFORE");
+        for(Component component : components) {
+           System.out.println(_layeredPane.getLayer(component) + (!(component instanceof CardView) ? " <----------> " : "")); 
+        }
+        
         int indexOfEmpty = components.indexOf(components.stream().filter(z -> !(z instanceof CardView)).findFirst().get());
-        if(indexOfEmpty == components.size() - 1) {
+        if(indexOfEmpty == components.size() - 1) { // WRONG
             // end
         }
         else {
-            // swap
+            Component emptyCard = _layeredPane.getComponent(indexOfEmpty);
+            int emptyCardIndex = _layeredPane.getLayer(emptyCard);
+            
+            Component newCard = _layeredPane.getComponent(indexOfEmpty + 1);
+            int newCardIndex = _layeredPane.getLayer(newCard);
+            
+            _layeredPane.setLayer(newCard, emptyCardIndex);
+            _layeredPane.setLayer(emptyCard, newCardIndex);
+        
+            System.out.println("AFTER");
+            for(Component component : components) {
+                System.out.println(_layeredPane.getLayer(component) + (!(component instanceof CardView) ? " <----------> " : "")); 
+            }
         }
-        System.out.println("Index is " + indexOfEmpty);
+        
+        
+        //System.out.println("Index is " + indexOfEmpty);
     }
     
     @Override public Dimension getPreferredSize() {
