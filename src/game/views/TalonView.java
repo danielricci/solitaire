@@ -32,7 +32,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.logging.Level;
 
 import framework.core.factories.AbstractFactory;
@@ -52,7 +51,7 @@ public final class TalonView extends PileView {
     public TalonView(List<CardModel> cards) {
         CARD_OFFSET = 0;
         
-        for(int i = 0; i < 4;/*cards.size();*/ ++ i) {
+        for(int i = 0; i < cards.size(); ++ i) {
             CardView cardView = AbstractFactory.getFactory(ViewFactory.class).add(new CardView(cards.get(i)));
             cardView.setBounds(new Rectangle(0, 0, cardView.getPreferredSize().width, cardView.getPreferredSize().height));
             
@@ -90,53 +89,36 @@ public final class TalonView extends PileView {
             return;
         }
         
-        // Convert the array into a list for ease of use with the code down below
-        List<Component> components = Arrays.asList(_layeredPane.getComponents());
-        
-        // Snapshot of the state of the component before modification
-        //System.out.println("BEFORE");
-        //components.stream().forEach(z -> System.out.println(_layeredPane.getLayer(z) + (!(z instanceof CardView) ? " <----------> " : "")));
-        
         // Get the layer id of the blank card within this view
-        Component blankCardLayer = components.stream().filter(z -> !(z instanceof CardView)).findFirst().get();
+        Component blankCardLayer = Arrays.asList(_layeredPane.getComponents()).stream().filter(z -> !(z instanceof CardView)).findFirst().get();
         int blankCardLayerId = _layeredPane.getLayer(blankCardLayer);
         
-        // Find the card that has layer id one less than the blank card. Take that card
-        // and 
-        Optional<Component> cardToSwapWith = components.stream().filter(z -> _layeredPane.getLayer(z) == blankCardLayerId - 1).findFirst(); 
-        if(cardToSwapWith.isPresent()) {
-            
-            
-            
-            int cardToSwapWithId = _layeredPane.getLayer(cardToSwapWith.get());
-            _layeredPane.setLayer(cardToSwapWith.get(), blankCardLayerId);
-            _layeredPane.setLayer(blankCardLayer, cardToSwapWithId);
+        if(blankCardLayerId != _layeredPane.lowestLayer()) {
+            Component cardDirectlyBelowBlankCard = _layeredPane.getComponent(_layeredPane.getIndexOf(blankCardLayer) + 1);
+            _layeredPane.setLayer(cardDirectlyBelowBlankCard, _layeredPane.highestLayer() + 1);
+            for(int i = _layeredPane.getComponentCount() - 1, layerId = 0;  i >= 0; --i, ++layerId) {
+                _layeredPane.setLayer(_layeredPane.getComponent(i), layerId);
+            }
         }
         else {
-            // The blank card is at the bottom, reset the stack
-            System.out.println("TODO: MUST RESET!!!!");
+            
+            // Remove the list of components from the layered pane. 
+            Component[] components = _layeredPane.getComponents();
+            _layeredPane.removeAll();
+            
+            // Go through the list in reverse order and re-assign the layer identifiers as they were before
+            // Note: This is done this way because if we re-order when they are within the layered pane
+            // then the layered pane will control the index positions after the layer id is set, and during the
+            // the resetting of the layer id's, these positions are not properly managed the way that we would want
+            // them to be.
+            for(int i = components.length - 1; i >= 0; --i) {
+                _layeredPane.add(components[i]);
+                _layeredPane.setLayer(components[i], i);
+            }
         }
         
-//        int indexOfEmpty = components.indexOf(components.stream().filter(z -> !(z instanceof CardView)).findFirst().get());
-//        if(indexOfEmpty == components.size() - 1) { // WRONG - should be if layer is 0
-//            // end
-//        }
-//        else {
-//            Component emptyCard = _layeredPane.getComponent(indexOfEmpty);
-//            int emptyCardIndex = _layeredPane.getLayer(emptyCard);
-//            
-//            Component newCard = _layeredPane.getComponent(indexOfEmpty + 1);
-//            int newCardIndex = _layeredPane.getLayer(newCard);
-//            
-//            _layeredPane.setLayer(newCard, emptyCardIndex);
-//            _layeredPane.setLayer(emptyCard, newCardIndex);
-//        
-        
-        //}
-        
-        // Snapshot of the state of the component after odification        
-        //System.out.println("AFTER");
-        //components.stream().forEach(z -> System.out.println(_layeredPane.getLayer(z)));
+        // Debugging code
+        //Arrays.asList(_layeredPane.getComponents()).stream().forEach(z -> System.out.println(_layeredPane.getLayer(z) + (!(z instanceof CardView) ? " <----------> " : "")));
     }
     
     @Override public Dimension getPreferredSize() {
