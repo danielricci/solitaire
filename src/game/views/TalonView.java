@@ -32,10 +32,13 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.logging.Level;
 
 import framework.core.factories.AbstractFactory;
 import framework.core.factories.ViewFactory;
 import framework.core.mvc.view.PanelView;
+import framework.utils.logging.Tracelog;
 
 import game.models.CardModel;
 
@@ -49,13 +52,12 @@ public final class TalonView extends PileView {
     public TalonView(List<CardModel> cards) {
         CARD_OFFSET = 0;
         
-        for(int i = 0; i < cards.size(); ++ i) {
+        for(int i = 0; i < 4;/*cards.size();*/ ++ i) {
             CardView cardView = AbstractFactory.getFactory(ViewFactory.class).add(new CardView(cards.get(i)));
             cardView.setBounds(new Rectangle(0, 0, cardView.getPreferredSize().width, cardView.getPreferredSize().height));
             
-            int layerPos = _layeredPane.getComponentCount();
             _layeredPane.add(cardView);
-            _layeredPane.setLayer(cardView, layerPos);
+            _layeredPane.setLayer(cardView, i);
         }
         
         // Create a blank panel view and blend it to the background of the game
@@ -80,35 +82,61 @@ public final class TalonView extends PileView {
      */
     public void showNextCard() {
         
+        // If there is only one component then go o further. The idea is that the "blank" placeholder view that
+        // mimics that switching of cards should never be removed from this view, thus if that is the only view that
+        // exists then it should mean that all the playing cards having been removed from this view
+        if(_layeredPane.getComponentCount() == 1) {
+            Tracelog.log(Level.INFO, true, "There are no more cards left in the Talon to play.");
+            return;
+        }
+        
+        // Convert the array into a list for ease of use with the code down below
         List<Component> components = Arrays.asList(_layeredPane.getComponents());
         
-        System.out.println("BEFORE");
-        for(Component component : components) {
-           System.out.println(_layeredPane.getLayer(component) + (!(component instanceof CardView) ? " <----------> " : "")); 
-        }
+        // Snapshot of the state of the component before modification
+        //System.out.println("BEFORE");
+        //components.stream().forEach(z -> System.out.println(_layeredPane.getLayer(z) + (!(z instanceof CardView) ? " <----------> " : "")));
         
-        int indexOfEmpty = components.indexOf(components.stream().filter(z -> !(z instanceof CardView)).findFirst().get());
-        if(indexOfEmpty == components.size() - 1) { // WRONG
-            // end
+        // Get the layer id of the blank card within this view
+        Component blankCardLayer = components.stream().filter(z -> !(z instanceof CardView)).findFirst().get();
+        int blankCardLayerId = _layeredPane.getLayer(blankCardLayer);
+        
+        // Find the card that has layer id one less than the blank card. Take that card
+        // and 
+        Optional<Component> cardToSwapWith = components.stream().filter(z -> _layeredPane.getLayer(z) == blankCardLayerId - 1).findFirst(); 
+        if(cardToSwapWith.isPresent()) {
+            
+            
+            
+            int cardToSwapWithId = _layeredPane.getLayer(cardToSwapWith.get());
+            _layeredPane.setLayer(cardToSwapWith.get(), blankCardLayerId);
+            _layeredPane.setLayer(blankCardLayer, cardToSwapWithId);
         }
         else {
-            Component emptyCard = _layeredPane.getComponent(indexOfEmpty);
-            int emptyCardIndex = _layeredPane.getLayer(emptyCard);
-            
-            Component newCard = _layeredPane.getComponent(indexOfEmpty + 1);
-            int newCardIndex = _layeredPane.getLayer(newCard);
-            
-            _layeredPane.setLayer(newCard, emptyCardIndex);
-            _layeredPane.setLayer(emptyCard, newCardIndex);
-        
-            System.out.println("AFTER");
-            for(Component component : components) {
-                System.out.println(_layeredPane.getLayer(component) + (!(component instanceof CardView) ? " <----------> " : "")); 
-            }
+            // The blank card is at the bottom, reset the stack
+            System.out.println("TODO: MUST RESET!!!!");
         }
         
+//        int indexOfEmpty = components.indexOf(components.stream().filter(z -> !(z instanceof CardView)).findFirst().get());
+//        if(indexOfEmpty == components.size() - 1) { // WRONG - should be if layer is 0
+//            // end
+//        }
+//        else {
+//            Component emptyCard = _layeredPane.getComponent(indexOfEmpty);
+//            int emptyCardIndex = _layeredPane.getLayer(emptyCard);
+//            
+//            Component newCard = _layeredPane.getComponent(indexOfEmpty + 1);
+//            int newCardIndex = _layeredPane.getLayer(newCard);
+//            
+//            _layeredPane.setLayer(newCard, emptyCardIndex);
+//            _layeredPane.setLayer(emptyCard, newCardIndex);
+//        
         
-        //System.out.println("Index is " + indexOfEmpty);
+        //}
+        
+        // Snapshot of the state of the component after odification        
+        //System.out.println("AFTER");
+        //components.stream().forEach(z -> System.out.println(_layeredPane.getLayer(z)));
     }
     
     @Override public Dimension getPreferredSize() {

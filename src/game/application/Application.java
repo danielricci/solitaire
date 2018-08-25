@@ -79,7 +79,7 @@ public final class Application extends AbstractApplication {
         EngineProperties.instance().setProperty(Property.DATA_PATH_XML, "/generated/tilemap.xml");
         EngineProperties.instance().setProperty(Property.DATA_PATH_SHEET, "/generated/tilemap.png");
         EngineProperties.instance().setProperty(Property.LOG_DIRECTORY,  System.getProperty("user.home") + File.separator + "desktop" + File.separator);
-        EngineProperties.instance().setProperty(Property.ENGINE_OUTPUT, "true");
+        EngineProperties.instance().setProperty(Property.ENGINE_OUTPUT, "false");
         EngineProperties.instance().setProperty(Property.LOCALIZATION_PATH_CVS, "resources/localization.csv");
         EngineProperties.instance().setProperty(Property.SUPPRESS_SIGNAL_REGISTRATION_OUTPUT, "true");
     }
