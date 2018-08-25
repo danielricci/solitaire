@@ -62,8 +62,6 @@ public final class CardView extends PanelView implements ICollide {
         
         @Override public void mousePressed(MouseEvent event) {
            
-            System.out.println("DSKLDKLKLJD");
-            
             // Get the parent of this card view, used as a reference to go back to whatever we were coming from
             _parentSource = (JLayeredPane) CardView.this.getParent();
             
