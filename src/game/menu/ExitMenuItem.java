@@ -25,12 +25,15 @@
 package game.menu;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 
 import framework.core.navigation.AbstractMenuItem;
 import framework.utils.globalisation.Localization;
+
+import editor.application.Application;
 
 /**
  * Menu item for exiting the game
@@ -50,5 +53,8 @@ public class ExitMenuItem extends AbstractMenuItem {
     }
 
     @Override public void onExecute(ActionEvent actionEvent) {
+        Application.instance().dispatchEvent(
+                new WindowEvent(Application.instance(), WindowEvent.WINDOW_CLOSING)
+                );
     }
 }
