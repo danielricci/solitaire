@@ -26,7 +26,6 @@ package game.models;
 
 import java.awt.Image;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import framework.core.mvc.model.BaseModel;
@@ -75,7 +74,7 @@ public class CardModel extends BaseModel {
         for(DataLookup.SPADES spade : DataLookup.SPADES.values()) {
             entities.add(new CardModel(new SpadeCardEntity(spade)));
         }
-        Collections.shuffle(entities);
+        //Collections.shuffle(entities);
         return entities;
     }
     

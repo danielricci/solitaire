@@ -68,6 +68,10 @@ public class CardController extends BaseController {
             _card.refresh();
         }
     }
+    
+    public boolean isKing() {
+        return _card.getCardEntity().isCardKing();
+    }
 
     public boolean isValidFoundationMove(CardModel card) {
         AbstractCardEntity thisCardEntity = _card.getCardEntity();

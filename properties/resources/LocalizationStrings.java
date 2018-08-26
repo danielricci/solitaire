@@ -35,6 +35,8 @@ public class LocalizationStrings {
      public static String GITHUB = "Github";
      public static String TITLE = "Title";
      public static String GAME = "Game";
+     public static String GAME_OVER = "GameOver";
+     public static String GAME_OVER_HEADER = "GameOverHeader";
      public static String HELP = "Help";
      public static String DEAL = "Deal";
      public static String UNDO = "Undo";

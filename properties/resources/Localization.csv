@@ -3,6 +3,8 @@ About,About Solitaire
 Github,https://github.com/danielricci/minesweeper
 Title,Solitaire
 Game,Game
+GameOver, The game has now finished, would you like to play again?
+GameOverHeader, Game Over
 Help,Help
 Deal,Deal
 Undo,Undo
