@@ -36,7 +36,7 @@ import framework.core.factories.ViewFactory;
 import framework.core.navigation.AbstractMenuItem;
 import framework.utils.globalisation.Localization;
 
-import game.application.Application;
+import game.application.Game;
 import game.views.GameView;
 
 /**
@@ -66,12 +66,12 @@ public class NewGameMenuItem extends AbstractMenuItem {
             AbstractFactory.clearFactories();
             
             // Remove everything from the application UI
-            Application.instance().getContentPane().removeAll();            
+            Game.instance().getContentPane().removeAll();            
         }
 
         // Spawn a new game view and render its contents
         GameView gameView = AbstractFactory.getFactory(ViewFactory.class).add(new GameView(), true);
-        Application.instance().setContentPane(gameView);
+        Game.instance().setContentPane(gameView);
         gameView.render();
     }
 }

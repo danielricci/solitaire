@@ -54,7 +54,7 @@ import framework.core.physics.ICollide;
 import framework.utils.globalisation.Localization;
 import framework.utils.logging.Tracelog;
 
-import game.application.Application;
+import game.application.Game;
 import game.controllers.CardController;
 import game.menu.NewGameMenuItem;
 import game.models.CardModel;
@@ -86,7 +86,7 @@ public final class CardView extends PanelView implements ICollide {
 
                     // Remove the card view reference from it's initial parent
                     _parentSource.remove(CardView.this);
-                    Application.instance().add(CardView.this, 0);
+                    Game.instance().add(CardView.this, 0);
 
                     // Get the siblings of cards within the components list (excluding CardView.this)
                     List<CardView> cardViews = Arrays.asList(Arrays.copyOfRange(components, 0, i, CardView[].class));
@@ -109,7 +109,7 @@ public final class CardView extends PanelView implements ICollide {
                     CardView.this.setBounds(new Rectangle(_parentSource.getParent().getLocation().x + initialLocation.x, _parentSource.getParent().getLocation().y + initialLocation.y, _layeredPane.getWidth(), _layeredPane.getHeight()));
 
                     // Repaint the application to show the changes
-                    Application.instance().repaint();
+                    Game.instance().repaint();
 
                     break mainLabel;
                 }
@@ -159,7 +159,7 @@ public final class CardView extends PanelView implements ICollide {
             CardView.this.setBounds(new Rectangle(0, offset * initialSize, CardView.this.getPreferredSize().width, CardView.this.getPreferredSize().height));
 
             // Remove this card from the application which was used as a temporary measure to support the dragging
-            Application.instance().remove(CardView.this);
+            Game.instance().remove(CardView.this);
 
             // Increment the initial size to include the fact that CardView.this was added back to the parent
             ++initialSize;
@@ -179,7 +179,7 @@ public final class CardView extends PanelView implements ICollide {
             CardView.this._layeredPane.removeAll();
 
             // Repaint the components accordingly
-            Application.instance().repaint();
+            Game.instance().repaint();
             _parentSource.repaint();
             _parentSource = null;            
 
@@ -201,10 +201,10 @@ public final class CardView extends PanelView implements ICollide {
 
                 if(winner) {
                     if(JOptionPane.showConfirmDialog(null, Localization.instance().getLocalizedString(LocalizationStrings.GAME_OVER), Localization.instance().getLocalizedString(LocalizationStrings.GAME_OVER_HEADER), JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE) == JOptionPane.YES_OPTION) { 
-                        MenuBuilder.search(Application.instance().getJMenuBar(), NewGameMenuItem.class).getComponent(AbstractButton.class).doClick();
+                        MenuBuilder.search(Game.instance().getJMenuBar(), NewGameMenuItem.class).getComponent(AbstractButton.class).doClick();
                     }
                     else {
-                        MenuBuilder.search(Application.instance().getJMenuBar(), ExitMenuItem.class).getComponent(AbstractButton.class).doClick();
+                        MenuBuilder.search(Game.instance().getJMenuBar(), ExitMenuItem.class).getComponent(AbstractButton.class).doClick();
                     }
                 }
             }

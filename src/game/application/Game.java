@@ -31,7 +31,7 @@ import java.io.File;
 import javax.swing.AbstractButton;
 
 import framework.core.navigation.MenuBuilder;
-import framework.core.system.AbstractApplication;
+import framework.core.system.Application;
 import framework.core.system.EngineProperties;
 import framework.core.system.EngineProperties.Property;
 import framework.utils.globalisation.Localization;
@@ -45,12 +45,12 @@ import game.menu.UndoMenuItem;
 
 import resources.LocalizationStrings;
 
-public final class Application extends AbstractApplication {
+public final class Game extends Application {
 
     /**
      * Constructs a new instance of this class type
      */
-    public Application() {
+    public Game() {
         setMinimumSize(new Dimension(620, 436));
         setLocationRelativeTo(null);
     }
@@ -70,7 +70,7 @@ public final class Application extends AbstractApplication {
                         break;
                     }
                 }
-                Application.initialize(Application.class, debugMode);
+                Game.initialize(Game.class, debugMode);
             }
         });
     }

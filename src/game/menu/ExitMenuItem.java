@@ -33,7 +33,7 @@ import javax.swing.JMenuItem;
 import framework.core.navigation.AbstractMenuItem;
 import framework.utils.globalisation.Localization;
 
-import editor.application.Application;
+import editor.application.Editor;
 
 /**
  * Menu item for exiting the game
@@ -53,8 +53,8 @@ public class ExitMenuItem extends AbstractMenuItem {
     }
 
     @Override public void onExecute(ActionEvent actionEvent) {
-        Application.instance().dispatchEvent(
-                new WindowEvent(Application.instance(), WindowEvent.WINDOW_CLOSING)
+        Editor.instance().dispatchEvent(
+                new WindowEvent(Editor.instance(), WindowEvent.WINDOW_CLOSING)
                 );
     }
 }
