@@ -32,7 +32,7 @@ import javax.swing.JMenuItem;
 import framework.core.navigation.AbstractMenuItem;
 import framework.utils.globalisation.Localization;
 
-import game.views.OptionsDialog;
+import game.views.OptionsDialogView;
 
 import resources.LocalizationStrings;
 
@@ -54,7 +54,7 @@ public class OptionsMenuItem extends AbstractMenuItem {
     }
 
     @Override public void onExecute(ActionEvent actionEvent) {
-        OptionsDialog dialog = new OptionsDialog();
+        OptionsDialogView dialog = new OptionsDialogView();
         dialog.render();
     }
 }

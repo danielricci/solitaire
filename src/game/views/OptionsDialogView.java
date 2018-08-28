@@ -28,9 +28,9 @@ import framework.core.mvc.view.DialogView;
 import framework.core.system.Application;
 import framework.utils.globalisation.Localization;
 
-public final class OptionsDialog extends DialogView {
+public final class OptionsDialogView extends DialogView {
 
-    public OptionsDialog() {
+    public OptionsDialogView() {
         super(Application.instance(), Localization.instance().getLocalizedString("Options"), 400, 400);
         
         setAutomaticDialogCentering(true);
