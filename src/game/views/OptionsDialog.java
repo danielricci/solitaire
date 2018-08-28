@@ -24,26 +24,18 @@
 
 package game.views;
 
-import framework.communication.internal.signal.arguments.AbstractEventArgs;
 import framework.core.mvc.view.DialogView;
 import framework.core.system.Application;
+import framework.utils.globalisation.Localization;
 
 public final class OptionsDialog extends DialogView {
 
     public OptionsDialog() {
-        super(Application.instance(), "");
+        super(Application.instance(), Localization.instance().getLocalizedString("Options"), 400, 400);
+        
+        setAutomaticDialogCentering(true);
+        setModal(true);
+        setAlwaysOnTop(true);
+        setResizable(false);
     }
-
-    
-    
-    
-    /* (non-Javadoc)
-     * @see framework.communication.internal.signal.ISignalListener#update(framework.communication.internal.signal.arguments.AbstractEventArgs)
-     */
-    @Override
-    public void update(AbstractEventArgs signalEvent) {
-        // TODO Auto-generated method stub
-
-    }
-
 }
