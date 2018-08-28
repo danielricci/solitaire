@@ -82,6 +82,7 @@ public final class Game extends Application {
         EngineProperties.instance().setProperty(Property.ENGINE_OUTPUT, "false");
         EngineProperties.instance().setProperty(Property.LOCALIZATION_PATH_CVS, "resources/localization.csv");
         EngineProperties.instance().setProperty(Property.SUPPRESS_SIGNAL_REGISTRATION_OUTPUT, "true");
+        EngineProperties.instance().setProperty(Property.DISABLE_TRANSLATIONS_PLACEHOLDER, "true");
     }
 
     @Override protected void onWindowInitialized() {

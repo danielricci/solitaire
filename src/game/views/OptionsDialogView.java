@@ -24,6 +24,14 @@
 
 package game.views;
 
+import java.awt.Component;
+import java.awt.FlowLayout;
+
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+
 import framework.core.mvc.view.DialogView;
 import framework.core.system.Application;
 import framework.utils.globalisation.Localization;
@@ -31,11 +39,35 @@ import framework.utils.globalisation.Localization;
 public final class OptionsDialogView extends DialogView {
 
     public OptionsDialogView() {
-        super(Application.instance(), Localization.instance().getLocalizedString("Options"), 400, 400);
+        super(Application.instance(), Localization.instance().getLocalizedString("Options Title"), 400, 400);
         
+        this.getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
         setAutomaticDialogCentering(true);
         setModal(true);
         setAlwaysOnTop(true);
         setResizable(false);
+        
+        // Draw Panel UI
+        JPanel drawPanel = new JPanel();
+        drawPanel.setLayout(new BoxLayout(drawPanel, BoxLayout.Y_AXIS));
+        drawPanel.setBorder(BorderFactory.createTitledBorder("Draw"));
+        drawPanel.add(new JRadioButton("Draw One", true));
+        drawPanel.add(new JRadioButton("Draw Three"));
+        drawPanel.setAlignmentY(Component.TOP_ALIGNMENT);
+        
+        // Scoring Panel UI
+        JPanel scoringPanel = new JPanel();
+        scoringPanel.setLayout(new BoxLayout(scoringPanel, BoxLayout.Y_AXIS));
+        scoringPanel.setBorder(BorderFactory.createTitledBorder("Scoring"));
+        scoringPanel.add(new JRadioButton("Standard", true));
+        scoringPanel.add(new JRadioButton("Vegas"));
+        scoringPanel.add(new JRadioButton("None"));
+        
+        JPanel drawAndScoringPanel = new JPanel();
+        drawAndScoringPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        drawAndScoringPanel.add(drawPanel);
+        drawAndScoringPanel.add(scoringPanel);
+
+        add(drawAndScoringPanel);
     }
 }
