@@ -24,11 +24,11 @@
 
 package game.views;
 
-import java.awt.Component;
 import java.awt.FlowLayout;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -39,46 +39,56 @@ import framework.utils.globalisation.Localization;
 
 public final class OptionsDialogView extends DialogView {
 
-    public OptionsDialogView() {
-        super(Application.instance(), Localization.instance().getLocalizedString("Options Title"), 400, 400);
-        
-        this.getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
-        setAutomaticDialogCentering(true);
-        setModal(true);
-        setAlwaysOnTop(true);
-        setResizable(false);
-        
-        // Draw Panel UI
-        JPanel drawPanel = new JPanel();
-        drawPanel.setLayout(new BoxLayout(drawPanel, BoxLayout.Y_AXIS));
-        drawPanel.setBorder(BorderFactory.createTitledBorder("Draw"));
-        drawPanel.add(new JRadioButton("Draw One", true));
-        drawPanel.add(new JRadioButton("Draw Three"));
-        drawPanel.setAlignmentY(Component.TOP_ALIGNMENT);
-        
-        // Scoring Panel UI
-        JPanel scoringPanel = new JPanel();
-        scoringPanel.setLayout(new BoxLayout(scoringPanel, BoxLayout.Y_AXIS));
-        scoringPanel.setBorder(BorderFactory.createTitledBorder("Scoring"));
-        scoringPanel.add(new JRadioButton("Standard", true));
-        scoringPanel.add(new JRadioButton("Vegas"));
-        scoringPanel.add(new JRadioButton("None"));
-        
-        // The JPanel that houses both the scoring panel and the draw panel UI
-        JPanel drawAndScoringPanel = new JPanel();
-        drawAndScoringPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-        drawAndScoringPanel.add(drawPanel);
-        drawAndScoringPanel.add(scoringPanel);
+	public OptionsDialogView() {
+		super(Application.instance(), Localization.instance().getLocalizedString("Options Title"));
 
-        JPanel barOptionsPanel = new JPanel();
-        barOptionsPanel.setLayout(new BoxLayout(barOptionsPanel, BoxLayout.Y_AXIS));
-        barOptionsPanel.add(new JCheckBox("Timed Game"));
-        barOptionsPanel.add(new JCheckBox("Status Bar"));
-        barOptionsPanel.add(new JCheckBox("Outline Dragging"));
-        barOptionsPanel.add(new JCheckBox("Cumulative Score"));
-        
-        
-        add(drawAndScoringPanel);
-        add(barOptionsPanel);
-    }
+		getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
+		setAutomaticDialogCentering(true);
+		setModal(true);
+		setAlwaysOnTop(true);
+		setResizable(false);
+
+		// Draw Panel UI
+		JPanel drawPanel = new JPanel();
+		drawPanel.setLayout(new BoxLayout(drawPanel, BoxLayout.Y_AXIS));
+		drawPanel.setBorder(BorderFactory.createTitledBorder("Draw"));
+		drawPanel.add(new JRadioButton("Draw One", true));
+		drawPanel.add(new JRadioButton("Draw Three"));
+
+		// Scoring Panel UI
+		JPanel scoringPanel = new JPanel();
+		scoringPanel.setLayout(new BoxLayout(scoringPanel, BoxLayout.Y_AXIS));
+		scoringPanel.setBorder(BorderFactory.createTitledBorder("Scoring"));
+		scoringPanel.add(new JRadioButton("Standard", true));
+		scoringPanel.add(new JRadioButton("Vegas"));
+		scoringPanel.add(new JRadioButton("None"));
+
+		// The JPanel that houses both the scoring panel and the draw panel UI
+		JPanel drawAndScoringPanel = new JPanel();
+		drawAndScoringPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+		drawAndScoringPanel.add(drawPanel);
+		drawAndScoringPanel.add(scoringPanel);
+
+		JPanel barOptionsPanelOuter = new JPanel(new FlowLayout(FlowLayout.CENTER));
+		//barOptionsPanelOuter.setBorder(BorderFactory.createTitledBorder("================"));
+		JPanel barOptionsPanelLeft = new JPanel();
+		barOptionsPanelLeft.setLayout(new BoxLayout(barOptionsPanelLeft, BoxLayout.Y_AXIS));
+		barOptionsPanelLeft.add(new JCheckBox("Timed Game"));
+		barOptionsPanelLeft.add(new JCheckBox("Status Bar"));
+		barOptionsPanelLeft.add(new JCheckBox("Outline Dragging"));
+		JPanel barOptionsPanelRight = new JPanel();
+		barOptionsPanelRight.add(new JCheckBox("Cumulative Score"));
+		barOptionsPanelOuter.add(barOptionsPanelLeft);
+		barOptionsPanelOuter.add(barOptionsPanelRight);
+
+		JPanel actionsPanel = new JPanel();
+		//actionsPanel.setBorder(BorderFactory.createTitledBorder("================"));
+		actionsPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+		actionsPanel.add(new JButton("OK"));
+		actionsPanel.add(new JButton("Cancel"));
+
+		add(drawAndScoringPanel);
+		add(barOptionsPanelOuter);
+		add(actionsPanel);
+	}
 }
