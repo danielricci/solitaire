@@ -29,6 +29,7 @@ import java.awt.FlowLayout;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
@@ -63,11 +64,21 @@ public final class OptionsDialogView extends DialogView {
         scoringPanel.add(new JRadioButton("Vegas"));
         scoringPanel.add(new JRadioButton("None"));
         
+        // The JPanel that houses both the scoring panel and the draw panel UI
         JPanel drawAndScoringPanel = new JPanel();
         drawAndScoringPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
         drawAndScoringPanel.add(drawPanel);
         drawAndScoringPanel.add(scoringPanel);
 
+        JPanel barOptionsPanel = new JPanel();
+        barOptionsPanel.setLayout(new BoxLayout(barOptionsPanel, BoxLayout.Y_AXIS));
+        barOptionsPanel.add(new JCheckBox("Timed Game"));
+        barOptionsPanel.add(new JCheckBox("Status Bar"));
+        barOptionsPanel.add(new JCheckBox("Outline Dragging"));
+        barOptionsPanel.add(new JCheckBox("Cumulative Score"));
+        
+        
         add(drawAndScoringPanel);
+        add(barOptionsPanel);
     }
 }
