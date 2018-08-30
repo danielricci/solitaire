@@ -25,9 +25,11 @@
 package game.views;
 
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
@@ -40,55 +42,74 @@ import framework.utils.globalisation.Localization;
 public final class OptionsDialogView extends DialogView {
 
     public OptionsDialogView() {
-        super(Application.instance(), Localization.instance().getLocalizedString("Options Title"));
-
+        super(Application.instance(), Localization.instance().getLocalizedString("Options"));
+        
         getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
         setAutomaticDialogCentering(true);
         setModal(true);
         setAlwaysOnTop(true);
         setResizable(false);
-
+        
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new GridLayout(2, 2));
+        
         // Draw Panel UI
+        GridLayout drawPanelGridLayout = new GridLayout(2, 1);
+        drawPanelGridLayout.setVgap(-10);
         JPanel drawPanel = new JPanel();
-        drawPanel.setLayout(new BoxLayout(drawPanel, BoxLayout.Y_AXIS));
+        drawPanel.setLayout(drawPanelGridLayout);
         drawPanel.setBorder(BorderFactory.createTitledBorder("Draw"));
-        drawPanel.add(new JRadioButton("Draw One", true));
-        drawPanel.add(new JRadioButton("Draw Three"));
+        JRadioButton drawOneRadioButton = new JRadioButton("Draw One", true);
+        JRadioButton drawThreeRadioButton = new JRadioButton("Draw Three");
+        ButtonGroup drawPanelGroup = new ButtonGroup();
+        drawPanelGroup.add(drawOneRadioButton);
+        drawPanelGroup.add(drawThreeRadioButton);
+        drawPanel.add(drawOneRadioButton);
+        drawPanel.add(drawThreeRadioButton);
 
         // Scoring Panel UI
+        GridLayout scoringPanelGridLayout = new GridLayout(3, 1);
+        scoringPanelGridLayout.setVgap(-5);
         JPanel scoringPanel = new JPanel();
-        scoringPanel.setLayout(new BoxLayout(scoringPanel, BoxLayout.Y_AXIS));
+        scoringPanel.setLayout(scoringPanelGridLayout);
         scoringPanel.setBorder(BorderFactory.createTitledBorder("Scoring"));
-        scoringPanel.add(new JRadioButton("Standard", true));
-        scoringPanel.add(new JRadioButton("Vegas"));
-        scoringPanel.add(new JRadioButton("None"));
+        JRadioButton standardRadioButton = new JRadioButton("Standard", true);
+        JRadioButton vegasRadioButton = new JRadioButton("Vegas");
+        JRadioButton noneRadioButton = new JRadioButton("None");
+        ButtonGroup scoringPanelGroup = new ButtonGroup();
+        scoringPanelGroup.add(standardRadioButton);
+        scoringPanelGroup.add(vegasRadioButton);
+        scoringPanelGroup.add(noneRadioButton);
+        scoringPanel.add(standardRadioButton);
+        scoringPanel.add(vegasRadioButton);
+        scoringPanel.add(noneRadioButton);
 
-        // The JPanel that houses both the scoring panel and the draw panel UI
-        JPanel drawAndScoringPanel = new JPanel();
-        drawAndScoringPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-        drawAndScoringPanel.add(drawPanel);
-        drawAndScoringPanel.add(scoringPanel);
-
-        JPanel barOptionsPanelOuter = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        //barOptionsPanelOuter.setBorder(BorderFactory.createTitledBorder("================"));
+        // Left side options
+        GridLayout leftSideGridLayout = new GridLayout(3, 1);
+        leftSideGridLayout.setVgap(-5);
         JPanel barOptionsPanelLeft = new JPanel();
-        barOptionsPanelLeft.setLayout(new BoxLayout(barOptionsPanelLeft, BoxLayout.Y_AXIS));
+        barOptionsPanelLeft.setLayout(leftSideGridLayout);
         barOptionsPanelLeft.add(new JCheckBox("Timed Game"));
         barOptionsPanelLeft.add(new JCheckBox("Status Bar"));
         barOptionsPanelLeft.add(new JCheckBox("Outline Dragging"));
+        
+        // Right side options
         JPanel barOptionsPanelRight = new JPanel();
+        barOptionsPanelRight.setLayout(new BoxLayout(barOptionsPanelRight, BoxLayout.Y_AXIS));
         barOptionsPanelRight.add(new JCheckBox("Cumulative Score"));
-        barOptionsPanelOuter.add(barOptionsPanelLeft);
-        barOptionsPanelOuter.add(barOptionsPanelRight);
 
+        // OK and Cancel buttons
         JPanel actionsPanel = new JPanel();
-        //actionsPanel.setBorder(BorderFactory.createTitledBorder("================"));
         actionsPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
         actionsPanel.add(new JButton("OK"));
         actionsPanel.add(new JButton("Cancel"));
 
-        add(drawAndScoringPanel);
-        add(barOptionsPanelOuter);
+        mainPanel.add(drawPanel);
+        mainPanel.add(scoringPanel);
+        mainPanel.add(barOptionsPanelLeft);
+        mainPanel.add(barOptionsPanelRight);
+        
+        add(mainPanel);
         add(actionsPanel);
     }
 }
