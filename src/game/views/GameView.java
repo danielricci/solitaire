@@ -25,7 +25,6 @@
 package game.views;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -49,21 +48,6 @@ import game.models.CardModel;
 public final class GameView extends PanelView {
 
     /**
-     * The row size of this view
-     */
-    private final int _rowSize = 2;
-
-    /**
-     * The column size of this view
-     */
-    private final int _columnSize = 7;
-
-    /**
-     * The constaints associated to this view
-     */
-    private final GridBagConstraints _constraints = new GridBagConstraints();
-
-    /**
      * Creates a new instance of this class type
      */
     public GameView() {
@@ -71,8 +55,11 @@ public final class GameView extends PanelView {
         this.setBackground(new Color(0, 128, 0));
     
         // Configure constraint initial values
-        _constraints.weightx = 1.0;
-        _constraints.anchor = GridBagConstraints.NORTH;
+        final int _rowSize = 2;
+        final int _columnSize = 7;
+        GridBagConstraints gameConstraints = new GridBagConstraints();
+        gameConstraints.weightx = 1.0;
+        gameConstraints.anchor = GridBagConstraints.NORTH;
         
         ViewFactory viewFactory = AbstractFactory.getFactory(ViewFactory.class);
         
@@ -80,35 +67,35 @@ public final class GameView extends PanelView {
         List<CardModel> cards = CardModel.newInstances();
         
         for(int row = _rowSize - 1; row >= 0; --row) {
-            _constraints.gridy = row;
+            gameConstraints.gridy = row;
 
-            if(_constraints.gridy ==  1) {
-                _constraints.weighty = 1;
-                _constraints.insets = new Insets(20, 0, 20, 0);
-                _constraints.fill = GridBagConstraints.VERTICAL;
+            if(gameConstraints.gridy ==  1) {
+                gameConstraints.weighty = 1;
+                gameConstraints.insets = new Insets(20, 0, 20, 0);
+                gameConstraints.fill = GridBagConstraints.VERTICAL;
             }
             else {
-                _constraints.weighty = 0;
-                _constraints.insets = new Insets(10, 0, 0, 0);
+                gameConstraints.weighty = 0;
+                gameConstraints.insets = new Insets(10, 0, 0, 0);
             }
 
             for(int col = _columnSize - 1; col >= 0; --col) {
-                _constraints.gridx = col;
+                gameConstraints.gridx = col;
                 
-                if(_constraints.gridy == 0) {
-                    switch(_constraints.gridx) {
+                if(gameConstraints.gridy == 0) {
+                    switch(gameConstraints.gridx) {
                     case 0: {
                         
                         // Create the stock view 
                         StockView stockView = viewFactory.add(new StockView(), true);
-                        this.add(stockView, _constraints);
+                        this.add(stockView, gameConstraints);
                         break;
                     }
                     case 1: {
                         
                         // Create the talon view
                         TalonView talonView = viewFactory.add(new TalonView(cards), true);
-                        this.add(talonView, _constraints, 0);
+                        this.add(talonView, gameConstraints, 0);
                         break;
                     }
                     case 3:
@@ -117,32 +104,33 @@ public final class GameView extends PanelView {
                     case 6:
                         // Create the foundation view
                         FoundationView foundationView = viewFactory.add(new FoundationView());
-                        this.add(foundationView, _constraints);
+                        this.add(foundationView, gameConstraints);
                     break;
                     }
                 }
                 else {
                     
-                    List<CardModel> subList = cards.subList(0, _constraints.gridx + 1);
+                    List<CardModel> subList = cards.subList(0, gameConstraints.gridx + 1);
                     PileView view = viewFactory.add(new PileView(new ArrayList<CardModel>(subList)));
                     subList.clear();
                     
-                    this.add(view, _constraints);
+                    this.add(view, gameConstraints);
                 }
             }
         }
         
-        _constraints.anchor = GridBagConstraints.SOUTH;
-        _constraints.gridx = 0;
-        _constraints.gridy = 1;
-        _constraints.fill = GridBagConstraints.HORIZONTAL;
-        _constraints.weightx = 1.0;
-        _constraints.weighty = 1.0;
-        _constraints.gridwidth = 7;
-        _constraints.insets = new Insets(0, -2, 0, -2);
+        GridBagConstraints barConstraints = new GridBagConstraints(); 
+        barConstraints.anchor = GridBagConstraints.SOUTH;
+        barConstraints.gridx = 0;
+        barConstraints.gridy = 1;
+        barConstraints.fill = GridBagConstraints.HORIZONTAL;
+        barConstraints.weightx = 1.0;
+        barConstraints.weighty = 1.0;
+        barConstraints.gridwidth = 7;
+        barConstraints.insets = new Insets(0, -2, 0, -2);
         
         JPanel panel = new JPanel();
         panel.setBackground(Color.white);
-        this.add(panel, _constraints);
+        this.add(panel, barConstraints);
     }
 }
