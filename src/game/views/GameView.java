@@ -31,7 +31,7 @@ import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JPanel;
+import javax.swing.BorderFactory;
 
 import framework.core.factories.AbstractFactory;
 import framework.core.factories.ViewFactory;
@@ -119,6 +119,14 @@ public final class GameView extends PanelView {
             }
         }
         
+        loadStatusBar();
+    }
+    
+    public void loadStatusBar() {
+        
+        StatusBarView statusBarView = AbstractFactory.getFactory(ViewFactory.class).add(new StatusBarView(), true);
+        statusBarView.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.BLACK));
+        
         GridBagConstraints barConstraints = new GridBagConstraints(); 
         barConstraints.anchor = GridBagConstraints.SOUTH;
         barConstraints.gridx = 0;
@@ -128,9 +136,6 @@ public final class GameView extends PanelView {
         barConstraints.weighty = 1.0;
         barConstraints.gridwidth = 7;
         barConstraints.insets = new Insets(0, -2, 0, -2);
-        
-        JPanel panel = new JPanel();
-        panel.setBackground(Color.white);
-        this.add(panel, barConstraints);
+        this.add(statusBarView, barConstraints, 10);
     }
 }
