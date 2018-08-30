@@ -25,11 +25,14 @@
 package game.views;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.JPanel;
 
 import framework.core.factories.AbstractFactory;
 import framework.core.factories.ViewFactory;
@@ -128,5 +131,18 @@ public final class GameView extends PanelView {
                 }
             }
         }
+        
+        _constraints.anchor = GridBagConstraints.SOUTH;
+        _constraints.gridx = 0;
+        _constraints.gridy = 1;
+        _constraints.fill = GridBagConstraints.HORIZONTAL;
+        _constraints.weightx = 1.0;
+        _constraints.weighty = 1.0;
+        _constraints.gridwidth = 7;
+        _constraints.insets = new Insets(0, -2, 0, -2);
+        
+        JPanel panel = new JPanel();
+        panel.setBackground(Color.white);
+        this.add(panel, _constraints);
     }
 }

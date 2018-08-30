@@ -86,7 +86,6 @@ public final class OptionsDialogView extends DialogView {
 
         // Left side options
         GridLayout leftSideGridLayout = new GridLayout(3, 1);
-        leftSideGridLayout.setVgap(-5);
         JPanel barOptionsPanelLeft = new JPanel();
         barOptionsPanelLeft.setLayout(leftSideGridLayout);
         barOptionsPanelLeft.add(new JCheckBox("Timed Game"));
