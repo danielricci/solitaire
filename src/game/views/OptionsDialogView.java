@@ -26,18 +26,24 @@ package game.views;
 
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
 import framework.core.mvc.view.DialogView;
 import framework.core.system.Application;
 import framework.utils.globalisation.Localization;
+
+import game.config.OptionsPreferences;
+import game.config.OptionsPreferences.DrawOptions;
 
 public final class OptionsDialogView extends DialogView {
 
@@ -53,14 +59,22 @@ public final class OptionsDialogView extends DialogView {
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new GridLayout(2, 2));
         
+        // Load the option for this view
+        OptionsPreferences preferences = new OptionsPreferences();
+        preferences.load();
+        
+        
         // Draw Panel UI
         GridLayout drawPanelGridLayout = new GridLayout(2, 1);
         drawPanelGridLayout.setVgap(-10);
         JPanel drawPanel = new JPanel();
         drawPanel.setLayout(drawPanelGridLayout);
         drawPanel.setBorder(BorderFactory.createTitledBorder("Draw"));
-        JRadioButton drawOneRadioButton = new JRadioButton("Draw One", true);
-        JRadioButton drawThreeRadioButton = new JRadioButton("Draw Three");
+        JRadioButton drawOneRadioButton = new JRadioButton("Draw One", preferences.getDrawOption() == DrawOptions.DRAW_ONE);
+        drawOneRadioButton.putClientProperty(drawOneRadioButton, DrawOptions.DRAW_ONE);
+        JRadioButton drawThreeRadioButton = new JRadioButton("Draw Three", !drawOneRadioButton.isSelected());
+        drawThreeRadioButton.putClientProperty(drawThreeRadioButton, DrawOptions.DRAW_THREE);
+        
         ButtonGroup drawPanelGroup = new ButtonGroup();
         drawPanelGroup.add(drawOneRadioButton);
         drawPanelGroup.add(drawThreeRadioButton);
@@ -98,10 +112,27 @@ public final class OptionsDialogView extends DialogView {
         barOptionsPanelRight.add(new JCheckBox("Cumulative Score"));
 
         // OK and Cancel buttons
-        JPanel actionsPanel = new JPanel();
-        actionsPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-        actionsPanel.add(new JButton("OK"));
-        actionsPanel.add(new JButton("Cancel"));
+        JPanel actionsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JButton okButton = new JButton("OK");
+        okButton.addActionListener(new ActionListener() {
+            @Override public void actionPerformed(ActionEvent event) {
+                JRadioButton drawPanelSelection = drawOneRadioButton.isSelected() ? drawOneRadioButton : drawThreeRadioButton; 
+                preferences.setDrawOption((DrawOptions)drawPanelSelection.getClientProperty(drawPanelSelection));
+                preferences.save();
+                setDialogResult(JOptionPane.OK_OPTION);
+                setVisible(false);
+            }
+        });
+        JButton cancelButton = new JButton("Cancel");
+        cancelButton.addActionListener(new ActionListener() {
+            @Override public void actionPerformed(ActionEvent event) {
+                setDialogResult(JOptionPane.CANCEL_OPTION);
+                setVisible(false);
+            }
+        });
+        
+        actionsPanel.add(okButton);
+        actionsPanel.add(cancelButton);
 
         mainPanel.add(drawPanel);
         mainPanel.add(scoringPanel);

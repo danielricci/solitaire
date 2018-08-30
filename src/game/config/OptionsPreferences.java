@@ -24,21 +24,41 @@
 
 package game.config;
 
+import java.util.logging.Level;
+
 import framework.core.system.GamePreferences;
+import framework.utils.logging.Tracelog;
 
 import game.views.OptionsDialogView;
 
 public final class OptionsPreferences extends GamePreferences {
 
+    public enum DrawOptions { DRAW_ONE, DRAW_THREE };
+    private DrawOptions _drawOption;
+    
     public OptionsPreferences() {
         super(OptionsDialogView.class);
     }
 
     @Override public void load() {
-        // TODO - implement me
+        _drawOption = DrawOptions.values()[preferences.getInt("drawOption", DrawOptions.DRAW_ONE.ordinal())];
     }
 
     @Override public void save() {
-        // TODO - implement me
+        try {
+            preferences.putInt("drawOption", _drawOption.ordinal());
+            preferences.flush();
+        } 
+        catch (Exception exception) {
+            Tracelog.log(Level.SEVERE, true, exception);
+        }
+    }
+
+    public void setDrawOption(DrawOptions drawOption) {
+        _drawOption = drawOption;
+    }
+    
+    public DrawOptions getDrawOption() {
+        return _drawOption;
     }
 }

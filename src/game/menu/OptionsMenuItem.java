@@ -54,7 +54,6 @@ public class OptionsMenuItem extends AbstractMenuItem {
     }
 
     @Override public void onExecute(ActionEvent actionEvent) {
-        OptionsDialogView dialog = new OptionsDialogView();
-        dialog.render();
+        new OptionsDialogView().render();
     }
 }
