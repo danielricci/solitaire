@@ -64,7 +64,6 @@ public final class OptionsDialogView extends DialogView {
         OptionsPreferences preferences = new OptionsPreferences();
         preferences.load();
         
-        
         // Draw Panel UI
         GridLayout drawPanelGridLayout = new GridLayout(2, 1);
         drawPanelGridLayout.setVgap(-10);
