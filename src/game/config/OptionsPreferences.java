@@ -33,15 +33,20 @@ import game.views.OptionsDialogView;
 
 public final class OptionsPreferences extends GamePreferences {
 
-    public enum DrawOptions { DRAW_ONE, DRAW_THREE };
-    private DrawOptions _drawOption;
+    public enum DrawOption { DRAW_ONE, DRAW_THREE };
+    
+    public enum ScoringOption { STANDARD, VEGAS, NONE };
+    
+    private DrawOption _drawOption;
+    
+    private ScoringOption _scoringOption;
     
     public OptionsPreferences() {
         super(OptionsDialogView.class);
     }
 
     @Override public void load() {
-        _drawOption = DrawOptions.values()[preferences.getInt("drawOption", DrawOptions.DRAW_ONE.ordinal())];
+        _drawOption = DrawOption.values()[preferences.getInt("drawOption", DrawOption.DRAW_ONE.ordinal())];
     }
 
     @Override public void save() {
@@ -54,11 +59,19 @@ public final class OptionsPreferences extends GamePreferences {
         }
     }
 
-    public void setDrawOption(DrawOptions drawOption) {
+    public void setDrawOption(DrawOption drawOption) {
         _drawOption = drawOption;
     }
     
-    public DrawOptions getDrawOption() {
+    public DrawOption getDrawOption() {
         return _drawOption;
+    }
+    
+    public void setScoringOption(ScoringOption scoringOption) {
+        _scoringOption = scoringOption;
+    }
+    
+    public ScoringOption getScoringOption() {
+        return _scoringOption;
     }
 }

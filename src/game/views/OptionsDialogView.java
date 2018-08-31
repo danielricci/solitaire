@@ -43,7 +43,7 @@ import framework.core.system.Application;
 import framework.utils.globalisation.Localization;
 
 import game.config.OptionsPreferences;
-import game.config.OptionsPreferences.DrawOptions;
+import game.config.OptionsPreferences.DrawOption;
 
 public final class OptionsDialogView extends DialogView {
 
@@ -70,10 +70,10 @@ public final class OptionsDialogView extends DialogView {
         JPanel drawPanel = new JPanel();
         drawPanel.setLayout(drawPanelGridLayout);
         drawPanel.setBorder(BorderFactory.createTitledBorder("Draw"));
-        JRadioButton drawOneRadioButton = new JRadioButton("Draw One", preferences.getDrawOption() == DrawOptions.DRAW_ONE);
-        drawOneRadioButton.putClientProperty(drawOneRadioButton, DrawOptions.DRAW_ONE);
+        JRadioButton drawOneRadioButton = new JRadioButton("Draw One", preferences.getDrawOption() == DrawOption.DRAW_ONE);
+        drawOneRadioButton.putClientProperty(drawOneRadioButton, DrawOption.DRAW_ONE);
         JRadioButton drawThreeRadioButton = new JRadioButton("Draw Three", !drawOneRadioButton.isSelected());
-        drawThreeRadioButton.putClientProperty(drawThreeRadioButton, DrawOptions.DRAW_THREE);
+        drawThreeRadioButton.putClientProperty(drawThreeRadioButton, DrawOption.DRAW_THREE);
         
         ButtonGroup drawPanelGroup = new ButtonGroup();
         drawPanelGroup.add(drawOneRadioButton);
@@ -116,8 +116,14 @@ public final class OptionsDialogView extends DialogView {
         JButton okButton = new JButton("OK");
         okButton.addActionListener(new ActionListener() {
             @Override public void actionPerformed(ActionEvent event) {
+                
+                // Draw panel result
                 JRadioButton drawPanelSelection = drawOneRadioButton.isSelected() ? drawOneRadioButton : drawThreeRadioButton; 
-                preferences.setDrawOption((DrawOptions)drawPanelSelection.getClientProperty(drawPanelSelection));
+                preferences.setDrawOption((DrawOption)drawPanelSelection.getClientProperty(drawPanelSelection));
+                
+                // Scoring result
+                
+                
                 preferences.save();
                 setDialogResult(JOptionPane.OK_OPTION);
                 setVisible(false);
