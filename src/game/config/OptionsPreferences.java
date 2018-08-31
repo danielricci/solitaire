@@ -47,11 +47,13 @@ public final class OptionsPreferences extends GamePreferences {
 
     @Override public void load() {
         _drawOption = DrawOption.values()[preferences.getInt("drawOption", DrawOption.DRAW_ONE.ordinal())];
+        _scoringOption = ScoringOption.values()[preferences.getInt("scoringOption", ScoringOption.STANDARD.ordinal())];
     }
 
     @Override public void save() {
         try {
             preferences.putInt("drawOption", _drawOption.ordinal());
+            preferences.putInt("scoringOption", _scoringOption.ordinal());
             preferences.flush();
         } 
         catch (Exception exception) {

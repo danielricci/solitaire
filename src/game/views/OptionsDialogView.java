@@ -44,6 +44,7 @@ import framework.utils.globalisation.Localization;
 
 import game.config.OptionsPreferences;
 import game.config.OptionsPreferences.DrawOption;
+import game.config.OptionsPreferences.ScoringOption;
 
 public final class OptionsDialogView extends DialogView {
 
@@ -72,7 +73,7 @@ public final class OptionsDialogView extends DialogView {
         drawPanel.setBorder(BorderFactory.createTitledBorder("Draw"));
         JRadioButton drawOneRadioButton = new JRadioButton("Draw One", preferences.getDrawOption() == DrawOption.DRAW_ONE);
         drawOneRadioButton.putClientProperty(drawOneRadioButton, DrawOption.DRAW_ONE);
-        JRadioButton drawThreeRadioButton = new JRadioButton("Draw Three", !drawOneRadioButton.isSelected());
+        JRadioButton drawThreeRadioButton = new JRadioButton("Draw Three", preferences.getDrawOption() == DrawOption.DRAW_THREE);
         drawThreeRadioButton.putClientProperty(drawThreeRadioButton, DrawOption.DRAW_THREE);
         
         ButtonGroup drawPanelGroup = new ButtonGroup();
@@ -87,9 +88,16 @@ public final class OptionsDialogView extends DialogView {
         JPanel scoringPanel = new JPanel();
         scoringPanel.setLayout(scoringPanelGridLayout);
         scoringPanel.setBorder(BorderFactory.createTitledBorder("Scoring"));
-        JRadioButton standardRadioButton = new JRadioButton("Standard", true);
-        JRadioButton vegasRadioButton = new JRadioButton("Vegas");
-        JRadioButton noneRadioButton = new JRadioButton("None");
+        
+        JRadioButton standardRadioButton = new JRadioButton("Standard", preferences.getScoringOption() == ScoringOption.STANDARD);
+        standardRadioButton.putClientProperty(standardRadioButton, ScoringOption.STANDARD);
+        
+        JRadioButton vegasRadioButton = new JRadioButton("Vegas", preferences.getScoringOption() == ScoringOption.VEGAS);
+        vegasRadioButton.putClientProperty(vegasRadioButton, ScoringOption.VEGAS);
+        
+        JRadioButton noneRadioButton = new JRadioButton("None", preferences.getScoringOption() == ScoringOption.NONE);
+        noneRadioButton.putClientProperty(noneRadioButton, ScoringOption.NONE);
+        
         ButtonGroup scoringPanelGroup = new ButtonGroup();
         scoringPanelGroup.add(standardRadioButton);
         scoringPanelGroup.add(vegasRadioButton);
@@ -122,7 +130,17 @@ public final class OptionsDialogView extends DialogView {
                 preferences.setDrawOption((DrawOption)drawPanelSelection.getClientProperty(drawPanelSelection));
                 
                 // Scoring result
-                
+                JRadioButton scoringPanelSelection = null;
+                if(standardRadioButton.isSelected()) {
+                    scoringPanelSelection = standardRadioButton;
+                }
+                else if(vegasRadioButton.isSelected()) {
+                    scoringPanelSelection = vegasRadioButton;
+                }
+                else {
+                    scoringPanelSelection = noneRadioButton;
+                }
+                preferences.setScoringOption((ScoringOption)scoringPanelSelection.getClientProperty(scoringPanelSelection));
                 
                 preferences.save();
                 setDialogResult(JOptionPane.OK_OPTION);
