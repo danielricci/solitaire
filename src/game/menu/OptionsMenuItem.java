@@ -37,7 +37,7 @@ import game.views.OptionsDialogView;
 import resources.LocalizationStrings;
 
 /**
- * Menu item for starting a new game
+ * Menu item for pulling up the options menu
  * 
  * @author Daniel Ricci {@literal <thedanny09@gmail.com>}
  *

@@ -83,9 +83,9 @@ public final class OptionsDialogView extends DialogView {
         JPanel drawPanel = new JPanel();
         drawPanel.setLayout(drawPanelGridLayout);
         drawPanel.setBorder(BorderFactory.createTitledBorder("Draw"));
-        JRadioButton drawOneRadioButton = new JRadioButton("Draw One", preferences.getDrawOption() == DrawOption.DRAW_ONE);
+        JRadioButton drawOneRadioButton = new JRadioButton("Draw One", preferences.drawOption == DrawOption.DRAW_ONE);
         drawOneRadioButton.putClientProperty(drawOneRadioButton, DrawOption.DRAW_ONE);
-        JRadioButton drawThreeRadioButton = new JRadioButton("Draw Three", preferences.getDrawOption() == DrawOption.DRAW_THREE);
+        JRadioButton drawThreeRadioButton = new JRadioButton("Draw Three", preferences.drawOption == DrawOption.DRAW_THREE);
         drawThreeRadioButton.putClientProperty(drawThreeRadioButton, DrawOption.DRAW_THREE);
         
         // Button group for the draw radio buttons
@@ -103,11 +103,11 @@ public final class OptionsDialogView extends DialogView {
         scoringPanel.setBorder(BorderFactory.createTitledBorder("Scoring"));
         
         // Scoring radio buttons
-        JRadioButton standardRadioButton = new JRadioButton("Standard", preferences.getScoringOption() == ScoringOption.STANDARD);
+        JRadioButton standardRadioButton = new JRadioButton("Standard", preferences.scoringOption == ScoringOption.STANDARD);
         standardRadioButton.putClientProperty(standardRadioButton, ScoringOption.STANDARD);
-        JRadioButton vegasRadioButton = new JRadioButton("Vegas", preferences.getScoringOption() == ScoringOption.VEGAS);
+        JRadioButton vegasRadioButton = new JRadioButton("Vegas", preferences.scoringOption == ScoringOption.VEGAS);
         vegasRadioButton.putClientProperty(vegasRadioButton, ScoringOption.VEGAS);
-        JRadioButton noneRadioButton = new JRadioButton("None", preferences.getScoringOption() == ScoringOption.NONE);
+        JRadioButton noneRadioButton = new JRadioButton("None", preferences.scoringOption == ScoringOption.NONE);
         noneRadioButton.putClientProperty(noneRadioButton, ScoringOption.NONE);
         
         // Button group for the scoring radio buttons
@@ -123,14 +123,20 @@ public final class OptionsDialogView extends DialogView {
         GridLayout leftSideGridLayout = new GridLayout(3, 1);
         JPanel barOptionsPanelLeft = new JPanel();
         barOptionsPanelLeft.setLayout(leftSideGridLayout);
-        barOptionsPanelLeft.add(new JCheckBox("Timed Game"));
-        barOptionsPanelLeft.add(new JCheckBox("Status Bar"));
-        barOptionsPanelLeft.add(new JCheckBox("Outline Dragging"));
+
+        // Mutually exclusive checkbox settings
+        JCheckBox timedGameCheckBox = new JCheckBox("Timed Game", preferences.timedGame); 
+        barOptionsPanelLeft.add(timedGameCheckBox);
+        JCheckBox statusBarCheckBox = new JCheckBox("Status Bar", preferences.statusBar);
+        barOptionsPanelLeft.add(statusBarCheckBox);
+        JCheckBox outlineDraggingCheckbox = new JCheckBox("Outline Dragging", preferences.outlineDragging);
+        barOptionsPanelLeft.add(outlineDraggingCheckbox);
         
         // Right side options
         JPanel barOptionsPanelRight = new JPanel();
         barOptionsPanelRight.setLayout(new BoxLayout(barOptionsPanelRight, BoxLayout.Y_AXIS));
-        barOptionsPanelRight.add(new JCheckBox("Cumulative Score"));
+        JCheckBox cumulativeScoreCheckBox = new JCheckBox("Cumulative Score", preferences.cumulativeScore);
+        barOptionsPanelRight.add(cumulativeScoreCheckBox);
 
         // The OK button
         JButton okButton = new JButton("OK");
@@ -139,7 +145,7 @@ public final class OptionsDialogView extends DialogView {
                 
                 // Draw panel result
                 JRadioButton drawPanelSelection = drawOneRadioButton.isSelected() ? drawOneRadioButton : drawThreeRadioButton; 
-                preferences.setDrawOption((DrawOption)drawPanelSelection.getClientProperty(drawPanelSelection));
+                preferences.drawOption = (DrawOption)drawPanelSelection.getClientProperty(drawPanelSelection);
                 
                 // Scoring result
                 JRadioButton scoringPanelSelection = null;
@@ -152,8 +158,15 @@ public final class OptionsDialogView extends DialogView {
                 else {
                     scoringPanelSelection = noneRadioButton;
                 }
-                preferences.setScoringOption((ScoringOption)scoringPanelSelection.getClientProperty(scoringPanelSelection));
+                preferences.scoringOption = (ScoringOption)scoringPanelSelection.getClientProperty(scoringPanelSelection);
                 
+                // Mutually exclusive checkboxes
+                preferences.timedGame = timedGameCheckBox.isSelected();
+                preferences.statusBar = statusBarCheckBox.isSelected();
+                preferences.outlineDragging = outlineDraggingCheckbox.isSelected();
+                preferences.cumulativeScore = cumulativeScoreCheckBox.isSelected();
+                
+                // Save the contents of the preferences and then close this dialog
                 preferences.save();
                 setDialogResult(JOptionPane.OK_OPTION);
                 setVisible(false);

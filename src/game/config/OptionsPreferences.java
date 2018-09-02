@@ -37,43 +37,43 @@ public final class OptionsPreferences extends GamePreferences {
     
     public enum ScoringOption { STANDARD, VEGAS, NONE };
     
-    private DrawOption _drawOption;
+    public boolean timedGame;
     
-    private ScoringOption _scoringOption;
+    public boolean statusBar;
+    
+    public boolean outlineDragging;
+    
+    public boolean cumulativeScore;
+    
+    public DrawOption drawOption;
+    
+    public ScoringOption scoringOption;
     
     public OptionsPreferences() {
         super(OptionsDialogView.class);
     }
 
     @Override public void load() {
-        _drawOption = DrawOption.values()[preferences.getInt("drawOption", DrawOption.DRAW_ONE.ordinal())];
-        _scoringOption = ScoringOption.values()[preferences.getInt("scoringOption", ScoringOption.STANDARD.ordinal())];
+        drawOption = DrawOption.values()[preferences.getInt("drawOption", DrawOption.DRAW_ONE.ordinal())];
+        scoringOption = ScoringOption.values()[preferences.getInt("scoringOption", ScoringOption.STANDARD.ordinal())];
+        timedGame = preferences.getBoolean("timedGame", false);
+        statusBar = preferences.getBoolean("statusBar", false);
+        outlineDragging = preferences.getBoolean("outlineDragging", false);
+        cumulativeScore = preferences.getBoolean("cumulativeScore", false);
     }
 
     @Override public void save() {
         try {
-            preferences.putInt("drawOption", _drawOption.ordinal());
-            preferences.putInt("scoringOption", _scoringOption.ordinal());
+            preferences.putInt("drawOption", drawOption.ordinal());
+            preferences.putInt("scoringOption", scoringOption.ordinal());
+            preferences.putBoolean("timedGame", timedGame);
+            preferences.putBoolean("statusBar", statusBar);
+            preferences.putBoolean("outlineDragging", outlineDragging);
+            preferences.putBoolean("cumulativeScore", cumulativeScore);
             preferences.flush();
         } 
         catch (Exception exception) {
             Tracelog.log(Level.SEVERE, true, exception);
         }
-    }
-
-    public void setDrawOption(DrawOption drawOption) {
-        _drawOption = drawOption;
-    }
-    
-    public DrawOption getDrawOption() {
-        return _drawOption;
-    }
-    
-    public void setScoringOption(ScoringOption scoringOption) {
-        _scoringOption = scoringOption;
-    }
-    
-    public ScoringOption getScoringOption() {
-        return _scoringOption;
     }
 }
