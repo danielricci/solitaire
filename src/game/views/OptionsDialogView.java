@@ -46,25 +46,38 @@ import game.config.OptionsPreferences;
 import game.config.OptionsPreferences.DrawOption;
 import game.config.OptionsPreferences.ScoringOption;
 
+/**
+ * The options view shows the settings that change the way the game is played
+ *
+ * @author Daniel Ricci <thedanny09@gmail.com>
+ *
+ */
 public final class OptionsDialogView extends DialogView {
 
+    /**
+     * Constructs a new instance of this class type
+     */
     public OptionsDialogView() {
         super(Application.instance(), Localization.instance().getLocalizedString("Options"));
         
+        // Properties of this view
         getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
         setAutomaticDialogCentering(true);
         setModal(true);
         setAlwaysOnTop(true);
         setResizable(false);
         
+        // The main panel that houses this view
         JPanel mainPanel = new JPanel();
+        
+        // Use a grid to lay out the contents
         mainPanel.setLayout(new GridLayout(2, 2));
         
         // Load the option for this view
         OptionsPreferences preferences = new OptionsPreferences();
         preferences.load();
         
-        // Draw Panel UI
+        // Draw radio buttons
         GridLayout drawPanelGridLayout = new GridLayout(2, 1);
         drawPanelGridLayout.setVgap(-10);
         JPanel drawPanel = new JPanel();
@@ -75,6 +88,7 @@ public final class OptionsDialogView extends DialogView {
         JRadioButton drawThreeRadioButton = new JRadioButton("Draw Three", preferences.getDrawOption() == DrawOption.DRAW_THREE);
         drawThreeRadioButton.putClientProperty(drawThreeRadioButton, DrawOption.DRAW_THREE);
         
+        // Button group for the draw radio buttons
         ButtonGroup drawPanelGroup = new ButtonGroup();
         drawPanelGroup.add(drawOneRadioButton);
         drawPanelGroup.add(drawThreeRadioButton);
@@ -88,15 +102,15 @@ public final class OptionsDialogView extends DialogView {
         scoringPanel.setLayout(scoringPanelGridLayout);
         scoringPanel.setBorder(BorderFactory.createTitledBorder("Scoring"));
         
+        // Scoring radio buttons
         JRadioButton standardRadioButton = new JRadioButton("Standard", preferences.getScoringOption() == ScoringOption.STANDARD);
         standardRadioButton.putClientProperty(standardRadioButton, ScoringOption.STANDARD);
-        
         JRadioButton vegasRadioButton = new JRadioButton("Vegas", preferences.getScoringOption() == ScoringOption.VEGAS);
         vegasRadioButton.putClientProperty(vegasRadioButton, ScoringOption.VEGAS);
-        
         JRadioButton noneRadioButton = new JRadioButton("None", preferences.getScoringOption() == ScoringOption.NONE);
         noneRadioButton.putClientProperty(noneRadioButton, ScoringOption.NONE);
         
+        // Button group for the scoring radio buttons
         ButtonGroup scoringPanelGroup = new ButtonGroup();
         scoringPanelGroup.add(standardRadioButton);
         scoringPanelGroup.add(vegasRadioButton);
@@ -118,8 +132,7 @@ public final class OptionsDialogView extends DialogView {
         barOptionsPanelRight.setLayout(new BoxLayout(barOptionsPanelRight, BoxLayout.Y_AXIS));
         barOptionsPanelRight.add(new JCheckBox("Cumulative Score"));
 
-        // OK and Cancel buttons
-        JPanel actionsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        // The OK button
         JButton okButton = new JButton("OK");
         okButton.addActionListener(new ActionListener() {
             @Override public void actionPerformed(ActionEvent event) {
@@ -146,6 +159,8 @@ public final class OptionsDialogView extends DialogView {
                 setVisible(false);
             }
         });
+        
+        // The Cancel button
         JButton cancelButton = new JButton("Cancel");
         cancelButton.addActionListener(new ActionListener() {
             @Override public void actionPerformed(ActionEvent event) {
@@ -154,14 +169,18 @@ public final class OptionsDialogView extends DialogView {
             }
         });
         
+        // Add the OK button and the Cancel button
+        JPanel actionsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         actionsPanel.add(okButton);
         actionsPanel.add(cancelButton);
 
+        // Add the sub-panels to the main panel
         mainPanel.add(drawPanel);
         mainPanel.add(scoringPanel);
         mainPanel.add(barOptionsPanelLeft);
         mainPanel.add(barOptionsPanelRight);
         
+        // Add the main panel and the action panel to the main view;
         add(mainPanel);
         add(actionsPanel);
     }
