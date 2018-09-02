@@ -37,6 +37,7 @@ import framework.core.factories.AbstractFactory;
 import framework.core.factories.ViewFactory;
 import framework.core.mvc.view.PanelView;
 
+import game.config.OptionsPreferences;
 import game.models.CardModel;
 
 /**
@@ -119,10 +120,14 @@ public final class GameView extends PanelView {
             }
         }
         
-        loadStatusBar();
+        OptionsPreferences options = new OptionsPreferences();
+        options.load();
+        if(options.statusBar) {
+            loadStatusBar();    
+        }
     }
     
-    public void loadStatusBar() {
+    private void loadStatusBar() {
         
         StatusBarView statusBarView = AbstractFactory.getFactory(ViewFactory.class).add(new StatusBarView(), true);
         statusBarView.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.BLACK));

@@ -26,10 +26,14 @@ package game.menu;
 
 import java.awt.event.ActionEvent;
 
+import javax.swing.AbstractButton;
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 
 import framework.core.navigation.AbstractMenuItem;
+import framework.core.navigation.MenuBuilder;
+import framework.core.system.Application;
 import framework.utils.globalisation.Localization;
 
 import game.views.OptionsDialogView;
@@ -54,6 +58,11 @@ public class OptionsMenuItem extends AbstractMenuItem {
     }
 
     @Override public void onExecute(ActionEvent actionEvent) {
-        new OptionsDialogView().render();
+        OptionsDialogView options = new OptionsDialogView();
+        options.render();
+        
+        if(options.getDialogResult() == JOptionPane.OK_OPTION) {
+            MenuBuilder.search(Application.instance().getJMenuBar(), NewGameMenuItem.class).getComponent(AbstractButton.class).doClick();
+        }
     }
 }
