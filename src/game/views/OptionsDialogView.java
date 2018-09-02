@@ -28,6 +28,8 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -136,6 +138,15 @@ public final class OptionsDialogView extends DialogView {
         JPanel barOptionsPanelRight = new JPanel();
         barOptionsPanelRight.setLayout(new BoxLayout(barOptionsPanelRight, BoxLayout.Y_AXIS));
         JCheckBox cumulativeScoreCheckBox = new JCheckBox("Cumulative Score", preferences.cumulativeScore);
+        cumulativeScoreCheckBox.setEnabled(vegasRadioButton.isSelected());
+        
+        // Add an item listener to the vegas radio button to alter the state of the cumulative score
+        vegasRadioButton.addItemListener(new ItemListener() {
+            @Override public void itemStateChanged(ItemEvent event) {
+                cumulativeScoreCheckBox.setEnabled(event.getStateChange() == ItemEvent.SELECTED);
+            }
+        });
+
         barOptionsPanelRight.add(cumulativeScoreCheckBox);
 
         // The OK button
