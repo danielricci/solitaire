@@ -53,7 +53,7 @@ public class FoundationView extends PileView {
     }
 
     @Override public boolean isValidCollision(Component source) {
-
+        
         IView sourceView = (IView) source;
         boolean valid = false;
         CardModel sourceCardModel = sourceView.getViewProperties().getEntity(CardController.class).getCard();

@@ -58,16 +58,6 @@ public class CardController extends BaseController {
     public void refresh() {
         _card.refresh();
     }
-
-    /**
-     * Handles when a click event is performed on the view associated to this controller
-     */
-    public void handleSingleClickAction() {
-        if(_card.getIsBackside()) {
-            _card.setBackside(false);
-            _card.refresh();
-        }
-    }
     
     public boolean isKing() {
         return _card.getCardEntity().isCardKing();

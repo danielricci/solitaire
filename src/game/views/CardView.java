@@ -153,7 +153,7 @@ public final class CardView extends PanelView implements ICollide {
 
             // Add this card view to the pane and update the layer within the component that it has been added to
             _parentSource.add(CardView.this);
-            _parentSource.setLayer(CardView.this, initialSize); // BUG HERE, talon needs + 1?
+            _parentSource.setLayer(CardView.this, initialSize);
 
             // Set the bounds of this card so that it appears at the right position offset
             CardView.this.setBounds(new Rectangle(0, offset * initialSize, CardView.this.getPreferredSize().width, CardView.this.getPreferredSize().height));
@@ -258,9 +258,41 @@ public final class CardView extends PanelView implements ICollide {
         // Add a mouse adapter to handle the mouse click event on a click
         addMouseListener(new MouseAdapter() {
             @Override public void mouseClicked(MouseEvent event) {
-                // Only try to uncover the bottom-most card
+                
                 if(CardView.this.getParent().getComponents()[0].equals(CardView.this)) {
-                    _controller.handleSingleClickAction();
+                    if(event.getClickCount() == 2 && !_controller.getCard().getIsBackside()) {
+                        
+                        // Make sure that we are not double clicking on an ACE. That doesn't make much sense here in this case
+                        if(AbstractFactory.getFactory(ViewFactory.class).getAll(FoundationView.class).stream().anyMatch(z -> z._layeredPane.getComponentCount() == 1 && z._layeredPane.getComponents()[0] == CardView.this)) {
+                            return;
+                        }
+                        
+                        for(FoundationView foundationView : AbstractFactory.getFactory(ViewFactory.class).getAll(FoundationView.class)) {
+                            if(foundationView.isValidCollision(CardView.this)) {
+
+                                // Remove from the layered pane source
+                                JLayeredPane parentPane = (JLayeredPane) CardView.this.getParent();
+                                parentPane.remove(CardView.this);
+                                                                
+                                // Add to the layered pane destination
+                                foundationView._layeredPane.add(CardView.this);
+                                foundationView._layeredPane.setLayer(CardView.this, foundationView._layeredPane.getComponentCount());
+                                
+                                // Set the proper bounds of the component
+                                CardView.this.setBounds(new Rectangle(0, 0, CardView.this.getPreferredSize().width, CardView.this.getPreferredSize().height));
+                                
+                                // Repaint the components
+                                _layeredPane.repaint();
+                                foundationView.repaint();
+                                
+                                break;
+                            }
+                        }                            
+                    }
+                    else if(_controller.getCard().getIsBackside()){
+                        _controller.getCard().setBackside(false);
+                        _controller.getCard().refresh();
+                    }
                 }
             }
         });
@@ -268,7 +300,6 @@ public final class CardView extends PanelView implements ICollide {
 
     @Override public void removeAll() {
         super.removeAll();
-
         _draggableListener.setEnabled(false);
         _collisionListener.setEnabled(false);
     }
