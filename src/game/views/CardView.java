@@ -84,16 +84,14 @@ public final class CardView extends PanelView implements ICollide {
 
                 if(components[i].equals(CardView.this)) {
 
-                    // Remove the card view reference from it's initial parent
-                    _parentSource.remove(CardView.this);
-                    Game.instance().add(CardView.this, 0);
-
                     // Get the siblings of cards within the components list (excluding CardView.this)
                     List<CardView> cardViews = Arrays.asList(Arrays.copyOfRange(components, 0, i, CardView[].class));
 
                     // Reverse the list because layered panes associate objects closer to layer 0 as being closer to the screen.
                     Collections.reverse(cardViews);
 
+                    CardView.this._layeredPane.setSize(_layeredPane.getWidth(), _layeredPane.getHeight() + (cardViews.size() * 12));
+                    
                     // For each sibling add it into the associated layere pane and position it correctly within
                     // the pane, accounting for the fact that CardView.this is the temporary 'root'
                     for(int j = 0; j < cardViews.size(); ++j) {
@@ -108,6 +106,10 @@ public final class CardView extends PanelView implements ICollide {
                     Point initialLocation = CardView.this.getLocation();
                     CardView.this.setBounds(new Rectangle(_parentSource.getParent().getLocation().x + initialLocation.x, _parentSource.getParent().getLocation().y + initialLocation.y, _layeredPane.getWidth(), _layeredPane.getHeight()));
 
+                    // Remove the card view reference from it's initial parent
+                    _parentSource.remove(CardView.this);
+                    Game.instance().add(CardView.this, 0);
+                    
                     // Repaint the application to show the changes
                     Game.instance().repaint();
 
@@ -304,7 +306,6 @@ public final class CardView extends PanelView implements ICollide {
         _collisionListener.setEnabled(false);
     }
 
-
     @Override public boolean isValidCollision(Component source) {
 
         // Get the controller associated to this instance
@@ -322,6 +323,7 @@ public final class CardView extends PanelView implements ICollide {
     @Override public void render() {
         super.render();
         _controller.refresh();
+        this.setRenderLimits(0, 0, this.getWidth(), this.getHeight());
     }
 
     @Override public void update(AbstractEventArgs event) {
