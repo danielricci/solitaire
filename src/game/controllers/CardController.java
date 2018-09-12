@@ -63,6 +63,13 @@ public class CardController extends BaseController {
         return _card.getCardEntity().isCardKing();
     }
 
+    /**
+     * Verifies if the specified card provided can be used within this current card
+     * 
+     * @param card The card to verify if it can be used to put over this card
+     * 
+     * @return TRUE if this card is before the specified card and of the same suite, FALSE otherwise 
+     */
     public boolean isValidFoundationMove(CardModel card) {
         AbstractCardEntity thisCardEntity = _card.getCardEntity();
         AbstractCardEntity cardEntity = card.getCardEntity();

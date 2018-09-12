@@ -299,25 +299,24 @@ public final class CardView extends PanelView implements ICollide {
             }
         });
     }
-
+    
     @Override public void removeAll() {
         super.removeAll();
         _draggableListener.setEnabled(false);
         _collisionListener.setEnabled(false);
     }
 
-    @Override public boolean isValidCollision(Component source) {
-
-        // Get the controller associated to this instance
-        CardController cardViewController = this.getViewProperties().getEntity(CardController.class);
-
-        // TODO Can this be removed, and somehow better done so that there is no IView dependency
-        IView view = (IView) source;
-
-        // Check if what is attempting to collide into this card is valid
-        return cardViewController.getCard().isCardBeforeAndSameSuite(
-                view.getViewProperties().getEntity(CardController.class).getCard()
-                );
+    @Override public boolean isValidCollision(Component source) {        
+        if(getParent().getParent() instanceof FoundationView) {
+            IView view = (IView)source;
+            CardController thisCardViewController = view.getViewProperties().getEntity(CardController.class);
+            return _controller.isValidFoundationMove(thisCardViewController.getCard());            
+        }
+        else {
+            CardController cardViewController = this.getViewProperties().getEntity(CardController.class);
+            IView view = (IView) source;
+            return cardViewController.getCard().isCardBeforeAndOppositeSuite(view.getViewProperties().getEntity(CardController.class).getCard());
+        }
     }
 
     @Override public void render() {
