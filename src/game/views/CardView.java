@@ -307,14 +307,16 @@ public final class CardView extends PanelView implements ICollide {
     }
 
     @Override public boolean isValidCollision(Component source) {        
+        IView view = (IView)source;
+        
+        // A card is coming into this card, and we are on the foundation view
         if(getParent().getParent() instanceof FoundationView) {
-            IView view = (IView)source;
             CardController thisCardViewController = view.getViewProperties().getEntity(CardController.class);
             return _controller.isValidFoundationMove(thisCardViewController.getCard());            
         }
+        // The card is coming onto this card which is on the pile view (should be, there are only two options for this game)
         else {
             CardController cardViewController = this.getViewProperties().getEntity(CardController.class);
-            IView view = (IView) source;
             return cardViewController.getCard().isCardBeforeAndOppositeSuite(view.getViewProperties().getEntity(CardController.class).getCard());
         }
     }
