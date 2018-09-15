@@ -24,6 +24,7 @@
 
 package game.views;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Point;
@@ -188,8 +189,8 @@ public final class CardView extends PanelView implements ICollide {
             if(parent instanceof FoundationView) {
                 boolean winner = true;
                 for(FoundationView foundationView : AbstractFactory.getFactory(ViewFactory.class).getAll(FoundationView.class)) {
-                    if(foundationView._layeredPane.getComponentCount() == 13) { 
-                        CardView cardView = (CardView) foundationView._layeredPane.getComponent(0);
+                    if(foundationView.layeredPane.getComponentCount() == 13) { 
+                        CardView cardView = (CardView) foundationView.layeredPane.getComponent(0);
                         if(!cardView.getViewProperties().getEntity(CardController.class).isKing()) {
                             winner = false;
                             break;
@@ -244,19 +245,39 @@ public final class CardView extends PanelView implements ICollide {
     private final JLayeredPane _layeredPane = new JLayeredPane();
 
     /**
+     * Sets this card as being *visually* selected
+     */
+    private boolean _selectIt = false;
+    
+    /**
      * Creates a new instance of this class type
      */
     public CardView(CardModel card) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setPreferredSize(new Dimension(CARD_WIDTH, CARD_HEIGHT));
-        setOpaque(false);
-
+        setOpaque(true);
+        setBackground(Color.BLACK);
         add(_layeredPane);
 
         card.addListeners(this);
         _controller = new CardController(card);
         getViewProperties().setEntity(_controller);   
 
+        addMouseMotionListener(new MouseAdapter() {
+            @Override public void mouseDragged(MouseEvent event) {
+                ICollide collider = _collisionListener.getCollision();
+                if(collider != null) {
+                    PileView pile = (PileView) collider;
+                    CardView cardView = pile.getLastCard();
+                    cardView._selectIt = true;
+                    pile.repaint();
+                }
+                else {
+                    
+                }
+            }
+        });
+        
         // Add a mouse adapter to handle the mouse click event on a click
         addMouseListener(new MouseAdapter() {
             @Override public void mouseClicked(MouseEvent event) {
@@ -265,7 +286,7 @@ public final class CardView extends PanelView implements ICollide {
                     if(event.getClickCount() == 2 && !_controller.getCard().getIsBackside()) {
                         
                         // Make sure that we are not double clicking on an ACE. That doesn't make much sense here in this case
-                        if(AbstractFactory.getFactory(ViewFactory.class).getAll(FoundationView.class).stream().anyMatch(z -> z._layeredPane.getComponentCount() == 1 && z._layeredPane.getComponents()[0] == CardView.this)) {
+                        if(AbstractFactory.getFactory(ViewFactory.class).getAll(FoundationView.class).stream().anyMatch(z -> z.layeredPane.getComponentCount() == 1 && z.layeredPane.getComponents()[0] == CardView.this)) {
                             return;
                         }
                         
@@ -277,8 +298,8 @@ public final class CardView extends PanelView implements ICollide {
                                 parentPane.remove(CardView.this);
                                                                 
                                 // Add to the layered pane destination
-                                foundationView._layeredPane.add(CardView.this);
-                                foundationView._layeredPane.setLayer(CardView.this, foundationView._layeredPane.getComponentCount());
+                                foundationView.layeredPane.add(CardView.this);
+                                foundationView.layeredPane.setLayer(CardView.this, foundationView.layeredPane.getComponentCount());
                                 
                                 // Set the proper bounds of the component
                                 CardView.this.setBounds(new Rectangle(0, 0, CardView.this.getPreferredSize().width, CardView.this.getPreferredSize().height));
@@ -298,6 +319,10 @@ public final class CardView extends PanelView implements ICollide {
                 }
             }
         });
+    }
+    
+    @Override protected RenderMethod getRenderMethod() {
+        return _selectIt ? RenderMethod.XOR : RenderMethod.NORMAL;
     }
     
     @Override public void removeAll() {

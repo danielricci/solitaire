@@ -49,7 +49,7 @@ public class PileView extends PanelView implements ICollide {
     /**
      * The layered pane that holds the list of cards
      */
-    protected final JLayeredPane _layeredPane = new JLayeredPane();
+    protected final JLayeredPane layeredPane = new JLayeredPane();
 
     /**
      * Constructs a new instance of this class type
@@ -58,7 +58,7 @@ public class PileView extends PanelView implements ICollide {
         setLayout(new BorderLayout());
         setPreferredSize(new Dimension(CardView.CARD_WIDTH, this.getPreferredSize().height));
         setOpaque(false);
-        add(_layeredPane, BorderLayout.CENTER);
+        add(layeredPane, BorderLayout.CENTER);
     }
     
     /**
@@ -75,8 +75,8 @@ public class PileView extends PanelView implements ICollide {
             cards.get(i).setBackside(i + 1 < cards.size());
             
             // Add the view to the layered pane
-            _layeredPane.add(view);
-            _layeredPane.setLayer(view, i);
+            layeredPane.add(view);
+            layeredPane.setLayer(view, i);
             
             // Set the bounds of the view within the layered pane
             view.setBounds(new Rectangle(0, CARD_OFFSET * i, view.getPreferredSize().width, view.getPreferredSize().height));
@@ -95,17 +95,21 @@ public class PileView extends PanelView implements ICollide {
             CardView view = cardViews[i];
             
             // Add the view to the layered pane
-            _layeredPane.add(view);
-            _layeredPane.setLayer(view, i);
+            layeredPane.add(view);
+            layeredPane.setLayer(view, i);
             
             // Set the bounds of the view within the layered pane
             view.setBounds(new Rectangle(0, CARD_OFFSET * i, view.getPreferredSize().width, view.getPreferredSize().height));
         }
     }
     
+    public CardView getLastCard() {
+        return (CardView)layeredPane.getComponents()[0];
+    }
+    
     @Override public void render() {
         super.render();
-        for(Component component : _layeredPane.getComponents()) {
+        for(Component component : layeredPane.getComponents()) {
             if(component instanceof CardView) {
                 CardView view = (CardView) component;
                 view.render();
@@ -117,17 +121,17 @@ public class PileView extends PanelView implements ICollide {
     @Override public boolean isValidCollision(Component source) {
 
         // If there are no components then only allow a king to be placed
-        if(_layeredPane.getComponentCount() == 0) {
+        if(layeredPane.getComponentCount() == 0) {
             CardView cardView = (CardView) source;
             return cardView.getViewProperties().getEntity(CardController.class).getCard().getCardEntity().isCardKing();
         }
         
-        if(!(_layeredPane.getComponent(0) instanceof CardView) ){
+        if(!(layeredPane.getComponent(0) instanceof CardView) ){
             return false;
         }
         
         // Get the bottom most card within the pile view.
-        CardView cardView = (CardView) _layeredPane.getComponent(0);
+        CardView cardView = (CardView) layeredPane.getComponent(0);
 
         // Get the bounds associated to this pile view
         Rectangle thisBounds = this.getBounds();

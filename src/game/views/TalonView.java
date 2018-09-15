@@ -55,8 +55,8 @@ public final class TalonView extends PileView {
             CardView cardView = AbstractFactory.getFactory(ViewFactory.class).add(new CardView(cards.get(i)));
             cardView.setBounds(new Rectangle(0, 0, cardView.getPreferredSize().width, cardView.getPreferredSize().height));
             
-            _layeredPane.add(cardView);
-            _layeredPane.setLayer(cardView, i);
+            layeredPane.add(cardView);
+            layeredPane.setLayer(cardView, i);
         }
         
         // Create a blank panel view and blend it to the background of the game
@@ -72,8 +72,8 @@ public final class TalonView extends PileView {
         });
         
         // Add it to the top, but make sure that the layer number is unique
-        _layeredPane.add(pv);
-        _layeredPane.setLayer(pv, _layeredPane.getComponentCount() - 1);
+        layeredPane.add(pv);
+        layeredPane.setLayer(pv, layeredPane.getComponentCount() - 1);
     }
     
     /**
@@ -84,27 +84,27 @@ public final class TalonView extends PileView {
         // If there is only one component then go o further. The idea is that the "blank" placeholder view that
         // mimics that switching of cards should never be removed from this view, thus if that is the only view that
         // exists then it should mean that all the playing cards having been removed from this view
-        if(_layeredPane.getComponentCount() == 1) {
+        if(layeredPane.getComponentCount() == 1) {
             Tracelog.log(Level.INFO, true, "There are no more cards left in the Talon to play.");
             return;
         }
         
         // Get the layer id of the blank card within this view
-        Component blankCardLayer = Arrays.asList(_layeredPane.getComponents()).stream().filter(z -> !(z instanceof CardView)).findFirst().get();
-        int blankCardLayerId = _layeredPane.getLayer(blankCardLayer);
+        Component blankCardLayer = Arrays.asList(layeredPane.getComponents()).stream().filter(z -> !(z instanceof CardView)).findFirst().get();
+        int blankCardLayerId = layeredPane.getLayer(blankCardLayer);
         
-        if(blankCardLayerId != _layeredPane.lowestLayer()) {
-            Component cardDirectlyBelowBlankCard = _layeredPane.getComponent(_layeredPane.getIndexOf(blankCardLayer) + 1);
-            _layeredPane.setLayer(cardDirectlyBelowBlankCard, _layeredPane.highestLayer() + 1);
-            for(int i = _layeredPane.getComponentCount() - 1, layerId = 0;  i >= 0; --i, ++layerId) {
-                _layeredPane.setLayer(_layeredPane.getComponent(i), layerId);
+        if(blankCardLayerId != layeredPane.lowestLayer()) {
+            Component cardDirectlyBelowBlankCard = layeredPane.getComponent(layeredPane.getIndexOf(blankCardLayer) + 1);
+            layeredPane.setLayer(cardDirectlyBelowBlankCard, layeredPane.highestLayer() + 1);
+            for(int i = layeredPane.getComponentCount() - 1, layerId = 0;  i >= 0; --i, ++layerId) {
+                layeredPane.setLayer(layeredPane.getComponent(i), layerId);
             }
         }
         else {
             
             // Remove the list of components from the layered pane. 
-            Component[] components = _layeredPane.getComponents();
-            _layeredPane.removeAll();
+            Component[] components = layeredPane.getComponents();
+            layeredPane.removeAll();
             
             // Go through the list in reverse order and re-assign the layer identifiers as they were before
             // Note: This is done this way because if we re-order when they are within the layered pane
@@ -112,8 +112,8 @@ public final class TalonView extends PileView {
             // the resetting of the layer id's, these positions are not properly managed the way that we would want
             // them to be.
             for(int i = components.length - 1; i >= 0; --i) {
-                _layeredPane.add(components[i]);
-                _layeredPane.setLayer(components[i], i);
+                layeredPane.add(components[i]);
+                layeredPane.setLayer(components[i], i);
             }
         }
         

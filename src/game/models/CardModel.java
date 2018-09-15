@@ -90,7 +90,7 @@ public class CardModel extends BaseModel {
      * @return TRUE if the card passed in is both ordinally before and of opposite suite to this card, FALSE otherwise
      */
     public boolean isCardBeforeAndOppositeSuite(CardModel card) {
-        System.out.println("Attempting to place " + card._cardEntity.toString() + " over " + _cardEntity.toString());
+        //System.out.println("Attempting to place " + card._cardEntity.toString() + " over " + _cardEntity.toString());
         return !_cardEntity.getBacksideVisible() && !card._cardEntity.getBacksideVisible() && card._cardEntity.isOppositeSuite(_cardEntity) && card._cardEntity.isCardRankedBefore(_cardEntity);
     }
     

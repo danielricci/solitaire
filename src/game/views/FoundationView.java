@@ -52,11 +52,11 @@ public class FoundationView extends PileView {
     }
 
     @Override public boolean isValidCollision(Component source) {
-        if(_layeredPane.getComponentCount() == 0) {
+        if(layeredPane.getComponentCount() == 0) {
             return ((IView)source).getViewProperties().getEntity(CardController.class).getCard().getCardEntity().isAceCard();
         }
         else {
-            CardView thisCardView = (CardView) _layeredPane.getComponent(0);
+            CardView thisCardView = (CardView) layeredPane.getComponent(0);
             return thisCardView.isValidCollision(source);
         }
     }
