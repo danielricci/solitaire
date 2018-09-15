@@ -27,6 +27,7 @@ package game.views;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
@@ -321,8 +322,11 @@ public final class CardView extends PanelView implements ICollide {
         });
     }
     
-    @Override protected RenderMethod getRenderMethod() {
-        return _selectIt ? RenderMethod.XOR : RenderMethod.NORMAL;
+    @Override protected void PreProcessGraphics(Graphics context) {
+        super.PreProcessGraphics(context);
+        if(_selectIt) {
+            context.setXORMode(Color.WHITE);
+        }
     }
     
     @Override public void removeAll() {
@@ -348,8 +352,8 @@ public final class CardView extends PanelView implements ICollide {
 
     @Override public void render() {
         super.render();
+        setRenderLimits(0, 0, this.getWidth(), this.getHeight());
         _controller.refresh();
-        this.setRenderLimits(0, 0, this.getWidth(), this.getHeight());
     }
 
     @Override public void update(AbstractEventArgs event) {
