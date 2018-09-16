@@ -181,7 +181,7 @@ public final class CardView extends PanelView implements ICollide {
 
             // Clear the card views that were added within this cards' layered pane
             CardView.this._layeredPane.removeAll();
-
+            
             // Repaint the components accordingly
             Game.instance().repaint();
             _parentSource.repaint();
@@ -264,22 +264,15 @@ public final class CardView extends PanelView implements ICollide {
         _controller = new CardController(card);
         getViewProperties().setEntity(_controller);   
 
-        addMouseMotionListener(new MouseAdapter() {
-            @Override public void mouseDragged(MouseEvent event) {
-                ICollide collider = _collisionListener.getCollision();
-                if(collider != null) {
-                    PileView pile = (PileView) collider;
-                    CardView cardView = pile.getLastCard();
-                    cardView._selectIt = true;
-                    pile.repaint();
-                }
-                else {
-                    
-                }
-            }
-        });
-        
-        // Add a mouse adapter to handle the mouse click event on a click
+        registerEventDoubleClick();
+        registerEventCardDragging();
+    }
+    
+    /**
+     * Register an event to handle when this card is double clicked
+     */
+    private void registerEventDoubleClick() {
+        // Handle the event for double clicking a card
         addMouseListener(new MouseAdapter() {
             @Override public void mouseClicked(MouseEvent event) {
                 
@@ -320,6 +313,33 @@ public final class CardView extends PanelView implements ICollide {
                 }
             }
         });
+ 
+    }
+
+    /**
+     * Registers an event to handle when this card is in the process of being dragged
+     */
+    private void registerEventCardDragging() {
+        addMouseMotionListener(new MouseAdapter() {
+            
+            private CardView _selectedView = null;
+            
+            @Override public void mouseDragged(MouseEvent event) {
+                ICollide collider = _collisionListener.getCollision();
+                if(collider != null) {
+                    PileView pile = (PileView) collider;
+                    _selectedView = pile.getLastCard();
+                    _selectedView._selectIt = true;
+                    pile.repaint();
+                }
+                else {
+                    if(_selectedView != null) {
+                        _selectedView._selectIt = false;
+                        _selectedView.getParent().repaint();
+                    }
+                }
+            }
+        });
     }
     
     @Override protected void PreProcessGraphics(Graphics context) {
@@ -335,7 +355,7 @@ public final class CardView extends PanelView implements ICollide {
         _collisionListener.setEnabled(false);
     }
 
-    @Override public boolean isValidCollision(Component source) {        
+    @Override public boolean isValidCollision(Component source) {
         IView view = (IView)source;
         
         // A card is coming into this card, and we are on the foundation view
@@ -369,6 +389,7 @@ public final class CardView extends PanelView implements ICollide {
         // Append the mouse listener if the backside is not shown
         if(!card.getIsBackside())
         {
+            // TODO - can we just do a isBackSide check against this class?
             boolean found = false;
             for(MouseListener listener : getMouseListeners()) {
                 if(listener instanceof CardDragEvents) {

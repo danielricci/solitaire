@@ -104,6 +104,9 @@ public class PileView extends PanelView implements ICollide {
     }
     
     public CardView getLastCard() {
+        if(layeredPane.getComponentCount() == 0) {
+            return null;
+        }
         return (CardView)layeredPane.getComponents()[0];
     }
     
