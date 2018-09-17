@@ -34,6 +34,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -155,6 +156,11 @@ public final class CardView extends PanelView implements ICollide {
             // represent the card actually being dragged, and the layered pane associated to CardView.this would attached itself.
             int initialSize = _parentSource.getComponents().length;
 
+            if(initialSize > 0) {
+                CardView lastCard = parent.getLastCard();
+                lastCard._selectIt = false;
+            }
+            
             // Add this card view to the pane and update the layer within the component that it has been added to
             _parentSource.add(CardView.this);
             _parentSource.setLayer(CardView.this, initialSize);
@@ -178,7 +184,7 @@ public final class CardView extends PanelView implements ICollide {
                 // Set the bounds of this card so that it appears at the right position offset                    
                 components.get(i).setBounds(new Rectangle(0, offset * (i + initialSize), components.get(i).getPreferredSize().width, components.get(i).getPreferredSize().height));
             }
-
+            
             // Clear the card views that were added within this cards' layered pane
             CardView.this._layeredPane.removeAll();
             
@@ -284,7 +290,14 @@ public final class CardView extends PanelView implements ICollide {
                             return;
                         }
                         
-                        for(FoundationView foundationView : AbstractFactory.getFactory(ViewFactory.class).getAll(FoundationView.class)) {
+                        // Get the list of foundation views. 
+                        List<FoundationView> foundationViews = AbstractFactory.getFactory(ViewFactory.class).getAll(FoundationView.class);
+                        
+                        // Reverse the list, so that the card populating the left-most foundation view, this just looks a lot better
+                        Collections.reverse(foundationViews);
+                        
+                        // Go through the list of foundation views and see if there is a match
+                        for(FoundationView foundationView : foundationViews) {
                             if(foundationView.isValidCollision(CardView.this)) {
 
                                 // Remove from the layered pane source
@@ -329,14 +342,15 @@ public final class CardView extends PanelView implements ICollide {
                 if(collider != null) {
                     PileView pile = (PileView) collider;
                     _selectedView = pile.getLastCard();
-                    _selectedView._selectIt = true;
-                    pile.repaint();
-                }
-                else {
                     if(_selectedView != null) {
-                        _selectedView._selectIt = false;
-                        _selectedView.getParent().repaint();
+                        _selectedView._selectIt = true;
+                        pile.repaint();
                     }
+                }
+                else if(_selectedView != null) {
+                    _selectedView._selectIt = false;
+                    _selectedView.getParent().repaint();
+                    _selectedView = null;
                 }
             }
         });
