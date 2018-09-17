@@ -34,7 +34,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -58,6 +57,7 @@ import framework.utils.globalisation.Localization;
 import framework.utils.logging.Tracelog;
 
 import game.application.Game;
+import game.config.OptionsPreferences;
 import game.controllers.CardController;
 import game.menu.NewGameMenuItem;
 import game.models.CardModel;
@@ -158,7 +158,7 @@ public final class CardView extends PanelView implements ICollide {
 
             if(initialSize > 0) {
                 CardView lastCard = parent.getLastCard();
-                lastCard._selectIt = false;
+                lastCard._highlighted = false;
             }
             
             // Add this card view to the pane and update the layer within the component that it has been added to
@@ -252,9 +252,14 @@ public final class CardView extends PanelView implements ICollide {
     private final JLayeredPane _layeredPane = new JLayeredPane();
 
     /**
-     * Sets this card as being *visually* selected
+     * Sets this card as being highlighted visually
      */
-    private boolean _selectIt = false;
+    private boolean _highlighted;
+    
+    /**
+     * Indicates if selections are enabled
+     */
+    private final boolean _highlightsEnabled;
     
     /**
      * Creates a new instance of this class type
@@ -270,6 +275,11 @@ public final class CardView extends PanelView implements ICollide {
         _controller = new CardController(card);
         getViewProperties().setEntity(_controller);   
 
+        // Verify if the option for highlighting is enabled or not
+        OptionsPreferences optionsPreferences = new OptionsPreferences();
+        optionsPreferences.load();
+        _highlightsEnabled = optionsPreferences.outlineDragging;
+        
         registerEventDoubleClick();
         registerEventCardDragging();
     }
@@ -343,12 +353,12 @@ public final class CardView extends PanelView implements ICollide {
                     PileView pile = (PileView) collider;
                     _selectedView = pile.getLastCard();
                     if(_selectedView != null) {
-                        _selectedView._selectIt = true;
+                        _selectedView._highlighted = true;
                         pile.repaint();
                     }
                 }
                 else if(_selectedView != null) {
-                    _selectedView._selectIt = false;
+                    _selectedView._highlighted = false;
                     _selectedView.getParent().repaint();
                     _selectedView = null;
                 }
@@ -358,7 +368,7 @@ public final class CardView extends PanelView implements ICollide {
     
     @Override protected void PreProcessGraphics(Graphics context) {
         super.PreProcessGraphics(context);
-        if(_selectIt) {
+        if(_highlightsEnabled && _highlighted) {
             context.setXORMode(Color.WHITE);
         }
     }
