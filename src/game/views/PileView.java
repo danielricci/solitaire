@@ -71,8 +71,8 @@ public class PileView extends PanelView implements ICollide {
         for(int i = 0; i < cards.size(); ++i) {
             
             //Create the card view
-            CardView view = ViewFactory.getFactory(ViewFactory.class).add(new CardView(cards.get(i)));
             cards.get(i).setBackside(i + 1 < cards.size());
+            CardView view = ViewFactory.getFactory(ViewFactory.class).add(new CardView(cards.get(i)));
             
             // Add the view to the layered pane
             layeredPane.add(view);

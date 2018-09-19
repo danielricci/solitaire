@@ -32,7 +32,6 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -48,6 +47,7 @@ import framework.api.IView;
 import framework.communication.internal.signal.arguments.AbstractEventArgs;
 import framework.core.factories.AbstractFactory;
 import framework.core.factories.ViewFactory;
+import framework.core.graphics.IRenderable;
 import framework.core.mvc.view.PanelView;
 import framework.core.mvc.view.layout.DragListener;
 import framework.core.navigation.MenuBuilder;
@@ -262,7 +262,7 @@ public final class CardView extends PanelView implements ICollide {
     private final boolean _highlightsEnabled;
     
     /**
-     * Creates a new instance of this class type
+     * Constructs a new instance of this class type
      */
     public CardView(CardModel card) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -279,6 +279,16 @@ public final class CardView extends PanelView implements ICollide {
         OptionsPreferences optionsPreferences = new OptionsPreferences();
         optionsPreferences.load();
         _highlightsEnabled = optionsPreferences.outlineDragging;
+        
+        // If the backside is not being shown then add the event handler for card drag event
+        if(!card.getIsBackside()) {
+            addMouseListener(new CardDragEvents());
+        }
+        // Disable dragging and collision
+        else {
+            _draggableListener.setEnabled(false);
+            _collisionListener.setEnabled(false);
+        }
         
         registerEventDoubleClick();
         registerEventCardDragging();
@@ -332,6 +342,11 @@ public final class CardView extends PanelView implements ICollide {
                     else if(_controller.getCard().getIsBackside()){
                         _controller.getCard().setBackside(false);
                         _controller.getCard().refresh();
+                        
+                        // Properly set the listeners associated to this view
+                        _draggableListener.setEnabled(true);
+                        _collisionListener.setEnabled(true);
+                        addMouseListener(new CardDragEvents());
                     }
                 }
             }
@@ -366,19 +381,6 @@ public final class CardView extends PanelView implements ICollide {
         });
     }
     
-    @Override protected void PreProcessGraphics(Graphics context) {
-        super.PreProcessGraphics(context);
-        if(_highlightsEnabled && _highlighted) {
-            context.setXORMode(Color.WHITE);
-        }
-    }
-    
-    @Override public void removeAll() {
-        super.removeAll();
-        _draggableListener.setEnabled(false);
-        _collisionListener.setEnabled(false);
-    }
-
     @Override public boolean isValidCollision(Component source) {
         IView view = (IView)source;
         
@@ -393,6 +395,19 @@ public final class CardView extends PanelView implements ICollide {
             return cardViewController.getCard().isCardBeforeAndOppositeSuite(view.getViewProperties().getEntity(CardController.class).getCard());
         }
     }
+    
+    @Override protected void preProcessGraphics(Graphics context) {
+        super.preProcessGraphics(context);
+        if(_highlightsEnabled && _highlighted) {
+            context.setXORMode(Color.WHITE);
+        }
+    }
+    
+    @Override public void removeAll() {
+        super.removeAll();
+        _draggableListener.setEnabled(false);
+        _collisionListener.setEnabled(false);
+    }
 
     @Override public void render() {
         super.render();
@@ -402,30 +417,7 @@ public final class CardView extends PanelView implements ICollide {
 
     @Override public void update(AbstractEventArgs event) {
         super.update(event);
-
-        CardModel card = (CardModel)event.getSource();
-        addRenderableContent(card); 
-
-        // Properly set the liseteners associated to this view
-        _draggableListener.setEnabled(!card.getIsBackside());
-        _collisionListener.setEnabled(!card.getIsBackside());
-
-        // Append the mouse listener if the backside is not shown
-        if(!card.getIsBackside())
-        {
-            // TODO - can we just do a isBackSide check against this class?
-            boolean found = false;
-            for(MouseListener listener : getMouseListeners()) {
-                if(listener instanceof CardDragEvents) {
-                    found = true;
-                    break;
-                }
-            }
-            if(!found) {
-                addMouseListener(new CardDragEvents());
-            }
-        }
-
+        addRenderableContent((IRenderable)event.getSource()); 
         repaint();
     }
 }
