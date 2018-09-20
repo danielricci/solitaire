@@ -279,13 +279,15 @@ public final class CardView extends PanelView implements ICollide {
         OptionsPreferences optionsPreferences = new OptionsPreferences();
         optionsPreferences.load();
         _highlightsEnabled = optionsPreferences.outlineDragging;
-        
+
         // If the backside is not being shown then add the event handler for card drag event
         if(!card.getIsBackside()) {
             addMouseListener(new CardDragEvents());
         }
-        // Disable dragging and collision
-        else {
+        
+        // If the card has its backside shown or the outline option is enabled
+        // then do not allow dragging or collision to work as normal
+        if(card.getIsBackside() || optionsPreferences.outlineDragging) {
             _draggableListener.setEnabled(false);
             _collisionListener.setEnabled(false);
         }
@@ -343,10 +345,17 @@ public final class CardView extends PanelView implements ICollide {
                         _controller.getCard().setBackside(false);
                         _controller.getCard().refresh();
                         
-                        // Properly set the listeners associated to this view
-                        _draggableListener.setEnabled(true);
-                        _collisionListener.setEnabled(true);
+                        // Only allow this card view to have dragging and collision working `vanilla`
+                        // style if the outline option is not selected
+                        OptionsPreferences preferences = new OptionsPreferences();
+                        preferences.load();
+                        if(!preferences.outlineDragging) {
+                            _draggableListener.setEnabled(true);
+                            _collisionListener.setEnabled(true);
+                        }
+                        
                         addMouseListener(new CardDragEvents());
+
                     }
                 }
             }
