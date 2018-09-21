@@ -53,7 +53,6 @@ import framework.core.mvc.view.layout.DragListener;
 import framework.core.navigation.MenuBuilder;
 import framework.core.physics.CollisionListener;
 import framework.core.physics.ICollide;
-import framework.core.system.Application;
 import framework.utils.globalisation.Localization;
 import framework.utils.logging.Tracelog;
 
@@ -78,16 +77,24 @@ public final class CardView extends PanelView implements ICollide {
 
         @Override public void mousePressed(MouseEvent event) {
 
-            int x = 1;
-            if(x == 1) {
-                _cardProxy.render();
-                return;
-            }
-            
-            
             // Get the parent of this card view, used as a reference to go back to whatever we were coming from
             _parentSource = (JLayeredPane) CardView.this.getParent();
 
+            int x = 1;
+            if(x == 1) {
+                _cardProxy = new CardProxyView(CardView.this);
+                _cardProxy.render();
+                
+                Point initialLocation = CardView.this.getLocation();
+                _cardProxy.setBounds(new Rectangle(_parentSource.getParent().getLocation().x + initialLocation.x, _parentSource.getParent().getLocation().y + initialLocation.y, _layeredPane.getWidth(), _layeredPane.getHeight()));
+                
+                
+                Game.instance().add(_cardProxy, 0);
+                Game.instance().repaint();
+                
+                return;
+            }
+            
             // Get the list of components that the parent owns
             Component[] components =_parentSource.getComponents();
 
@@ -133,6 +140,10 @@ public final class CardView extends PanelView implements ICollide {
 
         @Override public void mouseReleased(MouseEvent event) {
 
+            int x =5;
+            if (x == 5)
+                return;
+            
             // If there is a valid collider, set that as the new parent
             if(_collisionListener.getCollision() != null) {
                 ICollide collision = _collisionListener.getCollision();
@@ -304,8 +315,6 @@ public final class CardView extends PanelView implements ICollide {
         
         registerEventDoubleClick();
         registerEventCardDragging();
-        
-        _cardProxy = new CardProxyView(this);
     }
     
     /**

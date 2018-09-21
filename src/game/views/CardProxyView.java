@@ -25,35 +25,20 @@
 package game.views;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Robot;
+import java.awt.event.InputEvent;
+import java.util.logging.Level;
 
 import javax.swing.BoxLayout;
 
 import framework.core.mvc.view.PanelView;
 import framework.core.mvc.view.layout.DragListener;
 import framework.core.physics.CollisionListener;
-import framework.core.physics.ICollide;
+import framework.utils.logging.Tracelog;
 
-import game.application.Game;
+public final class CardProxyView extends PanelView {
 
-public final class CardProxyView extends PanelView implements ICollide {
-
-    /**
-     * The draggable listener associated to this proxy view
-     */
-    private final DragListener _draggableListener;
-
-    /**
-     * The collision listener associated to this proxy view
-     */
-    private final CollisionListener _collisionListener;
-
-    /**
-     * The card view associated to this proxy view
-     */
-    private final CardView _cardView; 
-    
     /**
      * Constructs a new instance of this class type
      */
@@ -61,26 +46,22 @@ public final class CardProxyView extends PanelView implements ICollide {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setPreferredSize(new Dimension(CardView.CARD_WIDTH, CardView.CARD_HEIGHT));
         setBackground(Color.PINK);
-        
-        _draggableListener = new DragListener(
-            this
-            //,cardView
-        );
-        
-        _collisionListener = new CollisionListener(cardView);
-        _cardView = cardView;
-        
-        
-    }
 
-    @Override public void render() {
-        Game.instance().add(this, 0);
-        Game.instance().repaint();
-        
-        super.render();
+        // Set the controller of this proxy to the same controller of the specified card
+        getViewProperties().setEntity(cardView.getViewProperties().getEntity());
+
+        // Set the listeners associated to this proxy view
+        new DragListener(this);
+        new CollisionListener(this);
     }
     
-    @Override public boolean isValidCollision(Component source) {
-        return false;
+    @Override public void render() {
+        super.render();
+        try {
+            Robot rob = new Robot();
+            rob.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+        } catch (Exception exception) {
+            Tracelog.log(Level.SEVERE, true, exception);
+        }
     }
 }
