@@ -30,6 +30,8 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.Robot;
+import java.awt.event.InputEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Arrays;
@@ -73,28 +75,13 @@ public final class CardView extends PanelView implements ICollide {
         /**
          * The parent associated to this card view
          */
-        private JLayeredPane _parentSource;
+        protected JLayeredPane _parentSource;
 
         @Override public void mousePressed(MouseEvent event) {
 
             // Get the parent of this card view, used as a reference to go back to whatever we were coming from
             _parentSource = (JLayeredPane) CardView.this.getParent();
 
-            int x = 1;
-            if(x == 1) {
-                _cardProxy = new CardProxyView(CardView.this);
-                _cardProxy.render();
-                
-                Point initialLocation = CardView.this.getLocation();
-                _cardProxy.setBounds(new Rectangle(_parentSource.getParent().getLocation().x + initialLocation.x, _parentSource.getParent().getLocation().y + initialLocation.y, _layeredPane.getWidth(), _layeredPane.getHeight()));
-                
-                
-                Game.instance().add(_cardProxy, 0);
-                Game.instance().repaint();
-                
-                return;
-            }
-            
             // Get the list of components that the parent owns
             Component[] components =_parentSource.getComponents();
 
@@ -140,10 +127,6 @@ public final class CardView extends PanelView implements ICollide {
 
         @Override public void mouseReleased(MouseEvent event) {
 
-            int x =5;
-            if (x == 5)
-                return;
-            
             // If there is a valid collider, set that as the new parent
             if(_collisionListener.getCollision() != null) {
                 ICollide collision = _collisionListener.getCollision();
@@ -242,6 +225,37 @@ public final class CardView extends PanelView implements ICollide {
         }
     }
 
+    private class CardDragProxyEvents extends CardDragEvents {
+
+        @Override public void mousePressed(MouseEvent event) {
+            
+            // Get the parent of this card view, used as a reference to go back to whatever we were coming from
+            _parentSource = (JLayeredPane) CardView.this.getParent();
+            
+            _cardProxy = new CardProxyView(CardView.this);
+            _cardProxy.render();
+            
+            Point initialLocation = CardView.this.getLocation();
+            _cardProxy.setBounds(new Rectangle(_parentSource.getParent().getLocation().x + initialLocation.x, _parentSource.getParent().getLocation().y + initialLocation.y, _layeredPane.getWidth(), _layeredPane.getHeight()));
+
+            Game.instance().add(_cardProxy, 0);
+            Game.instance().repaint();
+            
+            // Perform a programmatic mouse-down at the location of the now proxy so that
+            // the drag appears to be happening
+            try {
+                Robot rob = new Robot();
+                rob.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+            } catch (Exception exception) {
+                Tracelog.log(Level.SEVERE, true, exception);
+            }
+        }
+        
+        @Override public void mouseReleased(MouseEvent event) {
+        }
+    }
+
+    
     /**
      * The preferred width of this card
      */
@@ -303,7 +317,7 @@ public final class CardView extends PanelView implements ICollide {
 
         // If the backside is not being shown then add the event handler for card drag event
         if(!card.getIsBackside()) {
-            addMouseListener(new CardDragEvents());
+            addMouseListener(optionsPreferences.outlineDragging ? new CardDragProxyEvents() : new CardDragEvents());
         }
         
         // If the card has its backside shown or the outline option is enabled
@@ -375,8 +389,7 @@ public final class CardView extends PanelView implements ICollide {
                             _collisionListener.setEnabled(true);
                         }
                         
-                        addMouseListener(new CardDragEvents());
-
+                        addMouseListener(preferences.outlineDragging ? new CardDragProxyEvents() : new CardDragEvents());
                     }
                 }
             }

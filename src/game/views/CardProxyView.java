@@ -26,16 +26,12 @@ package game.views;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Robot;
-import java.awt.event.InputEvent;
-import java.util.logging.Level;
 
 import javax.swing.BoxLayout;
 
 import framework.core.mvc.view.PanelView;
 import framework.core.mvc.view.layout.DragListener;
 import framework.core.physics.CollisionListener;
-import framework.utils.logging.Tracelog;
 
 public final class CardProxyView extends PanelView {
 
@@ -53,15 +49,5 @@ public final class CardProxyView extends PanelView {
         // Set the listeners associated to this proxy view
         new DragListener(this);
         new CollisionListener(this);
-    }
-    
-    @Override public void render() {
-        super.render();
-        try {
-            Robot rob = new Robot();
-            rob.mousePress(InputEvent.BUTTON1_DOWN_MASK);
-        } catch (Exception exception) {
-            Tracelog.log(Level.SEVERE, true, exception);
-        }
     }
 }
