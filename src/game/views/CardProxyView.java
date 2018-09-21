@@ -26,15 +26,29 @@ package game.views;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Robot;
+import java.awt.event.InputEvent;
+import java.util.logging.Level;
 
 import javax.swing.BoxLayout;
 
 import framework.core.mvc.view.PanelView;
 import framework.core.mvc.view.layout.DragListener;
 import framework.core.physics.CollisionListener;
+import framework.utils.logging.Tracelog;
 
 public final class CardProxyView extends PanelView {
 
+    /**
+     * The draggable listener associated to this view
+     */
+    private final DragListener _draggableListener = new DragListener(this);
+
+    /**
+     * The collision listener associated to this view
+     */
+    private final CollisionListener _collisionListener = new CollisionListener(this);
+    
     /**
      * Constructs a new instance of this class type
      */
@@ -46,8 +60,38 @@ public final class CardProxyView extends PanelView {
         // Set the controller of this proxy to the same controller of the specified card
         getViewProperties().setEntity(cardView.getViewProperties().getEntity());
 
-        // Set the listeners associated to this proxy view
-        new DragListener(this);
-        new CollisionListener(this);
+    }
+    
+    private class WaitingThread extends Thread
+    {
+        @Override public void run() {
+            synchronized(_draggableListener) {
+                try {
+                    _draggableListener.wait();
+                } 
+                catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            
+            System.out.println("ALL DONE!");
+        }
+    }
+    
+    @Override public void render() {
+        super.render();
+        
+        // Perform a programmatic mouse-down at the location of the now proxy so that
+        // the drag appears to be happening
+        try {
+            Robot rob = new Robot();
+            rob.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+            
+            Thread waitThread = new WaitingThread();
+            waitThread.start();
+            
+        } catch (Exception exception) {
+            Tracelog.log(Level.SEVERE, true, exception);
+        }
     }
 }

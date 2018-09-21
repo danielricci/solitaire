@@ -30,8 +30,6 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.Robot;
-import java.awt.event.InputEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Arrays;
@@ -69,8 +67,6 @@ import resources.LocalizationStrings;
 
 public final class CardView extends PanelView implements ICollide {
 
-    private CardProxyView _cardProxy;
-    
     private class CardDragEvents extends MouseAdapter {
         /**
          * The parent associated to this card view
@@ -227,31 +223,34 @@ public final class CardView extends PanelView implements ICollide {
 
     private class CardDragProxyEvents extends CardDragEvents {
 
+        private CardProxyView _cardProxy;
+        
         @Override public void mousePressed(MouseEvent event) {
+            System.out.println("PRESSED!");
             
             // Get the parent of this card view, used as a reference to go back to whatever we were coming from
             _parentSource = (JLayeredPane) CardView.this.getParent();
             
+            // Create the card proxy and associate to this view 
             _cardProxy = new CardProxyView(CardView.this);
-            _cardProxy.render();
             
+            // Set the location of the proxy to be right over the card 
             Point initialLocation = CardView.this.getLocation();
             _cardProxy.setBounds(new Rectangle(_parentSource.getParent().getLocation().x + initialLocation.x, _parentSource.getParent().getLocation().y + initialLocation.y, _layeredPane.getWidth(), _layeredPane.getHeight()));
 
+            // Render the proxy
+            _cardProxy.render();
+
+            // Add the proxy to the game view so that it overlays everything
             Game.instance().add(_cardProxy, 0);
             Game.instance().repaint();
-            
-            // Perform a programmatic mouse-down at the location of the now proxy so that
-            // the drag appears to be happening
-            try {
-                Robot rob = new Robot();
-                rob.mousePress(InputEvent.BUTTON1_DOWN_MASK);
-            } catch (Exception exception) {
-                Tracelog.log(Level.SEVERE, true, exception);
-            }
         }
         
         @Override public void mouseReleased(MouseEvent event) {
+            System.out.println("RELEASED!");
+            
+            Game.instance().remove(_cardProxy);
+            Game.instance().repaint();
         }
     }
 
