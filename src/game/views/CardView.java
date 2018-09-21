@@ -53,6 +53,7 @@ import framework.core.mvc.view.layout.DragListener;
 import framework.core.navigation.MenuBuilder;
 import framework.core.physics.CollisionListener;
 import framework.core.physics.ICollide;
+import framework.core.system.Application;
 import framework.utils.globalisation.Localization;
 import framework.utils.logging.Tracelog;
 
@@ -67,6 +68,8 @@ import resources.LocalizationStrings;
 
 public final class CardView extends PanelView implements ICollide {
 
+    private CardProxyView _cardProxy;
+    
     private class CardDragEvents extends MouseAdapter {
         /**
          * The parent associated to this card view
@@ -75,6 +78,13 @@ public final class CardView extends PanelView implements ICollide {
 
         @Override public void mousePressed(MouseEvent event) {
 
+            int x = 1;
+            if(x == 1) {
+                _cardProxy.render();
+                return;
+            }
+            
+            
             // Get the parent of this card view, used as a reference to go back to whatever we were coming from
             _parentSource = (JLayeredPane) CardView.this.getParent();
 
@@ -294,6 +304,8 @@ public final class CardView extends PanelView implements ICollide {
         
         registerEventDoubleClick();
         registerEventCardDragging();
+        
+        _cardProxy = new CardProxyView(this);
     }
     
     /**
