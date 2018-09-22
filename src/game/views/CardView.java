@@ -158,7 +158,7 @@ public final class CardView extends PanelView implements ICollide {
 
             if(initialSize > 0) {
                 CardView lastCard = parent.getLastCard();
-                lastCard._highlighted = false;
+                lastCard._isHighlighted = false;
             }
             
             // Add this card view to the pane and update the layer within the component that it has been added to
@@ -247,14 +247,14 @@ public final class CardView extends PanelView implements ICollide {
     private final CollisionListener _collisionListener = new CollisionListener(this);
 
     /**
-     * The layered pane that holds the potential list of card that would be dragged along-side this card vuew
+     * The layered pane that holds the potential list of cards that would be dragged along-side this card vuew
      */
     private final JLayeredPane _layeredPane = new JLayeredPane();
 
     /**
      * Sets this card as being highlighted visually
      */
-    private boolean _highlighted;
+    private boolean _isHighlighted;
     
     /**
      * Indicates if selections are enabled
@@ -305,7 +305,10 @@ public final class CardView extends PanelView implements ICollide {
         }
 
         registerEventDoubleClick();
-        registerEventCardDragging();
+    }
+    
+    public void setHighlighted(boolean isHighlighted) {
+        _isHighlighted = isHighlighted;
     }
     
     /**
@@ -380,33 +383,6 @@ public final class CardView extends PanelView implements ICollide {
  
     }
 
-    /**
-     * Registers an event to handle when this card is in the process of being dragged
-     */
-    private void registerEventCardDragging() {
-        addMouseMotionListener(new MouseAdapter() {
-            
-            private CardView _selectedView = null;
-            
-            @Override public void mouseDragged(MouseEvent event) {
-                ICollide collider = _collisionListener.getCollision();
-                if(collider != null) {
-                    PileView pile = (PileView) collider;
-                    _selectedView = pile.getLastCard();
-                    if(_selectedView != null) {
-                        _selectedView._highlighted = true;
-                        pile.repaint();
-                    }
-                }
-                else if(_selectedView != null) {
-                    _selectedView._highlighted = false;
-                    _selectedView.getParent().repaint();
-                    _selectedView = null;
-                }
-            }
-        });
-    }
-    
     @Override public boolean isValidCollision(Component source) {
         IView view = (IView)source;
         
@@ -424,7 +400,7 @@ public final class CardView extends PanelView implements ICollide {
     
     @Override protected void preProcessGraphics(Graphics context) {
         super.preProcessGraphics(context);
-        if(_highlightsEnabled && _highlighted) {
+        if(_highlightsEnabled && _isHighlighted) {
             context.setXORMode(Color.WHITE);
         }
     }

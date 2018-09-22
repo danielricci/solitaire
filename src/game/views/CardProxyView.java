@@ -31,9 +31,13 @@ import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import javax.swing.BorderFactory;
+import javax.swing.border.Border;
+
 import framework.core.mvc.view.PanelView;
 import framework.core.mvc.view.layout.DragListener;
 import framework.core.physics.CollisionListener;
+import framework.core.physics.ICollide;
 
 import game.application.Game;
 
@@ -42,7 +46,9 @@ public final class CardProxyView extends PanelView {
     private class CardDragProxyEvents extends MouseAdapter {
         
         @Override public void mousePressed(MouseEvent event) {
-            System.out.println("CardProxyView::mousePressed");
+            
+            // Set the border
+            setBorder(_border);
             
             // Remove this proxy from the associated card view
             _cardView.remove(CardProxyView.this);
@@ -69,8 +75,9 @@ public final class CardProxyView extends PanelView {
         }
         
         @Override public void mouseReleased(MouseEvent event) {
-            System.out.println("CardProxyView::mouseReleased");
+            setBorder(BorderFactory.createEmptyBorder());
             Game.instance().remove(CardProxyView.this);
+            _cardView.add(CardProxyView.this);            
             Game.instance().repaint();
         }
     }
@@ -90,17 +97,47 @@ public final class CardProxyView extends PanelView {
      */
     private final CardView _cardView;
     
+    private final Border _border = BorderFactory.createLineBorder(Color.BLACK, 1);
     /**
      * Constructs a new instance of this class type
      */
     public CardProxyView(CardView cardView) {
-        setBackground(Color.PINK);
-
+        setOpaque(false);
+        
         // Set the controller of this proxy to the same controller of the specified card
         _cardView = cardView;
         getViewProperties().setEntity(cardView.getViewProperties().getEntity());
 
+        // Events
         addMouseListener(new CardDragProxyEvents());
+        registerEventCardDragging();
+    }
+    
+    /**
+     * Registers an event to handle when this card is in the process of being dragged
+     */
+    private void registerEventCardDragging() {
+        addMouseMotionListener(new MouseAdapter() {
+            
+            private CardView _selectedView = null;
+            
+            @Override public void mouseDragged(MouseEvent event) {
+                ICollide collider = _collisionListener.getCollision();
+                if(collider != null) {
+                    PileView pile = (PileView) collider;
+                    _selectedView = pile.getLastCard();
+                    if(_selectedView != null) {
+                        _selectedView.setHighlighted(true);
+                        pile.repaint();
+                    }
+                }
+                else if(_selectedView != null) {
+                    _selectedView.setHighlighted(false);
+                    _selectedView.getParent().repaint();
+                    _selectedView = null;
+                }
+            }
+        });
     }
     
     @Override public Dimension getPreferredSize() {
