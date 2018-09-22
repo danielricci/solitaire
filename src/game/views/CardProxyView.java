@@ -26,15 +26,55 @@ package game.views;
 
 import java.awt.Color;
 import java.awt.Dimension;
-
-import javax.swing.BoxLayout;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import framework.core.mvc.view.PanelView;
 import framework.core.mvc.view.layout.DragListener;
 import framework.core.physics.CollisionListener;
 
+import game.application.Game;
+
 public final class CardProxyView extends PanelView {
 
+    private class CardDragProxyEvents extends MouseAdapter {
+        
+        @Override public void mousePressed(MouseEvent event) {
+            System.out.println("CardProxyView::mousePressed");
+            
+            // Remove this proxy from the associated card view
+            _cardView.remove(CardProxyView.this);
+            
+            // Add this proxy to the game main container
+            Game.instance().add(CardProxyView.this, 0);
+            
+            // Position this proxy at the same location where it was before
+            // Note: Adding to the main game container will put this control
+            //       at the main game container origin (0x, 0y)
+            Point initialLocation = _cardView.getLocation();
+            CardProxyView.this.setBounds(
+                new Rectangle(
+                        _cardView.getParent().getParent().getLocation().x + initialLocation.x, 
+                        _cardView.getParent().getParent().getLocation().y + initialLocation.y, 
+                        CardProxyView.this.getWidth(), 
+                        CardProxyView.this.getHeight()
+                )
+            );
+            
+            // Redraw the corresponding container views
+            _cardView.repaint();
+            Game.instance().repaint();
+        }
+        
+        @Override public void mouseReleased(MouseEvent event) {
+            System.out.println("CardProxyView::mouseReleased");
+            Game.instance().remove(CardProxyView.this);
+            Game.instance().repaint();
+        }
+    }
+    
     /**
      * The draggable listener associated to this view
      */
@@ -46,48 +86,24 @@ public final class CardProxyView extends PanelView {
     private final CollisionListener _collisionListener = new CollisionListener(this);
     
     /**
+     * The card view associated to this proxy
+     */
+    private final CardView _cardView;
+    
+    /**
      * Constructs a new instance of this class type
      */
     public CardProxyView(CardView cardView) {
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        setPreferredSize(new Dimension(CardView.CARD_WIDTH, CardView.CARD_HEIGHT));
         setBackground(Color.PINK);
 
         // Set the controller of this proxy to the same controller of the specified card
+        _cardView = cardView;
         getViewProperties().setEntity(cardView.getViewProperties().getEntity());
 
+        addMouseListener(new CardDragProxyEvents());
     }
     
-    private class WaitingThread extends Thread
-    {
-        @Override public void run() {
-            synchronized(_draggableListener) {
-                try {
-                    _draggableListener.wait();
-                } 
-                catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            
-            System.out.println("ALL DONE!");
-        }
-    }
-    
-    @Override public void render() {
-        super.render();
-        
-//        // Perform a programmatic mouse-down at the location of the now proxy so that
-//        // the drag appears to be happening
-//        try {
-//            Robot rob = new Robot();
-//            rob.mousePress(InputEvent.BUTTON1_DOWN_MASK);
-//            
-//            Thread waitThread = new WaitingThread();
-//            waitThread.start();
-//            
-//        } catch (Exception exception) {
-//            Tracelog.log(Level.SEVERE, true, exception);
-//        }
+    @Override public Dimension getPreferredSize() {
+        return _cardView.getPreferredSize();
     }
 }

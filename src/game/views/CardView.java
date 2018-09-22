@@ -221,44 +221,6 @@ public final class CardView extends PanelView implements ICollide {
         }
     }
 
-    private class CardDragProxyEvents extends CardDragEvents {
-
-        //private CardProxyView _cardProxy;
-        
-        @Override public void mousePressed(MouseEvent event) {
-            System.out.println("PRESSED!");
-            
-            // Get the parent of this card view, used as a reference to go back to whatever we were coming from
-            //_parentSource = (JLayeredPane) CardView.this.getParent();
-            
-//            // Create the card proxy and associate to this view 
-//            _cardProxy = new CardProxyView(CardView.this);
-            
-            // Render the proxy
-            _cardProxy.render();
-
-            
-            // Add the proxy to the game view so that it overlays everything
-            //CardView.this.remove(_cardProxy);
-            //CardView.this.repaint();
-            
-            Game.instance().add(_cardProxy, 0);
-            Game.instance().repaint();
-            
-            //Point initialLocation = CardView.this.getLocation();
-            //_cardProxy.setBounds(new Rectangle(_parentSource.getParent().getLocation().x + initialLocation.x, _parentSource.getParent().getLocation().y + initialLocation.y, _layeredPane.getWidth(), _layeredPane.getHeight()));
-            
-            
-        }
-        
-        @Override public void mouseReleased(MouseEvent event) {
-            System.out.println("RELEASED!");
-            
-            Game.instance().remove(_cardProxy);
-            Game.instance().repaint();
-        }
-    }
-
     /**
      * The preferred width of this card
      */
@@ -299,6 +261,9 @@ public final class CardView extends PanelView implements ICollide {
      */
     private final boolean _highlightsEnabled;
     
+    /**
+     * The card proxy associated to this view
+     */
     private CardProxyView _cardProxy;
     
     /**
@@ -320,11 +285,6 @@ public final class CardView extends PanelView implements ICollide {
         optionsPreferences.load();
         _highlightsEnabled = optionsPreferences.outlineDragging;
 
-        // If the backside is not being shown then add the event handler for card drag event
-        if(!card.getIsBackside()) {
-            addMouseListener(optionsPreferences.outlineDragging ? new CardDragProxyEvents() : new CardDragEvents());
-        }
-        
         // If the card has its backside shown or the outline option is enabled
         // then do not allow dragging or collision to work as normal
         if(card.getIsBackside() || optionsPreferences.outlineDragging) {
@@ -332,9 +292,18 @@ public final class CardView extends PanelView implements ICollide {
             _collisionListener.setEnabled(false);
         }
 
-        _cardProxy = new CardProxyView(this);
-        add(_cardProxy);
-        
+        // If the backside is not being shown then add the event handler for card drag event
+        // Note: When the backside is revealed, we add the event dynamically
+        if(!card.getIsBackside() && !optionsPreferences.outlineDragging) {
+            addMouseListener(new CardDragEvents());
+        }
+
+        // If the option to show outline dragging is there then create a proxy
+        if(optionsPreferences.outlineDragging && !card.getIsBackside()) {
+            _cardProxy = new CardProxyView(this);
+            add(_cardProxy);    
+        }
+
         registerEventDoubleClick();
         registerEventCardDragging();
     }
@@ -397,7 +366,13 @@ public final class CardView extends PanelView implements ICollide {
                             _collisionListener.setEnabled(true);
                         }
                         
-                        addMouseListener(preferences.outlineDragging ? new CardDragProxyEvents() : new CardDragEvents());
+                        if(!preferences.outlineDragging) {
+                            addMouseListener(new CardDragEvents());
+                        }
+                        else {
+                            _cardProxy = new CardProxyView(CardView.this);
+                            add(_cardProxy);    
+                        }
                     }
                 }
             }
