@@ -223,27 +223,32 @@ public final class CardView extends PanelView implements ICollide {
 
     private class CardDragProxyEvents extends CardDragEvents {
 
-        private CardProxyView _cardProxy;
+        //private CardProxyView _cardProxy;
         
         @Override public void mousePressed(MouseEvent event) {
             System.out.println("PRESSED!");
             
             // Get the parent of this card view, used as a reference to go back to whatever we were coming from
-            _parentSource = (JLayeredPane) CardView.this.getParent();
+            //_parentSource = (JLayeredPane) CardView.this.getParent();
             
-            // Create the card proxy and associate to this view 
-            _cardProxy = new CardProxyView(CardView.this);
+//            // Create the card proxy and associate to this view 
+//            _cardProxy = new CardProxyView(CardView.this);
             
-            // Set the location of the proxy to be right over the card 
-            Point initialLocation = CardView.this.getLocation();
-            _cardProxy.setBounds(new Rectangle(_parentSource.getParent().getLocation().x + initialLocation.x, _parentSource.getParent().getLocation().y + initialLocation.y, _layeredPane.getWidth(), _layeredPane.getHeight()));
-
             // Render the proxy
             _cardProxy.render();
 
+            
             // Add the proxy to the game view so that it overlays everything
+            //CardView.this.remove(_cardProxy);
+            //CardView.this.repaint();
+            
             Game.instance().add(_cardProxy, 0);
             Game.instance().repaint();
+            
+            //Point initialLocation = CardView.this.getLocation();
+            //_cardProxy.setBounds(new Rectangle(_parentSource.getParent().getLocation().x + initialLocation.x, _parentSource.getParent().getLocation().y + initialLocation.y, _layeredPane.getWidth(), _layeredPane.getHeight()));
+            
+            
         }
         
         @Override public void mouseReleased(MouseEvent event) {
@@ -254,7 +259,6 @@ public final class CardView extends PanelView implements ICollide {
         }
     }
 
-    
     /**
      * The preferred width of this card
      */
@@ -295,6 +299,8 @@ public final class CardView extends PanelView implements ICollide {
      */
     private final boolean _highlightsEnabled;
     
+    private CardProxyView _cardProxy;
+    
     /**
      * Constructs a new instance of this class type
      */
@@ -304,7 +310,7 @@ public final class CardView extends PanelView implements ICollide {
         setOpaque(true);
         setBackground(Color.BLACK);
         add(_layeredPane);
-
+        
         card.addListeners(this);
         _controller = new CardController(card);
         getViewProperties().setEntity(_controller);   
@@ -325,6 +331,9 @@ public final class CardView extends PanelView implements ICollide {
             _draggableListener.setEnabled(false);
             _collisionListener.setEnabled(false);
         }
+
+        _cardProxy = new CardProxyView(this);
+        add(_cardProxy);
         
         registerEventDoubleClick();
         registerEventCardDragging();
