@@ -303,7 +303,18 @@ public final class CardView extends PanelView implements ICollide {
             add(_cardProxy);    
         }
 
-        registerEventDoubleClick();
+        addMouseListener(new MouseAdapter() {
+            @Override public void mouseClicked(MouseEvent event) {
+                if(CardView.this.getParent().getComponents()[0].equals(CardView.this)) {
+                    if(event.getClickCount() == 1) {
+                        singleClick();
+                    }
+                    else {
+                        doubleClick();
+                    }
+                }
+            }
+        });
     }
     
     /**
@@ -317,78 +328,72 @@ public final class CardView extends PanelView implements ICollide {
         repaint();
     }
     
-    /**
-     * Register an event to handle when this card is double clicked
-     */
-    private void registerEventDoubleClick() {
-        // Handle the event for double clicking a card
-        addMouseListener(new MouseAdapter() {
-            @Override public void mouseClicked(MouseEvent event) {
-                
-                if(CardView.this.getParent().getComponents()[0].equals(CardView.this)) {
-                    if(event.getClickCount() == 2 && !_controller.getCard().getIsBackside()) {
-                        
-                        // Make sure that we are not double clicking on an ACE. That doesn't make much sense here in this case
-                        if(AbstractFactory.getFactory(ViewFactory.class).getAll(FoundationView.class).stream().anyMatch(z -> z.layeredPane.getComponentCount() == 1 && z.layeredPane.getComponents()[0] == CardView.this)) {
-                            return;
-                        }
-                        
-                        // Get the list of foundation views. 
-                        List<FoundationView> foundationViews = AbstractFactory.getFactory(ViewFactory.class).getAll(FoundationView.class);
-                        
-                        // Reverse the list, so that the card populating the left-most foundation view, this just looks a lot better
-                        Collections.reverse(foundationViews);
-                        
-                        // Go through the list of foundation views and see if there is a match
-                        for(FoundationView foundationView : foundationViews) {
-                            if(foundationView.isValidCollision(CardView.this)) {
-
-                                // Remove from the layered pane source
-                                JLayeredPane parentPane = (JLayeredPane) CardView.this.getParent();
-                                parentPane.remove(CardView.this);
-                                                                
-                                // Add to the layered pane destination
-                                foundationView.layeredPane.add(CardView.this);
-                                foundationView.layeredPane.setLayer(CardView.this, foundationView.layeredPane.getComponentCount());
-                                
-                                // Set the proper bounds of the component
-                                CardView.this.setBounds(new Rectangle(0, 0, CardView.this.getPreferredSize().width, CardView.this.getPreferredSize().height));
-                                
-                                // Repaint the components
-                                _layeredPane.repaint();
-                                foundationView.repaint();
-                                
-                                break;
-                            }
-                        }                            
-                    }
-                    else if(_controller.getCard().getIsBackside()){
-                        _controller.getCard().setBackside(false);
-                        _controller.getCard().refresh();
-                        
-                        // Only allow this card view to have dragging and collision working `vanilla`
-                        // style if the outline option is not selected
-                        OptionsPreferences preferences = new OptionsPreferences();
-                        preferences.load();
-                        if(!preferences.outlineDragging) {
-                            _draggableListener.setEnabled(true);
-                            _collisionListener.setEnabled(true);
-                        }
-                        
-                        if(!preferences.outlineDragging) {
-                            addMouseListener(new CardDragEvents());
-                        }
-                        else {
-                            _cardProxy = new CardProxyView(CardView.this);
-                            add(_cardProxy);    
-                        }
-                    }
-                }
+    public void singleClick() {
+        if(_controller.getCard().getIsBackside()){
+            _controller.getCard().setBackside(false);
+            _controller.getCard().refresh();
+            
+            // Only allow this card view to have dragging and collision working `vanilla`
+            // style if the outline option is not selected
+            OptionsPreferences preferences = new OptionsPreferences();
+            preferences.load();
+            if(!preferences.outlineDragging) {
+                _draggableListener.setEnabled(true);
+                _collisionListener.setEnabled(true);
             }
-        });
- 
+            
+            if(!preferences.outlineDragging) {
+                addMouseListener(new CardDragEvents());
+            }
+            else {
+                _cardProxy = new CardProxyView(CardView.this);
+                add(_cardProxy);
+                _cardProxy.setVisible(true);
+                repaint();
+            }
+        }
     }
+    
+    public void doubleClick() {
+        if(!_controller.getCard().getIsBackside()) {
+            
+            // Make sure that we are not double clicking on an ACE. That doesn't make much sense here in this case
+            if(AbstractFactory.getFactory(ViewFactory.class).getAll(FoundationView.class).stream().anyMatch(z -> z.layeredPane.getComponentCount() == 1 && z.layeredPane.getComponents()[0] == CardView.this)) {
+                return;
+            }
+            
+            // Get the list of foundation views. 
+            List<FoundationView> foundationViews = AbstractFactory.getFactory(ViewFactory.class).getAll(FoundationView.class);
+            
+            // Reverse the list, so that the card populating the left-most foundation view, this just looks a lot better
+            Collections.reverse(foundationViews);
+            
+            // Go through the list of foundation views and see if there is a match
+            for(FoundationView foundationView : foundationViews) {
+                if(foundationView.isValidCollision(CardView.this)) {
 
+                    // Remove from the layered pane source
+                    JLayeredPane parentPane = (JLayeredPane) CardView.this.getParent();
+                    parentPane.remove(CardView.this);
+                                                    
+                    // Add to the layered pane destination
+                    foundationView.layeredPane.add(CardView.this);
+                    foundationView.layeredPane.setLayer(CardView.this, foundationView.layeredPane.getComponentCount());
+                    
+                    // Set the proper bounds of the component
+                    CardView.this.setBounds(new Rectangle(0, 0, CardView.this.getPreferredSize().width, CardView.this.getPreferredSize().height));
+                    
+                    // Repaint the components
+                    _layeredPane.repaint();
+                    foundationView.repaint();
+                    
+                    break;
+                }
+            }                            
+        }
+
+    }
+    
     @Override public boolean isValidCollision(Component source) {
         IView view = (IView)source;
         

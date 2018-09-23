@@ -114,6 +114,12 @@ public final class CardProxyView extends PanelView {
             Game.instance().repaint();
             _cardView.repaint();
         }
+    
+        @Override public void mouseClicked(MouseEvent event) {
+            if(event.getClickCount() == 2) {
+                _cardView.doubleClick();
+            }
+        }
     }
     
     /**
