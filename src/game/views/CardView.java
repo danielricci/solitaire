@@ -59,10 +59,10 @@ import framework.utils.logging.Tracelog;
 import game.application.Game;
 import game.config.OptionsPreferences;
 import game.controllers.CardController;
+import game.menu.ExitMenuItem;
 import game.menu.NewGameMenuItem;
 import game.models.CardModel;
 
-import editor.menu.ExitMenuItem;
 import resources.LocalizationStrings;
 
 public final class CardView extends PanelView implements ICollide {
@@ -122,7 +122,6 @@ public final class CardView extends PanelView implements ICollide {
         }
 
         @Override public void mouseReleased(MouseEvent event) {
-
             // If there is a valid collider, set that as the new parent
             if(_collisionListener.getCollision() != null) {
                 ICollide collision = _collisionListener.getCollision();
@@ -217,7 +216,7 @@ public final class CardView extends PanelView implements ICollide {
                         MenuBuilder.search(Game.instance().getJMenuBar(), ExitMenuItem.class).getComponent(AbstractButton.class).doClick();
                     }
                 }
-            }
+            }        
         }
     }
 
@@ -265,7 +264,7 @@ public final class CardView extends PanelView implements ICollide {
      * The card proxy associated to this view
      */
     private CardProxyView _cardProxy;
-    
+        
     /**
      * Constructs a new instance of this class type
      */
@@ -307,8 +306,15 @@ public final class CardView extends PanelView implements ICollide {
         registerEventDoubleClick();
     }
     
+    /**
+     * Sets if this card is highlighted
+     *
+     *
+     * @param isHighlighted TRUE if this card is to be highlighed, false otherwise
+     */
     public void setHighlighted(boolean isHighlighted) {
         _isHighlighted = isHighlighted;
+        repaint();
     }
     
     /**

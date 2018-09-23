@@ -25,6 +25,7 @@
 package game.views;
 
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -32,6 +33,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
+import javax.swing.JLayeredPane;
 import javax.swing.border.Border;
 
 import framework.core.mvc.view.PanelView;
@@ -43,6 +45,8 @@ import game.application.Game;
 
 public final class CardProxyView extends PanelView {
 
+    private final JLayeredPane _layeredPane = new JLayeredPane();
+ 
     private class CardDragProxyEvents extends MouseAdapter {
         
         @Override public void mousePressed(MouseEvent event) {
@@ -62,8 +66,8 @@ public final class CardProxyView extends PanelView {
             Point initialLocation = _cardView.getLocation();
             CardProxyView.this.setBounds(
                 new Rectangle(
-                        _cardView.getParent().getParent().getLocation().x + initialLocation.x, 
-                        _cardView.getParent().getParent().getLocation().y + initialLocation.y, 
+                        _cardView.getParent().getLocation().x + initialLocation.x, 
+                        _cardView.getParent().getLocation().y + initialLocation.y, 
                         CardProxyView.this.getWidth(), 
                         CardProxyView.this.getHeight()
                 )
@@ -75,10 +79,40 @@ public final class CardProxyView extends PanelView {
         }
         
         @Override public void mouseReleased(MouseEvent event) {
+            ICollide collider = _collisionListener.getCollision();
+            if(collider != null && collider instanceof PileView) {
+                
+                PileView pileView = (PileView) collider;
+                
+                // Unselect all the card before proceeding
+                pileView.unselectAll();
+                
+                // Get the offset that was set, and use this within our calculations
+                int offset = pileView.CARD_OFFSET;
+
+                // Remove the card from the list that it is in
+                Container parent = _cardView.getParent();
+                parent.remove(_cardView);
+                parent.repaint();
+
+                // Add this card view to the pane and update the layer within the component that it has been added to
+                int initialSize = pileView.layeredPane.getComponents().length;
+                pileView.layeredPane.add(_cardView);
+                pileView.layeredPane.setLayer(_cardView, initialSize);
+                _cardView.setBounds(new Rectangle(0, offset * initialSize, _cardView.getPreferredSize().width, _cardView.getPreferredSize().height));
+                
+                // Repaint the components involved
+                pileView.repaint();
+            }
+            
+            // Put the outline back to its original state
             setBorder(BorderFactory.createEmptyBorder());
             Game.instance().remove(CardProxyView.this);
-            _cardView.add(CardProxyView.this);            
+            _cardView.add(CardProxyView.this);
+            
+            // Repaint the components involved
             Game.instance().repaint();
+            _cardView.repaint();
         }
     }
     
