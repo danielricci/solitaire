@@ -27,7 +27,6 @@ package game.views;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -48,35 +47,6 @@ public final class CardProxyView extends PanelView {
     private final JLayeredPane _layeredPane = new JLayeredPane();
  
     private class CardDragProxyEvents extends MouseAdapter {
-        
-        @Override public void mousePressed(MouseEvent event) {
-            
-            // Set the border
-            setBorder(_border);
-            
-            // Remove this proxy from the associated card view
-            _cardView.remove(CardProxyView.this);
-            
-            // Add this proxy to the game main container
-            Game.instance().add(CardProxyView.this, 0);
-            
-            // Position this proxy at the same location where it was before
-            // Note: Adding to the main game container will put this control
-            //       at the main game container origin (0x, 0y)
-            Point initialLocation = _cardView.getLocation();
-            CardProxyView.this.setBounds(
-                new Rectangle(
-                        _cardView.getParent().getLocation().x + initialLocation.x, 
-                        _cardView.getParent().getLocation().y + initialLocation.y, 
-                        CardProxyView.this.getWidth(), 
-                        CardProxyView.this.getHeight()
-                )
-            );
-            
-            // Redraw the corresponding container views
-            _cardView.repaint();
-            Game.instance().repaint();
-        }
         
         @Override public void mouseReleased(MouseEvent event) {
             ICollide collider = _collisionListener.getCollision();
@@ -162,6 +132,11 @@ public final class CardProxyView extends PanelView {
             private CardView _selectedView = null;
             
             @Override public void mouseDragged(MouseEvent event) {
+                if(!_border.equals(getBorder())) {
+                    setBorder(_border);
+                    Game.instance().add(CardProxyView.this, 0);
+                }
+                
                 ICollide collider = _collisionListener.getCollision();
                 if(collider != null) {
                     PileView pile = (PileView) collider;
