@@ -26,6 +26,7 @@ package game.application;
 
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.io.File;
 
 import javax.swing.AbstractButton;
 
@@ -48,8 +49,11 @@ public final class Game extends Application {
 
     /**
      * Constructs a new instance of this class type
+     * 
+     * @param isDebug The debug mode flag
      */
-    public Game() {
+    private Game(boolean isDebug) {
+        super(isDebug);
         setMinimumSize(new Dimension(620, 436));
         setLocationRelativeTo(null);
     }
@@ -69,7 +73,7 @@ public final class Game extends Application {
                         break;
                     }
                 }
-                Game.initialize(Game.class, debugMode);
+                new Game(debugMode);
             }
         });
     }
@@ -77,11 +81,11 @@ public final class Game extends Application {
     @Override protected void onBeforeEngineDataInitialized() {
         EngineProperties.instance().setProperty(Property.DATA_PATH_XML, "/generated/tilemap.xml");
         EngineProperties.instance().setProperty(Property.DATA_PATH_SHEET, "/generated/tilemap.png");
-        //EngineProperties.instance().setProperty(Property.LOG_DIRECTORY,  System.getProperty("user.home") + File.separator + "desktop" + File.separator);
-        EngineProperties.instance().setProperty(Property.ENGINE_OUTPUT, "false");
+        EngineProperties.instance().setProperty(Property.LOG_DIRECTORY,  System.getProperty("user.home") + File.separator + "desktop" + File.separator);
         EngineProperties.instance().setProperty(Property.LOCALIZATION_PATH_CVS, "resources/localization.csv");
-        EngineProperties.instance().setProperty(Property.SUPPRESS_SIGNAL_REGISTRATION_OUTPUT, "true");
-        EngineProperties.instance().setProperty(Property.DISABLE_TRANSLATIONS_PLACEHOLDER, "true");
+        EngineProperties.instance().setProperty(Property.ENGINE_OUTPUT, Boolean.toString(true));
+        EngineProperties.instance().setProperty(Property.SUPPRESS_SIGNAL_REGISTRATION_OUTPUT, Boolean.toString(true));
+        EngineProperties.instance().setProperty(Property.DISABLE_TRANSLATIONS_PLACEHOLDER, Boolean.toString(true));
     }
 
     @Override protected void onWindowInitialized() {

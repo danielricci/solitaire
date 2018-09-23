@@ -60,7 +60,7 @@ public final class OptionsDialogView extends DialogView {
      * Constructs a new instance of this class type
      */
     public OptionsDialogView() {
-        super(Application.instance(), Localization.instance().getLocalizedString("Options"));
+        super(Application.instance, Localization.instance().getLocalizedString("Options"));
         
         // Properties of this view
         getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));

@@ -62,7 +62,7 @@ public class OptionsMenuItem extends AbstractMenuItem {
         options.render();
         
         if(options.getDialogResult() == JOptionPane.OK_OPTION) {
-            MenuBuilder.search(Application.instance().getJMenuBar(), NewGameMenuItem.class).getComponent(AbstractButton.class).doClick();
+            MenuBuilder.search(Application.instance.getJMenuBar(), NewGameMenuItem.class).getComponent(AbstractButton.class).doClick();
         }
     }
 }

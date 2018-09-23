@@ -39,8 +39,7 @@ import framework.core.mvc.view.PanelView;
 import framework.core.mvc.view.layout.DragListener;
 import framework.core.physics.CollisionListener;
 import framework.core.physics.ICollide;
-
-import game.application.Game;
+import framework.core.system.Application;
 
 public final class CardProxyView extends PanelView {
 
@@ -77,11 +76,11 @@ public final class CardProxyView extends PanelView {
             
             // Put the outline back to its original state
             setBorder(BorderFactory.createEmptyBorder());
-            Game.instance().remove(CardProxyView.this);
+            Application.instance.remove(CardProxyView.this);
             _cardView.add(CardProxyView.this);
             
             // Repaint the components involved
-            Game.instance().repaint();
+            Application.instance.repaint();
             _cardView.repaint();
         }
     
@@ -134,7 +133,7 @@ public final class CardProxyView extends PanelView {
             @Override public void mouseDragged(MouseEvent event) {
                 if(!_border.equals(getBorder())) {
                     setBorder(_border);
-                    Game.instance().add(CardProxyView.this, 0);
+                    Application.instance.add(CardProxyView.this, 0);
                 }
                 
                 ICollide collider = _collisionListener.getCollision();

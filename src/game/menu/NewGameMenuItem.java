@@ -34,9 +34,9 @@ import javax.swing.KeyStroke;
 import framework.core.factories.AbstractFactory;
 import framework.core.factories.ViewFactory;
 import framework.core.navigation.AbstractMenuItem;
+import framework.core.system.Application;
 import framework.utils.globalisation.Localization;
 
-import game.application.Game;
 import game.views.GameView;
 
 /**
@@ -66,12 +66,12 @@ public class NewGameMenuItem extends AbstractMenuItem {
             AbstractFactory.clearFactories();
             
             // Remove everything from the application UI
-            Game.instance().getContentPane().removeAll();            
+            Application.instance.getContentPane().removeAll();            
         }
 
         // Spawn a new game view and render its contents
         GameView gameView = AbstractFactory.getFactory(ViewFactory.class).add(new GameView(), true);
-        Game.instance().setContentPane(gameView);
+        Application.instance.setContentPane(gameView);
         gameView.render();
     }
 }
