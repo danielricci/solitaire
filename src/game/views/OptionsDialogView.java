@@ -1,5 +1,5 @@
 /**
- * Daniel Ricci <thedanny09@gmail.com>
+ * Daniel Ricci <thedanny09@icloud.com>
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -51,7 +51,7 @@ import game.config.OptionsPreferences.ScoringOption;
 /**
  * The options view shows the settings that change the way the game is played
  *
- * @author Daniel Ricci <thedanny09@gmail.com>
+ * @author Daniel Ricci <thedanny09@icloud.com>
  *
  */
 public final class OptionsDialogView extends DialogView {
