@@ -30,6 +30,7 @@ import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLayeredPane;
@@ -41,11 +42,53 @@ import framework.core.physics.CollisionListener;
 import framework.core.physics.ICollide;
 import framework.core.system.Application;
 
+/**
+ * This view represents the outline of a normal card view
+ * 
+ * @author Daniel Ricci <thedanny09@icloud.com>
+ *
+ */
 public final class CardProxyView extends PanelView {
 
-    private final JLayeredPane _layeredPane = new JLayeredPane();
- 
-    private class CardDragProxyEvents extends MouseAdapter {
+    /**
+     * The card drag events for this proxy view
+     * 
+     * @author Daniel Ricci <thedanny09@icloud.com>
+     *
+     */
+    private class CardDragEvents extends MouseMotionAdapter {
+        private CardView _selectedView = null;
+        
+        @Override public void mouseDragged(MouseEvent event) {
+            if(!_border.equals(getBorder())) {
+                setBorder(_border);
+                Application.instance.add(CardProxyView.this, 0);
+            }
+            
+            ICollide collider = _collisionListener.getCollision();
+            if(collider != null) {
+                PileView pile = (PileView) collider;
+                _selectedView = pile.getLastCard();
+                if(_selectedView != null) {
+                    _selectedView.setHighlighted(true);
+                    pile.repaint();
+                }
+            }
+            else if(_selectedView != null) {
+                _selectedView.setHighlighted(false);
+                _selectedView.getParent().repaint();
+                _selectedView = null;
+            }
+        }        
+    }
+
+    /**
+     * The card selection events for this proxy view
+     * 
+     * @author Daniel Ricci <thedanny09@icloud.com>
+     *
+     */
+    private class CardSelectionEvents extends MouseAdapter {
         
         @Override public void mouseReleased(MouseEvent event) {
             ICollide collider = _collisionListener.getCollision();
@@ -92,9 +135,14 @@ public final class CardProxyView extends PanelView {
     }
     
     /**
+     * The layered pane that holds the potential list of cards that would be dragged along-side this card vuew
+     */
+    private final JLayeredPane _layeredPane = new JLayeredPane();
+
+    /**
      * The draggable listener associated to this view
      */
-    private final DragListener _draggableListener = new DragListener(this);
+    private final DragListener _dragListener = new DragListener(this);
 
     /**
      * The collision listener associated to this view
@@ -106,7 +154,11 @@ public final class CardProxyView extends PanelView {
      */
     private final CardView _cardView;
     
+    /**
+     * The border layout associated to this view
+     */
     private final Border _border = BorderFactory.createLineBorder(Color.BLACK, 1);
+    
     /**
      * Constructs a new instance of this class type
      */
@@ -118,40 +170,8 @@ public final class CardProxyView extends PanelView {
         getViewProperties().setEntity(cardView.getViewProperties().getEntity());
 
         // Events
-        addMouseListener(new CardDragProxyEvents());
-        registerEventCardDragging();
-    }
-    
-    /**
-     * Registers an event to handle when this card is in the process of being dragged
-     */
-    private void registerEventCardDragging() {
-        addMouseMotionListener(new MouseAdapter() {
-            
-            private CardView _selectedView = null;
-            
-            @Override public void mouseDragged(MouseEvent event) {
-                if(!_border.equals(getBorder())) {
-                    setBorder(_border);
-                    Application.instance.add(CardProxyView.this, 0);
-                }
-                
-                ICollide collider = _collisionListener.getCollision();
-                if(collider != null) {
-                    PileView pile = (PileView) collider;
-                    _selectedView = pile.getLastCard();
-                    if(_selectedView != null) {
-                        _selectedView.setHighlighted(true);
-                        pile.repaint();
-                    }
-                }
-                else if(_selectedView != null) {
-                    _selectedView.setHighlighted(false);
-                    _selectedView.getParent().repaint();
-                    _selectedView = null;
-                }
-            }
-        });
+        addMouseListener(new CardSelectionEvents());
+        addMouseMotionListener(new CardDragEvents());
     }
     
     @Override public Dimension getPreferredSize() {
