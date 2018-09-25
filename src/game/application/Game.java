@@ -58,7 +58,6 @@ public final class Game extends Application {
         setLocationRelativeTo(null);
     }
    
-    
     /**
      * Main entrypoint method
      * 
