@@ -57,6 +57,7 @@ public final class Game extends Application {
         setMinimumSize(new Dimension(620, 436));
         setLocationRelativeTo(null);
     }
+    
     /**
      * Main entrypoint method
      * 

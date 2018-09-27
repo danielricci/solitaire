@@ -25,14 +25,19 @@
 package game.views;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JLayeredPane;
 import javax.swing.border.Border;
 
@@ -57,6 +62,7 @@ public final class CardProxyView extends PanelView {
      *
      */
     private class CardDragEvents extends MouseMotionAdapter {
+        
         private CardView _selectedView = null;
         
         @Override public void mouseDragged(MouseEvent event) {
@@ -90,6 +96,33 @@ public final class CardProxyView extends PanelView {
      */
     private class CardSelectionEvents extends MouseAdapter {
         
+        @Override public void mousePressed(MouseEvent event) {
+            
+            // Get the layered pane that the card is in.
+            JLayeredPane parentContainer = (JLayeredPane) _cardView.getParent();
+            
+            // Get the list of components that are in the parent container
+            Component[] components = parentContainer.getComponents();
+            
+            for(int i = components.length - 1; i >= 0; --i) {
+                if(components[i].equals(_cardView)) {
+
+                    List<CardView> cardViews = Arrays.asList(Arrays.copyOfRange(components, 0, i, CardView[].class));
+                    Collections.reverse(cardViews);
+                    //_cardView._layeredPane.setSize(_layeredPane.getWidth(), _layeredPane.getHeight() + (cardViews.size() * 12))
+
+                    for(int j = 0; j < cardViews.size(); ++j) {
+                        CardProxyView proxy = cardViews.get(j).getProxyView();
+                        _layeredPane.add(proxy);
+                        _layeredPane.setLayer(proxy, j);
+                        proxy.setBounds(new Rectangle(0, 12 * (j + 1), cardViews.get(j).getPreferredSize().width, cardViews.get(j).getPreferredSize().height));
+                        proxy.setBorder(proxy._border);
+                        //parentContainer.remove(cardViews.get(j));
+                    }                    
+                }
+            }
+        }
+        
         @Override public void mouseReleased(MouseEvent event) {
             ICollide collider = _collisionListener.getCollision();
             if(collider != null && collider instanceof PileView) {
@@ -116,6 +149,11 @@ public final class CardProxyView extends PanelView {
                 // Repaint the components involved
                 pileView.repaint();
             }
+            
+            for(Component component : _layeredPane.getComponents()) {
+                ((CardProxyView)component).setBorder(BorderFactory.createEmptyBorder());
+            }
+            _layeredPane.removeAll();
             
             // Put the outline back to its original state
             setBorder(BorderFactory.createEmptyBorder());
@@ -163,7 +201,11 @@ public final class CardProxyView extends PanelView {
      * Constructs a new instance of this class type
      */
     public CardProxyView(CardView cardView) {
+       
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setOpaque(false);
+       
+        add(_layeredPane);
         
         // Set the controller of this proxy to the same controller of the specified card
         _cardView = cardView;

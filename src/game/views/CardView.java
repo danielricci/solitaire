@@ -338,6 +338,13 @@ public final class CardView extends PanelView implements ICollide {
         repaint();
     }
     
+    /**
+     * @return The card proxy associated to this view
+     */
+    public CardProxyView getProxyView() {
+        return _cardProxy;
+    }
+    
     public void singleClick() {
         if(_controller.getCard().getIsBackside()){
             _controller.getCard().setBackside(false);
