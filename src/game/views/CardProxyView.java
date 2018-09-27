@@ -109,7 +109,6 @@ public final class CardProxyView extends PanelView {
 
                     List<CardView> cardViews = Arrays.asList(Arrays.copyOfRange(components, 0, i, CardView[].class));
                     Collections.reverse(cardViews);
-                    //_cardView._layeredPane.setSize(_layeredPane.getWidth(), _layeredPane.getHeight() + (cardViews.size() * 12))
 
                     for(int j = 0; j < cardViews.size(); ++j) {
                         CardProxyView proxy = cardViews.get(j).getProxyView();
@@ -117,7 +116,6 @@ public final class CardProxyView extends PanelView {
                         _layeredPane.setLayer(proxy, j);
                         proxy.setBounds(new Rectangle(0, 12 * (j + 1), cardViews.get(j).getPreferredSize().width, cardViews.get(j).getPreferredSize().height));
                         proxy.setBorder(proxy._border);
-                        //parentContainer.remove(cardViews.get(j));
                     }                    
                 }
             }
@@ -150,8 +148,17 @@ public final class CardProxyView extends PanelView {
                 pileView.repaint();
             }
             
+            for(int i = 0; i < _layeredPane.getComponentCount(); ++i) {
+                CardProxyView proxy = (CardProxyView)_layeredPane.getComponents()[i];
+                proxy._cardView.add(proxy);
+                proxy.setBorder(BorderFactory.createEmptyBorder());
+            }
+            
+            
+            
             for(Component component : _layeredPane.getComponents()) {
                 ((CardProxyView)component).setBorder(BorderFactory.createEmptyBorder());
+                
             }
             _layeredPane.removeAll();
             
