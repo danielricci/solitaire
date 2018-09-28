@@ -28,6 +28,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -66,23 +67,16 @@ public final class CardProxyView extends PanelView {
         private CardView _selectedView = null;
         
         @Override public void mouseDragged(MouseEvent event) {
-            if(!_border.equals(getBorder())) {
-                setBorder(_border);
-                Application.instance.add(CardProxyView.this, 0);
-            }
-            
             ICollide collider = _collisionListener.getCollision();
             if(collider != null) {
                 PileView pile = (PileView) collider;
                 _selectedView = pile.getLastCard();
                 if(_selectedView != null) {
                     _selectedView.setHighlighted(true);
-                    pile.repaint();
                 }
             }
             else if(_selectedView != null) {
                 _selectedView.setHighlighted(false);
-                _selectedView.getParent().repaint();
                 _selectedView = null;
             }
         }        
@@ -98,6 +92,9 @@ public final class CardProxyView extends PanelView {
         
         @Override public void mousePressed(MouseEvent event) {
             
+            // Set the border of the specified card proxy
+            setBorder(_border);
+            
             // Get the layered pane that the card is in.
             JLayeredPane parentContainer = (JLayeredPane) _cardView.getParent();
             
@@ -110,15 +107,30 @@ public final class CardProxyView extends PanelView {
                     List<CardView> cardViews = Arrays.asList(Arrays.copyOfRange(components, 0, i, CardView[].class));
                     Collections.reverse(cardViews);
 
+                    // Go through the list of cards and add them to the layered pane
                     for(int j = 0; j < cardViews.size(); ++j) {
                         CardProxyView proxy = cardViews.get(j).getProxyView();
                         _layeredPane.add(proxy);
                         _layeredPane.setLayer(proxy, j);
                         proxy.setBounds(new Rectangle(0, 12 * (j + 1), cardViews.get(j).getPreferredSize().width, cardViews.get(j).getPreferredSize().height));
                         proxy.setBorder(proxy._border);
-                    }                    
+                        proxy.render();
+                        proxy._cardView._layeredPane.remove(proxy._cardView);
+                    }
+                    
+                    // Position the card at the same place where the drag was attempted from, because when you
+                    // add to the application it will position the component at the origin which is not desired
+                    Point initialLocation = _cardView.getLocation();
+                    CardProxyView.this.setBounds(new Rectangle(_cardView.getParent().getLocation().x + initialLocation.x, _cardView.getParent().getLocation().y + initialLocation.y, _layeredPane.getWidth(), _layeredPane.getHeight()));
+                    
+                    // Set the size of the layered pane such that it fits based on the number of cards entered
+                    //_layeredPane.setPreferredSize(new Dimension(_layeredPane.getWidth(), _layeredPane.getHeight() + (cardViews.size() * 12)));
+                    Application.instance.add(CardProxyView.this, 0);
+                    Application.instance.repaint();
+
+                    break;
                 }
-            }
+            }            
         }
         
         @Override public void mouseReleased(MouseEvent event) {
@@ -147,19 +159,16 @@ public final class CardProxyView extends PanelView {
                 // Repaint the components involved
                 pileView.repaint();
             }
-            
-            for(int i = 0; i < _layeredPane.getComponentCount(); ++i) {
-                CardProxyView proxy = (CardProxyView)_layeredPane.getComponents()[i];
-                proxy._cardView.add(proxy);
+
+            Component[] components = Arrays.copyOf(_layeredPane.getComponents(), _layeredPane.getComponentCount());
+            for(int i = 0; i < components.length; ++i) {
+                CardProxyView proxy = (CardProxyView) components[i];
                 proxy.setBorder(BorderFactory.createEmptyBorder());
+                proxy._cardView.add(proxy);
+                proxy.repaint();
+                proxy._cardView.repaint();
             }
             
-            
-            
-            for(Component component : _layeredPane.getComponents()) {
-                ((CardProxyView)component).setBorder(BorderFactory.createEmptyBorder());
-                
-            }
             _layeredPane.removeAll();
             
             // Put the outline back to its original state
@@ -197,33 +206,31 @@ public final class CardProxyView extends PanelView {
     /**
      * The card view associated to this proxy
      */
-    private final CardView _cardView;
+    private CardView _cardView;
     
     /**
      * The border layout associated to this view
      */
     private final Border _border = BorderFactory.createLineBorder(Color.BLACK, 1);
     
-    /**
-     * Constructs a new instance of this class type
-     */
-    public CardProxyView(CardView cardView) {
-       
+    private CardProxyView() {
+        setPreferredSize(new Dimension(CardView.CARD_WIDTH, CardView.CARD_HEIGHT));
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setOpaque(false);
-       
         add(_layeredPane);
         
-        // Set the controller of this proxy to the same controller of the specified card
-        _cardView = cardView;
-        getViewProperties().setEntity(cardView.getViewProperties().getEntity());
-
-        // Events
         addMouseListener(new CardSelectionEvents());
         addMouseMotionListener(new CardDragEvents());
     }
     
-    @Override public Dimension getPreferredSize() {
-        return _cardView.getPreferredSize();
+    /**
+     * Constructs a new instance of this class type
+     */
+    public CardProxyView(CardView cardView) {
+        this();
+        
+        // Set the controller of this proxy to the same controller of the specified card
+        _cardView = cardView;
+        getViewProperties().setEntity(cardView.getViewProperties().getEntity());        
     }
 }
