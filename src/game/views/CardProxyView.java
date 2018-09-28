@@ -91,10 +91,10 @@ public final class CardProxyView extends PanelView {
     private class CardSelectionEvents extends MouseAdapter {
         
         @Override public void mousePressed(MouseEvent event) {
-            
-            // Set the border of the specified card proxy
+
+            // Set the border
             setBorder(_border);
-            
+
             // Get the layered pane that the card is in.
             JLayeredPane parentContainer = (JLayeredPane) _cardView.getParent();
             
@@ -232,5 +232,9 @@ public final class CardProxyView extends PanelView {
         // Set the controller of this proxy to the same controller of the specified card
         _cardView = cardView;
         getViewProperties().setEntity(cardView.getViewProperties().getEntity());        
+    }
+    
+    public CardView getCardView() {
+        return _cardView;
     }
 }

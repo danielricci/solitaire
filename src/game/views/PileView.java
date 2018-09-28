@@ -133,7 +133,14 @@ public class PileView extends PanelView implements ICollide {
 
         // If there are no components then only allow a king to be placed
         if(layeredPane.getComponentCount() == 0) {
-            CardView cardView = (CardView) source;
+            
+            CardView cardView = null;
+            if(source instanceof CardView) {
+                cardView = (CardView) source;
+            } 
+            else {
+                cardView = ((CardProxyView)source).getCardView();
+            }
             return cardView.getViewProperties().getEntity(CardController.class).getCard().getCardEntity().isCardKing();
         }
         
