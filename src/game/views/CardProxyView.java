@@ -233,7 +233,10 @@ public final class CardProxyView extends PanelView {
         _cardView = cardView;
         getViewProperties().setEntity(cardView.getViewProperties().getEntity());        
     }
-    
+
+    /**
+     *  @return The card view that is `linked` to this proxy
+     */
     public CardView getCardView() {
         return _cardView;
     }
