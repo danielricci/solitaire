@@ -26,7 +26,6 @@ package game.views;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -41,8 +40,6 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JLayeredPane;
 import javax.swing.border.Border;
-
-import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 
 import framework.core.mvc.view.PanelView;
 import framework.core.mvc.view.layout.DragListener;
@@ -141,13 +138,8 @@ public final class CardProxyView extends PanelView {
             
             ICollide collider = _collisionListener.getCollision();
           
-            // Add the this proxy back to it's underlying card view
-            CardProxyView.this.setBorder(null);
-            _cardView.add(CardProxyView.this);
+            if(collider != null) {
             
-            
-            if(collider instanceof PileView) {
-                
                 // Get a reference to the pile view that has has been collided with
                 PileView pileViewCollider = (PileView) collider;
                 
@@ -156,68 +148,47 @@ public final class CardProxyView extends PanelView {
                 
                 // Repaint the pile view
                 pileViewCollider.repaint();
-//
-//                
-//                int initialSize = pileViewCollider.layeredPane.getComponents().length;
-//                pileViewCollider.layeredPane.add(_cardView);
-//                pileViewCollider.layeredPane.setLayer(_cardView, initialSize);
-//                _cardView.setBounds(new Rectangle(0, pileViewCollider.CARD_OFFSET * initialSize, _cardView.getPreferredSize().width, _cardView.getPreferredSize().height));
-//                
-                
-//                Component[] cards 
-//                for(Component component : _layeredPane.getComponents()) {
-//                    CardProxyView proxy = (CardProxyView) component;
-//                    proxy._cardView.add(proxy);
-//                    //proxy._cardView.getParent().remove(proxy._cardView);
-//                }
-//                
-//                int x = 55;
-//                
-//                // Remove the card linked to this proxy
-//                Container parent = _cardView.getParent();
-//                parent.remove(_cardView);
-//                
-                // Go through all the cards underlying the main proxy and remove them from their source
-                // by piping the command through the list of proxies that are stored within the layered pane
-                //
-                // Note: The removal is done here without an `addition`. The addition will be wh
 
+                // Add this card to the new location
+                int initialSize = pileViewCollider.layeredPane.getComponents().length;
+                pileViewCollider.layeredPane.add(_cardView);
+                pileViewCollider.layeredPane.setLayer(_cardView, initialSize);
+                _cardView.setBounds(new Rectangle(0, pileViewCollider.CARD_OFFSET * initialSize, _cardView.getPreferredSize().width, _cardView.getPreferredSize().height));
+
+                // Increment the initial size to prepare for the other cards to be inserted
+                ++initialSize;
                 
-                // Repaint the parent component to show the results of the list being changed
-                //parent.repaint();
-                
-                // Get the initial size of the number of cards that exist at the place where we want to put the cards at
-//                int initialSize = pileViewCollider.layeredPane.getComponents().length;
-//                pileViewCollider.layeredPane.add(_cardView);
-//                pileViewCollider.layeredPane.setLayer(_cardView, initialSize);
-//                _cardView.setBounds(new Rectangle(0, pileViewCollider.CARD_OFFSET * initialSize, _cardView.getPreferredSize().width, _cardView.getPreferredSize().height));
-//                
-//                // Repaint the components involved
-//                pileViewCollider.repaint();
+                // Get the list of layered components and go through each of them, adding each one
+                // to the proper destination
+                List<Component> layeredComponents = Arrays.asList(_layeredPane.getComponents());
+                Collections.reverse(layeredComponents);
+                for(int i = 0; i < layeredComponents.size(); ++i) {
+                    CardProxyView proxy = (CardProxyView) layeredComponents.get(i);
+                    pileViewCollider.layeredPane.add(proxy._cardView);
+                    pileViewCollider.layeredPane.setLayer(proxy._cardView, initialSize + i);
+                    proxy._cardView.add(proxy);
+                    proxy.setBorder(null);
+                    proxy._cardView.setBounds(new Rectangle(0, pileViewCollider.CARD_OFFSET * (i + initialSize), proxy._cardView.getPreferredSize().width, proxy._cardView.getPreferredSize().height));
+                }
+                _layeredPane.removeAll();
+                pileViewCollider.repaint();
+            }
+            else {
+                Component[] layeredComponents = _layeredPane.getComponents();
+                for(int i = 0; i < layeredComponents.length; ++i) {
+                    CardProxyView proxy = (CardProxyView) layeredComponents[i];
+                    proxy._cardView.add(proxy);
+                    proxy.setBorder(null);
+                }
             }
 
-          
-            
-//            // Get the list of components
-//            Component[] components = Arrays.copyOf(_layeredPane.getComponents(), _layeredPane.getComponentCount());
-//            for(int i = 0; i < components.length; ++i) {
-//                CardProxyView proxy = (CardProxyView) components[i];
-//                proxy.setBorder(BorderFactory.createEmptyBorder());
-//                proxy._cardView.add(proxy);
-//                proxy.repaint();
-//                proxy._cardView.repaint();
-//            }
-//            
-//            _layeredPane.removeAll();
-//            
-//            // Put the outline back to its original state
-//            setBorder(BorderFactory.createEmptyBorder());
-//            Application.instance.remove(CardProxyView.this);
-//            _cardView.add(CardProxyView.this);
-//            
+            // Add the this proxy back to it's underlying card view
+            CardProxyView.this.setBorder(null);
+            _cardView.add(CardProxyView.this);
+
             // Repaint the components involved
             Application.instance.repaint();
-            _cardView.repaint();
+            _cardView.getParent().repaint();
         }
     
         @Override public void mouseClicked(MouseEvent event) {
@@ -254,8 +225,10 @@ public final class CardProxyView extends PanelView {
     
     /**
      * Constructs a new instance of this class type
+     * 
+     * @param cardView The card view to associate to this proxy
      */
-    private CardProxyView() {
+    public CardProxyView(CardView cardView) {
         setPreferredSize(new Dimension(CardView.CARD_WIDTH, CardView.CARD_HEIGHT));
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setOpaque(false);
@@ -263,15 +236,6 @@ public final class CardProxyView extends PanelView {
         
         addMouseListener(new CardSelectionEvents());
         addMouseMotionListener(new CardDragEvents());
-    }
-    
-    /**
-     * Constructs a new instance of this class type
-     * 
-     * @param cardView The card view to associate to this proxy
-     */
-    public CardProxyView(CardView cardView) {
-        this();
         
         // Set the controller of this proxy to the same controller of the specified card
         _cardView = cardView;
