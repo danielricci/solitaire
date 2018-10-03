@@ -24,7 +24,6 @@
 
 package game.views;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Point;
@@ -36,7 +35,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JLayeredPane;
 import javax.swing.border.Border;
@@ -46,6 +44,8 @@ import framework.core.mvc.view.layout.DragListener;
 import framework.core.physics.CollisionListener;
 import framework.core.physics.ICollide;
 import framework.core.system.Application;
+
+import game.views.components.ExclusiveLineBorder;
 
 /**
  * This view represents the outline of a normal card view
@@ -221,7 +221,7 @@ public final class CardProxyView extends PanelView {
     /**
      * The border layout associated to this view
      */
-    private final Border _border = BorderFactory.createLineBorder(Color.BLACK, 1);
+    private final Border _border = new ExclusiveLineBorder(1);
     
     /**
      * Constructs a new instance of this class type
