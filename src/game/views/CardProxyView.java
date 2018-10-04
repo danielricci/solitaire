@@ -105,16 +105,18 @@ public final class CardProxyView extends PanelView {
                     // Reverse the list so that when the iteration occurs, it uses the same ordering that is represente visually
                     Collections.reverse(cardViews);
 
+                    
                     // Go through the list of cards and add them to the layered pane within the proxy
                     for(int j = 0; j < cardViews.size(); ++j) {
                         CardProxyView proxy = cardViews.get(j).getProxyView();
                         _layeredPane.add(proxy);
                         _layeredPane.setLayer(proxy, j);
-                        proxy.setBounds(new Rectangle(0, 12 * (j + 1), cardViews.get(j).getPreferredSize().width, cardViews.get(j).getPreferredSize().height));
+                        
+                        // The bounds here contains `-1` because I want the border to be perfectly overlapped
+                        proxy.setBounds(new Rectangle(-1, 12 * (j + 1), cardViews.get(j).getPreferredSize().width, cardViews.get(j).getPreferredSize().height));
                         proxy.setBorder(proxy._border);
-                        proxy.render();
                     }
-                    
+
                     // Position the card at the same place where the drag was attempted from, because when you
                     // add to the application it will position the component at the origin which is not desired
                     Point initialLocation = _cardView.getLocation();
