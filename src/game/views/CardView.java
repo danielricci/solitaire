@@ -258,7 +258,7 @@ public final class CardView extends PanelView implements ICollide {
     /**
      * The layered pane that holds the potential list of cards that would be dragged along-side this card vuew
      */
-    final JLayeredPane _layeredPane = new JLayeredPane();
+    private final JLayeredPane _layeredPane = new JLayeredPane();
 
     /**
      * Sets this card as being highlighted visually
