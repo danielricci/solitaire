@@ -25,6 +25,7 @@
 package game.menu;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JComponent;
@@ -49,6 +50,7 @@ public class ExitMenuItem extends AbstractMenuItem {
      */
     public ExitMenuItem(JComponent parent) {
         super(new JMenuItem(Localization.instance().getLocalizedString("Exit")), parent);
+        super.getComponent(JMenuItem.class).setMnemonic(KeyEvent.VK_X);
     }
 
     @Override public void onExecute(ActionEvent actionEvent) {

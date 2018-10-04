@@ -25,11 +25,11 @@
 package game.menu;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.KeyStroke;
 
 import framework.core.navigation.AbstractMenuItem;
 import framework.utils.globalisation.Localization;
@@ -51,15 +51,14 @@ public class AboutMenuItem extends AbstractMenuItem {
      */
     public AboutMenuItem(JComponent parent) {
         super(new JMenuItem(Localization.instance().getLocalizedString(LocalizationStrings.ABOUT)), parent);
-        super.getComponent(JMenuItem.class).setAccelerator(KeyStroke.getKeyStroke("F1"));
-
+        super.getComponent(JMenuItem.class).setMnemonic(KeyEvent.VK_A);
     }
 
     @Override public void onExecute(ActionEvent actionEvent) {
         JOptionPane.showMessageDialog(
             null,
             Localization.instance().getLocalizedString(LocalizationStrings.GITHUB),
-            Localization.instance().getLocalizedString("...text goes here..."),
+            Localization.instance().getLocalizedString(LocalizationStrings.ABOUT),
             JOptionPane.INFORMATION_MESSAGE
         );
     }

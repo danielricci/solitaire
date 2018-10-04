@@ -26,9 +26,11 @@ package game.application;
 
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.event.KeyEvent;
 import java.io.File;
 
 import javax.swing.AbstractButton;
+import javax.swing.UIManager;
 
 import framework.core.navigation.MenuBuilder;
 import framework.core.system.Application;
@@ -91,13 +93,17 @@ public final class Game extends Application {
     @Override protected void onWindowInitialized() {
         super.onWindowInitialized();
 
+        
         // Set the title
         setTitle(Localization.instance().getLocalizedString(LocalizationStrings.TITLE));
 
-        // Populate the menu system
+        
+        // Always show mnemonics in the menu system
+        UIManager.put("Button.showMnemonics", Boolean.TRUE);
+        
         // Game Menu
         MenuBuilder.start(getJMenuBar())
-        .addMenu(Localization.instance().getLocalizedString(LocalizationStrings.GAME))
+        .addMenu(Localization.instance().getLocalizedString(LocalizationStrings.GAME), KeyEvent.VK_G)
         .addMenuItem(NewGameMenuItem.class)
         .addSeparator()
         .addMenuItem(UndoMenuItem.class)
@@ -108,10 +114,10 @@ public final class Game extends Application {
                 
         // Help Menu
         MenuBuilder.start(getJMenuBar())
-        .addMenu(Localization.instance().getLocalizedString(LocalizationStrings.HELP))
+        .addMenu(Localization.instance().getLocalizedString(LocalizationStrings.HELP), KeyEvent.VK_H)
         .addMenuItem(AboutMenuItem.class);
 
-        // New Game
+        // Perform a new game programatically
         MenuBuilder.search(getJMenuBar(), NewGameMenuItem.class).getComponent(AbstractButton.class).doClick();
     }
 }

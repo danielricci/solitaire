@@ -25,6 +25,7 @@
 package game.menu;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
 import javax.swing.AbstractButton;
 import javax.swing.JComponent;
@@ -55,6 +56,7 @@ public class OptionsMenuItem extends AbstractMenuItem {
      */
     public OptionsMenuItem(JComponent parent) {
         super(new JMenuItem(Localization.instance().getLocalizedString(LocalizationStrings.OPTIONS)), parent);
+        super.getComponent(JMenuItem.class).setMnemonic(KeyEvent.VK_O);
     }
 
     @Override public void onExecute(ActionEvent actionEvent) {

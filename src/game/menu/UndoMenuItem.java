@@ -25,6 +25,7 @@
 package game.menu;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
@@ -47,6 +48,7 @@ public class UndoMenuItem extends AbstractMenuItem {
      */
     public UndoMenuItem(JComponent parent) {
         super(new JMenuItem(Localization.instance().getLocalizedString("Undo")), parent);
+        super.getComponent(JMenuItem.class).setMnemonic(KeyEvent.VK_U);
     }
 
     @Override public void onExecute(ActionEvent actionEvent) {

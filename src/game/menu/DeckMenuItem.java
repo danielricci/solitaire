@@ -25,6 +25,7 @@
 package game.menu;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
@@ -49,6 +50,7 @@ public class DeckMenuItem extends AbstractMenuItem {
      */
     public DeckMenuItem(JComponent parent) {
         super(new JMenuItem(Localization.instance().getLocalizedString(LocalizationStrings.DECK)), parent);
+        super.getComponent(JMenuItem.class).setMnemonic(KeyEvent.VK_C);
     }
 
     @Override public void onExecute(ActionEvent actionEvent) {
