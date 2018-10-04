@@ -206,6 +206,7 @@ public final class CardProxyView extends PanelView {
     /**
      * The draggable listener associated to this view
      */
+    @SuppressWarnings("unused")
     private final DragListener _dragListener = new DragListener(this);
 
     /**
@@ -216,7 +217,7 @@ public final class CardProxyView extends PanelView {
     /**
      * The card view associated to this proxy
      */
-    private CardView _cardView;
+    private final CardView _cardView;
     
     /**
      * The border layout associated to this view
@@ -229,8 +230,8 @@ public final class CardProxyView extends PanelView {
      * @param cardView The card view to associate to this proxy
      */
     public CardProxyView(CardView cardView) {
-        setPreferredSize(new Dimension(CardView.CARD_WIDTH, CardView.CARD_HEIGHT));
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        setPreferredSize(new Dimension(CardView.CARD_WIDTH, CardView.CARD_HEIGHT));
         setOpaque(false);
         add(_layeredPane);
         
@@ -240,12 +241,5 @@ public final class CardProxyView extends PanelView {
         // Set the controller of this proxy to the same controller of the specified card
         _cardView = cardView;
         getViewProperties().setEntity(cardView.getViewProperties().getEntity());        
-    }
-
-    /**
-     *  @return The card view that is `linked` to this proxy
-     */
-    public CardView getCardView() {
-        return _cardView;
     }
 }

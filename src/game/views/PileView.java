@@ -32,6 +32,7 @@ import java.util.List;
 
 import javax.swing.JLayeredPane;
 
+import framework.api.IView;
 import framework.core.factories.ViewFactory;
 import framework.core.mvc.view.PanelView;
 import framework.core.physics.ICollide;
@@ -133,14 +134,7 @@ public class PileView extends PanelView implements ICollide {
 
         // If there are no components then only allow a king to be placed
         if(layeredPane.getComponentCount() == 0) {
-            
-            CardView cardView = null;
-            if(source instanceof CardView) {
-                cardView = (CardView) source;
-            } 
-            else {
-                cardView = ((CardProxyView)source).getCardView();
-            }
+            IView cardView = (IView)source;
             return cardView.getViewProperties().getEntity(CardController.class).getCard().getCardEntity().isCardKing();
         }
         
