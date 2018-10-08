@@ -49,7 +49,7 @@ public final class StockView extends PanelView {
     public StockView() {
         setOpaque(false);
         addMouseListener(new MouseAdapter() {
-            @Override public void mouseReleased(MouseEvent args) {
+            @Override public void mousePressed(MouseEvent event) {
                 TalonView talonView = AbstractFactory.getFactory(ViewFactory.class).get(TalonView.class);
                 talonView.showNextCard();
             }

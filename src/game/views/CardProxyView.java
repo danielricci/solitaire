@@ -91,49 +91,65 @@ public final class CardProxyView extends PanelView {
         
         @Override public void mousePressed(MouseEvent event) {
 
-            // Get the list of components that are in the parent container
-            Component[] components = ((JLayeredPane) _cardView.getParent()).getComponents();
-            
-            // Go through the list of cards until the one that is being dragged is found. This is done
-            // in a vanilla for loop so that we can take advantage of the index found
-            for(int i = components.length - 1; i >= 0; --i) {
-                if(components[i].equals(_cardView)) {
-
-                    // Get the list of cardviews from the found card view that is being dragged to the end
-                    List<CardView> cardViews = Arrays.asList(Arrays.copyOfRange(components, 0, i, CardView[].class));
-                    
-                    // Reverse the list so that when the iteration occurs, it uses the same ordering that is represente visually
-                    Collections.reverse(cardViews);
-
-                    
-                    // Go through the list of cards and add them to the layered pane within the proxy
-                    for(int j = 0; j < cardViews.size(); ++j) {
-                        CardProxyView proxy = cardViews.get(j).getProxyView();
-                        _layeredPane.add(proxy);
-                        _layeredPane.setLayer(proxy, j);
+            // If the click count is two then perform the double click event of the underlying card
+            // and go no further. This will handle cases where the outline mode is enabled, and the user
+            // double clicks to put a potential card in the foundation
+            if(event.getClickCount() == 2) {
+                
+                // Get a reference to the parent of the underlying card view
+                Component parent = _cardView.getParent();
+                
+                // Perform the double click operation
+                _cardView.performCardAutoMovement();
+                
+                // Perform a repaint of the parent
+                parent.repaint();
+            }
+            else {
+                // Get the list of components that are in the parent container
+                Component[] components = ((JLayeredPane) _cardView.getParent()).getComponents();
+                
+                // Go through the list of cards until the one that is being dragged is found. This is done
+                // in a vanilla for loop so that we can take advantage of the index found
+                for(int i = components.length - 1; i >= 0; --i) {
+                    if(components[i].equals(_cardView)) {
+    
+                        // Get the list of cardviews from the found card view that is being dragged to the end
+                        List<CardView> cardViews = Arrays.asList(Arrays.copyOfRange(components, 0, i, CardView[].class));
                         
-                        // The bounds here contains `-1` because I want the border to be perfectly overlapped
-                        proxy.setBounds(new Rectangle(-1, 12 * (j + 1), cardViews.get(j).getPreferredSize().width, cardViews.get(j).getPreferredSize().height));
-                        proxy.setBorder(proxy._border);
+                        // Reverse the list so that when the iteration occurs, it uses the same ordering that is represente visually
+                        Collections.reverse(cardViews);
+    
+                        
+                        // Go through the list of cards and add them to the layered pane within the proxy
+                        for(int j = 0; j < cardViews.size(); ++j) {
+                            CardProxyView proxy = cardViews.get(j).getProxyView();
+                            _layeredPane.add(proxy);
+                            _layeredPane.setLayer(proxy, j);
+                            
+                            // The bounds here contains `-1` because I want the border to be perfectly overlapped
+                            proxy.setBounds(new Rectangle(-1, 12 * (j + 1), cardViews.get(j).getPreferredSize().width, cardViews.get(j).getPreferredSize().height));
+                            proxy.setBorder(proxy._border);
+                        }
+    
+                        // Position the card at the same place where the drag was attempted from, because when you
+                        // add to the application it will position the component at the origin which is not desired
+                        Point initialLocation = _cardView.getLocation();
+                        CardProxyView.this.setBounds(new Rectangle(_cardView.getParent().getLocation().x + initialLocation.x, _cardView.getParent().getLocation().y + initialLocation.y, _layeredPane.getWidth(), _layeredPane.getHeight()));
+    
+                        // Set the border of this proxy
+                        setBorder(_border);
+                        
+                        // Set the size of the layered pane such that it fits based on the number of cards entered
+                        //_layeredPane.setPreferredSize(new Dimension(_layeredPane.getWidth(), _layeredPane.getHeight() + (cardViews.size() * 12)));
+                        Application.instance.add(CardProxyView.this, 0);
+                        Application.instance.repaint();
+    
+                        // Do not continue iterating, the card was found so there is nothing left to do
+                        break;
                     }
-
-                    // Position the card at the same place where the drag was attempted from, because when you
-                    // add to the application it will position the component at the origin which is not desired
-                    Point initialLocation = _cardView.getLocation();
-                    CardProxyView.this.setBounds(new Rectangle(_cardView.getParent().getLocation().x + initialLocation.x, _cardView.getParent().getLocation().y + initialLocation.y, _layeredPane.getWidth(), _layeredPane.getHeight()));
-
-                    // Set the border of this proxy
-                    setBorder(_border);
-                    
-                    // Set the size of the layered pane such that it fits based on the number of cards entered
-                    //_layeredPane.setPreferredSize(new Dimension(_layeredPane.getWidth(), _layeredPane.getHeight() + (cardViews.size() * 12)));
-                    Application.instance.add(CardProxyView.this, 0);
-                    Application.instance.repaint();
-
-                    // Do not continue iterating, the card was found so there is nothing left to do
-                    break;
-                }
-            }            
+                }            
+            }
         }
         
         @Override public void mouseReleased(MouseEvent event) {
@@ -191,12 +207,6 @@ public final class CardProxyView extends PanelView {
             // Repaint the components involved
             Application.instance.repaint();
             _cardView.getParent().repaint();
-        }
-    
-        @Override public void mouseClicked(MouseEvent event) {
-            if(event.getClickCount() == 2) {
-                _cardView.doubleClick();
-            }
         }
     }
     

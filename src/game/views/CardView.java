@@ -82,7 +82,7 @@ public final class CardView extends PanelView implements ICollide {
     private class CardSelectionEvents extends MouseAdapter {
         
         private JLayeredPane _parentLayeredPane;
-
+        
         @Override public void mousePressed(MouseEvent event) {
 
             // Get the parent of this card view, used as a reference to go back to whatever we were coming from
@@ -132,6 +132,7 @@ public final class CardView extends PanelView implements ICollide {
         }
 
         @Override public void mouseReleased(MouseEvent event) {
+            
             // If there is a valid collider, set that as the new parent
             if(_collisionListener.getCollision() != null) {
                 ICollide collision = _collisionListener.getCollision();
@@ -145,6 +146,11 @@ public final class CardView extends PanelView implements ICollide {
                     Tracelog.log(Level.SEVERE, true, "Could not find JLayeredPane within the CardView mouseReleased event...");
                     return;
                 }
+            }
+            
+            // Ensure that a valid parent was set on the mouse pressed before continuing
+            if(_parentLayeredPane == null) {
+                return;
             }
 
             // Get the offset that was set, and use this within our calculations
@@ -164,11 +170,6 @@ public final class CardView extends PanelView implements ICollide {
             // you have a pile with 5 cards and you drag three out, then you would be left with 2 cards in the parent, CardView.this would
             // represent the card actually being dragged, and the layered pane associated to CardView.this would attached itself.
             int initialSize = _parentLayeredPane.getComponents().length;
-
-            if(initialSize > 0) {
-                CardView lastCard = parent.getLastCard();
-                lastCard._isHighlighted = false;
-            }
             
             // Add this card view to the pane and update the layer within the component that it has been added to
             _parentLayeredPane.add(CardView.this);
@@ -271,22 +272,30 @@ public final class CardView extends PanelView implements ICollide {
     private final boolean _highlightsEnabled;
     
     /**
+     * The card selection events associated to this card view
+     */
+    private CardSelectionEvents _cardSelectionEvents = new CardSelectionEvents();
+    
+    /**
      * The card proxy associated to this view
      */
     private CardProxyView _cardProxy;
         
     /**
      * Constructs a new instance of this class type
+     * 
+     * @param cardModel The cards model underlying this card view
      */
-    public CardView(CardModel card) {
+    public CardView(CardModel cardModel) {
+        
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setPreferredSize(new Dimension(CARD_WIDTH, CARD_HEIGHT));
         setOpaque(true);
         setBackground(Color.BLACK);
         add(_layeredPane);
         
-        card.addListeners(this);
-        _controller = new CardController(card);
+        cardModel.addListeners(this);
+        _controller = new CardController(cardModel);
         getViewProperties().setEntity(_controller);   
 
         // Verify if the option for highlighting is enabled or not
@@ -296,31 +305,39 @@ public final class CardView extends PanelView implements ICollide {
 
         // If the card has its backside shown or the outline option is enabled
         // then do not allow dragging or collision to work as normal
-        if(card.getIsBackside() || optionsPreferences.outlineDragging) {
+        if(cardModel.getIsBackside() || optionsPreferences.outlineDragging) {
             _draggableListener.setEnabled(false);
             _collisionListener.setEnabled(false);
         }
 
-        // If the backside is not being shown then add the event handler for card drag event
-        // Note: When the backside is revealed, we add the event dynamically
-        if(!card.getIsBackside() && !optionsPreferences.outlineDragging) {
-            addMouseListener(new CardSelectionEvents());
+        // If the backside is not being shown, then add the event handler for card drag event
+        // Note: In the event that the options preferences calls for outline mode, the entire
+        //       operation of performing a click-down, click-up, should be done by the proxy and
+        //       not this card explicitely.
+        if(!cardModel.getIsBackside()) {
+            if(!optionsPreferences.outlineDragging) {
+                addMouseListener(_cardSelectionEvents);    
+            }
+            else {
+                // Initialize the card proxy
+                _cardProxy = new CardProxyView(this);
+                add(_cardProxy);    
+            }   
         }
-
-        // If the option to show outline dragging is there then create a proxy
-        if(optionsPreferences.outlineDragging && !card.getIsBackside()) {
-            _cardProxy = new CardProxyView(this);
-            add(_cardProxy);    
-        }
-
+        
+        // Add the mouse listener responsible for handling single clicks and double clicks on this card.
+        // Note: This will sometimes not be called depending on if the proxy is enabled or not, since the 
+        //       proxy sits on top of this card. However, when the backside is being shown, this would indeed
+        //       be called, however the double click will not be called since the single click will
+        //       initiate the proxy, thus the double click of the proxy will be called
         addMouseListener(new MouseAdapter() {
-            @Override public void mouseClicked(MouseEvent event) {
+            @Override public void mousePressed(MouseEvent event) {
                 if(CardView.this.getParent().getComponents()[0].equals(CardView.this)) {
                     if(event.getClickCount() == 1) {
-                        singleClick();
+                        uncoverBackside();
                     }
                     else {
-                        doubleClick();
+                        performCardAutoMovement();
                     }
                 }
             }
@@ -345,7 +362,10 @@ public final class CardView extends PanelView implements ICollide {
         return _cardProxy;
     }
     
-    public void singleClick() {
+    /**
+     * Attempts to uncover the backside of this view
+     */
+    private void uncoverBackside() {
         if(_controller.getCard().getIsBackside()){
             _controller.getCard().setBackside(false);
             _controller.getCard().refresh();
@@ -360,7 +380,7 @@ public final class CardView extends PanelView implements ICollide {
             }
             
             if(!preferences.outlineDragging) {
-                addMouseListener(new CardSelectionEvents());
+                addMouseListener(_cardSelectionEvents);
             }
             else {
                 _cardProxy = new CardProxyView(CardView.this);
@@ -371,7 +391,10 @@ public final class CardView extends PanelView implements ICollide {
         }
     }
     
-    public void doubleClick() {
+    /**
+     * Performs an auto card movement, attempting to move this card to the foundation
+     */
+    public void performCardAutoMovement() {
         if(!_controller.getCard().getIsBackside()) {
             
             // Make sure that we are not double clicking on an ACE. That doesn't make much sense here in this case
@@ -389,9 +412,19 @@ public final class CardView extends PanelView implements ICollide {
             for(FoundationView foundationView : foundationViews) {
                 if(foundationView.isValidCollision(CardView.this)) {
 
+                    // Halt any drag events that could occur
+                    _draggableListener.stopDragEvent();
+                    
+                    // Hack:    Update the card selection event because there are cases where the mouse up event would reset all that is done here
+                    // Ex:      Double clicking on an ace that is in the pile view (outline mode off) will cause the card to go to a foundation
+                    //          on mouse down (the second mouse down), however once the mouse button is released, the mouseReleased code would
+                    //          have thought that there was no valid move, thus putting the card back to the parent layered pane that was
+                    //          originally recorded when the first mouse down was initiated. There is a guard within the mouse released code
+                    //          that is required for this to have any meaning.
+                    _cardSelectionEvents._parentLayeredPane = null;
+                    
                     // Remove from the layered pane source
-                    JLayeredPane parentPane = (JLayeredPane) CardView.this.getParent();
-                    parentPane.remove(CardView.this);
+                    CardView.this.getParent().remove(CardView.this);;
                                                     
                     // Add to the layered pane destination
                     foundationView.layeredPane.add(CardView.this);
@@ -408,7 +441,6 @@ public final class CardView extends PanelView implements ICollide {
                 }
             }                            
         }
-
     }
     
     @Override public boolean isValidCollision(Component source) {
