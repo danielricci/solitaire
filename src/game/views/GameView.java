@@ -31,13 +31,10 @@ import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.BorderFactory;
-
 import framework.core.factories.AbstractFactory;
 import framework.core.factories.ViewFactory;
 import framework.core.mvc.view.PanelView;
 
-import game.config.OptionsPreferences;
 import game.models.CardModel;
 
 /**
@@ -118,24 +115,6 @@ public final class GameView extends PanelView {
                     this.add(view, gameConstraints);
                 }
             }
-        }
-        
-        OptionsPreferences preferences = new OptionsPreferences();
-        preferences.load();
-        if(preferences.statusBar) {
-            StatusBarView statusBarView = AbstractFactory.getFactory(ViewFactory.class).add(new StatusBarView(), true);
-            statusBarView.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.BLACK));
-            
-            GridBagConstraints barConstraints = new GridBagConstraints(); 
-            barConstraints.anchor = GridBagConstraints.SOUTH;
-            barConstraints.gridx = 0;
-            barConstraints.gridy = 1;
-            barConstraints.fill = GridBagConstraints.HORIZONTAL;
-            barConstraints.weightx = 1.0;
-            barConstraints.weighty = 1.0;
-            barConstraints.gridwidth = 7;
-            barConstraints.insets = new Insets(0, -2, 0, -2);
-            this.add(statusBarView, barConstraints, 10);
         }
     }
 }

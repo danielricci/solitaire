@@ -52,6 +52,11 @@ public final class StockView extends PanelView {
             @Override public void mousePressed(MouseEvent event) {
                 TalonView talonView = AbstractFactory.getFactory(ViewFactory.class).get(TalonView.class);
                 talonView.showNextCard();
+                
+                GameTimerView gameTimerView = AbstractFactory.getFactory(ViewFactory.class).get(GameTimerView.class);
+                if(gameTimerView != null) {
+                    gameTimerView.startGameTimer();
+                }
             }
         });
     }
@@ -68,7 +73,6 @@ public final class StockView extends PanelView {
     @Override public void update(AbstractEventArgs event) {
         super.update(event);
         addRenderableContent(_backside);
-        //addRenderableContent(_gameController.isNextCardEmpty() ?  null : _backside);
         repaint();
     }
 }

@@ -68,6 +68,10 @@ public final class TalonView extends PileView {
         // Note: Adding a mouse listener to the blank card prevents the card immediately behind it from being clicked 
         pv.addMouseListener(new MouseAdapter() {
             @Override public void mousePressed(MouseEvent e) {
+                GameTimerView gameTimerView = AbstractFactory.getFactory(ViewFactory.class).get(GameTimerView.class);
+                if(gameTimerView != null) {
+                    gameTimerView.startGameTimer();
+                }
             }
         });
         

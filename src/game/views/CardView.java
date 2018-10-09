@@ -332,6 +332,11 @@ public final class CardView extends PanelView implements ICollide {
         //       initiate the proxy, thus the double click of the proxy will be called
         addMouseListener(new MouseAdapter() {
             @Override public void mousePressed(MouseEvent event) {
+                GameTimerView gameTimerView = AbstractFactory.getFactory(ViewFactory.class).get(GameTimerView.class);
+                if(gameTimerView != null) {
+                    gameTimerView.startGameTimer();
+                }
+                
                 if(CardView.this.getParent().getComponents()[0].equals(CardView.this)) {
                     if(event.getClickCount() == 1) {
                         uncoverBackside();

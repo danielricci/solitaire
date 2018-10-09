@@ -12,32 +12,39 @@ public final class GameTimerView extends PanelView {
 
     private Timer _timer = new Timer(true);
 
-    JLabel label = new JLabel();
+    private JLabel _label = new JLabel();
     
     private long _tick = 0;
+    
+    private boolean _running;
     
     /**
      * Constructs a new instance of this class type
      */
     public GameTimerView() {
         this.setBackground(Color.WHITE);
-        label.setText(this.toString());
-        add(label);
-        start();
+        _label.setText(this.toString());
+        add(_label);
     }
     
-    public void start() {
+    public void startGameTimer() {
+        if(_running) {
+            return;
+        }
+        _running = true;
         _timer.schedule(new TimerTask() {
             @Override public void run() {
                 ++_tick;
-                label.setText(GameTimerView.this.toString());
+                _label.setText(GameTimerView.this.toString());
             }
-        }, 0, 1000);
-        
+        }, 1000, 1000);
     }
     
     public void stop() {
         _timer.cancel();
+        _running = false;
+        _tick = 0;
+        _label.setText(toString());
     }
     
     @Override public String toString() {

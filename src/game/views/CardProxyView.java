@@ -39,6 +39,8 @@ import javax.swing.BoxLayout;
 import javax.swing.JLayeredPane;
 import javax.swing.border.Border;
 
+import framework.core.factories.AbstractFactory;
+import framework.core.factories.ViewFactory;
 import framework.core.mvc.view.PanelView;
 import framework.core.mvc.view.layout.DragListener;
 import framework.core.physics.CollisionListener;
@@ -252,6 +254,15 @@ public final class CardProxyView extends PanelView {
         
         // Set the controller of this proxy to the same controller of the specified card
         _cardView = cardView;
-        getViewProperties().setEntity(cardView.getViewProperties().getEntity());        
+        getViewProperties().setEntity(cardView.getViewProperties().getEntity());
+        
+        addMouseListener(new MouseAdapter() {
+            @Override public void mousePressed(MouseEvent event) {
+                GameTimerView gameTimerView = AbstractFactory.getFactory(ViewFactory.class).get(GameTimerView.class);
+                if(gameTimerView != null) {
+                    gameTimerView.startGameTimer();
+                }
+            }
+        });
     }
 }
