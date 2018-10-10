@@ -62,6 +62,21 @@ public final class OptionsDialogView extends DialogView {
     public boolean refreshGameRequired;
     
     /**
+     * Indicates if the status bar option has changed since it's last saved value
+     */
+    public boolean statusBarChanged;
+    
+    /**
+     * Indicates if the outline dragging option has changed since it's last saved value
+     */
+    public boolean outlineDraggingChanged;
+    
+    /**
+     * Indicates if the cumulative score option has changed since it's last saved value
+     */
+    public boolean cumulativeScoreChanged;
+    
+    /**
      * Constructs a new instance of this class type
      */
     public OptionsDialogView() {
@@ -186,13 +201,19 @@ public final class OptionsDialogView extends DialogView {
                 preferences.timedGame = timedGame;
                 
                 // Status bar
-                preferences.statusBar = statusBarCheckBox.isSelected();
+                boolean statusBar = statusBarCheckBox.isSelected();
+                statusBarChanged = preferences.statusBar != statusBar;
+                preferences.statusBar = statusBar;
                 
                 // Outline dragging
-                preferences.outlineDragging = outlineDraggingCheckbox.isSelected();
+                boolean outlineDragging = outlineDraggingCheckbox.isSelected();
+                outlineDraggingChanged = preferences.outlineDragging != outlineDragging;
+                preferences.outlineDragging = outlineDragging;
                 
                 // Cumulative Score
-                preferences.cumulativeScore = cumulativeScoreCheckBox.isSelected();
+                boolean cumulativeScore = cumulativeScoreCheckBox.isSelected();
+                cumulativeScoreChanged = preferences.cumulativeScore != cumulativeScore;
+                preferences.cumulativeScore = cumulativeScore;
                 
                 // Save the contents of the preferences and then close this dialog
                 preferences.save();

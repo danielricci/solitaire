@@ -63,8 +63,23 @@ public class OptionsMenuItem extends AbstractMenuItem {
         OptionsDialogView options = new OptionsDialogView();
         options.render();
         
-        if(options.getDialogResult() == JOptionPane.OK_OPTION && options.refreshGameRequired) {
-            MenuBuilder.search(Application.instance.getJMenuBar(), NewGameMenuItem.class).getComponent(AbstractButton.class).doClick();
+        if(options.getDialogResult() == JOptionPane.OK_OPTION) {
+            if(options.refreshGameRequired) {
+                MenuBuilder.search(Application.instance.getJMenuBar(), NewGameMenuItem.class).getComponent(AbstractButton.class).doClick();
+            }
+            else {
+                if(options.statusBarChanged) {
+                    // TODO
+                }
+                
+                if(options.outlineDraggingChanged) {
+                    // TODO
+                }
+                
+                if(options.cumulativeScoreChanged) {
+                    // TODO
+                }
+            }
         }
     }
 }
