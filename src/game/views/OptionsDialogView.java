@@ -57,6 +57,11 @@ import game.config.OptionsPreferences.ScoringOption;
 public final class OptionsDialogView extends DialogView {
 
     /**
+     * Indicates if the options that were changed (if any) require the game to reset to take effect
+     */
+    public boolean refreshGameRequired;
+    
+    /**
      * Constructs a new instance of this class type
      */
     public OptionsDialogView() {
@@ -155,8 +160,10 @@ public final class OptionsDialogView extends DialogView {
             @Override public void actionPerformed(ActionEvent event) {
                 
                 // Draw panel result
-                JRadioButton drawPanelSelection = drawOneRadioButton.isSelected() ? drawOneRadioButton : drawThreeRadioButton; 
-                preferences.drawOption = (DrawOption)drawPanelSelection.getClientProperty(drawPanelSelection);
+                JRadioButton drawPanelSelection = drawOneRadioButton.isSelected() ? drawOneRadioButton : drawThreeRadioButton;
+                DrawOption drawOptionNew = (DrawOption)drawPanelSelection.getClientProperty(drawPanelSelection);
+                refreshGameRequired = preferences.drawOption != drawOptionNew;
+                preferences.drawOption = drawOptionNew;
                 
                 // Scoring result
                 JRadioButton scoringPanelSelection = null;
@@ -169,12 +176,22 @@ public final class OptionsDialogView extends DialogView {
                 else {
                     scoringPanelSelection = noneRadioButton;
                 }
-                preferences.scoringOption = (ScoringOption)scoringPanelSelection.getClientProperty(scoringPanelSelection);
+                ScoringOption scoringOption = (ScoringOption)scoringPanelSelection.getClientProperty(scoringPanelSelection);
+                refreshGameRequired |= scoringOption != preferences.scoringOption;
+                preferences.scoringOption = scoringOption;
                 
-                // Mutually exclusive checkboxes
-                preferences.timedGame = timedGameCheckBox.isSelected();
+                // Timed game
+                boolean timedGame = timedGameCheckBox.isSelected();
+                refreshGameRequired |= timedGame != preferences.timedGame;
+                preferences.timedGame = timedGame;
+                
+                // Status bar
                 preferences.statusBar = statusBarCheckBox.isSelected();
+                
+                // Outline dragging
                 preferences.outlineDragging = outlineDraggingCheckbox.isSelected();
+                
+                // Cumulative Score
                 preferences.cumulativeScore = cumulativeScoreCheckBox.isSelected();
                 
                 // Save the contents of the preferences and then close this dialog
