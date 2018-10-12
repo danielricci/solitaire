@@ -44,7 +44,7 @@ import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
 
 import framework.api.IView;
-import framework.communication.internal.signal.arguments.AbstractEventArgs;
+import framework.communication.internal.signal.arguments.EventArgs;
 import framework.core.factories.AbstractFactory;
 import framework.core.factories.ViewFactory;
 import framework.core.graphics.IRenderable;
@@ -482,7 +482,7 @@ public final class CardView extends PanelView implements ICollide {
         _controller.refresh();
     }
 
-    @Override public void update(AbstractEventArgs event) {
+    @Override public void update(EventArgs event) {
         super.update(event);
         addRenderableContent((IRenderable)event.getSource()); 
         repaint();

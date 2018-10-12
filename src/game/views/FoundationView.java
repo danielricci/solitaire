@@ -28,7 +28,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 
 import framework.api.IView;
-import framework.communication.internal.signal.arguments.AbstractEventArgs;
+import framework.communication.internal.signal.arguments.EventArgs;
 
 import game.controllers.CardController;
 
@@ -46,7 +46,7 @@ public class FoundationView extends PileView {
         return new Dimension(CardView.CARD_WIDTH, CardView.CARD_HEIGHT);
     }
     
-    @Override public void update(AbstractEventArgs event) {
+    @Override public void update(EventArgs event) {
         super.update(event);
         repaint();
     }
