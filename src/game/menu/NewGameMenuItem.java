@@ -39,7 +39,6 @@ import framework.core.navigation.AbstractMenuItem;
 import framework.core.system.Application;
 import framework.utils.globalisation.Localization;
 
-import game.config.OptionsPreferences;
 import game.views.GameView;
 import game.views.StatusBarView;
 
@@ -77,12 +76,7 @@ public class NewGameMenuItem extends AbstractMenuItem {
         GameView gameView = AbstractFactory.getFactory(ViewFactory.class).add(new GameView(), true);
         Application.instance.setContentPane(gameView);
         
-        OptionsPreferences preferences = new OptionsPreferences();
-        preferences.load();
- 
         StatusBarView statusBarView = AbstractFactory.getFactory(ViewFactory.class).add(new StatusBarView(), true);
-        
-        
         GridBagConstraints barConstraints = new GridBagConstraints(); 
         barConstraints.anchor = GridBagConstraints.SOUTH;
         barConstraints.gridx = 0;

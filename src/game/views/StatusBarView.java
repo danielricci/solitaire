@@ -16,7 +16,10 @@ import game.config.OptionsPreferences;
 
 public final class StatusBarView extends PanelView {
 
-    private GameTimerView timer = AbstractFactory.getFactory(ViewFactory.class).add(new GameTimerView(), true);
+    /**
+     * The game timer view associated to this status bar
+     */
+    private GameTimerView _gameTimerView = AbstractFactory.getFactory(ViewFactory.class).add(new GameTimerView(), true);
     
     /**
      * Constructs a new instance of this class type
@@ -34,19 +37,18 @@ public final class StatusBarView extends PanelView {
             }
         });
     
-        OptionsPreferences preferences = new OptionsPreferences();
-        preferences.load();
         AbstractFactory.getFactory(ViewFactory.class).get(GameView.class).addMouseListener(new MouseAdapter() {
             @Override public void mousePressed(MouseEvent event) {
+                OptionsPreferences preferences = new OptionsPreferences();
+                preferences.load();
                 if(preferences.timedGame) {
-                    timer.startGameTimer();
+                    _gameTimerView.startGameTimer();
                 }
             }
         });
         
-        this.setVisible(preferences.statusBar);
-        timer.setVisible(preferences.timedGame);
-        add(timer, BorderLayout.EAST);
+        synchronizeWithOptions();        
+        add(_gameTimerView, BorderLayout.EAST);
     }
     
     /**
@@ -56,6 +58,10 @@ public final class StatusBarView extends PanelView {
         OptionsPreferences preferences = new OptionsPreferences();
         preferences.load();
         this.setVisible(preferences.statusBar);
-        timer.setVisible(preferences.timedGame);
+        _gameTimerView.setVisible(preferences.timedGame);
+    }
+    
+    @Override public void render() {
+        synchronizeWithOptions();
     }
 }
