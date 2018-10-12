@@ -24,13 +24,11 @@
 
 package game.menu;
 
-import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
-import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
@@ -81,21 +79,21 @@ public class NewGameMenuItem extends AbstractMenuItem {
         
         OptionsPreferences preferences = new OptionsPreferences();
         preferences.load();
-        if(preferences.statusBar) {
-            StatusBarView statusBarView = AbstractFactory.getFactory(ViewFactory.class).add(new StatusBarView(), true);
-            statusBarView.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.BLACK));
-            
-            GridBagConstraints barConstraints = new GridBagConstraints(); 
-            barConstraints.anchor = GridBagConstraints.SOUTH;
-            barConstraints.gridx = 0;
-            barConstraints.gridy = 1;
-            barConstraints.fill = GridBagConstraints.HORIZONTAL;
-            barConstraints.weightx = 1.0;
-            barConstraints.weighty = 1.0;
-            barConstraints.gridwidth = 7;
-            barConstraints.insets = new Insets(0, -2, 0, -2);
-            Application.instance.add(statusBarView, barConstraints, 10);
-        }
+ 
+        StatusBarView statusBarView = AbstractFactory.getFactory(ViewFactory.class).add(new StatusBarView(), true);
+        
+        
+        GridBagConstraints barConstraints = new GridBagConstraints(); 
+        barConstraints.anchor = GridBagConstraints.SOUTH;
+        barConstraints.gridx = 0;
+        barConstraints.gridy = 1;
+        barConstraints.fill = GridBagConstraints.HORIZONTAL;
+        barConstraints.weightx = 1.0;
+        barConstraints.weighty = 1.0;
+        barConstraints.gridwidth = 7;
+        barConstraints.insets = new Insets(0, -2, 0, -2);
+        
+        Application.instance.add(statusBarView, barConstraints, 10);
         gameView.render();
     }
 }

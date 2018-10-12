@@ -32,12 +32,15 @@ import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
+import framework.core.factories.AbstractFactory;
+import framework.core.factories.ViewFactory;
 import framework.core.navigation.AbstractMenuItem;
 import framework.core.navigation.MenuBuilder;
 import framework.core.system.Application;
 import framework.utils.globalisation.Localization;
 
 import game.views.OptionsDialogView;
+import game.views.StatusBarView;
 
 import resources.LocalizationStrings;
 
@@ -69,7 +72,7 @@ public class OptionsMenuItem extends AbstractMenuItem {
             }
             else {
                 if(options.statusBarChanged) {
-                    // TODO
+                    AbstractFactory.getFactory(ViewFactory.class).get(StatusBarView.class).synchronizeWithOptions();
                 }
                 
                 if(options.outlineDraggingChanged) {

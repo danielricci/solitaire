@@ -31,6 +31,7 @@ public final class GameTimerView extends PanelView {
         if(_running) {
             return;
         }
+        
         _running = true;
         _timer.schedule(new TimerTask() {
             @Override public void run() {
@@ -45,6 +46,11 @@ public final class GameTimerView extends PanelView {
         _running = false;
         _tick = 0;
         _label.setText(toString());
+    }
+    
+    @Override public void destructor() {
+        _timer.cancel();
+        super.destructor();
     }
     
     @Override public String toString() {
