@@ -133,6 +133,11 @@ public final class CardView extends PanelView implements ICollide {
 
         @Override public void mouseReleased(MouseEvent event) {
             
+            // Ensure that a valid parent was set on the mouse pressed before continuing
+            if(_parentLayeredPane == null) {
+                return;
+            }
+            
             // If there is a valid collider, set that as the new parent
             if(_collisionListener.getCollision() != null) {
                 ICollide collision = _collisionListener.getCollision();
@@ -148,11 +153,6 @@ public final class CardView extends PanelView implements ICollide {
                 }
             }
             
-            // Ensure that a valid parent was set on the mouse pressed before continuing
-            if(_parentLayeredPane == null) {
-                return;
-            }
-
             // Get the offset that was set, and use this within our calculations
             PileView parent = (PileView) _parentLayeredPane.getParent();
             int offset = parent.CARD_OFFSET;
