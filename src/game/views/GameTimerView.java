@@ -28,7 +28,7 @@ public final class GameTimerView extends PanelView {
     }
     
     public void startGameTimer() {
-        if(_running) {
+        if(_running || !isVisible()) {
             return;
         }
         
@@ -37,6 +37,7 @@ public final class GameTimerView extends PanelView {
             @Override public void run() {
                 ++_tick;
                 _label.setText(GameTimerView.this.toString());
+                System.out.println("Tick");
             }
         }, 1000, 1000);
     }
