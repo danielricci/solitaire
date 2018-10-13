@@ -58,6 +58,7 @@ public final class Game extends Application {
         super(isDebug);
         setMinimumSize(new Dimension(620, 436));
         setLocationRelativeTo(null);
+        setAlwaysOnTop(isDebug);
     }
     
     /**
@@ -70,7 +71,7 @@ public final class Game extends Application {
             @Override public void run() {
                 boolean debugMode = false;
                 for(String arg : args) {
-                    if(arg.trim().equalsIgnoreCase("-debug")) {
+                    if(arg.trim().equalsIgnoreCase("debug")) {
                         debugMode = true;
                         break;
                     }
