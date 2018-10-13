@@ -125,6 +125,10 @@ public final class TalonView extends PileView {
         //Arrays.asList(_layeredPane.getComponents()).stream().forEach(z -> System.out.println(_layeredPane.getLayer(z) + (!(z instanceof CardView) ? " <----------> " : "")));
     }
     
+    @Override public boolean isValidCollision(Component source) {
+        return false;
+    }
+    
     @Override public Dimension getPreferredSize() {
         return new Dimension(CardView.CARD_WIDTH, CardView.CARD_HEIGHT);
     }
