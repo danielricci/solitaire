@@ -39,6 +39,7 @@ import framework.core.factories.ViewFactory;
 import framework.core.mvc.view.PanelView;
 import framework.utils.logging.Tracelog;
 
+import game.config.OptionsPreferences;
 import game.models.CardModel;
 
 public final class TalonView extends PileView {
@@ -81,9 +82,9 @@ public final class TalonView extends PileView {
     }
     
     /**
-     * Cycles to the next card
+     * Displays the next card hand on this view
      */
-    public void showNextCard() {
+    public void showCardHand() {
         
         // If there is only one component then go o further. The idea is that the "blank" placeholder view that
         // mimics that switching of cards should never be removed from this view, thus if that is the only view that
@@ -97,27 +98,36 @@ public final class TalonView extends PileView {
         Component blankCardLayer = Arrays.asList(layeredPane.getComponents()).stream().filter(z -> !(z instanceof CardView)).findFirst().get();
         int blankCardLayerId = layeredPane.getLayer(blankCardLayer);
         
-        if(blankCardLayerId != layeredPane.lowestLayer()) {
-            Component cardDirectlyBelowBlankCard = layeredPane.getComponent(layeredPane.getIndexOf(blankCardLayer) + 1);
-            layeredPane.setLayer(cardDirectlyBelowBlankCard, layeredPane.highestLayer() + 1);
-            for(int i = layeredPane.getComponentCount() - 1, layerId = 0;  i >= 0; --i, ++layerId) {
-                layeredPane.setLayer(layeredPane.getComponent(i), layerId);
-            }
-        }
-        else {
-            
+        // If we are at the end then restart the deck
+        if(blankCardLayerId == layeredPane.lowestLayer()) {
             // Remove the list of components from the layered pane. 
             Component[] components = layeredPane.getComponents();
             layeredPane.removeAll();
             
             // Go through the list in reverse order and re-assign the layer identifiers as they were before
             // Note: This is done this way because if we re-order when they are within the layered pane
-            // then the layered pane will control the index positions after the layer id is set, and during the
+            // then the layered pane will control the index positions after the layer id is set, and during
             // the resetting of the layer id's, these positions are not properly managed the way that we would want
             // them to be.
             for(int i = components.length - 1; i >= 0; --i) {
                 layeredPane.add(components[i]);
                 layeredPane.setLayer(components[i], i);
+            }
+        }
+        else {
+            OptionsPreferences preferences = new OptionsPreferences();
+            preferences.load();
+            switch(preferences.drawOption) {
+            case DRAW_ONE:
+                Component cardDirectlyBelowBlankCard = layeredPane.getComponent(layeredPane.getIndexOf(blankCardLayer) + 1);
+                layeredPane.setLayer(cardDirectlyBelowBlankCard, layeredPane.highestLayer() + 1);
+                for(int i = layeredPane.getComponentCount() - 1, layerId = 0;  i >= 0; --i, ++layerId) {
+                    layeredPane.setLayer(layeredPane.getComponent(i), layerId);
+                }     
+                break;
+            case DRAW_THREE:
+                
+                break;
             }
         }
         

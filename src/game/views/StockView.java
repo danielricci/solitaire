@@ -51,7 +51,7 @@ public final class StockView extends PanelView {
         addMouseListener(new MouseAdapter() {
             @Override public void mousePressed(MouseEvent event) {
                 TalonView talonView = AbstractFactory.getFactory(ViewFactory.class).get(TalonView.class);
-                talonView.showNextCard();
+                talonView.showCardHand();
                 
                 GameTimerView gameTimerView = AbstractFactory.getFactory(ViewFactory.class).get(GameTimerView.class);
                 if(gameTimerView != null) {
