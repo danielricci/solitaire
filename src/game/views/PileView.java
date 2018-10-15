@@ -41,7 +41,7 @@ import game.controllers.CardController;
 import game.models.CardModel;
 
 public class PileView extends PanelView implements ICollide {
-
+    
     /**
      * Specifies the offset of each card within this view
      */
@@ -163,5 +163,18 @@ public class PileView extends PanelView implements ICollide {
         }
         
         return false;
+    }
+    
+    @Override public String toString() {
+        StringBuilder builder = new StringBuilder();
+        String header = "========" + this.getClass().getSimpleName().toUpperCase() + "========";
+        builder.append(header + System.getProperty("line.separator"));
+        
+        for(Component comp : layeredPane.getComponents()) {
+            builder.append(comp + System.getProperty("line.separator"));
+        }
+        builder.append(new String(new char[header.length()]).replace("\0", "="));
+        
+        return builder.toString();
     }
 }

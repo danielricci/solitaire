@@ -33,7 +33,7 @@ import game.views.OptionsDialogView;
 
 public final class OptionsPreferences extends GamePreferences {
 
-    public enum DrawOption { DRAW_ONE, DRAW_THREE };
+    public enum DrawOption { ONE, THREE };
     
     public enum ScoringOption { STANDARD, VEGAS, NONE };
     
@@ -54,7 +54,7 @@ public final class OptionsPreferences extends GamePreferences {
     }
 
     @Override public void load() {
-        drawOption = DrawOption.values()[preferences.getInt("drawOption", DrawOption.DRAW_ONE.ordinal())];
+        drawOption = DrawOption.values()[preferences.getInt("drawOption", DrawOption.ONE.ordinal())];
         scoringOption = ScoringOption.values()[preferences.getInt("scoringOption", ScoringOption.STANDARD.ordinal())];
         timedGame = preferences.getBoolean("timedGame", false);
         statusBar = preferences.getBoolean("statusBar", false);
@@ -75,5 +75,19 @@ public final class OptionsPreferences extends GamePreferences {
         catch (Exception exception) {
             Tracelog.log(Level.SEVERE, true, exception);
         }
+    }
+    
+    @Override public String toString() {
+        StringBuilder builder = new StringBuilder();
+        String header = "=========" + this.getClass().getSimpleName() + "=========";
+        builder.append(header + System.getProperty("line.separator"));
+        builder.append("Draw Option: " + drawOption + System.getProperty("line.separator"));
+        builder.append("Scoring Option: " + scoringOption + System.getProperty("line.separator"));
+        builder.append("Timed Game: " + Boolean.toString(timedGame) + System.getProperty("line.separator"));
+        builder.append("Status Bar: " + Boolean.toString(statusBar) + System.getProperty("line.separator"));
+        builder.append("Outline Dragging: " + Boolean.toString(outlineDragging) + System.getProperty("line.separator"));
+        builder.append("Cumulative Score: " + Boolean.toString(cumulativeScore) + System.getProperty("line.separator"));
+        builder.append(new String(new char[header.length()]).replace("\0", "="));
+        return builder.toString();
     }
 }

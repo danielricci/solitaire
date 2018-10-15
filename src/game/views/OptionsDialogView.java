@@ -105,10 +105,10 @@ public final class OptionsDialogView extends DialogView {
         JPanel drawPanel = new JPanel();
         drawPanel.setLayout(drawPanelGridLayout);
         drawPanel.setBorder(BorderFactory.createTitledBorder("Draw"));
-        JRadioButton drawOneRadioButton = new JRadioButton("Draw One", preferences.drawOption == DrawOption.DRAW_ONE);
-        drawOneRadioButton.putClientProperty(drawOneRadioButton, DrawOption.DRAW_ONE);
-        JRadioButton drawThreeRadioButton = new JRadioButton("Draw Three", preferences.drawOption == DrawOption.DRAW_THREE);
-        drawThreeRadioButton.putClientProperty(drawThreeRadioButton, DrawOption.DRAW_THREE);
+        JRadioButton drawOneRadioButton = new JRadioButton("Draw One", preferences.drawOption == DrawOption.ONE);
+        drawOneRadioButton.putClientProperty(drawOneRadioButton, DrawOption.ONE);
+        JRadioButton drawThreeRadioButton = new JRadioButton("Draw Three", preferences.drawOption == DrawOption.THREE);
+        drawThreeRadioButton.putClientProperty(drawThreeRadioButton, DrawOption.THREE);
         
         // Button group for the draw radio buttons
         ButtonGroup drawPanelGroup = new ButtonGroup();

@@ -94,6 +94,10 @@ public class CardModel extends BaseModel {
         return !_cardEntity.getBacksideVisible() && !card._cardEntity.getBacksideVisible() && card._cardEntity.isOppositeSuite(_cardEntity) && card._cardEntity.isCardRankedBefore(_cardEntity);
     }
     
+    @Override public String toString() {
+        return _cardEntity.toString();
+    }
+    
     @Override public Image getRenderableContent() {
         if(_cardEntity == null) {
             return null;

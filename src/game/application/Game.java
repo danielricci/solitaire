@@ -26,24 +26,32 @@ package game.application;
 
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.util.List;
 
 import javax.swing.AbstractButton;
 import javax.swing.UIManager;
 
+import framework.core.factories.AbstractFactory;
+import framework.core.factories.ViewFactory;
 import framework.core.navigation.MenuBuilder;
 import framework.core.system.Application;
 import framework.core.system.EngineProperties;
 import framework.core.system.EngineProperties.Property;
 import framework.utils.globalisation.Localization;
 
+import game.config.OptionsPreferences;
 import game.menu.AboutMenuItem;
 import game.menu.DeckMenuItem;
 import game.menu.ExitMenuItem;
 import game.menu.NewGameMenuItem;
 import game.menu.OptionsMenuItem;
 import game.menu.UndoMenuItem;
+import game.views.FoundationView;
+import game.views.PileView;
+import game.views.TalonView;
 
 import resources.LocalizationStrings;
 
@@ -59,6 +67,28 @@ public final class Game extends Application {
         setMinimumSize(new Dimension(620, 436));
         setLocationRelativeTo(null);
         setAlwaysOnTop(isDebug);
+        if(isDebug) {
+            addKeyListener(new KeyAdapter() {
+                @Override public void keyReleased(KeyEvent event) {
+                    if(event.getKeyCode() == KeyEvent.VK_F1) {
+                        ViewFactory viewFactory = AbstractFactory.getFactory(ViewFactory.class);
+                        System.out.println(viewFactory.get(TalonView.class).toString());
+                        List<PileView> pileViews =  viewFactory.getAll(PileView.class);
+                        for(int i = pileViews.size() - 1; i >= 0; --i) {
+                            System.out.println(pileViews.get(i));
+                        }
+                        List<FoundationView> foundationViews =  viewFactory.getAll(FoundationView.class);
+                        for(int i = foundationViews.size() - 1; i >= 0; --i) {
+                            System.out.println(foundationViews.get(i));
+                        }
+                        
+                        OptionsPreferences options = new OptionsPreferences();
+                        options.load();
+                        System.out.println(options);
+                    }
+                }
+            });
+        }
     }
     
     /**

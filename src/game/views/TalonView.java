@@ -118,21 +118,25 @@ public final class TalonView extends PileView {
             OptionsPreferences preferences = new OptionsPreferences();
             preferences.load();
             switch(preferences.drawOption) {
-            case DRAW_ONE:
+            case ONE:
                 Component cardDirectlyBelowBlankCard = layeredPane.getComponent(layeredPane.getIndexOf(blankCardLayer) + 1);
                 layeredPane.setLayer(cardDirectlyBelowBlankCard, layeredPane.highestLayer() + 1);
                 for(int i = layeredPane.getComponentCount() - 1, layerId = 0;  i >= 0; --i, ++layerId) {
                     layeredPane.setLayer(layeredPane.getComponent(i), layerId);
                 }     
                 break;
-            case DRAW_THREE:
-                
+            case THREE:
+//                List<Component> components = new ArrayList<Component>();
+//                for(int i = layeredPane.getIndexOf(blankCardLayer), iterations = 1; i < layeredPane.getComponentCount() && iterations <= 3; ++i, ++iterations) {
+//                    components.add(layeredPane.getComponent(i + 1));
+//                    
+//                }
+//                
+//                components.stream().forEach(z -> System.out.println(z));
+//                
                 break;
             }
         }
-        
-        // Debugging code
-        //Arrays.asList(_layeredPane.getComponents()).stream().forEach(z -> System.out.println(_layeredPane.getLayer(z) + (!(z instanceof CardView) ? " <----------> " : "")));
     }
     
     @Override public boolean isValidCollision(Component source) {
@@ -141,5 +145,17 @@ public final class TalonView extends PileView {
     
     @Override public Dimension getPreferredSize() {
         return new Dimension(CardView.CARD_WIDTH, CardView.CARD_HEIGHT);
+    }
+    
+    @Override public String toString() {
+        StringBuilder builder = new StringBuilder();
+        String header = "=======TALON VIEW===========";
+        builder.append(header + System.getProperty("line.separator"));
+        
+        for(Component comp : layeredPane.getComponents()) {
+            builder.append((comp instanceof CardView ? comp : "[=======BLANK=======]") + System.getProperty("line.separator"));
+        }
+        builder.append(new String(new char[header.length()]).replace("\0", "="));
+        return builder.toString();
     }
 }

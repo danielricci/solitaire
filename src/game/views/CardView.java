@@ -487,4 +487,8 @@ public final class CardView extends PanelView implements ICollide {
         addRenderableContent((IRenderable)event.getSource()); 
         repaint();
     }
+    
+    @Override public String toString() {
+        return getViewProperties().getEntity(CardController.class).getCard().toString();
+    }
 }
