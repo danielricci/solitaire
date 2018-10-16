@@ -126,6 +126,37 @@ public final class TalonView extends PileView {
                 }     
                 break;
             case THREE:
+                
+                
+                
+                
+                
+                
+                
+                
+                
+//                CARD_OFFSET = 12;
+//                // Get the components that will be used for this card sequence
+//                List<CardView> components = new ArrayList<CardView>();
+//                final int maxIterations = 3;
+//                for(int blankCardIndex = layeredPane.getIndexOf(blankCardLayer), iterations = 1; blankCardIndex < layeredPane.getComponentCount() && iterations <= maxIterations; ++blankCardIndex, ++iterations) {
+//                    CardView component = (CardView) layeredPane.getComponent(blankCardIndex + 1);
+//                    components.add(component);
+//                    component.setBounds(new Rectangle(
+//                        (maxIterations - 1 - blankCardIndex) * 12, 
+//                        (maxIterations - 1 - blankCardIndex) * 1, 
+//                        component.getPreferredSize().width, 
+//                        component.getPreferredSize().height));
+//                }
+//                components.get(0).draggableListener.setEnabled(true);
+//                
+//                // Position the blank card underneath the last component index
+//                Component blankCard = layeredPane.getComponent(layeredPane.getIndexOf(blankCardLayer));
+//                int blankCardLayerNewPos = JLayeredPane.getLayer(components.get(components.size() - 1));
+//                layeredPane.setLayer(blankCard, blankCardLayerNewPos);
+//                break;
+                
+                
 //                List<Component> components = new ArrayList<Component>();
 //                for(int i = layeredPane.getIndexOf(blankCardLayer), iterations = 1; i < layeredPane.getComponentCount() && iterations <= 3; ++i, ++iterations) {
 //                    components.add(layeredPane.getComponent(i + 1));
