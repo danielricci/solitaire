@@ -1,3 +1,4 @@
 # Solitaire
 
-A Solitaire game written in Java to perserve the Windows 98 Solitaire version.
+### Description
+This is a Windows 98 clone of the Solitaire game written in Java
