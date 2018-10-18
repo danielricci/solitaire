@@ -490,6 +490,12 @@ public final class CardView extends PanelView implements ICollide {
         repaint();
     }
     
+    @Override public void setBounds(int x, int y, int width, int height) {
+        if(x != 10 && y != 5) {
+            super.setBounds(x, y, width, height);
+        }
+    }
+    
     @Override public String toString() {
         return getViewProperties().getEntity(CardController.class).getCard().toString();
     }
