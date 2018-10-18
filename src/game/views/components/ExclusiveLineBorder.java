@@ -45,7 +45,7 @@ public class ExclusiveLineBorder extends LineBorder {
      * @param thickness The thickness of the borders
      */
     public ExclusiveLineBorder(int thickness) {
-        super(Color.BLACK, thickness);
+        super(Color.BLACK, thickness, true);
     }
 
     @Override public void paintBorder(Component component, Graphics graphic, int x, int y, int width, int height) {

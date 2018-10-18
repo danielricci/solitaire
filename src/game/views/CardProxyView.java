@@ -57,6 +57,9 @@ import game.views.components.ExclusiveLineBorder;
  */
 public final class CardProxyView extends PanelView {
 
+    // TODO Get rid of this and find out the root cause to why the component is being displayed at the wrong initial coordinate
+    private Rectangle _bounds = null;
+    
     /**
      * The card drag events for this proxy view
      * 
@@ -137,8 +140,9 @@ public final class CardProxyView extends PanelView {
                         // Position the card at the same place where the drag was attempted from, because when you
                         // add to the application it will position the component at the origin which is not desired
                         Point initialLocation = _cardView.getLocation();
-                        CardProxyView.this.setBounds(new Rectangle(_cardView.getParent().getLocation().x + initialLocation.x, _cardView.getParent().getLocation().y + initialLocation.y, _layeredPane.getWidth(), _layeredPane.getHeight()));
-    
+                        // TODO Get rid of this and find out the root cause to why the component is being displayed at the wrong initial coordinate
+                        _bounds = new Rectangle(_cardView.getParent().getParent().getLocation().x + initialLocation.x + 1, _cardView.getParent().getParent().getLocation().y + initialLocation.y + 1, _layeredPane.getWidth(), _layeredPane.getHeight());
+                        
                         // Set the border of this proxy
                         setBorder(_border);
                         
@@ -157,7 +161,8 @@ public final class CardProxyView extends PanelView {
         @Override public void mouseReleased(MouseEvent event) {
             
             ICollide collider = _collisionListener.getCollision();
-          
+            _bounds = null;
+            
             if(collider != null) {
             
                 // Get a reference to the pile view that has has been collided with
@@ -248,13 +253,13 @@ public final class CardProxyView extends PanelView {
         setPreferredSize(new Dimension(CardView.CARD_WIDTH, CardView.CARD_HEIGHT));
         setOpaque(false);
         add(_layeredPane);
-        
         addMouseListener(new CardSelectionEvents());
         addMouseMotionListener(new CardDragEvents());
         
         // Set the controller of this proxy to the same controller of the specified card
         _cardView = cardView;
         getViewProperties().setEntity(cardView.getViewProperties().getEntity());
+    
         
         addMouseListener(new MouseAdapter() {
             @Override public void mousePressed(MouseEvent event) {
@@ -264,5 +269,21 @@ public final class CardProxyView extends PanelView {
                 }
             }
         });
+        
+        addMouseMotionListener(new MouseAdapter() {
+            @Override public void mouseDragged(MouseEvent e) {
+                setBorder(_border);
+            }
+        });
+    }
+    
+    @Override public void setBounds(int x, int y, int width, int height) {
+        // TODO Get rid of this and find out the root cause to why the component is being displayed at the wrong initial coordinate
+        if(_bounds != null && !_dragListener.isDragging()) {
+            super.setBounds(_bounds.x, _bounds.y, _bounds.width, _bounds.height);
+        }
+        else {
+            super.setBounds(x, y, width, height);
+        }
     }
 }

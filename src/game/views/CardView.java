@@ -39,6 +39,7 @@ import java.util.Optional;
 import java.util.logging.Level;
 
 import javax.swing.AbstractButton;
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
@@ -292,6 +293,7 @@ public final class CardView extends PanelView implements ICollide {
         setPreferredSize(new Dimension(CARD_WIDTH, CARD_HEIGHT));
         setOpaque(true);
         setBackground(Color.BLACK);
+        setBorder(BorderFactory.createLineBorder(Color.BLACK, 1, true));
         add(_layeredPane);
         
         cardModel.addListeners(this);
