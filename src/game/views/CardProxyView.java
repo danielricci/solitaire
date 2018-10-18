@@ -282,7 +282,8 @@ public final class CardProxyView extends PanelView {
         if(_bounds != null && !_dragListener.isDragging()) {
             super.setBounds(_bounds.x, _bounds.y, _bounds.width, _bounds.height);
         }
-        else {
+        // TODO Get rid of this and find out the root cause to why the component keeps going back to this position on tick of the timer
+        else if(x != 10 && y != 5) {
             super.setBounds(x, y, width, height);
         }
     }
