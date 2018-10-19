@@ -146,11 +146,16 @@ public final class CardProxyView extends PanelView {
                         // Set the border of this proxy
                         setBorder(_border);
                         
-                        // Set the size of the layered pane such that it fits based on the number of cards entered
-                        //_layeredPane.setPreferredSize(new Dimension(_layeredPane.getWidth(), _layeredPane.getHeight() + (cardViews.size() * 12)));
-                        Application.instance.add(CardProxyView.this, 0);
-                        Application.instance.repaint();
-    
+                        // Get a reference to the game view and status view, and add the card into the proper
+                        // z-order so that it appears underneath the status bar, but over everything else in the game
+                        ViewFactory viewFactory = AbstractFactory.getFactory(ViewFactory.class);
+                        GameView gameView = viewFactory.get(GameView.class);
+                        StatusBarView statusBarView = viewFactory.get(StatusBarView.class);
+
+                        gameView.add(CardProxyView.this, gameView.getComponentZOrder(statusBarView) + 1);
+                        gameView.repaint();
+                        gameView.repaint();
+
                         // Do not continue iterating, the card was found so there is nothing left to do
                         break;
                     }
@@ -212,7 +217,10 @@ public final class CardProxyView extends PanelView {
             _cardView.add(CardProxyView.this);
 
             // Repaint the components involved
-            Application.instance.repaint();
+            ViewFactory viewFactory = AbstractFactory.getFactory(ViewFactory.class);
+            GameView gameView = viewFactory.get(GameView.class);
+            gameView.repaint();
+
             _cardView.getParent().repaint();
         }
     }

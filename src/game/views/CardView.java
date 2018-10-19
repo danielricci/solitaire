@@ -122,10 +122,19 @@ public final class CardView extends PanelView implements ICollide {
 
                     // Remove the card view reference from it's initial parent
                     _parentLayeredPane.remove(CardView.this);
-                    Application.instance.add(CardView.this, 0);
                     
-                    // Repaint the application to show the changes
-                    Application.instance.repaint();
+                    // Get a reference to the game view and status view, and add the card into the proper
+                    // z-order so that it appears underneath the status bar, but over everything else in the game
+                    ViewFactory viewFactory = AbstractFactory.getFactory(ViewFactory.class);
+                    GameView gameView = viewFactory.get(GameView.class);
+                    StatusBarView statusBarView = viewFactory.get(StatusBarView.class);
+
+                    gameView.add(CardView.this, gameView.getComponentZOrder(statusBarView) + 1);
+                    gameView.repaint();
+                    for(Component c : gameView.getComponents()) {
+                        System.out.println(c.getClass().getSimpleName() + " = " + gameView.getComponentZOrder(c));
+                    }
+                    gameView.repaint();
 
                     break mainLabel;
                 }
@@ -179,9 +188,10 @@ public final class CardView extends PanelView implements ICollide {
             // Set the bounds of this card so that it appears at the right position offset
             CardView.this.setBounds(new Rectangle(0, offset * initialSize, CardView.this.getPreferredSize().width, CardView.this.getPreferredSize().height));
 
-            // Remove this card from the application which was used as a temporary measure to support the dragging
-            Application.instance.remove(CardView.this);
-
+            ViewFactory viewFactory = AbstractFactory.getFactory(ViewFactory.class);
+            GameView gameView = viewFactory.get(GameView.class);
+            gameView.remove(CardView.this);
+            
             // Increment the initial size to include the fact that CardView.this was added back to the parent
             ++initialSize;
 
@@ -200,7 +210,7 @@ public final class CardView extends PanelView implements ICollide {
             CardView.this._layeredPane.removeAll();
             
             // Repaint the components accordingly
-            Application.instance.repaint();
+            gameView.repaint();
             _parentLayeredPane.repaint();
             _parentLayeredPane = null;            
 

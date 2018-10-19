@@ -24,6 +24,7 @@
 
 package game.menu;
 
+import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -87,7 +88,12 @@ public class NewGameMenuItem extends AbstractMenuItem {
         barConstraints.gridwidth = 7;
         barConstraints.insets = new Insets(0, -2, 0, -2);
         
-        Application.instance.add(statusBarView, barConstraints, 10);
+        gameView.add(statusBarView, barConstraints, 0);
+        
+        for(Component c : gameView.getComponents()) {
+            System.out.println(c.getClass().getSimpleName() + " = " + gameView.getComponentZOrder(c));
+        }
+        
         gameView.render();
     }
 }
