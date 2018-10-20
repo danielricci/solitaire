@@ -321,27 +321,14 @@ public final class CardView extends PanelView implements ICollide {
             _draggableListener.setEnabled(false);
             _collisionListener.setEnabled(false);
         }
-
-        // If the backside is not being shown, then add the event handler for card drag event
-        // Note: In the event that the options preferences calls for outline mode, the entire
-        //       operation of performing a click-down, click-up, should be done by the proxy and
-        //       not this card explicitely.
-        if(!cardModel.getIsBackside()) {
-            if(!optionsPreferences.outlineDragging) {
-                addMouseListener(_cardSelectionEvents);    
-            }
-            else {
-                // Initialize the card proxy
-                _cardProxy = new CardProxyView(this);
-                add(_cardProxy);    
-            }   
-        }
         
         // Add the mouse listener responsible for handling single clicks and double clicks on this card.
         // Note: This will sometimes not be called depending on if the proxy is enabled or not, since the 
         //       proxy sits on top of this card. However, when the backside is being shown, this would indeed
         //       be called, however the double click will not be called since the single click will
         //       initiate the proxy, thus the double click of the proxy will be called
+        //
+        // Note: This mouse listener should be before any other mouse listener within this class
         addMouseListener(new MouseAdapter() {
             @Override public void mousePressed(MouseEvent event) {
                 GameTimerView gameTimerView = AbstractFactory.getFactory(ViewFactory.class).get(GameTimerView.class);
@@ -359,6 +346,21 @@ public final class CardView extends PanelView implements ICollide {
                 }
             }
         });
+
+        // If the backside is not being shown, then add the event handler for card drag event
+        // Note: In the event that the options preferences calls for outline mode, the entire
+        //       operation of performing a click-down, click-up, should be done by the proxy and
+        //       not this card explicitely.
+        if(!cardModel.getIsBackside()) {
+            if(!optionsPreferences.outlineDragging) {
+                addMouseListener(_cardSelectionEvents);    
+            }
+            else {
+                // Initialize the card proxy
+                _cardProxy = new CardProxyView(this);
+                add(_cardProxy);    
+            }   
+        }
     }
     
     /**
