@@ -80,7 +80,7 @@ public final class CardView extends PanelView implements ICollide {
      * @author Daniel Ricci <thedanny09@icloud.com>
      *
      */
-    private class CardSelectionEvents extends MouseAdapter {
+    private final class CardSelectionEvents extends MouseAdapter {
         
         private JLayeredPane _parentLayeredPane;
         
@@ -285,7 +285,7 @@ public final class CardView extends PanelView implements ICollide {
     /**
      * The card selection events associated to this card view
      */
-    private CardSelectionEvents _cardSelectionEvents = new CardSelectionEvents();
+    private final CardSelectionEvents _cardSelectionEvents = new CardSelectionEvents();
     
     /**
      * The card proxy associated to this view
@@ -305,6 +305,9 @@ public final class CardView extends PanelView implements ICollide {
         setBackground(Color.BLACK);
         setBorder(BorderFactory.createLineBorder(Color.BLACK, 1, true));
         add(_layeredPane);
+        
+        // Set the collision style for this object
+        _collisionListener.setIsSingularCollision(true);
         
         cardModel.addListeners(this);
         _controller = new CardController(cardModel);
@@ -503,6 +506,7 @@ public final class CardView extends PanelView implements ICollide {
     }
     
     @Override public void setBounds(int x, int y, int width, int height) {
+        // HACK I feel so bad doing this. but I must, for I love cake and I want my game to work properly for now.
         if(x != 10 && y != 5) {
             super.setBounds(x, y, width, height);
         }

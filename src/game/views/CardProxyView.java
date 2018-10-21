@@ -45,7 +45,6 @@ import framework.core.mvc.view.PanelView;
 import framework.core.mvc.view.layout.DragListener;
 import framework.core.physics.CollisionListener;
 import framework.core.physics.ICollide;
-import framework.core.system.Application;
 
 import game.views.components.ExclusiveLineBorder;
 
@@ -263,6 +262,9 @@ public final class CardProxyView extends PanelView {
         add(_layeredPane);
         addMouseListener(new CardSelectionEvents());
         addMouseMotionListener(new CardDragEvents());
+        
+        // Set the collision style for this object
+        _collisionListener.setIsSingularCollision(true);
         
         // Set the controller of this proxy to the same controller of the specified card
         _cardView = cardView;
