@@ -26,18 +26,18 @@ package game.models;
 
 import java.awt.Image;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import framework.core.mvc.model.BaseModel;
 
 import game.entities.AbstractCardEntity;
 import game.entities.ClubCardEntity;
+import game.entities.DiamondCardEntity;
 import game.entities.HeartCardEntity;
 import game.entities.SpadeCardEntity;
 
-import generated.DataLookup.CLUBS;
-import generated.DataLookup.HEARTS;
-import generated.DataLookup.SPADES;
+import generated.DataLookup;
 
 public class CardModel extends BaseModel {
     
@@ -62,32 +62,20 @@ public class CardModel extends BaseModel {
     }
     
     public static List<CardModel> newInstances() {
-        return debugInstance();
-        
-//        List<CardModel> entities = new ArrayList<CardModel>();
-//        for(DataLookup.HEARTS heart : DataLookup.HEARTS.values()) {
-//            entities.add(new CardModel(new HeartCardEntity(heart)));
-//        }
-//        for(DataLookup.CLUBS club : DataLookup.CLUBS.values()) {
-//            entities.add(new CardModel(new ClubCardEntity(club)));
-//        }
-//        for(DataLookup.DIAMONDS diamond : DataLookup.DIAMONDS.values()) {
-//            entities.add(new CardModel(new DiamondCardEntity(diamond)));
-//        }
-//        for(DataLookup.SPADES spade : DataLookup.SPADES.values()) {
-//            entities.add(new CardModel(new SpadeCardEntity(spade)));
-//        }
-//        Collections.shuffle(entities);
-//        return entities;
-    }
-    
-    public static List<CardModel> debugInstance() {
         List<CardModel> entities = new ArrayList<CardModel>();
-        for(int i = 0; i < 100; ++i) {
-            entities.add(new CardModel(new SpadeCardEntity(SPADES.S2)));
-            entities.add(new CardModel(new ClubCardEntity(CLUBS.C2)));
-            entities.add(new CardModel(new HeartCardEntity(HEARTS.H1)));
+        for(DataLookup.HEARTS heart : DataLookup.HEARTS.values()) {
+            entities.add(new CardModel(new HeartCardEntity(heart)));
         }
+        for(DataLookup.CLUBS club : DataLookup.CLUBS.values()) {
+            entities.add(new CardModel(new ClubCardEntity(club)));
+        }
+        for(DataLookup.DIAMONDS diamond : DataLookup.DIAMONDS.values()) {
+            entities.add(new CardModel(new DiamondCardEntity(diamond)));
+        }
+        for(DataLookup.SPADES spade : DataLookup.SPADES.values()) {
+            entities.add(new CardModel(new SpadeCardEntity(spade)));
+        }
+        Collections.shuffle(entities);
         return entities;
     }
     

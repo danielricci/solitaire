@@ -67,22 +67,43 @@ public final class CardProxyView extends PanelView {
      */
     private class CardDragEvents extends MouseMotionAdapter {
         
-        private CardView _selectedView = null;
+        private CardView _collidedView = null;
         
         @Override public void mouseDragged(MouseEvent event) {
             ICollide collider = _collisionListener.getCollision();
             if(collider != null) {
+                
+                // Get a reference to the last card in the pile view.
+                // During a collision, there can only be at most one card from 
+                // a given pile view that has a valid collision. In the cases
+                // where hovering over an empty pile view occurs, it should be
+                // assumed as a valid hit over a `null` card
                 PileView pile = (PileView) collider;
-                _selectedView = pile.getLastCard();
-                if(_selectedView != null) {
-                    _selectedView.setHighlighted(true);
+                CardView collidedView = pile.getLastCard();
+                
+                // If the collided view is null, then there was a valid collision
+                // with an empty pile view (either a foundation view or a vanilla pile view)
+                if(collidedView == null) {
+                    if(_collidedView != null) {
+                        _collidedView.setHighlighted(false);
+                        _collidedView = collidedView;
+                    }
+                } 
+                // If what was collided with is different, then remove the highlight from
+                // the only one before proceeding with the new one
+                else if(collidedView != _collidedView) {
+                    if(_collidedView != null) {
+                        _collidedView.setHighlighted(false);
+                    }
+                    _collidedView = collidedView;
+                    _collidedView.setHighlighted(true);
                 }
             }
-            else if(_selectedView != null) {
-                _selectedView.setHighlighted(false);
-                _selectedView = null;
+            else if(_collidedView != null) {
+                _collidedView.setHighlighted(false);
+                _collidedView = null;
             }
-        }        
+        }
     }
 
     /**
@@ -232,7 +253,6 @@ public final class CardProxyView extends PanelView {
     /**
      * The draggable listener associated to this view
      */
-    @SuppressWarnings("unused")
     private final DragListener _dragListener = new DragListener(this);
 
     /**
