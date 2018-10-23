@@ -89,11 +89,6 @@ public class NewGameMenuItem extends AbstractMenuItem {
         barConstraints.insets = new Insets(0, -2, 0, -2);
         
         gameView.add(statusBarView, barConstraints, 0);
-        
-        for(Component c : gameView.getComponents()) {
-            System.out.println(c.getClass().getSimpleName() + " = " + gameView.getComponentZOrder(c));
-        }
-        
         gameView.render();
     }
 }

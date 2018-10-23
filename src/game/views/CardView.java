@@ -132,9 +132,6 @@ public final class CardView extends PanelView implements ICollide {
 
                     gameView.add(CardView.this, gameView.getComponentZOrder(statusBarView) + 1);
                     gameView.repaint();
-                    for(Component c : gameView.getComponents()) {
-                        System.out.println(c.getClass().getSimpleName() + " = " + gameView.getComponentZOrder(c));
-                    }
                     gameView.repaint();
 
                     break mainLabel;
