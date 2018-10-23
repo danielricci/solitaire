@@ -99,8 +99,10 @@ public final class CardProxyView extends PanelView {
                     _collidedView.setHighlighted(true);
                 }
             }
-            else if(_collidedView != null) {
-                _collidedView.setHighlighted(false);
+            else {
+                if(_collidedView != null) {
+                    _collidedView.setHighlighted(false);
+                }
                 _collidedView = null;
             }
         }

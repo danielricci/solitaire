@@ -32,6 +32,7 @@ import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
+import framework.communication.internal.signal.arguments.EventArgs;
 import framework.core.factories.AbstractFactory;
 import framework.core.factories.ViewFactory;
 import framework.core.navigation.AbstractMenuItem;
@@ -39,6 +40,7 @@ import framework.core.navigation.MenuBuilder;
 import framework.core.system.Application;
 import framework.utils.globalisation.Localization;
 
+import game.views.CardView;
 import game.views.OptionsDialogView;
 import game.views.StatusBarView;
 
@@ -74,11 +76,11 @@ public class OptionsMenuItem extends AbstractMenuItem {
                 if(options.statusBarChanged) {
                     AbstractFactory.getFactory(ViewFactory.class).get(StatusBarView.class).synchronizeWithOptions();
                 }
-                
                 if(options.outlineDraggingChanged) {
-                    // TODO
+                    EventArgs args = new EventArgs(this, CardView.EVENT_OUTLINE_SYNCHRONIZE);
+                    args.setSuppressUpdate(true);
+                    AbstractFactory.getFactory(ViewFactory.class).multicastSignalListeners(CardView.class, args);
                 }
-                
                 if(options.cumulativeScoreChanged) {
                     // TODO
                 }

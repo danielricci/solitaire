@@ -45,6 +45,7 @@ import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
 
 import framework.api.IView;
+import framework.communication.internal.signal.ISignalReceiver;
 import framework.communication.internal.signal.arguments.EventArgs;
 import framework.core.factories.AbstractFactory;
 import framework.core.factories.ViewFactory;
@@ -280,7 +281,7 @@ public final class CardView extends PanelView implements ICollide {
     /**
      * Indicates if selections are enabled
      */
-    private final boolean _highlightsEnabled;
+    private boolean _highlightsEnabled;
     
     /**
      * The card selection events associated to this card view
@@ -291,6 +292,11 @@ public final class CardView extends PanelView implements ICollide {
      * The card proxy associated to this view
      */
     private CardProxyView _cardProxy;
+    
+    /**
+     * Signal indicating that this view should synchronizr with the outline option
+     */
+    public static String EVENT_OUTLINE_SYNCHRONIZE = "EVENT_OUTLINE_SYNCHRONIZE";
         
     /**
      * Constructs a new instance of this class type
@@ -305,6 +311,12 @@ public final class CardView extends PanelView implements ICollide {
         setBackground(Color.BLACK);
         setBorder(BorderFactory.createLineBorder(Color.BLACK, 1, true));
         add(_layeredPane);
+        
+        addSignalListener(EVENT_OUTLINE_SYNCHRONIZE, new ISignalReceiver<EventArgs>() {
+            @Override public void signalReceived(EventArgs event) {
+                synchronizeWithOutline();
+            }
+        });
         
         // Set the collision style for this object
         _collisionListener.setIsSingularCollision(true);
@@ -367,8 +379,34 @@ public final class CardView extends PanelView implements ICollide {
     }
     
     /**
+     * Synchronizes the outline state with this card view
+     */
+    private void synchronizeWithOutline() {
+        OptionsPreferences optionsPreferences = new OptionsPreferences();
+        optionsPreferences.load();
+        _highlightsEnabled = optionsPreferences.outlineDragging;
+        
+        // Outline Dragging Enabled
+        if(optionsPreferences.outlineDragging) {
+            
+        }
+        // Outline Dragging Disabled
+        else {
+            if(_cardProxy != null) {
+                remove(_cardProxy);
+                _cardProxy = null;
+                
+                if(!_controller.getCard().getIsBackside()) {
+                    
+                }
+                
+                repaint();
+            }
+        }
+    }
+    
+    /**
      * Sets if this card is highlighted
-     *
      *
      * @param isHighlighted TRUE if this card is to be highlighed, false otherwise
      */
