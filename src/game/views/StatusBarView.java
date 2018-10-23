@@ -7,6 +7,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import javax.swing.border.EmptyBorder;
 
 import framework.core.factories.AbstractFactory;
 import framework.core.factories.ViewFactory;
@@ -20,6 +22,8 @@ public final class StatusBarView extends PanelView {
      * The game timer view associated to this status bar
      */
     private GameTimerView _gameTimerView = AbstractFactory.getFactory(ViewFactory.class).add(new GameTimerView(), true);
+    
+    private final JLabel _menuDescription = new JLabel();
     
     /**
      * Constructs a new instance of this class type
@@ -47,8 +51,30 @@ public final class StatusBarView extends PanelView {
             }
         });
         
-        synchronizeWithOptions();        
+        synchronizeWithOptions();
+        
+        // Game Timer
         add(_gameTimerView, BorderLayout.EAST);
+       
+        // Menu Descrition
+        _menuDescription.setBorder(new EmptyBorder(0, 5, 0, 0));
+        add(_menuDescription, BorderLayout.WEST);
+    }
+    
+    /**
+     * Sets the menu description
+
+     * @param text The description to set
+     */
+    public void setMenuDescription(String text) {
+        _menuDescription.setText(text);
+    }
+    
+    /**
+     * Convenience method to clear the text
+     */
+    public void clearMenuDescription() {
+        setMenuDescription("");
     }
     
     /**

@@ -24,10 +24,10 @@
 
 package game.menu;
 
-import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 
 import javax.swing.JComponent;
@@ -62,6 +62,16 @@ public class NewGameMenuItem extends AbstractMenuItem {
         super.getComponent(JMenuItem.class).setMnemonic(KeyEvent.VK_D);
     }
 
+    @Override protected void onEntered(InputEvent event) {
+        super.onEntered(event);
+        AbstractFactory.getFactory(ViewFactory.class).get(StatusBarView.class).setMenuDescription("Deal a new game");
+    }
+    
+    @Override protected void onExited(InputEvent event) {
+        super.onExited(event);
+        AbstractFactory.getFactory(ViewFactory.class).get(StatusBarView.class).clearMenuDescription();
+    }
+    
     @Override public void onExecute(ActionEvent actionEvent) {
         
         if(AbstractFactory.isRunning()) {
