@@ -57,7 +57,7 @@ import game.menu.NewGameMenuItem;
 import game.menu.OptionsMenuItem;
 import game.menu.UndoMenuItem;
 import game.views.FoundationView;
-import game.views.PileView;
+import game.views.TableauView;
 import game.views.TalonView;
 
 import resources.LocalizationStrings;
@@ -82,7 +82,7 @@ public final class Game extends Application {
                     if(event.getKeyCode() == KeyEvent.VK_F1) {
                         ViewFactory viewFactory = AbstractFactory.getFactory(ViewFactory.class);
                         System.out.println(viewFactory.get(TalonView.class).toString());
-                        List<PileView> pileViews =  viewFactory.getAll(PileView.class);
+                        List<TableauView> pileViews =  viewFactory.getAll(TableauView.class);
                         for(int i = pileViews.size() - 1; i >= 0; --i) {
                             System.out.println(pileViews.get(i));
                         }

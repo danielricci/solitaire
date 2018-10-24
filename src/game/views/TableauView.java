@@ -40,7 +40,7 @@ import framework.core.physics.ICollide;
 import game.controllers.CardController;
 import game.models.CardModel;
 
-public class PileView extends PanelView implements ICollide {
+public class TableauView extends PanelView implements ICollide {
     
     /**
      * Specifies the offset of each card within this view
@@ -55,7 +55,7 @@ public class PileView extends PanelView implements ICollide {
     /**
      * Constructs a new instance of this class type
      */
-    protected PileView() {
+    protected TableauView() {
         setLayout(new BorderLayout());
         setPreferredSize(new Dimension(CardView.CARD_WIDTH, this.getPreferredSize().height));
         setOpaque(false);
@@ -67,7 +67,7 @@ public class PileView extends PanelView implements ICollide {
      * 
      * @param cards A list of card models to associate to this pile view
      */
-    public PileView(List<CardModel> cards) {
+    public TableauView(List<CardModel> cards) {
         this();
         for(int i = 0; i < cards.size(); ++i) {
             
@@ -89,7 +89,7 @@ public class PileView extends PanelView implements ICollide {
      * 
      * @param cardViews The card views to associate to this view
      */
-    public PileView(CardView[] cardViews) {
+    public TableauView(CardView[] cardViews) {
         this();
         for(int i = 0; i < cardViews.length; ++i) {
 

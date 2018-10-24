@@ -78,7 +78,7 @@ public final class CardProxyView extends PanelView {
                 // a given pile view that has a valid collision. In the cases
                 // where hovering over an empty pile view occurs, it should be
                 // assumed as a valid hit over a `null` card
-                PileView pile = (PileView) collider;
+                TableauView pile = (TableauView) collider;
                 CardView collidedView = pile.getLastCard();
                 
                 // If the collided view is null, then there was a valid collision
@@ -193,7 +193,7 @@ public final class CardProxyView extends PanelView {
             if(collider != null) {
             
                 // Get a reference to the pile view that has has been collided with
-                PileView pileViewCollider = (PileView) collider;
+                TableauView pileViewCollider = (TableauView) collider;
                 
                 // Unselect all the cards within this pile view to remove the outline xor'd highlight
                 pileViewCollider.removeHighlight();

@@ -109,7 +109,7 @@ public final class GameView extends PanelView {
                 else {
                     
                     List<CardModel> subList = cards.subList(0, gameConstraints.gridx + 1);
-                    PileView view = viewFactory.add(new PileView(new ArrayList<CardModel>(subList)));
+                    TableauView view = viewFactory.add(new TableauView(new ArrayList<CardModel>(subList)));
                     subList.clear();
                     
                     this.add(view, gameConstraints);

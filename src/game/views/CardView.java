@@ -149,7 +149,7 @@ public final class CardView extends PanelView implements ICollide {
             // If there is a valid collider, set that as the new parent
             if(_collisionListener.getCollision() != null) {
                 ICollide collision = _collisionListener.getCollision();
-                PileView pileView = (PileView) collision;
+                TableauView pileView = (TableauView) collision;
 
                 Optional<Component> layeredPane = Arrays.asList(pileView.getComponents()).stream().filter(z -> z.getClass() == JLayeredPane.class).findFirst();
                 if(layeredPane.isPresent()) {
@@ -162,7 +162,7 @@ public final class CardView extends PanelView implements ICollide {
             }
             
             // Get the offset that was set, and use this within our calculations
-            PileView parent = (PileView) _parentLayeredPane.getParent();
+            TableauView parent = (TableauView) _parentLayeredPane.getParent();
             int offset = parent.CARD_OFFSET;
 
             // Get the list of components associated to the CardView.this reference. This list represents all the children associated

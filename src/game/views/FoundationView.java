@@ -32,7 +32,7 @@ import framework.communication.internal.signal.arguments.EventArgs;
 
 import game.controllers.CardController;
 
-public class FoundationView extends PileView {
+public class FoundationView extends TableauView {
     
     /**
      * Creates a new instance of this class type

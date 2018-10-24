@@ -42,7 +42,7 @@ import framework.utils.logging.Tracelog;
 import game.config.OptionsPreferences;
 import game.models.CardModel;
 
-public final class TalonView extends PileView {
+public final class TalonView extends TableauView {
 
     /**
      * Constructs a new instance of this class type
