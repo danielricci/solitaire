@@ -26,6 +26,7 @@ package game.menu;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.util.EventObject;
 
 import javax.swing.AbstractButton;
 import javax.swing.JComponent;
@@ -62,6 +63,16 @@ public class OptionsMenuItem extends AbstractMenuItem {
     public OptionsMenuItem(JComponent parent) {
         super(new JMenuItem(Localization.instance().getLocalizedString(LocalizationStrings.OPTIONS)), parent);
         super.getComponent(JMenuItem.class).setMnemonic(KeyEvent.VK_O);
+    }
+    
+    @Override protected void onEntered(EventObject event) {
+        super.onEntered(event);
+        AbstractFactory.getFactory(ViewFactory.class).get(StatusBarView.class).setMenuDescription("Change Solitaire options");
+    }
+    
+    @Override protected void onExited(EventObject event) {
+        super.onExited(event);
+        AbstractFactory.getFactory(ViewFactory.class).get(StatusBarView.class).clearMenuDescription();
     }
 
     @Override public void onExecute(ActionEvent actionEvent) {

@@ -27,8 +27,8 @@ package game.menu;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.util.EventObject;
 
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
@@ -61,17 +61,17 @@ public class NewGameMenuItem extends AbstractMenuItem {
         super.getComponent(JMenuItem.class).setAccelerator(KeyStroke.getKeyStroke("F2"));
         super.getComponent(JMenuItem.class).setMnemonic(KeyEvent.VK_D);
     }
-
-    @Override protected void onEntered(InputEvent event) {
+    
+    @Override protected void onEntered(EventObject event) {
         super.onEntered(event);
         AbstractFactory.getFactory(ViewFactory.class).get(StatusBarView.class).setMenuDescription("Deal a new game");
     }
     
-    @Override protected void onExited(InputEvent event) {
+    @Override protected void onExited(EventObject event) {
         super.onExited(event);
         AbstractFactory.getFactory(ViewFactory.class).get(StatusBarView.class).clearMenuDescription();
     }
-    
+
     @Override public void onExecute(ActionEvent actionEvent) {
         
         if(AbstractFactory.isRunning()) {

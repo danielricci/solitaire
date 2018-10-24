@@ -26,12 +26,17 @@ package game.menu;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.util.EventObject;
 
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 
+import framework.core.factories.AbstractFactory;
+import framework.core.factories.ViewFactory;
 import framework.core.navigation.AbstractMenuItem;
 import framework.utils.globalisation.Localization;
+
+import game.views.StatusBarView;
 
 import resources.LocalizationStrings;
 
@@ -51,6 +56,16 @@ public class DeckMenuItem extends AbstractMenuItem {
     public DeckMenuItem(JComponent parent) {
         super(new JMenuItem(Localization.instance().getLocalizedString(LocalizationStrings.DECK)), parent);
         super.getComponent(JMenuItem.class).setMnemonic(KeyEvent.VK_C);
+    }
+    
+    @Override protected void onEntered(EventObject event) {
+        super.onEntered(event);
+        AbstractFactory.getFactory(ViewFactory.class).get(StatusBarView.class).setMenuDescription("Choose new deck back");
+    }
+    
+    @Override protected void onExited(EventObject event) {
+        super.onExited(event);
+        AbstractFactory.getFactory(ViewFactory.class).get(StatusBarView.class).clearMenuDescription();
     }
 
     @Override public void onExecute(ActionEvent actionEvent) {
