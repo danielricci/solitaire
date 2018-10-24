@@ -22,15 +22,22 @@
  * IN THE SOFTWARE.
  */
 
+
 package game.application;
 
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.swing.AbstractButton;
 import javax.swing.UIManager;
 
@@ -67,6 +74,8 @@ public final class Game extends Application {
         setMinimumSize(new Dimension(620, 436));
         setLocationRelativeTo(null);
         setAlwaysOnTop(isDebug);
+        setIconImage(Localization.instance().getLocalizedData(LocalizationStrings.GAME_ICON));
+        
         if(isDebug) {
             addKeyListener(new KeyAdapter() {
                 @Override public void keyReleased(KeyEvent event) {
