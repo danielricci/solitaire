@@ -8,6 +8,7 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import framework.core.factories.AbstractFactory;
@@ -15,14 +16,23 @@ import framework.core.factories.ViewFactory;
 import framework.core.mvc.view.PanelView;
 
 import game.config.OptionsPreferences;
+import game.config.OptionsPreferences.ScoringOption;
 
 public final class StatusBarView extends PanelView {
 
     /**
-     * The game timer view associated to this status bar
+     * The game timer view
      */
-    private GameTimerView _gameTimerView = AbstractFactory.getFactory(ViewFactory.class).add(new GameTimerView(), true);
+    private final GameTimerView _gameTimerView = AbstractFactory.getFactory(ViewFactory.class).add(new GameTimerView(), true);
     
+    /**
+     * The game score view
+     */
+    private final GameScoreView _scoreView = AbstractFactory.getFactory(ViewFactory.class).add(new GameScoreView(), true);
+    
+    /**
+     * The menu description label
+     */
     private final JLabel _menuDescription = new JLabel();
     
     /**
@@ -51,14 +61,20 @@ public final class StatusBarView extends PanelView {
             }
         });
         
-        synchronizeWithOptions();
-        
-        // Game Timer
-        add(_gameTimerView, BorderLayout.EAST);
-       
         // Menu Descrition
         _menuDescription.setBorder(new EmptyBorder(0, 5, 0, 0));
         add(_menuDescription, BorderLayout.WEST);
+        
+        // Game Score + Game Timer
+        JPanel rightSidePanel = new JPanel(new BorderLayout());
+        rightSidePanel.add(_scoreView,BorderLayout.WEST);
+        rightSidePanel.add(_gameTimerView,BorderLayout.EAST);
+        add(rightSidePanel, BorderLayout.EAST); 
+        
+        
+        
+        // Synchronize w.r.t the currently set options
+        synchronizeWithOptions();
     }
     
     /**
@@ -85,6 +101,7 @@ public final class StatusBarView extends PanelView {
         preferences.load();
         this.setVisible(preferences.statusBar);
         _gameTimerView.setVisible(preferences.timedGame);
+        _scoreView.setVisible(preferences.scoringOption != ScoringOption.NONE);
     }
     
     @Override public void render() {
