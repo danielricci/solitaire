@@ -61,6 +61,7 @@ import framework.utils.logging.Tracelog;
 
 import game.config.OptionsPreferences;
 import game.controllers.CardController;
+import game.gameplay.MovementType;
 import game.menu.ExitMenuItem;
 import game.menu.NewGameMenuItem;
 import game.models.CardModel;
@@ -151,9 +152,13 @@ public final class CardView extends PanelView implements ICollide {
                 ICollide collision = _collisionListener.getCollision();
                 TableauView pileView = (TableauView) collision;
 
+                // Get the before movement type to know where the move is coming from
+                MovementType movementTypeFrom = MovementType.fromClass(_parentLayeredPane.getParent());
+
                 Optional<Component> layeredPane = Arrays.asList(pileView.getComponents()).stream().filter(z -> z.getClass() == JLayeredPane.class).findFirst();
                 if(layeredPane.isPresent()) {
                     _parentLayeredPane = (JLayeredPane) layeredPane.get();
+                    AbstractFactory.getFactory(ViewFactory.class).get(GameScoreView.class).updateScore(movementTypeFrom, MovementType.fromClass(collision));
                 }
                 else {
                     Tracelog.log(Level.SEVERE, true, "Could not find JLayeredPane within the CardView mouseReleased event...");
@@ -426,7 +431,7 @@ public final class CardView extends PanelView implements ICollide {
         if(_controller.getCard().getIsBackside()){
             _controller.getCard().setBackside(false);
             _controller.getCard().refresh();
-            
+            AbstractFactory.getFactory(ViewFactory.class).get(GameScoreView.class).updateScoreCardTurnOver();
             // Only allow this card view to have dragging and collision working `vanilla`
             // style if the outline option is not selected
             OptionsPreferences preferences = new OptionsPreferences();
@@ -469,6 +474,8 @@ public final class CardView extends PanelView implements ICollide {
             for(FoundationView foundationView : foundationViews) {
                 if(foundationView.isValidCollision(CardView.this)) {
 
+                    AbstractFactory.getFactory(ViewFactory.class).get(GameScoreView.class).updateScore(MovementType.fromClass(CardView.this.getParentIView()), MovementType.FOUNDATION);
+                    
                     // Halt any drag events that could occur
                     _draggableListener.stopDragEvent();
                     
@@ -489,6 +496,8 @@ public final class CardView extends PanelView implements ICollide {
                     
                     // Set the proper bounds of the component
                     CardView.this.setBounds(new Rectangle(0, 0, CardView.this.getPreferredSize().width, CardView.this.getPreferredSize().height));
+                    
+
                     
                     // Repaint the components
                     _layeredPane.repaint();

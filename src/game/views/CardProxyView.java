@@ -46,6 +46,7 @@ import framework.core.mvc.view.layout.DragListener;
 import framework.core.physics.CollisionListener;
 import framework.core.physics.ICollide;
 
+import game.gameplay.MovementType;
 import game.views.components.ExclusiveLineBorder;
 
 /**
@@ -195,6 +196,9 @@ public final class CardProxyView extends PanelView {
                 // Get a reference to the pile view that has has been collided with
                 TableauView pileViewCollider = (TableauView) collider;
                 
+                // Get the before movement type to know where the move is coming from
+                MovementType movementTypeFrom = MovementType.fromClass(_cardView.getParent().getParent());
+                
                 // Unselect all the cards within this pile view to remove the outline xor'd highlight
                 pileViewCollider.removeHighlight();
                 
@@ -224,6 +228,8 @@ public final class CardProxyView extends PanelView {
                 }
                 _layeredPane.removeAll();
                 pileViewCollider.repaint();
+                
+                AbstractFactory.getFactory(ViewFactory.class).get(GameScoreView.class).updateScore(movementTypeFrom, MovementType.fromClass(collider));
             }
             else {
                 Component[] layeredComponents = _layeredPane.getComponents();
