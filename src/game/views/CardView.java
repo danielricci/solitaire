@@ -120,7 +120,9 @@ public final class CardView extends PanelView implements ICollide {
                     // Position the card at the same place where the drag was attempted from, because when you
                     // add to the application it will position the component at the origin which is not desired
                     Point initialLocation = CardView.this.getLocation();
-                    CardView.this.setBounds(new Rectangle(_parentLayeredPane.getParent().getLocation().x + initialLocation.x, _parentLayeredPane.getParent().getLocation().y + initialLocation.y, _layeredPane.getWidth(), _layeredPane.getHeight()));
+                    
+                    // Note: Add +2 to the width and height because of the initial border size offset
+                    CardView.this.setBounds(new Rectangle(_parentLayeredPane.getParent().getLocation().x + initialLocation.x, _parentLayeredPane.getParent().getLocation().y + initialLocation.y, _layeredPane.getWidth() + 2, _layeredPane.getHeight() + 2));
 
                     // Remove the card view reference from it's initial parent
                     _parentLayeredPane.remove(CardView.this);
@@ -132,7 +134,6 @@ public final class CardView extends PanelView implements ICollide {
                     StatusBarView statusBarView = viewFactory.get(StatusBarView.class);
 
                     gameView.add(CardView.this, gameView.getComponentZOrder(statusBarView) + 1);
-                    gameView.repaint();
                     gameView.repaint();
 
                     break mainLabel;
