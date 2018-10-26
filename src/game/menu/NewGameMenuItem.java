@@ -58,7 +58,7 @@ public class NewGameMenuItem extends AbstractMenuItem {
      */
     public NewGameMenuItem(JComponent parent) {
         super(new JMenuItem(Localization.instance().getLocalizedString("Deal")), parent);
-        super.getComponent(JMenuItem.class).setAccelerator(KeyStroke.getKeyStroke("F2"));
+        super.getComponent(JMenuItem.class).setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F2, 0, true));
         super.getComponent(JMenuItem.class).setMnemonic(KeyEvent.VK_D);
     }
     
