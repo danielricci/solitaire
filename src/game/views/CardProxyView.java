@@ -148,7 +148,6 @@ public final class CardProxyView extends PanelView {
                         // Reverse the list so that when the iteration occurs, it uses the same ordering that is represente visually
                         Collections.reverse(cardViews);
     
-                        
                         // Go through the list of cards and add them to the layered pane within the proxy
                         for(int j = 0; j < cardViews.size(); ++j) {
                             CardProxyView proxy = cardViews.get(j).getProxyView();
@@ -157,7 +156,7 @@ public final class CardProxyView extends PanelView {
                             
                             // The bounds here contains `-1` because I want the border to be perfectly overlapped
                             proxy.setBounds(new Rectangle(-1, 12 * (j + 1), cardViews.get(j).getPreferredSize().width, cardViews.get(j).getPreferredSize().height));
-                            proxy.setBorder(proxy._border);
+                            //proxy.setBorder(proxy._border);
                         }
     
                         // Position the card at the same place where the drag was attempted from, because when you
@@ -167,7 +166,7 @@ public final class CardProxyView extends PanelView {
                         _bounds = new Rectangle(_cardView.getParent().getParent().getLocation().x + initialLocation.x + 1, _cardView.getParent().getParent().getLocation().y + initialLocation.y + 1, _layeredPane.getWidth(), _layeredPane.getHeight());
                         
                         // Set the border of this proxy
-                        setBorder(_border);
+                        //setBorder(_border);
                         
                         // Get a reference to the game view and status view, and add the card into the proper
                         // z-order so that it appears underneath the status bar, but over everything else in the game
@@ -308,9 +307,26 @@ public final class CardProxyView extends PanelView {
             }
         });
         
+        // Add a mouse listener to listen to when there is a drag on this proxy. When there is a drag
+        // then we should perform the set border call. 
         addMouseMotionListener(new MouseAdapter() {
-            @Override public void mouseDragged(MouseEvent e) {
-                setBorder(_border);
+            @Override public void mouseDragged(MouseEvent event) {
+                
+                // If the border has not yet been set
+                if(getBorder() != _border) {
+                    
+                    // Set this border of this proxy
+                    setBorder(_border);
+                    
+                    // Go through the list of proxies owned by this proxy and show their borders
+                    // Note: On mouse release should handle removing the borders set withint his drag event
+                    for(Component component : _layeredPane.getComponents()) {
+                        if(component instanceof CardProxyView) {
+                            CardProxyView proxy = ((CardProxyView)component);
+                            proxy.setBorder(proxy._border);
+                        }
+                    }
+                }
             }
         });
     }
