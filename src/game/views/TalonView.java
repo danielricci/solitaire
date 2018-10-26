@@ -100,6 +100,10 @@ public final class TalonView extends TableauView {
         
         // If we are at the end then restart the deck
         if(blankCardLayerId == layeredPane.lowestLayer()) {
+
+            // New deck has the score updated
+            AbstractFactory.getFactory(ViewFactory.class).get(GameScoreView.class).updateScoreDeckFinished();
+            
             // Remove the list of components from the layered pane. 
             Component[] components = layeredPane.getComponents();
             layeredPane.removeAll();

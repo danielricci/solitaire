@@ -50,7 +50,7 @@ public final class GameScoreView extends PanelView {
     /**
      * The internal score
      */
-    private long _score = 1000;
+    private long _score = 0;
     
     /**
      * Constructs a new instance of this class type
@@ -70,7 +70,13 @@ public final class GameScoreView extends PanelView {
     public void updateScoreBonus(int seconds) {
         if(seconds > 30) {
             _score += (700000 / seconds);
+            render();
         }
+    }
+    
+    public void updateScoreDeckFinished() {
+        _score = Math.max(0, _score - 100);
+        render();
     }
     
     /**
@@ -107,7 +113,7 @@ public final class GameScoreView extends PanelView {
             _score += 10;
         }
         else if(from == MovementType.FOUNDATION && to == MovementType.TABLEAU) {
-            _score -= 15;
+            _score = Math.max(0, _score - 15);
         }
         else {
             return;
