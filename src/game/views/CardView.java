@@ -106,6 +106,7 @@ public final class CardView extends PanelView implements ICollide {
                     // Reverse the list because layered panes associate objects closer to layer 0 as being closer to the screen.
                     Collections.reverse(cardViews);
 
+                    // Fixes a bug where the layered pane is chopped from the waist down
                     CardView.this._layeredPane.setSize(_layeredPane.getWidth(), _layeredPane.getHeight() + (cardViews.size() * 12));
                     
                     // For each sibling add it into the associated layere pane and position it correctly within
@@ -113,7 +114,9 @@ public final class CardView extends PanelView implements ICollide {
                     for(int j = 0; j < cardViews.size(); ++j) {
                         _layeredPane.add(cardViews.get(j));
                         _layeredPane.setLayer(cardViews.get(j), j);
-                        cardViews.get(j).setBounds(new Rectangle(0, 12 * (j + 1), cardViews.get(j).getPreferredSize().width, cardViews.get(j).getPreferredSize().height));
+                        
+                        // Account for the border offsets of -1 for left and bottom
+                        cardViews.get(j).setBounds(new Rectangle(-1, (12 * (j + 1)) - 1, cardViews.get(j).getPreferredSize().width, cardViews.get(j).getPreferredSize().height));
                         _parentLayeredPane.remove(cardViews.get(j));
                     }
 
