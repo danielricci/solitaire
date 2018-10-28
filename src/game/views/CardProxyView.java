@@ -148,6 +148,9 @@ public final class CardProxyView extends PanelView {
                         // Reverse the list so that when the iteration occurs, it uses the same ordering that is represente visually
                         Collections.reverse(cardViews);
     
+                        // Fixes a bug where the layered pane is chopped from the waist down
+                        _layeredPane.setSize(_layeredPane.getWidth(), _layeredPane.getHeight() + (cardViews.size() * 12));
+                       
                         // Go through the list of cards and add them to the layered pane within the proxy
                         for(int j = 0; j < cardViews.size(); ++j) {
                             CardProxyView proxy = cardViews.get(j).getProxyView();
