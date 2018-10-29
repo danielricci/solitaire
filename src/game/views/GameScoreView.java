@@ -33,6 +33,7 @@ import framework.communication.internal.signal.arguments.EventArgs;
 import framework.core.mvc.view.PanelView;
 import framework.utils.logging.Tracelog;
 
+import game.config.OptionsPreferences;
 import game.gameplay.MovementType;
 
 /**
@@ -48,9 +49,11 @@ public final class GameScoreView extends PanelView {
     private final JLabel _scoreLabel = new JLabel();
     
     /**
-     * The internal score
+     * The score. 
+     * 
+     * Note: The score is static because in some cases the score persists to the next game, but not if the application exist
      */
-    private long _score = 0;
+    private static long SCORE = 0;
     
     /**
      * Constructs a new instance of this class type
@@ -69,13 +72,13 @@ public final class GameScoreView extends PanelView {
      */
     public void updateScoreBonus(int seconds) {
         if(seconds > 30) {
-            _score += (700000 / seconds);
+            SCORE += (700000 / seconds);
             render();
         }
     }
     
     public void updateScoreDeckFinished() {
-        _score = Math.max(0, _score - 100);
+        SCORE = Math.max(0, SCORE - 100);
         render();
     }
     
@@ -83,7 +86,7 @@ public final class GameScoreView extends PanelView {
      * Updates the score based on a timer interval tick of the game
      */
     public void updateScoreTimerTick() {
-        _score = Math.max(0, _score - 2);
+        SCORE = Math.max(0, SCORE - 2);
         render();
     }
     
@@ -91,7 +94,7 @@ public final class GameScoreView extends PanelView {
      * Updates the score based on a cards' backside being revealed
      */
     public void updateScoreCardTurnOver() {
-        _score += 5;
+        SCORE += 5;
         render();
     }
     
@@ -102,27 +105,36 @@ public final class GameScoreView extends PanelView {
      * @param to Where the operation ended at
      */
     public void updateScore(MovementType from, MovementType to) {
-        long scoreBefore = _score;
+        long scoreBefore = SCORE;
         if(from == MovementType.TALON && to == MovementType.TABLEAU) {
-            _score += 5;
+            SCORE += 5;
         }
         else if(from == MovementType.TALON && to == MovementType.FOUNDATION) {
-            _score += 10;
+            SCORE += 10;
         }
         else if (from == MovementType.TABLEAU && to == MovementType.FOUNDATION) {
-            _score += 10;
+            SCORE += 10;
         }
         else if(from == MovementType.FOUNDATION && to == MovementType.TABLEAU) {
-            _score = Math.max(0, _score - 15);
+            SCORE = Math.max(0, SCORE - 15);
         }
         else {
             return;
         }
         
-        long scoreAfter = _score;
+        long scoreAfter = SCORE;
         Tracelog.log(Level.INFO, true, String.format("Score Changed from %d to %d after performing move [%s, %s]", scoreBefore, scoreAfter, from, to));
         
         render();
+    }
+    
+    @Override public void destructor() {
+        super.destructor();
+        OptionsPreferences preferences = new OptionsPreferences();
+        preferences.load();
+        if(!preferences.cumulativeScore) {
+            SCORE = 0;
+        }
     }
     
     @Override public void render() {
@@ -136,6 +148,6 @@ public final class GameScoreView extends PanelView {
     }
     
     @Override public String toString() {
-        return "Score: " + String.valueOf(_score);
+        return "Score: " + String.valueOf(SCORE);
     }
 }
