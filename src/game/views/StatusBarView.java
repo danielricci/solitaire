@@ -91,7 +91,14 @@ public final class StatusBarView extends PanelView {
         
         // Game Score + Game Timer
         JPanel rightSidePanel = new JPanel(new BorderLayout());
-        rightSidePanel.add(_scoreView,BorderLayout.WEST);
+        
+        // The scoring option should only be shown in Standard and Vegas scoring modes
+        OptionsPreferences preferences = new OptionsPreferences();
+        preferences.load();
+        if(preferences.scoringOption != ScoringOption.NONE) {
+            rightSidePanel.add(_scoreView,BorderLayout.WEST);    
+        }
+        
         rightSidePanel.add(_gameTimerView,BorderLayout.EAST);
         add(rightSidePanel, BorderLayout.EAST); 
         

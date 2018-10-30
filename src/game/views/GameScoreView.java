@@ -34,6 +34,7 @@ import framework.core.mvc.view.PanelView;
 import framework.utils.logging.Tracelog;
 
 import game.config.OptionsPreferences;
+import game.config.OptionsPreferences.ScoringOption;
 import game.gameplay.MovementType;
 
 /**
@@ -105,6 +106,13 @@ public final class GameScoreView extends PanelView {
      * @param to Where the operation ended at
      */
     public void updateScore(MovementType from, MovementType to) {
+        
+        // Do not update the score if this control is in a state where it is not visible.
+        // This control will be visible only when it has been added appropriately from it's parent
+        if(!isVisible()) {
+            return;
+        }
+        
         long scoreBefore = SCORE;
         if(from == MovementType.TALON && to == MovementType.TABLEAU) {
             SCORE += 5;
@@ -132,7 +140,9 @@ public final class GameScoreView extends PanelView {
         super.destructor();
         OptionsPreferences preferences = new OptionsPreferences();
         preferences.load();
-        if(!preferences.cumulativeScore) {
+        
+        // Reset the score if the cumulative option has not been enabled appropriately
+        if(!(preferences.scoringOption == ScoringOption.VEGAS && preferences.cumulativeScore)) {
             SCORE = 0;
         }
     }
