@@ -35,19 +35,28 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import javax.swing.AbstractButton;
 import javax.swing.BoxLayout;
 import javax.swing.JLayeredPane;
+import javax.swing.JOptionPane;
 import javax.swing.border.Border;
 
 import framework.core.factories.AbstractFactory;
 import framework.core.factories.ViewFactory;
 import framework.core.mvc.view.PanelView;
 import framework.core.mvc.view.layout.DragListener;
+import framework.core.navigation.MenuBuilder;
 import framework.core.physics.CollisionListener;
 import framework.core.physics.ICollide;
+import framework.core.system.Application;
+import framework.utils.globalisation.Localization;
 
 import game.gameplay.MovementType;
+import game.menu.ExitMenuItem;
+import game.menu.NewGameMenuItem;
 import game.views.components.ExclusiveLineBorder;
+
+import resources.LocalizationStrings;
 
 /**
  * This view represents the outline of a normal card view
@@ -252,6 +261,21 @@ public final class CardProxyView extends PanelView {
             gameView.repaint();
 
             _cardView.getParent().repaint();
+            
+            // Verify if there is a game winner
+            if(GameView.IsGameWinner()) {
+                // Stop the game timer
+                GameTimerView gameTimerView = AbstractFactory.getFactory(ViewFactory.class).get(GameTimerView.class);
+                gameTimerView.stop();
+                
+                // Show the dialog indicating that game has won
+                if(JOptionPane.showConfirmDialog(null, Localization.instance().getLocalizedString(LocalizationStrings.GAME_OVER), Localization.instance().getLocalizedString(LocalizationStrings.GAME_OVER_HEADER), JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE) == JOptionPane.YES_OPTION) { 
+                    MenuBuilder.search(Application.instance.getJMenuBar(), NewGameMenuItem.class).getComponent(AbstractButton.class).doClick();
+                }
+                else {
+                    MenuBuilder.search(Application.instance.getJMenuBar(), ExitMenuItem.class).getComponent(AbstractButton.class).doClick();
+                }
+            }
         }
     }
     

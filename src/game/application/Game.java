@@ -27,6 +27,8 @@ package game.application;
 
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -51,6 +53,8 @@ import game.menu.NewGameMenuItem;
 import game.menu.OptionsMenuItem;
 import game.menu.UndoMenuItem;
 import game.views.FoundationView;
+import game.views.GameView;
+import game.views.StatusBarView;
 import game.views.TableauView;
 import game.views.TalonView;
 
@@ -112,6 +116,39 @@ public final class Game extends Application {
                 new Game(debugMode);
             }
         });
+    }
+    
+    @Override public void onRestart() {
+        if(AbstractFactory.isRunning()) {
+            
+            // Clear the factory of it's contents
+            AbstractFactory.clearFactories();
+            
+            // Remove everything from the application UI
+            Application.instance.getContentPane().removeAll();
+            
+            // Indicate that the application is no longer in a restart state
+            isRestarting = false;
+        }
+        
+        // Spawn a new game view and render its contents
+        GameView gameView = AbstractFactory.getFactory(ViewFactory.class).add(new GameView(), true);
+        Application.instance.setContentPane(gameView);
+        
+        StatusBarView statusBarView = AbstractFactory.getFactory(ViewFactory.class).add(new StatusBarView(), true);
+        GridBagConstraints barConstraints = new GridBagConstraints(); 
+        barConstraints.anchor = GridBagConstraints.SOUTH;
+        barConstraints.gridx = 0;
+        barConstraints.gridy = 1;
+        barConstraints.fill = GridBagConstraints.HORIZONTAL;
+        barConstraints.weightx = 1.0;
+        barConstraints.weighty = 1.0;
+        barConstraints.gridwidth = 7;
+        barConstraints.insets = new Insets(0, -2, 0, -2);
+        
+        gameView.add(statusBarView, barConstraints, 0);
+        gameView.render();
+
     }
     
     @Override protected void onBeforeEngineDataInitialized() {

@@ -4,7 +4,7 @@ Github,https://github.com/danielricci/minesweeper
 Title,Solitaire
 Game,Game
 GameIcon,content/solitaire_logo.png
-GameOver, The game has now finished, would you like to play again?
+GameOver, New Game?
 GameOverHeader, Game Over
 Help,Help
 Deal,Deal

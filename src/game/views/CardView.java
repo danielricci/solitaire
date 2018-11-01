@@ -221,31 +221,20 @@ public final class CardView extends PanelView implements ICollide {
             _parentLayeredPane.repaint();
             _parentLayeredPane = null;            
 
-            if(parent instanceof FoundationView) {
-                boolean winner = true;
-                for(FoundationView foundationView : AbstractFactory.getFactory(ViewFactory.class).getAll(FoundationView.class)) {
-                    if(foundationView.layeredPane.getComponentCount() == 13) { 
-                        CardView cardView = (CardView) foundationView.layeredPane.getComponent(0);
-                        if(!cardView.getViewProperties().getEntity(CardController.class).isKing()) {
-                            winner = false;
-                            break;
-                        }
-                    }
-                    else {
-                        winner = false;
-                        break;
-                    }
+            // Verify if there is a game winner
+            if(GameView.IsGameWinner()) {
+                // Stop the game timer
+                GameTimerView gameTimerView = AbstractFactory.getFactory(ViewFactory.class).get(GameTimerView.class);
+                gameTimerView.stop();
+                
+                // Show the dialog indicating that game has won
+                if(JOptionPane.showConfirmDialog(null, Localization.instance().getLocalizedString(LocalizationStrings.GAME_OVER), Localization.instance().getLocalizedString(LocalizationStrings.GAME_OVER_HEADER), JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE) == JOptionPane.YES_OPTION) { 
+                    MenuBuilder.search(Application.instance.getJMenuBar(), NewGameMenuItem.class).getComponent(AbstractButton.class).doClick();
                 }
-
-                if(winner) {
-                    if(JOptionPane.showConfirmDialog(null, Localization.instance().getLocalizedString(LocalizationStrings.GAME_OVER), Localization.instance().getLocalizedString(LocalizationStrings.GAME_OVER_HEADER), JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE) == JOptionPane.YES_OPTION) { 
-                        MenuBuilder.search(Application.instance.getJMenuBar(), NewGameMenuItem.class).getComponent(AbstractButton.class).doClick();
-                    }
-                    else {
-                        MenuBuilder.search(Application.instance.getJMenuBar(), ExitMenuItem.class).getComponent(AbstractButton.class).doClick();
-                    }
+                else {
+                    MenuBuilder.search(Application.instance.getJMenuBar(), ExitMenuItem.class).getComponent(AbstractButton.class).doClick();
                 }
-            }        
+            }
         }
     }
 
@@ -500,9 +489,7 @@ public final class CardView extends PanelView implements ICollide {
                     
                     // Set the proper bounds of the component
                     CardView.this.setBounds(new Rectangle(0, 0, CardView.this.getPreferredSize().width, CardView.this.getPreferredSize().height));
-                    
-
-                    
+                                        
                     // Repaint the components
                     _layeredPane.repaint();
                     foundationView.repaint();

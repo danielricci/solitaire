@@ -29,8 +29,8 @@ import java.util.logging.Level;
 
 import javax.swing.JLabel;
 
-import framework.communication.internal.signal.arguments.EventArgs;
 import framework.core.mvc.view.PanelView;
+import framework.core.system.Application;
 import framework.utils.logging.Tracelog;
 
 import game.config.OptionsPreferences;
@@ -42,27 +42,32 @@ import game.gameplay.MovementType;
  * 
  * @author Daniel Ricci <thedanny09@icloud.com>
  */
-public final class GameScoreView extends PanelView {
+public class GameScoreView extends PanelView {
 
     /**
-     * The score label
+     * The score title
      */
-    private final JLabel _scoreLabel = new JLabel();
+    protected final JLabel scoreTitle = new JLabel("Score:");
+    
+    /**
+     * The value of the score
+     */
+    protected final JLabel scoreValue = new JLabel();
     
     /**
      * The score. 
      * 
      * Note: The score is static because in some cases the score persists to the next game, but not if the application exist
      */
-    private static long SCORE = 0;
+    protected static long SCORE = 0;
     
     /**
      * Constructs a new instance of this class type
      */
     public GameScoreView() {
         this.setBackground(Color.WHITE);
-        _scoreLabel.setText(this.toString());
-        add(_scoreLabel);
+        add(scoreTitle);
+        add(scoreValue);
     }
     
     /**
@@ -74,13 +79,13 @@ public final class GameScoreView extends PanelView {
     public void updateScoreBonus(int seconds) {
         if(seconds > 30) {
             SCORE += (700000 / seconds);
-            render();
+            scoreValue.setText(toString());
         }
     }
     
     public void updateScoreDeckFinished() {
         SCORE = Math.max(0, SCORE - 100);
-        render();
+        scoreValue.setText(toString());
     }
     
     /**
@@ -88,7 +93,7 @@ public final class GameScoreView extends PanelView {
      */
     public void updateScoreTimerTick() {
         SCORE = Math.max(0, SCORE - 2);
-        render();
+        scoreValue.setText(toString());
     }
     
     /**
@@ -96,7 +101,7 @@ public final class GameScoreView extends PanelView {
      */
     public void updateScoreCardTurnOver() {
         SCORE += 5;
-        render();
+        scoreValue.setText(toString());
     }
     
     /**
@@ -106,12 +111,6 @@ public final class GameScoreView extends PanelView {
      * @param to Where the operation ended at
      */
     public void updateScore(MovementType from, MovementType to) {
-        
-        // Do not update the score if this control is in a state where it is not visible.
-        // This control will be visible only when it has been added appropriately from it's parent
-        if(!isVisible()) {
-            return;
-        }
         
         long scoreBefore = SCORE;
         if(from == MovementType.TALON && to == MovementType.TABLEAU) {
@@ -133,31 +132,26 @@ public final class GameScoreView extends PanelView {
         long scoreAfter = SCORE;
         Tracelog.log(Level.INFO, true, String.format("Score Changed from %d to %d after performing move [%s, %s]", scoreBefore, scoreAfter, from, to));
         
-        render();
-    }
-    
-    @Override public void destructor() {
-        super.destructor();
-        OptionsPreferences preferences = new OptionsPreferences();
-        preferences.load();
-        
-        // Reset the score if the cumulative option has not been enabled appropriately
-        if(!(preferences.scoringOption == ScoringOption.VEGAS && preferences.cumulativeScore)) {
-            SCORE = 0;
-        }
+        scoreValue.setText(toString());
     }
     
     @Override public void render() {
         super.render();
-        update(EventArgs.Empty());
+        scoreValue.setText(this.toString());
     }
     
-    @Override public void update(EventArgs event) {
-        super.update(event);
-        _scoreLabel.setText(toString());
+    @Override public void destructor() {
+        super.destructor();
+        
+        // Get the current option preferences of the game and reset the score if certain conditions are met
+        OptionsPreferences preferences = new OptionsPreferences();
+        preferences.load();
+        if(Application.instance.isRestarting || !(preferences.scoringOption == ScoringOption.VEGAS && preferences.cumulativeScore)) {
+            SCORE = 0;
+        }
     }
-    
+        
     @Override public String toString() {
-        return "Score: " + String.valueOf(SCORE);
+        return String.valueOf(SCORE);
     }
 }

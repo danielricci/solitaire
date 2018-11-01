@@ -35,6 +35,7 @@ import framework.core.factories.AbstractFactory;
 import framework.core.factories.ViewFactory;
 import framework.core.mvc.view.PanelView;
 
+import game.controllers.CardController;
 import game.models.CardModel;
 
 /**
@@ -116,5 +117,24 @@ public final class GameView extends PanelView {
                 }
             }
         }
+    }
+    
+    public static boolean IsGameWinner() {
+        boolean winner = true;
+        for(FoundationView foundationView : AbstractFactory.getFactory(ViewFactory.class).getAll(FoundationView.class)) {
+            if(foundationView.layeredPane.getComponentCount() == 13) { 
+                CardView cardView = (CardView) foundationView.layeredPane.getComponent(0);
+                if(!cardView.getViewProperties().getEntity(CardController.class).isKing()) {
+                    winner = false;
+                    break;
+                }
+            }
+            else {
+                winner = false;
+                break;
+            }
+        }
+
+        return winner;
     }
 }

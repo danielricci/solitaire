@@ -24,8 +24,6 @@
 
 package game.menu;
 
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.EventObject;
@@ -40,7 +38,6 @@ import framework.core.navigation.AbstractMenuItem;
 import framework.core.system.Application;
 import framework.utils.globalisation.Localization;
 
-import game.views.GameView;
 import game.views.StatusBarView;
 
 /**
@@ -73,32 +70,6 @@ public class NewGameMenuItem extends AbstractMenuItem {
     }
 
     @Override public void onExecute(ActionEvent actionEvent) {
-        
-        if(AbstractFactory.isRunning()) {
-            
-            // Clear the factory of it's contents
-            AbstractFactory.clearFactories();
-            
-            // Remove everything from the application UI
-            Application.instance.getContentPane().removeAll();            
-        }
-
-        // Spawn a new game view and render its contents
-        GameView gameView = AbstractFactory.getFactory(ViewFactory.class).add(new GameView(), true);
-        Application.instance.setContentPane(gameView);
-        
-        StatusBarView statusBarView = AbstractFactory.getFactory(ViewFactory.class).add(new StatusBarView(), true);
-        GridBagConstraints barConstraints = new GridBagConstraints(); 
-        barConstraints.anchor = GridBagConstraints.SOUTH;
-        barConstraints.gridx = 0;
-        barConstraints.gridy = 1;
-        barConstraints.fill = GridBagConstraints.HORIZONTAL;
-        barConstraints.weightx = 1.0;
-        barConstraints.weighty = 1.0;
-        barConstraints.gridwidth = 7;
-        barConstraints.insets = new Insets(0, -2, 0, -2);
-        
-        gameView.add(statusBarView, barConstraints, 0);
-        gameView.render();
+        Application.instance.onRestart();
     }
 }

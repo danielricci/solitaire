@@ -52,7 +52,7 @@ public final class StatusBarView extends PanelView {
     /**
      * The game score view
      */
-    private final GameScoreView _scoreView = AbstractFactory.getFactory(ViewFactory.class).add(new GameScoreView(), true);
+    private GameScoreView _scoreView = null;
     
     /**
      * The menu description label
@@ -95,14 +95,17 @@ public final class StatusBarView extends PanelView {
         // The scoring option should only be shown in Standard and Vegas scoring modes
         OptionsPreferences preferences = new OptionsPreferences();
         preferences.load();
+        
+        // Create the score view based on the currently set scoring standard
+        _scoreView = AbstractFactory.getFactory(ViewFactory.class).add(preferences.scoringOption == ScoringOption.VEGAS ? new VegasGameScoreView() : new GameScoreView(), true);
+        _scoreView.render();
+        
         if(preferences.scoringOption != ScoringOption.NONE) {
             rightSidePanel.add(_scoreView,BorderLayout.WEST);    
         }
         
         rightSidePanel.add(_gameTimerView,BorderLayout.EAST);
         add(rightSidePanel, BorderLayout.EAST); 
-        
-        
         
         // Synchronize w.r.t the currently set options
         synchronizeWithOptions();
