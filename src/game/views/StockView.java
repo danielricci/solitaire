@@ -34,28 +34,66 @@ import framework.core.factories.AbstractFactory;
 import framework.core.factories.ViewFactory;
 import framework.core.mvc.view.PanelView;
 
+import game.config.OptionsPreferences;
+import game.config.OptionsPreferences.DrawOption;
+import game.config.OptionsPreferences.ScoringOption;
 import game.entities.BacksideCardEntity;
+import game.views.TalonView.TalonCardState;
 
 public final class StockView extends PanelView {
 
     /**
+     * The number of times that the deck was played
+     */
+    private int _deckPlays;
+    
+    /**
      * The backside card entity
      */
-    private final BacksideCardEntity _backside = new BacksideCardEntity();
+    private BacksideCardEntity _backside = new BacksideCardEntity();
     
     /**
      * Constructs a new instance of this class type
      */
     public StockView() {
         setOpaque(false);
+        
+        OptionsPreferences preferences = new OptionsPreferences();
+        preferences.load();
+        
         addMouseListener(new MouseAdapter() {
+            
             @Override public void mousePressed(MouseEvent event) {
                 TalonView talonView = AbstractFactory.getFactory(ViewFactory.class).get(TalonView.class);
-                talonView.showCardHand();
                 
-                GameTimerView gameTimerView = AbstractFactory.getFactory(ViewFactory.class).get(GameTimerView.class);
-                if(gameTimerView != null) {
-                    gameTimerView.startGameTimer();
+                TalonCardState cardState = talonView.showCardHand();
+                if(cardState == TalonCardState.EMPTY) {
+                    removeMouseListener(this);
+                }
+                else if(cardState == TalonCardState.DECK_PLAYED) {
+                    
+                    _backside = null;
+                    render();
+                    
+                    ++_deckPlays;
+                    //In Draw One Vegas, you can only cycle through the card system once.
+                    if(preferences.drawOption == DrawOption.ONE && preferences.scoringOption == ScoringOption.VEGAS && _deckPlays == 1) {
+                        removeMouseListener(this);
+                    }
+                    // In Draw Three Vegas, you can only cycle through the card system three times
+                    else if(preferences.drawOption == DrawOption.THREE && preferences.scoringOption == ScoringOption.VEGAS && _deckPlays == 3) {
+                        removeMouseListener(this);
+                    }
+                }
+                else {
+                    
+                    _backside = new BacksideCardEntity();
+                    render();
+                    
+                    GameTimerView gameTimerView = AbstractFactory.getFactory(ViewFactory.class).get(GameTimerView.class);
+                    if(gameTimerView != null) {
+                        gameTimerView.startGameTimer();
+                    }
                 }
             }
         });

@@ -81,17 +81,28 @@ public final class TalonView extends TableauView {
         layeredPane.setLayer(pv, layeredPane.getComponentCount() - 1);
     }
     
+    public enum TalonCardState {
+        // An Empty Deck
+        EMPTY,
+        // The Deck has been played through
+        DECK_PLAYED,
+        // Normal card played
+        NORMAL
+    }
+    
     /**
      * Displays the next card hand on this view
+     * 
+     * @return TRUE if the card is not the last card in the deck
      */
-    public void showCardHand() {
+    public TalonCardState showCardHand() {
         
         // If there is only one component then go o further. The idea is that the "blank" placeholder view that
         // mimics that switching of cards should never be removed from this view, thus if that is the only view that
         // exists then it should mean that all the playing cards having been removed from this view
         if(layeredPane.getComponentCount() == 1) {
             Tracelog.log(Level.INFO, true, "There are no more cards left in the Talon to play.");
-            return;
+            return TalonCardState.EMPTY;
         }
         
         // Get the layer id of the blank card within this view
@@ -116,21 +127,27 @@ public final class TalonView extends TableauView {
             for(int i = components.length - 1; i >= 0; --i) {
                 layeredPane.add(components[i]);
                 layeredPane.setLayer(components[i], i);
-            }
+            }            
         }
         else {
             OptionsPreferences preferences = new OptionsPreferences();
             preferences.load();
             switch(preferences.drawOption) {
             case ONE:
+            case THREE:
                 Component cardDirectlyBelowBlankCard = layeredPane.getComponent(layeredPane.getIndexOf(blankCardLayer) + 1);
                 layeredPane.setLayer(cardDirectlyBelowBlankCard, layeredPane.highestLayer() + 1);
                 for(int i = layeredPane.getComponentCount() - 1, layerId = 0;  i >= 0; --i, ++layerId) {
                     layeredPane.setLayer(layeredPane.getComponent(i), layerId);
                 }     
                 break;
-            case THREE:
-                
+            //case THREE:
+            }
+            
+            if(blankCardLayerId - 1 == layeredPane.lowestLayer()) {
+                return TalonCardState.DECK_PLAYED;
+            }
+        }
                 
                 
                 
@@ -169,9 +186,10 @@ public final class TalonView extends TableauView {
 //                
 //                components.stream().forEach(z -> System.out.println(z));
 //                
-                break;
-            }
-        }
+//                break;
+         
+        
+        return TalonCardState.NORMAL;
     }
     
     @Override public boolean isValidCollision(Component source) {
