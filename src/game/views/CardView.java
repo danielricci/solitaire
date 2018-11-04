@@ -291,8 +291,8 @@ public final class CardView extends PanelView implements ICollide {
     /**
      * Signal indicating that this view should synchronizr with the outline option
      */
-    public static String EVENT_OUTLINE_SYNCHRONIZE = "EVENT_OUTLINE_SYNCHRONIZE";
-        
+    public final static String EVENT_OUTLINE_SYNCHRONIZE = "EVENT_OUTLINE_SYNCHRONIZE";
+     
     /**
      * Constructs a new instance of this class type
      * 
@@ -307,12 +307,6 @@ public final class CardView extends PanelView implements ICollide {
         setBorder(BorderFactory.createLineBorder(Color.BLACK, 1, true));
         add(_layeredPane);
         
-        addSignalListener(EVENT_OUTLINE_SYNCHRONIZE, new ISignalReceiver<EventArgs>() {
-            @Override public void signalReceived(EventArgs event) {
-                synchronizeWithOutline();
-            }
-        });
-        
         // Set the collision style for this object
         _collisionListener.setIsSingularCollision(true);
         
@@ -320,17 +314,8 @@ public final class CardView extends PanelView implements ICollide {
         _controller = new CardController(cardModel);
         getViewProperties().setEntity(_controller);   
 
-        // Verify if the option for highlighting is enabled or not
-        OptionsPreferences optionsPreferences = new OptionsPreferences();
-        optionsPreferences.load();
-        _highlightsEnabled = optionsPreferences.outlineDragging;
-
-        // If the card has its backside shown or the outline option is enabled
-        // then do not allow dragging or collision to work as normal
-        if(cardModel.getIsBackside() || optionsPreferences.outlineDragging) {
-            _draggableListener.setEnabled(false);
-            _collisionListener.setEnabled(false);
-        }
+        // Create the card proxy view
+        _cardProxy = new CardProxyView(this);
         
         // Add the mouse listener responsible for handling single clicks and double clicks on this card.
         // Note: This will sometimes not be called depending on if the proxy is enabled or not, since the 
@@ -357,49 +342,68 @@ public final class CardView extends PanelView implements ICollide {
             }
         });
 
+        /**
+         * Listen in on events when we need to synchronize withthe online option
+         */
+        addSignalListener(EVENT_OUTLINE_SYNCHRONIZE, new ISignalReceiver<EventArgs>() {
+            @Override public void signalReceived(EventArgs event) {
+                OptionsPreferences optionsPreferences = new OptionsPreferences();
+                optionsPreferences.load();
+                _highlightsEnabled = optionsPreferences.outlineDragging;
+                
+                // Outline Dragging Enabled
+                if(optionsPreferences.outlineDragging) {
+                    
+                }
+                // Outline Dragging Disabled
+                else {
+                    if(_cardProxy != null) {
+                        remove(_cardProxy);
+                        _cardProxy = null;
+                        
+                        if(!_controller.getCard().getIsBackside()) {
+                            
+                        }
+                        
+                        repaint();
+                    }
+                }
+            }
+        });
+    
+        // Synchronize with the options preferences.
+        // 
+        // Note: 
+        //      This must be done at the end to ensure that the order of added events is done properly
+        synchronizeWithOptions();
+    }
+    
+    private void synchronizeWithOptions()
+    {
+        // Verify if the option for highlighting is enabled or not
+        OptionsPreferences optionsPreferences = new OptionsPreferences();
+        optionsPreferences.load();
+        _highlightsEnabled = optionsPreferences.outlineDragging;
+
+        // If the card has its backside shown or the outline option is enabled
+        // then do not allow dragging or collision to work as normal
+        _draggableListener.setEnabled(!_controller.getCard().getIsBackside() && !optionsPreferences.outlineDragging);
+        _collisionListener.setEnabled(!_controller.getCard().getIsBackside() && !optionsPreferences.outlineDragging);
+        
         // If the backside is not being shown, then add the event handler for card drag event
         // Note: In the event that the options preferences calls for outline mode, the entire
         //       operation of performing a click-down, click-up, should be done by the proxy and
         //       not this card explicitely.
-        if(!cardModel.getIsBackside()) {
+        if(!_controller.getCard().getIsBackside()) {
             if(!optionsPreferences.outlineDragging) {
                 addMouseListener(_cardSelectionEvents);    
             }
             else {
-                // Initialize the card proxy
-                _cardProxy = new CardProxyView(this);
                 add(_cardProxy);    
             }   
         }
     }
-    
-    /**
-     * Synchronizes the outline state with this card view
-     */
-    private void synchronizeWithOutline() {
-        OptionsPreferences optionsPreferences = new OptionsPreferences();
-        optionsPreferences.load();
-        _highlightsEnabled = optionsPreferences.outlineDragging;
-        
-        // Outline Dragging Enabled
-        if(optionsPreferences.outlineDragging) {
-            
-        }
-        // Outline Dragging Disabled
-        else {
-            if(_cardProxy != null) {
-                remove(_cardProxy);
-                _cardProxy = null;
-                
-                if(!_controller.getCard().getIsBackside()) {
-                    
-                }
-                
-                repaint();
-            }
-        }
-    }
-    
+
     /**
      * Sets if this card is highlighted
      *
@@ -438,7 +442,6 @@ public final class CardView extends PanelView implements ICollide {
                 addMouseListener(_cardSelectionEvents);
             }
             else {
-                _cardProxy = new CardProxyView(CardView.this);
                 add(_cardProxy);
                 _cardProxy.setVisible(true);
                 repaint();
@@ -542,6 +545,7 @@ public final class CardView extends PanelView implements ICollide {
     
     @Override public void setBounds(int x, int y, int width, int height) {
         // HACK I feel so bad doing this. but I must, for I love cake and I want my game to work properly for now.
+        // TODO Stop being a bad boy and fix the actual root cause of the bug.
         if(x != 10 && y != 5) {
             super.setBounds(x, y, width, height);
         }
