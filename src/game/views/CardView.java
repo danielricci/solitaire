@@ -347,27 +347,29 @@ public final class CardView extends PanelView implements ICollide {
          */
         addSignalListener(EVENT_OUTLINE_SYNCHRONIZE, new ISignalReceiver<EventArgs>() {
             @Override public void signalReceived(EventArgs event) {
-                OptionsPreferences optionsPreferences = new OptionsPreferences();
-                optionsPreferences.load();
-                _highlightsEnabled = optionsPreferences.outlineDragging;
+                synchronizeWithOptions();
                 
-                // Outline Dragging Enabled
-                if(optionsPreferences.outlineDragging) {
-                    
-                }
-                // Outline Dragging Disabled
-                else {
-                    if(_cardProxy != null) {
-                        remove(_cardProxy);
-                        _cardProxy = null;
-                        
-                        if(!_controller.getCard().getIsBackside()) {
-                            
-                        }
-                        
-                        repaint();
-                    }
-                }
+//                OptionsPreferences optionsPreferences = new OptionsPreferences();
+//                optionsPreferences.load();
+//                _highlightsEnabled = optionsPreferences.outlineDragging;
+//                
+//                // Outline Dragging Enabled
+//                if(optionsPreferences.outlineDragging) {
+//                    
+//                }
+//                // Outline Dragging Disabled
+//                else {
+//                    if(_cardProxy != null) {
+//                        remove(_cardProxy);
+//                        _cardProxy = null;
+//                        
+//                        if(!_controller.getCard().getIsBackside()) {
+//                            
+//                        }
+//                        
+//                        repaint();
+//                    }
+//                }
             }
         });
     
@@ -378,6 +380,9 @@ public final class CardView extends PanelView implements ICollide {
         synchronizeWithOptions();
     }
     
+    /**
+     * Synchronizes this card view w.r.t the current outline options that are set within the game.
+     */
     private void synchronizeWithOptions()
     {
         // Verify if the option for highlighting is enabled or not
@@ -396,12 +401,18 @@ public final class CardView extends PanelView implements ICollide {
         //       not this card explicitely.
         if(!_controller.getCard().getIsBackside()) {
             if(!optionsPreferences.outlineDragging) {
-                addMouseListener(_cardSelectionEvents);    
+                remove(_cardProxy);
+                addMouseListener(_cardSelectionEvents);
             }
             else {
-                add(_cardProxy);    
+                removeMouseListener(_cardSelectionEvents);
+                add(_cardProxy);
             }   
         }
+        
+        // TODO - Is this really necessary???
+        repaint();
+        _cardProxy.repaint();
     }
 
     /**
