@@ -31,7 +31,6 @@ import framework.core.entity.AbstractDataEntity;
 
 import generated.DataLookup.LAYER;
 
-
 public abstract class AbstractCardEntity extends AbstractDataEntity {
 
     /**

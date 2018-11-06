@@ -316,7 +316,73 @@
         <entry>
             <key>generated.TileMapData</key>
             <value>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
-&lt;root identifier="c89dfa47-5c49-4c56-836b-19b7dd6e5651" name="original_backside" layers="040cb294-c4ad-47a5-abbb-6a7c8d1f3482" friendly="" x1="6500" y1="0" x2="7000" y2="726"/&gt;
+&lt;root identifier="c89dfa47-5c49-4c56-836b-19b7dd6e5651" name="deck_1" layers="040cb294-c4ad-47a5-abbb-6a7c8d1f3482" friendly="" x1="6500" y1="0" x2="7000" y2="726"/&gt;
+</value>
+        </entry>
+        <entry>
+            <key>generated.TileMapData</key>
+            <value>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+&lt;root identifier="9e231907-746e-466c-b50d-1eb3db576f7f" name="deck_2" layers="040cb294-c4ad-47a5-abbb-6a7c8d1f3482" friendly="" x1="7000" y1="0" x2="7500" y2="726"/&gt;
+</value>
+        </entry>
+        <entry>
+            <key>generated.TileMapData</key>
+            <value>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+&lt;root identifier="492b2a75-4ed9-431b-9c7f-c93330a33eb6" name="deck_3" layers="040cb294-c4ad-47a5-abbb-6a7c8d1f3482" friendly="" x1="7500" y1="0" x2="8000" y2="726"/&gt;
+</value>
+        </entry>
+        <entry>
+            <key>generated.TileMapData</key>
+            <value>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+&lt;root identifier="e98cff41-88ec-47b0-bbd5-e684c97dc483" name="deck_4" layers="040cb294-c4ad-47a5-abbb-6a7c8d1f3482" friendly="" x1="8000" y1="0" x2="8500" y2="726"/&gt;
+</value>
+        </entry>
+        <entry>
+            <key>generated.TileMapData</key>
+            <value>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+&lt;root identifier="c6c3c2d2-620d-4fdd-9fce-bc6190817c12" name="deck_5" layers="040cb294-c4ad-47a5-abbb-6a7c8d1f3482" friendly="" x1="8500" y1="0" x2="9000" y2="726"/&gt;
+</value>
+        </entry>
+        <entry>
+            <key>generated.TileMapData</key>
+            <value>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+&lt;root identifier="b38f68aa-20ee-4be7-9840-136b838f7d8f" name="deck_6" layers="040cb294-c4ad-47a5-abbb-6a7c8d1f3482" friendly="" x1="9000" y1="0" x2="9500" y2="726"/&gt;
+</value>
+        </entry>
+        <entry>
+            <key>generated.TileMapData</key>
+            <value>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+&lt;root identifier="8c8ed8dd-8d4e-4c70-a267-ba27d105b572" name="deck_7" layers="040cb294-c4ad-47a5-abbb-6a7c8d1f3482" friendly="" x1="9500" y1="0" x2="10000" y2="726"/&gt;
+</value>
+        </entry>
+        <entry>
+            <key>generated.TileMapData</key>
+            <value>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+&lt;root identifier="a4ea2b81-8403-4b5a-8413-e54da2e9b147" name="deck_8" layers="040cb294-c4ad-47a5-abbb-6a7c8d1f3482" friendly="" x1="10000" y1="0" x2="10500" y2="726"/&gt;
+</value>
+        </entry>
+        <entry>
+            <key>generated.TileMapData</key>
+            <value>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+&lt;root identifier="0e995a0b-0ab6-42e7-9ed9-d4900cfbe304" name="deck_9" layers="040cb294-c4ad-47a5-abbb-6a7c8d1f3482" friendly="" x1="10500" y1="0" x2="11000" y2="726"/&gt;
+</value>
+        </entry>
+        <entry>
+            <key>generated.TileMapData</key>
+            <value>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+&lt;root identifier="25000197-ea3d-4912-9e83-cddddaf0d7dd" name="deck_10" layers="040cb294-c4ad-47a5-abbb-6a7c8d1f3482" friendly="" x1="11000" y1="0" x2="11500" y2="726"/&gt;
+</value>
+        </entry>
+        <entry>
+            <key>generated.TileMapData</key>
+            <value>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+&lt;root identifier="25000198-ea3d-4912-9e83-cddddaf0d7dd" name="deck_11" layers="040cb294-c4ad-47a5-abbb-6a7c8d1f3482" friendly="" x1="11500" y1="0" x2="12000" y2="726"/&gt;
+</value>
+        </entry>
+        <entry>
+            <key>generated.TileMapData</key>
+            <value>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+&lt;root identifier="25000199-ea3d-4912-9e83-cddddaf0d7dd" name="deck_12" layers="040cb294-c4ad-47a5-abbb-6a7c8d1f3482" friendly="" x1="12000" y1="0" x2="12500" y2="726"/&gt;
 </value>
         </entry>
     </data>

@@ -25,6 +25,7 @@
 package game.entities;
 
 import framework.core.entity.AbstractDataEntity;
+
 import generated.DataLookup;
 
 
@@ -33,7 +34,7 @@ public final class BacksideCardEntity extends AbstractDataEntity {
     private boolean _isBacksideVisible = false;
 
     public BacksideCardEntity() {
-        super.setActiveData(DataLookup.BACKSIDES.ORIGINAL_BACKSIDE.identifier);
+        super.setActiveData(DataLookup.BACKSIDES.DECK_11.identifier);
     }
     
     public void setIsBacksideShowing(boolean isShowing) {
