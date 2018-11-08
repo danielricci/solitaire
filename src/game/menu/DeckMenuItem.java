@@ -30,12 +30,14 @@ import java.util.EventObject;
 
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 
 import framework.core.factories.AbstractFactory;
 import framework.core.factories.ViewFactory;
 import framework.core.navigation.AbstractMenuItem;
 import framework.utils.globalisation.Localization;
 
+import game.views.DeckSelectionDialogView;
 import game.views.StatusBarView;
 
 import resources.LocalizationStrings;
@@ -69,5 +71,10 @@ public class DeckMenuItem extends AbstractMenuItem {
     }
 
     @Override public void onExecute(ActionEvent actionEvent) {
+        DeckSelectionDialogView view = new DeckSelectionDialogView();
+        view.render();
+        if(view.getDialogResult() == JOptionPane.OK_OPTION) {
+            
+        }
     }
 }
