@@ -98,6 +98,10 @@ public final class DeckSelectionDialogView extends DialogView {
         // The panel that holds the list of cards
         JPanel cardPanel = new JPanel(new GridBagLayout());
         
+        // The OK and Cancel buttons
+        JButton okButton = new JButton("OK");
+        JButton cancelButton = new JButton("Cancel");
+        
         // Go through card rows and card columns, and populate each index with a JButton
         // containing one of the card images
         for(int row = 0, index = 0; row < _cardRows; ++row) {
@@ -127,6 +131,13 @@ public final class DeckSelectionDialogView extends DialogView {
                     @Override public void mousePressed(MouseEvent event) {
                         buttons.forEach(z -> z.setBorder(null));
                         button.setBorder(BorderFactory.createLineBorder(Color.BLUE, 2));
+                        
+                        // If more than one click count was registered, then do what the OK button would do.
+                        // Note that I don't call doClick because I dont want the OK button to look like it was clicked
+                        if(event.getClickCount() > 1) {
+                            setDialogResult(JOptionPane.OK_OPTION);
+                            setVisible(false);
+                        }
                     }
                 });
                 
@@ -140,9 +151,16 @@ public final class DeckSelectionDialogView extends DialogView {
                 cardPanel.add(button, drawPanelConstraints);
             }
         }
-        
-        // The Cancel button        
-        JButton cancelButton = new JButton("Cancel");
+
+        // The OK button action event
+        okButton.addActionListener(new ActionListener() {
+            @Override public void actionPerformed(ActionEvent event) {
+                setDialogResult(JOptionPane.OK_OPTION);
+                setVisible(false);
+            }
+        });
+
+        // The Cancel button action event        
         cancelButton.addActionListener(new ActionListener() {
             @Override public void actionPerformed(ActionEvent event) {
                 setDialogResult(JOptionPane.CANCEL_OPTION);
@@ -150,15 +168,6 @@ public final class DeckSelectionDialogView extends DialogView {
             }
         });
         
-        // The Cancel button
-        JButton okButton = new JButton("OK");
-        okButton.addActionListener(new ActionListener() {
-            @Override public void actionPerformed(ActionEvent event) {
-                setDialogResult(JOptionPane.OK_OPTION);
-                setVisible(false);
-            }
-        });
-       
         // Add the okay and cancel buttons
         JPanel actionsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         actionsPanel.add(okButton);
