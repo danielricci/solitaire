@@ -112,19 +112,14 @@ public final class DeckSelectionDialogView extends DialogView {
                 JButton button = new JButton();
                 button.setContentAreaFilled(false);
                 button.setFocusPainted(false);
-                button.setPreferredSize(new Dimension(39, 68));
+                button.setPreferredSize(new Dimension(45, 74));
                 
                 // Create the backside entity and assign it to the button
                 BacksideCardEntity entity = new BacksideCardEntity(backsides[index]);
                 button.putClientProperty(button, entity);
                 
-                
                 // Set the icon of the button, make sure to scale it appropriately
-                button.setIcon(new ImageIcon(entity.getRenderableContent().getScaledInstance(
-                    button.getPreferredSize().width, 
-                    button.getPreferredSize().height,
-                    java.awt.Image.SCALE_SMOOTH
-                )));
+                button.setIcon(new ImageIcon(entity.getRenderableContent().getScaledInstance(39, 68, java.awt.Image.SCALE_SMOOTH)));
                 
                 // Add a listener event for when the deck image is selected
                 button.addMouseListener(new MouseAdapter() {
