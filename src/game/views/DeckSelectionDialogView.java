@@ -39,6 +39,7 @@ import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.DefaultButtonModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -61,6 +62,26 @@ import generated.DataLookup;
 public final class DeckSelectionDialogView extends DialogView {
 
     /**
+     * This class represents a model that is used within one of the deck buttons
+     * 
+     * @author Daniel Ricci <thedanny09@icloud.com>
+     */
+    private class FixedStateButtonModel extends DefaultButtonModel {
+        @Override public boolean isPressed() {
+            return false;
+        }
+        @Override public boolean isRollover() {
+            return false;
+        }
+        @Override public boolean isArmed() {
+            return false;
+        }
+        @Override public boolean isSelected() {
+            return false;
+        }
+    }
+    
+    /**
      * The number of rows in the card list
      */
     private final int _cardRows = 2;
@@ -69,6 +90,36 @@ public final class DeckSelectionDialogView extends DialogView {
      * The number of columns in the card list
      */
     private final int _cardColumns = 6;
+    
+    /**
+     * The button width
+     */
+    private final int _buttonWidth = 45;
+            
+    /**
+     * The button height
+     */
+    private final int _buttonHeight = 74;
+    
+    /**
+     * The image width of the button
+     */
+    private final int _buttonImageWidth = 39;
+    
+    /**
+     * The image height of the button
+     */
+    private final int _buttonImageHeight = 68;
+    
+    /**
+     * The OK button
+     */
+    private final JButton _okButton = new JButton("OK");
+    
+    /**
+     * The Cancel button
+     */
+    private final JButton _cancelButton = new JButton("Cancel");
     
     /**
      * Constructs a new instance of this class type
@@ -81,7 +132,11 @@ public final class DeckSelectionDialogView extends DialogView {
         setAlwaysOnTop(true);
         setResizable(false);
     }
-
+    
+    @Override protected void enterActionPerformed(ActionEvent event) {
+        _okButton.doClick();
+    }
+    
     @Override public void render() {
         
         // Get a reference to all the backside data values
@@ -98,28 +153,23 @@ public final class DeckSelectionDialogView extends DialogView {
         // The panel that holds the list of cards
         JPanel cardPanel = new JPanel(new GridBagLayout());
         
-        // The OK and Cancel buttons
-        JButton okButton = new JButton("OK");
-        JButton cancelButton = new JButton("Cancel");
-        
         // Go through card rows and card columns, and populate each index with a JButton
         // containing one of the card images
         for(int row = 0, index = 0; row < _cardRows; ++row) {
             drawPanelConstraints.gridy = row;
             for(int column = 0; column < _cardColumns; ++column, ++index) {
                 
-                // Create the button and set the size we want it to be
-                JButton button = new JButton();
-                button.setContentAreaFilled(false);
-                button.setFocusPainted(false);
-                button.setPreferredSize(new Dimension(45, 74));
-                
                 // Create the backside entity and assign it to the button
                 BacksideCardEntity entity = new BacksideCardEntity(backsides[index]);
-                button.putClientProperty(button, entity);
                 
-                // Set the icon of the button, make sure to scale it appropriately
-                button.setIcon(new ImageIcon(entity.getRenderableContent().getScaledInstance(39, 68, java.awt.Image.SCALE_SMOOTH)));
+                // Create the button and set the size we want it to be
+                JButton button = new JButton(new ImageIcon(entity.getRenderableContent().getScaledInstance(_buttonImageWidth, _buttonImageHeight, java.awt.Image.SCALE_SMOOTH)));
+                button.setBorder(null);
+                button.setModel(new FixedStateButtonModel());
+                button.setContentAreaFilled(false);
+                button.setFocusPainted(false);
+                button.setPreferredSize(new Dimension(_buttonWidth, _buttonHeight));
+                button.putClientProperty(button, entity);
                 
                 // Add a listener event for when the deck image is selected
                 button.addMouseListener(new MouseAdapter() {
@@ -148,7 +198,7 @@ public final class DeckSelectionDialogView extends DialogView {
         }
 
         // The OK button action event
-        okButton.addActionListener(new ActionListener() {
+        _okButton.addActionListener(new ActionListener() {
             @Override public void actionPerformed(ActionEvent event) {
                 setDialogResult(JOptionPane.OK_OPTION);
                 setVisible(false);
@@ -156,7 +206,7 @@ public final class DeckSelectionDialogView extends DialogView {
         });
 
         // The Cancel button action event        
-        cancelButton.addActionListener(new ActionListener() {
+        _cancelButton.addActionListener(new ActionListener() {
             @Override public void actionPerformed(ActionEvent event) {
                 setDialogResult(JOptionPane.CANCEL_OPTION);
                 setVisible(false);
@@ -165,8 +215,8 @@ public final class DeckSelectionDialogView extends DialogView {
         
         // Add the okay and cancel buttons
         JPanel actionsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        actionsPanel.add(okButton);
-        actionsPanel.add(cancelButton);
+        actionsPanel.add(_okButton);
+        actionsPanel.add(_cancelButton);
         
         // Add the main housing panels to this dialog
         add(cardPanel);

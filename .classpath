@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry exported="true" kind="lib" path="lib/mead2018111.jar"/>
 	<classpathentry exported="true" kind="lib" path="data/generated/tilemap.jar"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="data"/>
 	<classpathentry kind="src" path="properties"/>
+	<classpathentry kind="src" path="/mead-framework"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
