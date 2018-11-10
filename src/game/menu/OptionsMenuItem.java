@@ -93,9 +93,6 @@ public class OptionsMenuItem extends AbstractMenuItem {
                     args.setSuppressUpdate(true);
                     AbstractFactory.getFactory(ViewFactory.class).multicastSignalListeners(CardView.class, args);
                 }
-                if(options.cumulativeScoreChanged) {
-                    // TODO
-                }
             }
         }
     }
