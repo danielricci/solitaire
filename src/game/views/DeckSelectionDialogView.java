@@ -163,6 +163,9 @@ public final class DeckSelectionDialogView extends DialogView {
         // The panel that holds the list of cards
         JPanel cardPanel = new JPanel(new GridBagLayout());
         
+        OptionsPreferences preferences = new OptionsPreferences();
+        preferences.load();
+        
         // Go through card rows and card columns, and populate each index with a JButton
         // containing one of the card images
         for(int row = 0, index = 0; row < _cardRows; ++row) {
@@ -175,7 +178,11 @@ public final class DeckSelectionDialogView extends DialogView {
                 
                 // Create the button and set the size we want it to be
                 JButton button = new JButton(new ImageIcon(entity.getRenderableContent().getScaledInstance(_buttonImageWidth, _buttonImageHeight, java.awt.Image.SCALE_SMOOTH)));
-                button.setBorder(null);
+                
+                // Set the border of the button based on what was currently set in the preferences, and make sure to set it as active within this dialog
+                button.setBorder(preferences.deck == backsides[index] ? BorderFactory.createLineBorder(Color.BLUE, 2) : null);
+                _activeButton = button;
+                
                 button.setModel(new FixedStateButtonModel());
                 button.setContentAreaFilled(false);
                 button.setFocusPainted(false);
