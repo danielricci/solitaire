@@ -32,13 +32,18 @@ import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
+import framework.communication.internal.signal.arguments.EventArgs;
 import framework.core.factories.AbstractFactory;
+import framework.core.factories.ModelFactory;
 import framework.core.factories.ViewFactory;
 import framework.core.navigation.AbstractMenuItem;
 import framework.utils.globalisation.Localization;
 
+import game.config.OptionsPreferences;
+import game.models.CardModel;
 import game.views.DeckSelectionDialogView;
 import game.views.StatusBarView;
+import game.views.StockView;
 
 import resources.LocalizationStrings;
 
@@ -75,6 +80,21 @@ public class DeckMenuItem extends AbstractMenuItem {
         view.render();
         if(view.getDialogResult() == JOptionPane.OK_OPTION) {
             
+            // Update all the backsides of all the cards in the game
+            EventArgs args = new EventArgs(this, CardModel.EVENT_UPDATE_BACKSIDE);
+            args.setDestinationAsTarget(true);
+            args.setSuppressUpdate(true);
+            AbstractFactory.getFactory(ModelFactory.class).multicastSignalListeners(CardModel.class, args);
+            
+            OptionsPreferences preferences = new OptionsPreferences();
+            preferences.load();
+
+            // Update the image on the stock view
+            StockView stockView = AbstractFactory.getFactory(ViewFactory.class).get(StockView.class);
+            if(stockView.BACKSIDE != null) {
+                stockView.BACKSIDE.setActiveData(preferences.deck.identifier);
+                stockView.update(args);
+            }
         }
     }
 }

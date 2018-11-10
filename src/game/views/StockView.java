@@ -50,7 +50,8 @@ public final class StockView extends PanelView {
     /**
      * The backside card entity
      */
-    private BacksideCardEntity _backside = new BacksideCardEntity();
+    // TODO - convert this to a model with a backside that is always shown
+    public BacksideCardEntity BACKSIDE = new BacksideCardEntity();
     
     /**
      * Constructs a new instance of this class type
@@ -72,7 +73,7 @@ public final class StockView extends PanelView {
                 }
                 else if(cardState == TalonCardState.DECK_PLAYED) {
                     
-                    _backside = null;
+                    BACKSIDE = null;
                     render();
                     
                     ++_deckPlays;
@@ -86,8 +87,7 @@ public final class StockView extends PanelView {
                     }
                 }
                 else {
-                    
-                    _backside = new BacksideCardEntity();
+                    BACKSIDE = new BacksideCardEntity();
                     render();
                     
                     GameTimerView gameTimerView = AbstractFactory.getFactory(ViewFactory.class).get(GameTimerView.class);
@@ -110,7 +110,7 @@ public final class StockView extends PanelView {
     
     @Override public void update(EventArgs event) {
         super.update(event);
-        addRenderableContent(_backside);
+        addRenderableContent(BACKSIDE);
         repaint();
     }
 }

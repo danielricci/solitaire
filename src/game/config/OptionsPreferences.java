@@ -31,6 +31,8 @@ import framework.utils.logging.Tracelog;
 
 import game.views.OptionsDialogView;
 
+import generated.DataLookup;
+
 public final class OptionsPreferences extends GamePreferences {
 
     public enum DrawOption { ONE, THREE };
@@ -49,6 +51,8 @@ public final class OptionsPreferences extends GamePreferences {
     
     public ScoringOption scoringOption;
     
+    public DataLookup.BACKSIDES deck;
+    
     public OptionsPreferences() {
         super(OptionsDialogView.class);
     }
@@ -60,6 +64,7 @@ public final class OptionsPreferences extends GamePreferences {
         statusBar = preferences.getBoolean("statusBar", false);
         outlineDragging = preferences.getBoolean("outlineDragging", false);
         cumulativeScore = preferences.getBoolean("cumulativeScore", false);
+        deck = DataLookup.BACKSIDES.values()[preferences.getInt("deck", DataLookup.BACKSIDES.DECK_1.ordinal())];
     }
 
     @Override public void save() {
@@ -70,6 +75,7 @@ public final class OptionsPreferences extends GamePreferences {
             preferences.putBoolean("statusBar", statusBar);
             preferences.putBoolean("outlineDragging", outlineDragging);
             preferences.putBoolean("cumulativeScore", cumulativeScore);
+            preferences.putInt("deck", deck.ordinal());
             preferences.flush();
         } 
         catch (Exception exception) {
@@ -87,6 +93,7 @@ public final class OptionsPreferences extends GamePreferences {
         builder.append("Status Bar: " + Boolean.toString(statusBar) + System.getProperty("line.separator"));
         builder.append("Outline Dragging: " + Boolean.toString(outlineDragging) + System.getProperty("line.separator"));
         builder.append("Cumulative Score: " + Boolean.toString(cumulativeScore) + System.getProperty("line.separator"));
+        builder.append("Deck: " + deck.toString() + System.getProperty("line.separator"));
         builder.append(new String(new char[header.length()]).replace("\0", "="));
         return builder.toString();
     }

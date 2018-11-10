@@ -29,8 +29,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import framework.communication.internal.signal.ISignalReceiver;
+import framework.communication.internal.signal.arguments.EventArgs;
+import framework.core.factories.AbstractFactory;
+import framework.core.factories.ModelFactory;
 import framework.core.mvc.model.BaseModel;
 
+import game.config.OptionsPreferences;
 import game.entities.AbstractCardEntity;
 import game.entities.ClubCardEntity;
 import game.entities.DiamondCardEntity;
@@ -41,12 +46,21 @@ import generated.DataLookup;
 
 public class CardModel extends BaseModel {
     
-    public static final String NEXT_CARD = "NEXT_CARD";
+    public static final String EVENT_UPDATE_BACKSIDE = "EVENT_UPDATE_BACKSIDE";
     
     private final AbstractCardEntity _cardEntity;
         
     public CardModel(AbstractCardEntity cardEntity) {
         _cardEntity = cardEntity;
+        
+        addSignalListener(EVENT_UPDATE_BACKSIDE, new ISignalReceiver<EventArgs>() {
+            @Override public void signalReceived(EventArgs event) {
+                OptionsPreferences preferences = new OptionsPreferences();
+                preferences.load();
+                _cardEntity.setBackside(preferences.deck);
+                refresh();
+            }
+        });
     }
         
     public boolean isEmpty() {
@@ -63,17 +77,18 @@ public class CardModel extends BaseModel {
     
     public static List<CardModel> newInstances() {
         List<CardModel> entities = new ArrayList<CardModel>();
+        ModelFactory factory = AbstractFactory.getFactory(ModelFactory.class);
         for(DataLookup.HEARTS heart : DataLookup.HEARTS.values()) {
-            entities.add(new CardModel(new HeartCardEntity(heart)));
+            entities.add(factory.add(new CardModel(new HeartCardEntity(heart))));
         }
         for(DataLookup.CLUBS club : DataLookup.CLUBS.values()) {
-            entities.add(new CardModel(new ClubCardEntity(club)));
+            entities.add(factory.add(new CardModel(new ClubCardEntity(club))));
         }
         for(DataLookup.DIAMONDS diamond : DataLookup.DIAMONDS.values()) {
-            entities.add(new CardModel(new DiamondCardEntity(diamond)));
+            entities.add(factory.add(new CardModel(new DiamondCardEntity(diamond))));
         }
         for(DataLookup.SPADES spade : DataLookup.SPADES.values()) {
-            entities.add(new CardModel(new SpadeCardEntity(spade)));
+            entities.add(factory.add(new CardModel(new SpadeCardEntity(spade))));
         }
         Collections.shuffle(entities);
         return entities;

@@ -29,6 +29,7 @@ import java.util.UUID;
 
 import framework.core.entity.AbstractDataEntity;
 
+import generated.DataLookup.BACKSIDES;
 import generated.DataLookup.LAYER;
 
 public abstract class AbstractCardEntity extends AbstractDataEntity {
@@ -36,7 +37,7 @@ public abstract class AbstractCardEntity extends AbstractDataEntity {
     /**
      * The backside entity associated to this card
      */
-    protected final BacksideCardEntity backsideCardEntity = new BacksideCardEntity();
+    protected BacksideCardEntity backsideCardEntity = new BacksideCardEntity();
     
     /**
      * The layer associated to this entity
@@ -161,5 +162,14 @@ public abstract class AbstractCardEntity extends AbstractDataEntity {
     
     @Override public String toString() {
         return (!getBacksideVisible() ? "[S]" : "[H]") + ("\t") + (ordinal + 1) + " of " + layer.toString();
+    }
+
+    /**
+     * Sets the backside of this entity
+     *
+     * @param backside The backside to set this entity with
+     */
+    public void setBackside(BACKSIDES backside) {
+        backsideCardEntity.setActiveData(backside.identifier);
     }
 }

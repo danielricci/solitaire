@@ -49,9 +49,11 @@ import framework.core.mvc.view.DialogView;
 import framework.core.system.Application;
 import framework.utils.globalisation.Localization;
 
+import game.config.OptionsPreferences;
 import game.entities.BacksideCardEntity;
 
 import generated.DataLookup;
+import generated.DataLookup.BACKSIDES;
 
 /**
  * The deck selection dialog view shows the list of deck images that the user can choose from while playing the game
@@ -122,6 +124,16 @@ public final class DeckSelectionDialogView extends DialogView {
     private final JButton _cancelButton = new JButton("Cancel");
     
     /**
+     * The current active button
+     */
+    private JButton _activeButton;
+    
+    /**
+     * The list of buttons that hold a deck option
+     */
+    private final List<JButton> _deckButtons = new ArrayList<JButton>();
+    
+    /**
      * Constructs a new instance of this class type
      */
     public DeckSelectionDialogView() {
@@ -148,8 +160,6 @@ public final class DeckSelectionDialogView extends DialogView {
         drawPanelConstraints.weightx = 1;
         drawPanelConstraints.insets = new Insets(5, 5, 5, 5);
         
-        List<JButton> buttons = new ArrayList<JButton>();
-        
         // The panel that holds the list of cards
         JPanel cardPanel = new JPanel(new GridBagLayout());
         
@@ -160,7 +170,8 @@ public final class DeckSelectionDialogView extends DialogView {
             for(int column = 0; column < _cardColumns; ++column, ++index) {
                 
                 // Create the backside entity and assign it to the button
-                BacksideCardEntity entity = new BacksideCardEntity(backsides[index]);
+                BacksideCardEntity entity = new BacksideCardEntity();
+                entity.setActiveData(backsides[index].identifier);
                 
                 // Create the button and set the size we want it to be
                 JButton button = new JButton(new ImageIcon(entity.getRenderableContent().getScaledInstance(_buttonImageWidth, _buttonImageHeight, java.awt.Image.SCALE_SMOOTH)));
@@ -169,25 +180,24 @@ public final class DeckSelectionDialogView extends DialogView {
                 button.setContentAreaFilled(false);
                 button.setFocusPainted(false);
                 button.setPreferredSize(new Dimension(_buttonWidth, _buttonHeight));
-                button.putClientProperty(button, entity);
+                button.putClientProperty(button, backsides[index]);
                 
                 // Add a listener event for when the deck image is selected
                 button.addMouseListener(new MouseAdapter() {
                     @Override public void mousePressed(MouseEvent event) {
-                        buttons.forEach(z -> z.setBorder(null));
+                        _deckButtons.forEach(z -> z.setBorder(null));
                         button.setBorder(BorderFactory.createLineBorder(Color.BLUE, 2));
-                        
+                        _activeButton = button;
                         // If more than one click count was registered, then do what the OK button would do.
                         // Note that I don't call doClick because I dont want the OK button to look like it was clicked
                         if(event.getClickCount() > 1) {
-                            setDialogResult(JOptionPane.OK_OPTION);
-                            setVisible(false);
+                            ok();
                         }
                     }
                 });
                 
                 // Add a reference to the list of buttons
-                buttons.add(button);
+                _deckButtons.add(button);
                 
                 // Specify the proper column constraint
                 drawPanelConstraints.gridx = column;
@@ -200,8 +210,7 @@ public final class DeckSelectionDialogView extends DialogView {
         // The OK button action event
         _okButton.addActionListener(new ActionListener() {
             @Override public void actionPerformed(ActionEvent event) {
-                setDialogResult(JOptionPane.OK_OPTION);
-                setVisible(false);
+                ok();
             }
         });
 
@@ -227,5 +236,15 @@ public final class DeckSelectionDialogView extends DialogView {
 
         // Render the UI
         super.render();
+    }
+    
+    private void ok() {
+        BACKSIDES back = (BACKSIDES) _activeButton.getClientProperty(_activeButton);
+        OptionsPreferences preferences = new OptionsPreferences();
+        preferences.load();
+        preferences.deck = back;
+        preferences.save();
+        setDialogResult(JOptionPane.OK_OPTION);
+        setVisible(false);
     }
 }
