@@ -82,8 +82,6 @@ public class DeckMenuItem extends AbstractMenuItem {
             
             // Update all the backsides of all the cards in the game
             EventArgs args = new EventArgs(this, CardModel.EVENT_UPDATE_BACKSIDE);
-            args.setDestinationAsTarget(true);
-            args.setSuppressUpdate(true);
             AbstractFactory.getFactory(ModelFactory.class).multicastSignalListeners(CardModel.class, args);
             
             OptionsPreferences preferences = new OptionsPreferences();
