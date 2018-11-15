@@ -70,7 +70,7 @@ public final class GameView extends PanelView {
 
             if(gameConstraints.gridy ==  1) {
                 gameConstraints.weighty = 1;
-                gameConstraints.insets = new Insets(20, 0, 20, 0);
+                gameConstraints.insets = new Insets(10, 0, 20, 0);
                 gameConstraints.fill = GridBagConstraints.VERTICAL;
             }
             else {
@@ -91,10 +91,16 @@ public final class GameView extends PanelView {
                         break;
                     }
                     case 1: {
-                        
-                        // Create the talon view
                         TalonView talonView = viewFactory.add(new TalonView(cards), true);
-                        this.add(talonView, gameConstraints, 0);
+                        GridBagConstraints talonConstraints = (GridBagConstraints)gameConstraints.clone();
+                        
+                        // Get a reference to the current constraints and subtract 20 from the right so that
+                        // it is positioned at an offset to the right of +20, then increase the size
+                        // by 20 to create enough room to potentially fit cards when playing in `draw three`
+                        talonConstraints.insets = new Insets(10, 0, 0, -30);
+                        talonConstraints.ipadx = 30;
+                        //talonConstraints.ipady += 5;
+                        this.add(talonView, talonConstraints, 0);                        
                         break;
                     }
                     case 3:

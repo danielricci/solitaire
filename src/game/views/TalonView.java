@@ -30,9 +30,12 @@ import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
+
+import javax.swing.JLayeredPane;
 
 import framework.core.factories.AbstractFactory;
 import framework.core.factories.ViewFactory;
@@ -134,14 +137,44 @@ public final class TalonView extends TableauView {
             preferences.load();
             switch(preferences.drawOption) {
             case ONE:
-            case THREE:
                 Component cardDirectlyBelowBlankCard = layeredPane.getComponent(layeredPane.getIndexOf(blankCardLayer) + 1);
                 layeredPane.setLayer(cardDirectlyBelowBlankCard, layeredPane.highestLayer() + 1);
                 for(int i = layeredPane.getComponentCount() - 1, layerId = 0;  i >= 0; --i, ++layerId) {
                     layeredPane.setLayer(layeredPane.getComponent(i), layerId);
                 }     
                 break;
-            //case THREE:
+            case THREE: {
+              CARD_OFFSET = 12;
+              // Get the components that will be used for this card sequence
+              List<CardView> components = new ArrayList<CardView>();
+              final int maxIterations = 3;
+              for(int blankCardIndex = layeredPane.getIndexOf(blankCardLayer), iterations = 1; blankCardIndex < layeredPane.getComponentCount() && iterations <= maxIterations; ++blankCardIndex, ++iterations) {
+                  CardView component = (CardView) layeredPane.getComponent(blankCardIndex + 1);
+                  components.add(component);
+                  component.setBounds(new Rectangle(
+                      (maxIterations - 1 - blankCardIndex) * CARD_OFFSET, 
+                      0, // TODO - this needs to compond down the y-axis 
+                      component.getPreferredSize().width, 
+                      component.getPreferredSize().height)
+                  );
+              }
+              //components.get(0).draggableListener.setEnabled(true);
+              
+              // Position the blank card underneath the last component index
+              Component blankCard = layeredPane.getComponent(layeredPane.getIndexOf(blankCardLayer));
+              int blankCardLayerNewPos = JLayeredPane.getLayer(components.get(components.size() - 1));
+              layeredPane.setLayer(blankCard, blankCardLayerNewPos);
+              
+//              List<Component> components = new ArrayList<Component>();
+//              for(int i = layeredPane.getIndexOf(blankCardLayer), iterations = 1; i < layeredPane.getComponentCount() && iterations <= 3; ++i, ++iterations) {
+//                  components.add(layeredPane.getComponent(i + 1));
+//                  
+//              }
+//              
+//              components.stream().forEach(z -> System.out.println(z));
+              
+            }
+            break;
             }
             
             if(blankCardLayerId - 1 == layeredPane.lowestLayer()) {
@@ -149,46 +182,6 @@ public final class TalonView extends TableauView {
             }
         }
                 
-                
-                
-                
-                
-                
-                
-                
-//                CARD_OFFSET = 12;
-//                // Get the components that will be used for this card sequence
-//                List<CardView> components = new ArrayList<CardView>();
-//                final int maxIterations = 3;
-//                for(int blankCardIndex = layeredPane.getIndexOf(blankCardLayer), iterations = 1; blankCardIndex < layeredPane.getComponentCount() && iterations <= maxIterations; ++blankCardIndex, ++iterations) {
-//                    CardView component = (CardView) layeredPane.getComponent(blankCardIndex + 1);
-//                    components.add(component);
-//                    component.setBounds(new Rectangle(
-//                        (maxIterations - 1 - blankCardIndex) * 12, 
-//                        (maxIterations - 1 - blankCardIndex) * 1, 
-//                        component.getPreferredSize().width, 
-//                        component.getPreferredSize().height));
-//                }
-//                components.get(0).draggableListener.setEnabled(true);
-//                
-//                // Position the blank card underneath the last component index
-//                Component blankCard = layeredPane.getComponent(layeredPane.getIndexOf(blankCardLayer));
-//                int blankCardLayerNewPos = JLayeredPane.getLayer(components.get(components.size() - 1));
-//                layeredPane.setLayer(blankCard, blankCardLayerNewPos);
-//                break;
-                
-                
-//                List<Component> components = new ArrayList<Component>();
-//                for(int i = layeredPane.getIndexOf(blankCardLayer), iterations = 1; i < layeredPane.getComponentCount() && iterations <= 3; ++i, ++iterations) {
-//                    components.add(layeredPane.getComponent(i + 1));
-//                    
-//                }
-//                
-//                components.stream().forEach(z -> System.out.println(z));
-//                
-//                break;
-         
-        
         return TalonCardState.NORMAL;
     }
     
