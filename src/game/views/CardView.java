@@ -256,7 +256,7 @@ public final class CardView extends PanelView implements ICollide {
     /**
      * The draggable listener associated to this view
      */
-    private final DragListener _draggableListener = new DragListener(this);
+    protected final DragListener _draggableListener = new DragListener(this);
 
     /**
      * The collision listener associated to this view
@@ -541,6 +541,6 @@ public final class CardView extends PanelView implements ICollide {
     }
     
     @Override public String toString() {
-        return getViewProperties().getEntity(CardController.class).getCard().toString();
+        return getViewProperties().getEntity(CardController.class).getCard().toString() + "\t[" + JLayeredPane.getLayer(this) + "]";
     }
 }
