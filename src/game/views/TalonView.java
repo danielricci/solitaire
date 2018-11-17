@@ -30,9 +30,13 @@ import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
+
+import javax.swing.JComponent;
+import javax.swing.JLayeredPane;
 
 import framework.core.factories.AbstractFactory;
 import framework.core.factories.ViewFactory;
@@ -133,24 +137,39 @@ public final class TalonView extends TableauView {
             OptionsPreferences preferences = new OptionsPreferences();
             preferences.load();
             switch(preferences.drawOption) {
-            case ONE:
+            case ONE: {
+                
+                // Get the card that is directly below the blank card
                 Component cardDirectlyBelowBlankCard = layeredPane.getComponent(layeredPane.getIndexOf(blankCardLayer) + 1);
+                
+                // Set the layer of the card that is directly below the blank card, to the highest layer
                 layeredPane.setLayer(cardDirectlyBelowBlankCard, layeredPane.highestLayer() + 1);
+                
+                // Starting from the lowest layer upwards, re-synchronize all the layer positions of the cards.
                 for(int i = layeredPane.getComponentCount() - 1, layerId = 0;  i >= 0; --i, ++layerId) {
                     layeredPane.setLayer(layeredPane.getComponent(i), layerId);
-                }     
+                }
                 break;
+            }
             case THREE: {
                 
               // Set the offset that the cards will render to
               CARD_OFFSET = 12;
               
               // Get the components that will be used for this card sequence
-              //List<CardView> components = new ArrayList<CardView>();
+              List<CardView> components = new ArrayList<CardView>();
               
               final int maxIterations = 3;
               for(int blankCardIndex = layeredPane.getIndexOf(blankCardLayer), iterations = 1; blankCardIndex < layeredPane.getComponentCount() && iterations <= maxIterations; ++blankCardIndex, ++iterations) {
               
+                  // Get the card that will be shifted. 
+                  // Note: This card shoud be above the `blank invisible card` offset w.r.t the index layer
+                  CardView card = (CardView) layeredPane.getComponent(blankCardIndex + 1);
+              
+                  
+                  //layeredPane.setLayer(card, layer);
+                  
+                  
                   // Get the component wrt the blank card layer
 //                  CardView component = (CardView) layeredPane.getComponent(blankCardIndex + 1);
 //                  components.add(component);
@@ -163,6 +182,13 @@ public final class TalonView extends TableauView {
 //                      component.getPreferredSize().height)
 //                  );
               }
+
+              // Starting from the end to the beginning of the layered pane, re-synchronize all the 
+              // layer positions of the cards.
+              for(int i = layeredPane.getComponentCount() - 1, layerId = 0;  i >= 0; --i, ++layerId) {
+                  layeredPane.setLayer(layeredPane.getComponent(i), layerId);
+              }
+
               
               // Position the blank card underneath the last component index
 //              Component blankCard = layeredPane.getComponent(layeredPane.getIndexOf(blankCardLayer));
@@ -197,7 +223,10 @@ public final class TalonView extends TableauView {
         builder.append(header + System.getProperty("line.separator"));
         
         for(Component comp : layeredPane.getComponents()) {
-            builder.append((comp instanceof CardView ? comp : "[=======BLANK=======]") + System.getProperty("line.separator"));
+            if(comp instanceof JComponent) {
+                JComponent jcomp = (JComponent) comp;
+                builder.append((jcomp instanceof CardView ? jcomp : "[=======BLANK=======]" + "\t[" + JLayeredPane.getLayer(jcomp) + "]") + System.getProperty("line.separator"));
+            }
         }
         builder.append(new String(new char[header.length()]).replace("\0", "="));
         return builder.toString();
