@@ -76,6 +76,9 @@ public final class OptionsDialogView extends DialogView {
      */
     public boolean cumulativeScoreChanged;
     
+    // The OK button
+    private JButton okButton = new JButton("OK");
+    
     /**
      * Constructs a new instance of this class type
      */
@@ -169,8 +172,6 @@ public final class OptionsDialogView extends DialogView {
 
         barOptionsPanelRight.add(cumulativeScoreCheckBox);
 
-        // The OK button
-        JButton okButton = new JButton("OK");
         okButton.addActionListener(new ActionListener() {
             @Override public void actionPerformed(ActionEvent event) {
                 
@@ -245,5 +246,10 @@ public final class OptionsDialogView extends DialogView {
         // Add the main panel and the action panel to the main view;
         add(mainPanel);
         add(actionsPanel);
+    }
+    
+    @Override protected void enterActionPerformed(ActionEvent event) {
+        super.enterActionPerformed(event);
+        this.okButton.doClick();
     }
 }
