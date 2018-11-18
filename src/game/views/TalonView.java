@@ -60,12 +60,19 @@ public final class TalonView extends TableauView {
             CardView cardView = AbstractFactory.getFactory(ViewFactory.class).add(new CardView(cards.get(i)));
             cardView.addMouseListener(new MouseAdapter() {
                 @Override public void mouseReleased(MouseEvent event) {
+            
                     // When the mouse is released, ensure that the component located at the highest layer is enabled
                     layeredPane.getComponentsInLayer(layeredPane.highestLayer())[0].setEnabled(true);
+                    
+                    // If the card is no longer associated to the talon, then remove its association to this event
+                    if(!(cardView.getParentIView() instanceof TalonView)) {
+                        cardView.removeMouseListener(this);
+                    }
                 }
             });
             cardView.setBounds(new Rectangle(0, 0, cardView.getPreferredSize().width, cardView.getPreferredSize().height));
             cardView.setEnabled(false);
+            
             layeredPane.add(cardView);
             layeredPane.setLayer(cardView, i);
         }
