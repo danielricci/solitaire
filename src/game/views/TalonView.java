@@ -30,7 +30,6 @@ import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
@@ -54,12 +53,19 @@ public final class TalonView extends TableauView {
      * @param cards The card models to load within this view
      */
     public TalonView(List<CardModel> cards) {
+        
         CARD_OFFSET = 0;
         
         for(int i = 0; i < cards.size(); ++ i) {
             CardView cardView = AbstractFactory.getFactory(ViewFactory.class).add(new CardView(cards.get(i)));
+            cardView.addMouseListener(new MouseAdapter() {
+                @Override public void mouseReleased(MouseEvent event) {
+                    // When the mouse is released, ensure that the component located at the highest layer is enabled
+                    layeredPane.getComponentsInLayer(layeredPane.highestLayer())[0].setEnabled(true);
+                }
+            });
             cardView.setBounds(new Rectangle(0, 0, cardView.getPreferredSize().width, cardView.getPreferredSize().height));
-            
+            cardView.setEnabled(false);
             layeredPane.add(cardView);
             layeredPane.setLayer(cardView, i);
         }
@@ -67,10 +73,12 @@ public final class TalonView extends TableauView {
         // Create a blank panel view and blend it to the background of the game
         PanelView pv = new PanelView();
         pv.setBackground(new Color(0, 128, 0));
-        pv.setBounds(new Rectangle(0, 0, CardView.CARD_WIDTH, CardView.CARD_HEIGHT));
+        pv.setPreferredSize(new Dimension(CardView.CARD_WIDTH, CardView.CARD_HEIGHT));
+        pv.setBounds(new Rectangle(0, 0, pv.getPreferredSize().width, pv.getPreferredSize().height));
         pv.setVisible(true);
-        
-        // Note: Adding a mouse listener to the blank card prevents the card immediately behind it from being clicked 
+
+        // Add a listener to the blank card since it is sitting above the board. If someone tries to click in this area
+        // the timer will start, unknowing to the player that they really clicked on a special area of the board
         pv.addMouseListener(new MouseAdapter() {
             @Override public void mousePressed(MouseEvent e) {
                 GameTimerView gameTimerView = AbstractFactory.getFactory(ViewFactory.class).get(GameTimerView.class);
@@ -111,97 +119,81 @@ public final class TalonView extends TableauView {
         
         // Get the layer id of the blank card within this view
         Component blankCardLayer = Arrays.asList(layeredPane.getComponents()).stream().filter(z -> !(z instanceof CardView)).findFirst().get();
-        int blankCardLayerId = layeredPane.getLayer(blankCardLayer);
         
         // If we are at the end then restart the deck
-        if(blankCardLayerId == layeredPane.lowestLayer()) {
+        if(layeredPane.getLayer(blankCardLayer) == layeredPane.lowestLayer()) {
 
             // New deck has the score updated
             AbstractFactory.getFactory(ViewFactory.class).get(GameScoreView.class).updateScoreDeckFinished();
             
-            // Remove the list of components from the layered pane. 
+            // Go through the list in reverse order and re-assign the layer identifiers.
+            // Make sure to reference a static list of components so that when the layer identifiers change
+            // within the loop, the order of the layers will not go out of position
             Component[] components = layeredPane.getComponents();
-            layeredPane.removeAll();
-            
-            // Go through the list in reverse order and re-assign the layer identifiers as they were before
-            // Note: This is done this way because if we re-order when they are within the layered pane
-            // then the layered pane will control the index positions after the layer id is set, and during
-            // the resetting of the layer id's, these positions are not properly managed the way that we would want
-            // them to be.
             for(int i = components.length - 1; i >= 0; --i) {
-                layeredPane.add(components[i]);
                 layeredPane.setLayer(components[i], i);
-            }            
+                components[i].setBounds(new Rectangle(0, 0, components[i].getPreferredSize().width, components[i].getPreferredSize().height)); 
+            }
         }
         else {
             OptionsPreferences preferences = new OptionsPreferences();
             preferences.load();
             switch(preferences.drawOption) {
-            case ONE: {
-                
-                // Get the card that is directly below the blank card
-                Component cardDirectlyBelowBlankCard = layeredPane.getComponent(layeredPane.getIndexOf(blankCardLayer) + 1);
-                
-                // Set the layer of the card that is directly below the blank card, to the highest layer
-                layeredPane.setLayer(cardDirectlyBelowBlankCard, layeredPane.highestLayer() + 1);
-                
-                // Starting from the lowest layer upwards, re-synchronize all the layer positions of the cards.
-                for(int i = layeredPane.getComponentCount() - 1, layerId = 0;  i >= 0; --i, ++layerId) {
-                    layeredPane.setLayer(layeredPane.getComponent(i), layerId);
+                case ONE: {
+                    
+                    // Get the card that is directly below the blank card
+                    Component cardDirectlyBelowBlankCard = layeredPane.getComponent(layeredPane.getIndexOf(blankCardLayer) + 1);
+                    
+                    // Set the layer of the card that is directly below the blank card, to the highest layer
+                    layeredPane.setLayer(cardDirectlyBelowBlankCard, layeredPane.highestLayer() + 1);
+                    
+                    // Starting from the lowest layer upwards, re-synchronize all the layer positions of the cards.
+                    for(int i = layeredPane.getComponentCount() - 1, layerId = 0;  i >= 0; --i, ++layerId) {
+                        
+                        // Re-synchronize the layer position of the card
+                        layeredPane.setLayer(layeredPane.getComponent(i), layerId);
+
+                        // Set the enabled state of the component. The only component that should be enabled is the top-most one, the rest should be disabled
+                        layeredPane.getComponent(i).setEnabled(layeredPane.highestLayer() == layeredPane.getLayer(layeredPane.getComponent(i)));
+                    }
+                    break;
                 }
-                break;
-            }
-            case THREE: {
-                
-              // Set the offset that the cards will render to
-              CARD_OFFSET = 12;
-              
-              // Get the components that will be used for this card sequence
-              List<CardView> components = new ArrayList<CardView>();
-              
-              final int maxIterations = 3;
-              for(int blankCardIndex = layeredPane.getIndexOf(blankCardLayer), iterations = 1; blankCardIndex < layeredPane.getComponentCount() && iterations <= maxIterations; ++blankCardIndex, ++iterations) {
-              
-                  // Get the card that will be shifted. 
-                  // Note: This card shoud be above the `blank invisible card` offset w.r.t the index layer
-                  CardView card = (CardView) layeredPane.getComponent(blankCardIndex + 1);
-              
+                case THREE: {
+                    
+                  // Set the offset that the cards will render to
+                  CARD_OFFSET = 12;
                   
-                  //layeredPane.setLayer(card, layer);
+                  final int maxIterations = 3;
+                  for(int blankCardIndex = layeredPane.getIndexOf(blankCardLayer), iterations = 1; blankCardIndex < layeredPane.getComponentCount() && iterations <= maxIterations; ++blankCardIndex, ++iterations) {
                   
+                      // Get the card that will be shifted. 
+                      // Note: This card shoud be above the `blank invisible card` offset w.r.t the index layer
+                      CardView card = (CardView) layeredPane.getComponent(blankCardIndex + 1);
+                      
+                      // Set the layer of the card that is directly below the blank card, to the highest layer
+                      layeredPane.setLayer(card, layeredPane.highestLayer() + 1);
+                      
+                      card.setBounds(new Rectangle(
+                            (iterations - 1) * CARD_OFFSET, 
+                            0, // TODO - this needs to compond down the y-axis 
+                            card.getPreferredSize().width, 
+                            card.getPreferredSize().height));
+                  }
                   
-                  // Get the component wrt the blank card layer
-//                  CardView component = (CardView) layeredPane.getComponent(blankCardIndex + 1);
-//                  components.add(component);
-//                  component._draggableListener.setEnabled(false);
-//                  // Set the position w.r.t the card rank that it is in for the three choices
-//                  component.setBounds(new Rectangle(
-//                      (maxIterations - 1 - blankCardIndex) * CARD_OFFSET, 
-//                      0, // TODO - this needs to compond down the y-axis 
-//                      component.getPreferredSize().width, 
-//                      component.getPreferredSize().height)
-//                  );
-              }
-
-              // Starting from the end to the beginning of the layered pane, re-synchronize all the 
-              // layer positions of the cards.
-              for(int i = layeredPane.getComponentCount() - 1, layerId = 0;  i >= 0; --i, ++layerId) {
-                  layeredPane.setLayer(layeredPane.getComponent(i), layerId);
-              }
-
-              
-              // Position the blank card underneath the last component index
-//              Component blankCard = layeredPane.getComponent(layeredPane.getIndexOf(blankCardLayer));
-//              int blankCardLayerNewPos = JLayeredPane.getLayer(components.get(components.size() - 1));
-//              layeredPane.setLayer(blankCard, blankCardLayerNewPos);
-
-//              components.stream().forEach(z -> System.out.println(z));
-              
-            }
-            break;
+                  for(int i = layeredPane.getComponentCount() - 1, layerId = 0;  i >= 0; --i, ++layerId) {
+                      
+                      // Re-synchronize the layer position of the card
+                      layeredPane.setLayer(layeredPane.getComponent(i), layerId);
+                      
+                      // Set the enabled state of the component. The only component that should be enabled is the top-most one, the rest should be disabled
+                      layeredPane.getComponent(i).setEnabled(layeredPane.highestLayer() == layeredPane.getLayer(layeredPane.getComponent(i)));
+                  }
+                  
+                  break;
+                }
             }
             
-            if(blankCardLayerId - 1 == layeredPane.lowestLayer()) {
+            if(layeredPane.lowestLayer() == layeredPane.getLayer(blankCardLayer)) {
                 return TalonCardState.DECK_PLAYED;
             }
         }
@@ -211,10 +203,6 @@ public final class TalonView extends TableauView {
     
     @Override public boolean isValidCollision(Component source) {
         return false;
-    }
-    
-    @Override public Dimension getPreferredSize() {
-        return new Dimension(CardView.CARD_WIDTH, CardView.CARD_HEIGHT);
     }
     
     @Override public String toString() {

@@ -88,6 +88,10 @@ public final class CardView extends PanelView implements ICollide {
         
         @Override public void mousePressed(MouseEvent event) {
 
+            if(!isEnabled()) {
+                return;
+            }
+            
             // Get the parent of this card view, used as a reference to go back to whatever we were coming from
             _parentLayeredPane = (JLayeredPane) CardView.this.getParent();
 
@@ -145,6 +149,10 @@ public final class CardView extends PanelView implements ICollide {
         }
 
         @Override public void mouseReleased(MouseEvent event) {
+            
+            if(!isEnabled()) {
+                return;
+            }
             
             // Ensure that a valid parent was set on the mouse pressed before continuing
             if(_parentLayeredPane == null) {
@@ -239,6 +247,32 @@ public final class CardView extends PanelView implements ICollide {
     }
 
     /**
+     * This mouse adapter handles events when the card is pressed with the mouse
+     */
+    private MouseAdapter _mouseAdapter = new MouseAdapter() {
+        @Override public void mousePressed(MouseEvent event) {
+            
+            if(!isEnabled()) {
+                return;
+            }
+            
+            GameTimerView gameTimerView = AbstractFactory.getFactory(ViewFactory.class).get(GameTimerView.class);
+            if(gameTimerView != null) {
+                gameTimerView.startGameTimer();
+            }
+            
+            if(CardView.this.getParent().getComponents()[0].equals(CardView.this)) {
+                if(event.getClickCount() == 1) {
+                    uncoverBackside();
+                }
+                else {
+                    performCardAutoMovement();
+                }
+            }
+        }
+    };
+    
+    /**
      * The preferred width of this card
      */
     public static final int CARD_WIDTH = 71;
@@ -256,7 +290,7 @@ public final class CardView extends PanelView implements ICollide {
     /**
      * The draggable listener associated to this view
      */
-    protected final DragListener _draggableListener = new DragListener(this);
+    protected final DragListener draggableListener = new DragListener(this);
 
     /**
      * The collision listener associated to this view
@@ -292,7 +326,7 @@ public final class CardView extends PanelView implements ICollide {
      * Signal indicating that this view should synchronizr with the outline option
      */
     public final static String EVENT_OUTLINE_SYNCHRONIZE = "EVENT_OUTLINE_SYNCHRONIZE";
-     
+    
     /**
      * Constructs a new instance of this class type
      * 
@@ -324,23 +358,7 @@ public final class CardView extends PanelView implements ICollide {
         //       initiate the proxy, thus the double click of the proxy will be called
         //
         // Note: This mouse listener should be before any other mouse listener within this class
-        addMouseListener(new MouseAdapter() {
-            @Override public void mousePressed(MouseEvent event) {
-                GameTimerView gameTimerView = AbstractFactory.getFactory(ViewFactory.class).get(GameTimerView.class);
-                if(gameTimerView != null) {
-                    gameTimerView.startGameTimer();
-                }
-                
-                if(CardView.this.getParent().getComponents()[0].equals(CardView.this)) {
-                    if(event.getClickCount() == 1) {
-                        uncoverBackside();
-                    }
-                    else {
-                        performCardAutoMovement();
-                    }
-                }
-            }
-        });
+        addMouseListener(_mouseAdapter);
 
         /**
          * Listen in on events when we need to synchronize withthe online option
@@ -370,7 +388,7 @@ public final class CardView extends PanelView implements ICollide {
 
         // If the card has its backside shown or the outline option is enabled
         // then do not allow dragging or collision to work as normal
-        _draggableListener.setEnabled(!_controller.getCard().getIsBackside() && !optionsPreferences.outlineDragging);
+        draggableListener.setEnabled(!_controller.getCard().getIsBackside() && !optionsPreferences.outlineDragging);
         _collisionListener.setEnabled(!_controller.getCard().getIsBackside() && !optionsPreferences.outlineDragging);
         
         // If the backside is not being shown, then add the event handler for card drag event
@@ -386,7 +404,7 @@ public final class CardView extends PanelView implements ICollide {
                 removeMouseListener(_cardSelectionEvents);
                 add(_cardProxy);
             }   
-        }
+        } 
         
         // TODO - Is this really necessary???
         repaint();
@@ -423,7 +441,7 @@ public final class CardView extends PanelView implements ICollide {
             OptionsPreferences preferences = new OptionsPreferences();
             preferences.load();
             if(!preferences.outlineDragging) {
-                _draggableListener.setEnabled(true);
+                draggableListener.setEnabled(true);
                 _collisionListener.setEnabled(true);
             }
             
@@ -462,7 +480,7 @@ public final class CardView extends PanelView implements ICollide {
                     AbstractFactory.getFactory(ViewFactory.class).get(GameScoreView.class).updateScore(MovementType.fromClass(CardView.this.getParentIView()), MovementType.FOUNDATION);
                     
                     // Halt any drag events that could occur
-                    _draggableListener.stopDragEvent();
+                    draggableListener.stopDragEvent();
                     
                     // Hack:    Update the card selection event because there are cases where the mouse up event would reset all that is done here
                     // Ex:      Double clicking on an ace that is in the pile view (outline mode off) will cause the card to go to a foundation
@@ -492,6 +510,12 @@ public final class CardView extends PanelView implements ICollide {
         }
     }
     
+    @Override public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        draggableListener.setEnabled(enabled);
+        _collisionListener.setEnabled(enabled);
+    }
+    
     @Override public boolean isValidCollision(Component source) {
         IView view = (IView)source;
         
@@ -516,7 +540,7 @@ public final class CardView extends PanelView implements ICollide {
     
     @Override public void removeAll() {
         super.removeAll();
-        _draggableListener.setEnabled(false);
+        draggableListener.setEnabled(false);
         _collisionListener.setEnabled(false);
     }
 

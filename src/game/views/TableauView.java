@@ -41,7 +41,7 @@ import game.controllers.CardController;
 import game.models.CardModel;
 
 public class TableauView extends PanelView implements ICollide {
-    
+        
     /**
      * Specifies the offset of each card within this view
      */
