@@ -43,18 +43,26 @@ import framework.core.mvc.view.PanelView;
 import framework.utils.logging.Tracelog;
 
 import game.config.OptionsPreferences;
+import game.config.OptionsPreferences.DrawOption;
 import game.models.CardModel;
 
 public final class TalonView extends TableauView {
-
+    
     /**
      * Constructs a new instance of this class type
      * 
      * @param cards The card models to load within this view
      */
     public TalonView(List<CardModel> cards) {
-        
-        CARD_OFFSET = 0;
+
+        OptionsPreferences preferences = new OptionsPreferences();
+        preferences.load();
+        if(preferences.drawOption == DrawOption.THREE) {
+            CARD_OFFSET = 12;
+        }
+        else {
+            CARD_OFFSET = 0;    
+        }
         
         for(int i = 0; i < cards.size(); ++ i) {
             CardView cardView = AbstractFactory.getFactory(ViewFactory.class).add(new CardView(cards.get(i)));
@@ -67,6 +75,30 @@ public final class TalonView extends TableauView {
                     // If the card is no longer associated to the talon, then remove its association to this event
                     if(!(cardView.getParentIView() instanceof TalonView)) {
                         cardView.removeMouseListener(this);
+                    }
+                    // The card was put back, so position it accordingly so that it can be shown again
+                    else {
+                        // The position of the card when playing with `three` is all that concerns us since position
+                        // matters, vs `single` card which are all stacked.
+                        OptionsPreferences preferences = new OptionsPreferences();
+                        preferences.load();
+                        if(preferences.drawOption == DrawOption.THREE) {
+                            Rectangle bounds = new Rectangle(0, 0, cardView.getPreferredSize().width, cardView.getPreferredSize().height);
+                            switch(layeredPane.highestLayer() % 3) {
+                            case 0: // Right-most
+                                bounds.x = CARD_OFFSET * 2;
+                                bounds.y = 0;
+                                break;
+                            case 1: // Left-most
+                                bounds.x = bounds.y = 0;
+                                break;
+                            case 2: // Center
+                                bounds.x = CARD_OFFSET;
+                                bounds.y = 0;
+                                break;
+                            }
+                            cardView.setBounds(bounds);
+                        }
                     }
                 }
             });
@@ -138,8 +170,10 @@ public final class TalonView extends TableauView {
             // within the loop, the order of the layers will not go out of position
             Component[] components = layeredPane.getComponents();
             for(int i = components.length - 1; i >= 0; --i) {
-                layeredPane.setLayer(components[i], i);
-                components[i].setBounds(new Rectangle(0, 0, components[i].getPreferredSize().width, components[i].getPreferredSize().height)); 
+                Component component = components[i];
+                layeredPane.setLayer(component, i);
+                component.setBounds(new Rectangle(0, 0, component.getPreferredSize().width, component.getPreferredSize().height));
+                component.setVisible(true);
             }
         }
         else {
@@ -166,37 +200,51 @@ public final class TalonView extends TableauView {
                     break;
                 }
                 case THREE: {
+
+                    // If the highest layer is not the blank card, then from the blank card upwards, remove
+                    // the visibility of the cards. This must be done before performing the three-card move
+                    if(layeredPane.highestLayer() != layeredPane.getLayer(blankCardLayer)) {
+                        // Note: Go from the card just above the blank card until the end (top) is reached
+                        for(int i = layeredPane.getLayer(blankCardLayer) + 1; i <= layeredPane.highestLayer(); ++i) {
+                            
+                            Component component = layeredPane.getComponentsInLayer(i)[0];
+                            component.setVisible(false);
+                            System.out.println("Setting invisible " + component);
+                        }
+                    }
                     
-                  // Set the offset that the cards will render to
-                  CARD_OFFSET = 12;
-                  
-                  final int maxIterations = 3;
-                  for(int blankCardIndex = layeredPane.getIndexOf(blankCardLayer), iterations = 1; blankCardIndex < layeredPane.getComponentCount() && iterations <= maxIterations; ++blankCardIndex, ++iterations) {
-                  
-                      // Get the card that will be shifted. 
-                      // Note: This card shoud be above the `blank invisible card` offset w.r.t the index layer
-                      CardView card = (CardView) layeredPane.getComponent(blankCardIndex + 1);
+                    final int maxIterations = 3;
+                    for(
+                            int blankCardIndex = layeredPane.getIndexOf(blankCardLayer), iterations = 1; 
+                            blankCardIndex < layeredPane.getComponentCount() && layeredPane.lowestLayer() != layeredPane.getLayer(blankCardLayer) && iterations <= maxIterations; 
+                            ++blankCardIndex, ++iterations
+                    ) {
+  
+                    // Get the card that will be shifted. 
+                    // Note: This card shoud be above the `blank invisible card` offset w.r.t the index layer
+                    CardView card = (CardView) layeredPane.getComponent(blankCardIndex + 1);
+  
+                    // Set the layer of the card that is directly below the blank card, to the highest layer
+                    layeredPane.setLayer(card, layeredPane.highestLayer() + 1);
                       
-                      // Set the layer of the card that is directly below the blank card, to the highest layer
-                      layeredPane.setLayer(card, layeredPane.highestLayer() + 1);
-                      
-                      card.setBounds(new Rectangle(
+                    // Set the bounding position of the card
+                    card.setBounds(new Rectangle(
                             (iterations - 1) * CARD_OFFSET, 
                             0, // TODO - this needs to compond down the y-axis 
                             card.getPreferredSize().width, 
                             card.getPreferredSize().height));
-                  }
-                  
-                  for(int i = layeredPane.getComponentCount() - 1, layerId = 0;  i >= 0; --i, ++layerId) {
-                      
-                      // Re-synchronize the layer position of the card
-                      layeredPane.setLayer(layeredPane.getComponent(i), layerId);
-                      
-                      // Set the enabled state of the component. The only component that should be enabled is the top-most one, the rest should be disabled
-                      layeredPane.getComponent(i).setEnabled(layeredPane.highestLayer() == layeredPane.getLayer(layeredPane.getComponent(i)));
-                  }
-                  
-                  break;
+                    }
+  
+                    // Iterate backwards through the talon deck
+                    for(int i = layeredPane.getComponentCount() - 1, layerId = 0;  i >= 0; --i, ++layerId) {
+      
+                        // Re-synchronize the layer position of the card
+                        layeredPane.setLayer(layeredPane.getComponent(i), layerId);
+  
+                        // Set the enabled state of the component. The only component that should be enabled is the top-most one
+                        layeredPane.getComponent(i).setEnabled(layeredPane.highestLayer() == layeredPane.getLayer(layeredPane.getComponent(i)));
+                    }
+                    break;
                 }
             }
             
