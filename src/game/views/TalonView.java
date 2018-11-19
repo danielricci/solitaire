@@ -77,7 +77,9 @@ public final class TalonView extends TableauView {
                         cardView.removeMouseListener(this);
                     }
                     // The card was put back, so position it accordingly so that it can be shown again
-                    else {
+                    // Make sure that the card is enabled. Since when a card is not enabled, the event
+                    // handlers are not applied to the card
+                    else if(cardView.isEnabled()){
                         // The position of the card when playing with `three` is all that concerns us since position
                         // matters, vs `single` card which are all stacked.
                         OptionsPreferences preferences = new OptionsPreferences();
