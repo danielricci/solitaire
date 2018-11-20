@@ -31,8 +31,10 @@ import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 import javax.swing.JComponent;
 import javax.swing.JLayeredPane;
@@ -49,12 +51,22 @@ import game.models.CardModel;
 public final class TalonView extends TableauView {
     
     /**
+     * The blank card associated to the talon view
+     */
+    private final PanelView _blankCard = new PanelView();
+    
+    /**
      * Constructs a new instance of this class type
      * 
      * @param cards The card models to load within this view
      */
     public TalonView(List<CardModel> cards) {
 
+        _blankCard.setBackground(new Color(0, 128, 0));
+        _blankCard.setPreferredSize(new Dimension(CardView.CARD_WIDTH, CardView.CARD_HEIGHT));
+        _blankCard.setBounds(new Rectangle(0, 0, _blankCard.getPreferredSize().width, _blankCard.getPreferredSize().height));
+        _blankCard.setVisible(true);
+        
         OptionsPreferences preferences = new OptionsPreferences();
         preferences.load();
         if(preferences.drawOption == DrawOption.THREE) {
@@ -75,6 +87,19 @@ public final class TalonView extends TableauView {
                     // If the card is no longer associated to the talon, then remove its association to this event
                     if(!(cardView.getParentIView() instanceof TalonView)) {
                         cardView.removeMouseListener(this);
+                        
+                        // The top-most card cannot be the layered pane
+                        boolean cond1 = layeredPane.highestLayer() != JLayeredPane.getLayer(_blankCard);
+                        
+                        // There must not be any more visible cards (excluding the blank card)
+                        boolean cond2 = Arrays.asList(layeredPane.getComponents()).stream().anyMatch(z -> !z.equals(_blankCard) && z.isVisible());
+                        
+                        if(cond1 && !cond2) {
+                            for(int iterations = 0, layerId = JLayeredPane.getLayer(_blankCard) + 1; layerId <= layeredPane.highestLayer() || iterations < 3; ++layerId, ++iterations) {
+                                Component component = layeredPane.getComponentsInLayer(layerId)[0];
+                                component.setVisible(true);
+                            }
+                        }
                     }
                     // The card was put back, so position it accordingly so that it can be shown again
                     // Make sure that the card is enabled. Since when a card is not enabled, the event
@@ -85,18 +110,24 @@ public final class TalonView extends TableauView {
                         OptionsPreferences preferences = new OptionsPreferences();
                         preferences.load();
                         if(preferences.drawOption == DrawOption.THREE) {
+                            
+                            List<Component> visibleCards = Arrays.asList(layeredPane.getComponents()).stream().filter(z -> !z.equals(_blankCard) && z.isVisible()).collect(Collectors.toList());
+                            Collections.reverse(visibleCards);
                             Rectangle bounds = new Rectangle(0, 0, cardView.getPreferredSize().width, cardView.getPreferredSize().height);
-                            switch(layeredPane.highestLayer() % 3) {
-                            case 0: // Right-most
+                            switch(visibleCards.indexOf(cardView)) {
+                            case 0: // Left-most
+                                bounds.x = bounds.y = 0;
+                                break;
+                            case 1: // Center
+                                bounds.x = CARD_OFFSET;
+                                bounds.y = 0;
+                                break;
+                            case 2: // Right-most
                                 bounds.x = CARD_OFFSET * 2;
                                 bounds.y = 0;
                                 break;
-                            case 1: // Left-most
-                                bounds.x = bounds.y = 0;
-                                break;
-                            case 2: // Center
-                                bounds.x = CARD_OFFSET;
-                                bounds.y = 0;
+                            default:
+                                Tracelog.log(Level.SEVERE, true, "Could not place card back into the talon, given index is " + visibleCards.indexOf(cardView));
                                 break;
                             }
                             cardView.setBounds(bounds);
@@ -104,23 +135,21 @@ public final class TalonView extends TableauView {
                     }
                 }
             });
+            
             cardView.setBounds(new Rectangle(0, 0, cardView.getPreferredSize().width, cardView.getPreferredSize().height));
+            
+            // All cards are disabled by default, and should be disabled by default after a subsequent deck has been played through
             cardView.setEnabled(false);
             
+            // Add the card to the layered pane and set it's layer accordingly
             layeredPane.add(cardView);
             layeredPane.setLayer(cardView, i);
         }
         
-        // Create a blank panel view and blend it to the background of the game
-        PanelView pv = new PanelView();
-        pv.setBackground(new Color(0, 128, 0));
-        pv.setPreferredSize(new Dimension(CardView.CARD_WIDTH, CardView.CARD_HEIGHT));
-        pv.setBounds(new Rectangle(0, 0, pv.getPreferredSize().width, pv.getPreferredSize().height));
-        pv.setVisible(true);
-
+        
         // Add a listener to the blank card since it is sitting above the board. If someone tries to click in this area
         // the timer will start, unknowing to the player that they really clicked on a special area of the board
-        pv.addMouseListener(new MouseAdapter() {
+        _blankCard.addMouseListener(new MouseAdapter() {
             @Override public void mousePressed(MouseEvent e) {
                 GameTimerView gameTimerView = AbstractFactory.getFactory(ViewFactory.class).get(GameTimerView.class);
                 if(gameTimerView != null) {
@@ -130,8 +159,10 @@ public final class TalonView extends TableauView {
         });
         
         // Add it to the top, but make sure that the layer number is unique
-        layeredPane.add(pv);
-        layeredPane.setLayer(pv, layeredPane.getComponentCount() - 1);
+        layeredPane.add(_blankCard);
+        
+        // Ad the blank card at the top of the deck 
+        layeredPane.setLayer(_blankCard, layeredPane.getComponentCount() - 1);
     }
     
     public enum TalonCardState {
@@ -175,7 +206,9 @@ public final class TalonView extends TableauView {
                 Component component = components[i];
                 layeredPane.setLayer(component, i);
                 component.setBounds(new Rectangle(0, 0, component.getPreferredSize().width, component.getPreferredSize().height));
-                component.setVisible(true);
+
+                // Set the visible state of the component. This should make everything but the blank layer not visible
+                layeredPane.getComponent(i).setVisible(layeredPane.highestLayer() == layeredPane.getLayer(layeredPane.getComponent(i)));
             }
         }
         else {
@@ -186,9 +219,11 @@ public final class TalonView extends TableauView {
                     
                     // Get the card that is directly below the blank card
                     Component cardDirectlyBelowBlankCard = layeredPane.getComponent(layeredPane.getIndexOf(blankCardLayer) + 1);
+                    cardDirectlyBelowBlankCard.setVisible(true);
                     
                     // Set the layer of the card that is directly below the blank card, to the highest layer
                     layeredPane.setLayer(cardDirectlyBelowBlankCard, layeredPane.highestLayer() + 1);
+                    
                     
                     // Starting from the lowest layer upwards, re-synchronize all the layer positions of the cards.
                     for(int i = layeredPane.getComponentCount() - 1, layerId = 0;  i >= 0; --i, ++layerId) {
@@ -208,10 +243,8 @@ public final class TalonView extends TableauView {
                     if(layeredPane.highestLayer() != layeredPane.getLayer(blankCardLayer)) {
                         // Note: Go from the card just above the blank card until the end (top) is reached
                         for(int i = layeredPane.getLayer(blankCardLayer) + 1; i <= layeredPane.highestLayer(); ++i) {
-                            
                             Component component = layeredPane.getComponentsInLayer(i)[0];
                             component.setVisible(false);
-                            System.out.println("Setting invisible " + component);
                         }
                     }
                     
@@ -225,7 +258,8 @@ public final class TalonView extends TableauView {
                     // Get the card that will be shifted. 
                     // Note: This card shoud be above the `blank invisible card` offset w.r.t the index layer
                     CardView card = (CardView) layeredPane.getComponent(blankCardIndex + 1);
-  
+                    card.setVisible(true);
+                    
                     // Set the layer of the card that is directly below the blank card, to the highest layer
                     layeredPane.setLayer(card, layeredPane.highestLayer() + 1);
                       
@@ -258,6 +292,16 @@ public final class TalonView extends TableauView {
         return TalonCardState.NORMAL;
     }
     
+    @Override public void render() {
+        super.render();
+        for(Component comp : layeredPane.getComponents()) {
+            if(!comp.equals(_blankCard)) {
+                comp.setVisible(false);
+            }
+        }
+    }
+    
+
     @Override public boolean isValidCollision(Component source) {
         return false;
     }
