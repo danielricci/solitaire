@@ -34,6 +34,7 @@ import framework.core.system.Application;
 import framework.utils.logging.Tracelog;
 
 import game.config.OptionsPreferences;
+import game.config.OptionsPreferences.DrawOption;
 import game.config.OptionsPreferences.ScoringOption;
 import game.gameplay.MovementType;
 
@@ -84,7 +85,16 @@ public class GameScoreView extends PanelView {
     }
     
     public void updateScoreDeckFinished() {
-        SCORE = Math.max(0, SCORE - 100);
+        OptionsPreferences preferences = new OptionsPreferences();
+        preferences.load();
+        
+        if(preferences.drawOption == DrawOption.THREE && preferences.scoringOption == ScoringOption.STANDARD) {
+            SCORE = Math.max(0, SCORE - 20);
+        }
+        else {
+            SCORE = Math.max(0, SCORE - 100);    
+        }
+        
         scoreValue.setText(toString());
     }
     
