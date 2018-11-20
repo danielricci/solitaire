@@ -565,6 +565,6 @@ public final class CardView extends PanelView implements ICollide {
     }
     
     @Override public String toString() {
-        return getViewProperties().getEntity(CardController.class).getCard().toString() + "\t[" + JLayeredPane.getLayer(this) + "]";
+        return (isVisible() ? "[V] " : "[H]") + getViewProperties().getEntity(CardController.class).getCard().toString() + "\t[" + JLayeredPane.getLayer(this) + "]";
     }
 }
