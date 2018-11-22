@@ -80,6 +80,12 @@ public final class CardProxyView extends PanelView {
         private CardView _collidedView = null;
         
         @Override public void mouseDragged(MouseEvent event) {
+            
+            if(!isEnabled()) {
+                return;
+            }
+
+            
             ICollide collider = _collisionListener.getCollision();
             if(collider != null) {
                 
@@ -128,6 +134,10 @@ public final class CardProxyView extends PanelView {
         
         @Override public void mousePressed(MouseEvent event) {
 
+            if(!isEnabled()) {
+                return;
+            }
+            
             // If the click count is two then perform the double click event of the underlying card
             // and go no further. This will handle cases where the outline mode is enabled, and the user
             // double clicks to put a potential card in the foundation
@@ -198,6 +208,10 @@ public final class CardProxyView extends PanelView {
         }
         
         @Override public void mouseReleased(MouseEvent event) {
+            
+            if(!isEnabled()) {
+                return;
+            }
             
             ICollide collider = _collisionListener.getCollision();
             _bounds = null;
@@ -323,7 +337,6 @@ public final class CardProxyView extends PanelView {
         // Set the controller of this proxy to the same controller of the specified card
         _cardView = cardView;
         getViewProperties().setEntity(cardView.getViewProperties().getEntity());
-    
         
         addMouseListener(new MouseAdapter() {
             @Override public void mousePressed(MouseEvent event) {
@@ -338,6 +351,10 @@ public final class CardProxyView extends PanelView {
         // then we should perform the set border call. 
         addMouseMotionListener(new MouseAdapter() {
             @Override public void mouseDragged(MouseEvent event) {
+    
+                if(!isEnabled()) {
+                    return;
+                }
                 
                 // If the border has not yet been set
                 if(getBorder() != _border) {
@@ -356,6 +373,18 @@ public final class CardProxyView extends PanelView {
                 }
             }
         });
+    }
+    
+    @Override public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        
+        // Propagate the state change to the card view. Ensure that no circular reference could ever occur
+        if(_cardView.isEnabled() != enabled) {
+            _cardView.setEnabled(enabled);
+        }
+        
+        _dragListener.setEnabled(enabled);
+        _collisionListener.setEnabled(enabled);
     }
     
     @Override public void setBounds(int x, int y, int width, int height) {

@@ -512,6 +512,12 @@ public final class CardView extends PanelView implements ICollide {
     
     @Override public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
+        
+        // Propagate the state change to the proxy. Ensure that no circular reference could ever occur
+        if(_cardProxy.isEnabled() != enabled) {
+            _cardProxy.setEnabled(enabled);
+        }
+
         draggableListener.setEnabled(enabled);
         _collisionListener.setEnabled(enabled);
     }
