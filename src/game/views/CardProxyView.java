@@ -84,7 +84,6 @@ public final class CardProxyView extends PanelView {
             if(!isEnabled()) {
                 return;
             }
-
             
             ICollide collider = _collisionListener.getCollision();
             if(collider != null) {
@@ -138,6 +137,10 @@ public final class CardProxyView extends PanelView {
                 return;
             }
             
+            // Indicates if the auto move had occured successfully
+            boolean hasAutomoveWorked = false;
+            
+            
             // If the click count is two then perform the double click event of the underlying card
             // and go no further. This will handle cases where the outline mode is enabled, and the user
             // double clicks to put a potential card in the foundation
@@ -147,12 +150,19 @@ public final class CardProxyView extends PanelView {
                 Component parent = _cardView.getParent();
                 
                 // Perform the double click operation
-                _cardView.performCardAutoMovement();
-                
-                // Perform a repaint of the parent
-                parent.repaint();
+                hasAutomoveWorked = _cardView.performCardAutoMovement();
+                if(hasAutomoveWorked) {
+                    // Disable the drag listener, it should be re-enabled on mouse released iff this component
+                    // is enabled
+                    _dragListener.setEnabled(false);
+                    
+                    // Perform a repaint of the parent
+                    parent.repaint();
+                }
             }
-            else {
+        
+            if(!hasAutomoveWorked) {
+
                 // Get the list of components that are in the parent container
                 Component[] components = ((JLayeredPane) _cardView.getParent()).getComponents();
                 
@@ -275,6 +285,10 @@ public final class CardProxyView extends PanelView {
 
             _cardView.getParent().repaint();
             
+            // Set the drag listener to be enabled. This is because it could have been disabled from other workflows, however if 
+            // the code got this far it should be re-enabled
+            _dragListener.setEnabled(true);
+            
             // Verify if there is a game winner
             if(GameView.IsGameWinner()) {
                 // Stop the game timer
@@ -355,6 +369,10 @@ public final class CardProxyView extends PanelView {
                     return;
                 }
                 
+                if(!_dragListener.getIsEnabled()) {
+                    return;
+                }
+                
                 // If the border has not yet been set
                 if(getBorder() != _border) {
                     
@@ -369,7 +387,7 @@ public final class CardProxyView extends PanelView {
                             proxy.setBorder(proxy._border);
                         }
                     }
-                }
+                }                    
             }
         });
     }

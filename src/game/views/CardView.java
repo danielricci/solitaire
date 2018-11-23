@@ -458,13 +458,15 @@ public final class CardView extends PanelView implements ICollide {
     
     /**
      * Performs an auto card movement, attempting to move this card to the foundation
+     * 
+     * @return TRUE if the auto movement was successfull, FALSE otherwise
      */
-    public void performCardAutoMovement() {
+    public boolean performCardAutoMovement() {
         if(!_controller.getCard().getIsBackside()) {
             
             // Make sure that we are not double clicking on an ACE. That doesn't make much sense here in this case
             if(AbstractFactory.getFactory(ViewFactory.class).getAll(FoundationView.class).stream().anyMatch(z -> z.layeredPane.getComponentCount() == 1 && z.layeredPane.getComponents()[0] == CardView.this)) {
-                return;
+                return false;
             }
             
             // Get the list of foundation views. 
@@ -504,10 +506,12 @@ public final class CardView extends PanelView implements ICollide {
                     _layeredPane.repaint();
                     foundationView.repaint();
                     
-                    break;
+                    return true;
                 }
             }                            
         }
+        
+        return false;
     }
     
     @Override public void setEnabled(boolean enabled) {
