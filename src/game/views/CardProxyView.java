@@ -198,7 +198,6 @@ public final class CardProxyView extends PanelView {
 
                         gameView.add(CardProxyView.this, gameView.getComponentZOrder(statusBarView) + 1);
                         gameView.repaint();
-                        gameView.repaint();
 
                         // Do not continue iterating, the card was found so there is nothing left to do
                         break;
