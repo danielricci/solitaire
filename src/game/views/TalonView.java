@@ -214,7 +214,7 @@ public final class TalonView extends TableauView {
                 component.setBounds(new Rectangle(0, 0, component.getPreferredSize().width, component.getPreferredSize().height));
 
                 // Set the visible state of the component. This should make everything but the blank layer not visible
-                layeredPane.getComponent(i).setVisible(layeredPane.highestLayer() == layeredPane.getLayer(layeredPane.getComponent(i)));
+                components[i].setVisible(components[i].equals(_blankCard));
             }
         }
         else {
