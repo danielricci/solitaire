@@ -93,13 +93,11 @@ public final class GameView extends PanelView {
                     case 1: {
                         TalonView talonView = viewFactory.add(new TalonView(cards), true);
                         GridBagConstraints talonConstraints = (GridBagConstraints)gameConstraints.clone();
-                        
                         // Get a reference to the current constraints and subtract 20 from the right so that
                         // it is positioned at an offset to the right of +20, then increase the size
                         // by 20 to create enough room to potentially fit cards when playing in `draw three`
                         talonConstraints.insets = new Insets(10, 0, 0, -30);
                         talonConstraints.ipadx = 30;
-                        //talonConstraints.ipady += 5;
                         this.add(talonView, talonConstraints, 0);                        
                         break;
                     }
