@@ -385,6 +385,24 @@
 &lt;root identifier="25000199-ea3d-4912-9e83-cddddaf0d7dd" name="deck_12" layers="040cb294-c4ad-47a5-abbb-6a7c8d1f3482" friendly="" x1="12000" y1="0" x2="12500" y2="726"/&gt;
 </value>
         </entry>
+        <entry>
+            <key>generated.TileMapData</key>
+            <value>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+&lt;root identifier="25000200-ea3d-4912-9e83-cddddaf0d7dd" name="foundation" layers="69229e15-6b70-464b-806b-889732943899" friendly="" x1="12500" y1="0" x2="13000" y2="726"/&gt;
+</value>
+        </entry>
+        <entry>
+            <key>generated.TileMapData</key>
+            <value>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+&lt;root identifier="25000200-ea3d-4912-9e83-cddddaf0d7de" name="talon_restart" layers="69229e15-6b70-464b-806b-889732943899" friendly="" x1="13000" y1="0" x2="13500" y2="726"/&gt;
+</value>
+        </entry>
+        <entry>
+            <key>generated.TileMapData</key>
+            <value>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+&lt;root identifier="25000200-ea3d-4912-9e83-cddddaf0d7df" name="talon_end" layers="69229e15-6b70-464b-806b-889732943899" friendly="" x1="13500" y1="0" x2="14000" y2="726"/&gt;
+</value>
+        </entry>
     </data>
 </root>
 
