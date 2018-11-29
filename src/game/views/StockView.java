@@ -37,7 +37,7 @@ import framework.core.mvc.view.PanelView;
 import game.config.OptionsPreferences;
 import game.config.OptionsPreferences.DrawOption;
 import game.config.OptionsPreferences.ScoringOption;
-import game.entities.BacksideCardEntity;
+import game.entities.TalonCardEntity;
 import game.views.TalonView.TalonCardState;
 
 public final class StockView extends PanelView {
@@ -47,11 +47,7 @@ public final class StockView extends PanelView {
      */
     private int _deckPlays;
     
-    /**
-     * The backside card entity
-     */
-    // TODO - convert this to a model with a backside that is always shown
-    public BacksideCardEntity BACKSIDE = new BacksideCardEntity();
+    public TalonCardEntity backside = new TalonCardEntity();
     
     /**
      * Constructs a new instance of this class type
@@ -73,21 +69,28 @@ public final class StockView extends PanelView {
                 }
                 else if(cardState == TalonCardState.DECK_PLAYED) {
                     
-                    BACKSIDE = null;
-                    render();
-                    
+                    // Increase the number of times that the deck has been cycled through
                     ++_deckPlays;
+                    
                     //In Draw One Vegas, you can only cycle through the card system once.
                     if(preferences.drawOption == DrawOption.ONE && preferences.scoringOption == ScoringOption.VEGAS && _deckPlays == 1) {
                         removeMouseListener(this);
+                        backside.enableTalonEnd();
                     }
                     // In Draw Three Vegas, you can only cycle through the card system three times
                     else if(preferences.drawOption == DrawOption.THREE && preferences.scoringOption == ScoringOption.VEGAS && _deckPlays == 3) {
                         removeMouseListener(this);
+                        backside.enableTalonEnd();
                     }
+                    else
+                    {
+                        backside.enableTalonRecycled();
+                    }
+                    
+                    render();
                 }
                 else {
-                    BACKSIDE = new BacksideCardEntity();
+                    backside = new TalonCardEntity();
                     render();
                     
                     GameTimerView gameTimerView = AbstractFactory.getFactory(ViewFactory.class).get(GameTimerView.class);
@@ -110,7 +113,7 @@ public final class StockView extends PanelView {
     
     @Override public void update(EventArgs event) {
         super.update(event);
-        addRenderableContent(BACKSIDE);
+        addRenderableContent(backside);
         repaint();
     }
 }

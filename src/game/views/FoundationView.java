@@ -24,38 +24,51 @@
 
 package game.views;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Graphics;
 
 import framework.api.IView;
 import framework.communication.internal.signal.arguments.EventArgs;
 
 import game.controllers.CardController;
+import game.entities.FoundationCardEntity;
 
 public class FoundationView extends TableauView {
-    
+
     /**
      * Creates a new instance of this class type
      */
     public FoundationView() {
+        
+        // The background the the opaqueness of this view
+        // must be set this way to achieve the proper xor effect
+        this.setBackground(Color.BLACK);
+        this.setOpaque(true);
+        
         CARD_OFFSET = 0;
-        setOpaque(true);
+        addRenderableContent(new FoundationCardEntity());
     }
-    
+
+    @Override public void preProcessGraphics(Graphics context) {
+        super.preProcessGraphics(context);
+        //context.setXORMode(new Color(255,255,255));
+    }
+
     @Override public Dimension getPreferredSize() {
         return new Dimension(CardView.CARD_WIDTH, CardView.CARD_HEIGHT);
     }
-    
+
     @Override public void update(EventArgs event) {
         super.update(event);
         repaint();
     }
 
     @Override public boolean isValidCollision(Component source) {
-        if(layeredPane.getComponentCount() == 0) {
-            return ((IView)source).getViewProperties().getEntity(CardController.class).getCard().getCardEntity().isAceCard();
-        }
-        else {
+        if (layeredPane.getComponentCount() == 0) {
+            return ((IView) source).getViewProperties().getEntity(CardController.class).getCard().getCardEntity().isAceCard();
+        } else {
             CardView thisCardView = (CardView) layeredPane.getComponent(0);
             return thisCardView.isValidCollision(source);
         }

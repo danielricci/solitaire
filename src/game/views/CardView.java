@@ -301,12 +301,7 @@ public final class CardView extends PanelView implements ICollide {
      * The layered pane that holds the potential list of cards that would be dragged along-side this card vuew
      */
     private final JLayeredPane _layeredPane = new JLayeredPane();
-
-    /**
-     * Sets this card as being highlighted visually
-     */
-    private boolean _isHighlighted;
-    
+   
     /**
      * Indicates if selections are enabled
      */
@@ -409,16 +404,6 @@ public final class CardView extends PanelView implements ICollide {
         // TODO - Is this really necessary???
         repaint();
         _cardProxy.repaint();
-    }
-
-    /**
-     * Sets if this card is highlighted
-     *
-     * @param isHighlighted TRUE if this card is to be highlighed, false otherwise
-     */
-    public void setHighlighted(boolean isHighlighted) {
-        _isHighlighted = isHighlighted;
-        repaint();
     }
     
     /**
@@ -541,9 +526,9 @@ public final class CardView extends PanelView implements ICollide {
         }
     }
     
-    @Override protected void preProcessGraphics(Graphics context) {
+    @Override public void preProcessGraphics(Graphics context) {
         super.preProcessGraphics(context);
-        if(_highlightsEnabled && _isHighlighted) {
+        if(_highlightsEnabled && getIsHighlighted()) {
             context.setXORMode(Color.WHITE);
         }
     }

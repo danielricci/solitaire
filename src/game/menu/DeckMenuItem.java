@@ -89,8 +89,8 @@ public class DeckMenuItem extends AbstractMenuItem {
 
             // Update the image on the stock view
             StockView stockView = AbstractFactory.getFactory(ViewFactory.class).get(StockView.class);
-            if(stockView.BACKSIDE != null) {
-                stockView.BACKSIDE.setActiveData(preferences.deck.identifier);
+            if(stockView.backside != null) {
+                stockView.backside.setActiveData(preferences.deck.identifier);
                 stockView.update(args);
             }
         }

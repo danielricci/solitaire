@@ -24,35 +24,15 @@
 
 package game.entities;
 
-import framework.core.entity.AbstractDataEntity;
-
-import game.config.OptionsPreferences;
-
 import generated.DataLookup;
 
-
-public class BacksideCardEntity extends AbstractDataEntity {
+public final class TalonCardEntity extends BacksideCardEntity {
     
-    private boolean _isBacksideVisible = false;
-
-    private DataLookup.BACKSIDES _backside;
-    
-    public BacksideCardEntity() {
-        OptionsPreferences preferences = new OptionsPreferences();
-        preferences.load();
-        _backside = preferences.deck;
-        super.setActiveData(preferences.deck.identifier);
+    public void enableTalonRecycled() {
+        setActiveData(DataLookup.MISC.TALON_RESTART.identifier);
     }
     
-    public void setIsBacksideShowing(boolean isShowing) {
-        _isBacksideVisible = isShowing;
-    }
-    
-    public boolean getIsBacksideShowing() {
-        return _isBacksideVisible;
-    }
-    
-    public DataLookup.BACKSIDES getBacksideData() {
-        return _backside;
+    public void enableTalonEnd() {
+        setActiveData(DataLookup.MISC.TALON_END.identifier);
     }
 }

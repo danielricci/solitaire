@@ -77,7 +77,7 @@ public final class CardProxyView extends PanelView {
      */
     private class CardDragEvents extends MouseMotionAdapter {
         
-        private CardView _collidedView = null;
+        private PanelView _collidedView = null;
         
         @Override public void mouseDragged(MouseEvent event) {
             
@@ -87,7 +87,7 @@ public final class CardProxyView extends PanelView {
             
             ICollide collider = _collisionListener.getCollision();
             if(collider != null) {
-                
+
                 // Get a reference to the last card in the pile view.
                 // During a collision, there can only be at most one card from 
                 // a given pile view that has a valid collision. In the cases
@@ -100,23 +100,23 @@ public final class CardProxyView extends PanelView {
                 // with an empty pile view (either a foundation view or a vanilla pile view)
                 if(collidedView == null) {
                     if(_collidedView != null) {
-                        _collidedView.setHighlighted(false);
+                        _collidedView.setIsHighlighted(false);
                         _collidedView = collidedView;
                     }
                 } 
                 // If what was collided with is different, then remove the highlight from
-                // the only one before proceeding with the new one
+                // the old one before proceeding with the new one
                 else if(collidedView != _collidedView) {
                     if(_collidedView != null) {
-                        _collidedView.setHighlighted(false);
+                        _collidedView.setIsHighlighted(false);
                     }
                     _collidedView = collidedView;
-                    _collidedView.setHighlighted(true);
+                    _collidedView.setIsHighlighted(true);
                 }
             }
             else {
                 if(_collidedView != null) {
-                    _collidedView.setHighlighted(false);
+                    _collidedView.setIsHighlighted(false);
                 }
                 _collidedView = null;
             }
