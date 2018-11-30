@@ -53,9 +53,11 @@ public class FoundationView extends TableauView {
 
     @Override public void preProcessGraphics(Graphics context) {
         super.preProcessGraphics(context);
-        //context.setXORMode(new Color(255,255,255));
+        if(getIsHighlighted()) {
+            context.setXORMode(Color.WHITE);
+        }
     }
-
+    
     @Override public Dimension getPreferredSize() {
         return new Dimension(CardView.CARD_WIDTH, CardView.CARD_HEIGHT);
     }

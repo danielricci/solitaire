@@ -87,32 +87,24 @@ public final class CardProxyView extends PanelView {
             
             ICollide collider = _collisionListener.getCollision();
             if(collider != null) {
-
-                // Get a reference to the last card in the pile view.
-                // During a collision, there can only be at most one card from 
-                // a given pile view that has a valid collision. In the cases
-                // where hovering over an empty pile view occurs, it should be
-                // assumed as a valid hit over a `null` card
-                TableauView pile = (TableauView) collider;
-                CardView collidedView = pile.getLastCard();
                 
-                // If the collided view is null, then there was a valid collision
-                // with an empty pile view (either a foundation view or a vanilla pile view)
-                if(collidedView == null) {
-                    if(_collidedView != null) {
-                        _collidedView.setIsHighlighted(false);
-                        _collidedView = collidedView;
-                    }
-                } 
-                // If what was collided with is different, then remove the highlight from
-                // the old one before proceeding with the new one
-                else if(collidedView != _collidedView) {
-                    if(_collidedView != null) {
-                        _collidedView.setIsHighlighted(false);
-                    }
-                    _collidedView = collidedView;
-                    _collidedView.setIsHighlighted(true);
+                // Determine what the collision was with. Either it was with a card, or
+                // it is with the Foundation or an empty PileView
+                PanelView collidedView = (PanelView)collider;
+                CardView card = ((TableauView)collidedView).getLastCard();
+                if(card != null) {
+                    collidedView = card;
                 }
+                
+                // If there was something that was already collided with
+                // then remove the highlight
+                if(_collidedView != null) {
+                    _collidedView.setIsHighlighted(false);
+                }
+
+                // Set the newly collided view
+                _collidedView = collidedView;
+                _collidedView.setIsHighlighted(true);
             }
             else {
                 if(_collidedView != null) {
