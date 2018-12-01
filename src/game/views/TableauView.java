@@ -83,27 +83,7 @@ public class TableauView extends PanelView implements ICollide {
             view.setBounds(new Rectangle(0, CARD_OFFSET * i, view.getPreferredSize().width, view.getPreferredSize().height));
         } 
     }
-    
-    /**
-     * Constructs a new instance of this class type
-     * 
-     * @param cardViews The card views to associate to this view
-     */
-    public TableauView(CardView[] cardViews) {
-        this();
-        for(int i = 0; i < cardViews.length; ++i) {
-
-            CardView view = cardViews[i];
-            
-            // Add the view to the layered pane
-            layeredPane.add(view);
-            layeredPane.setLayer(view, i);
-            
-            // Set the bounds of the view within the layered pane
-            view.setBounds(new Rectangle(0, CARD_OFFSET * i, view.getPreferredSize().width, view.getPreferredSize().height));
-        }
-    }
-    
+        
     public void removeHighlight() {
         for(Component comp : layeredPane.getComponents()) {
             CardView cardView = (CardView)comp;

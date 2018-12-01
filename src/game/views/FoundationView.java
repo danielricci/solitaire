@@ -53,7 +53,7 @@ public class FoundationView extends TableauView {
 
     @Override public void preProcessGraphics(Graphics context) {
         super.preProcessGraphics(context);
-        if(getIsHighlighted()) {
+        if(getIsHighlighted() && layeredPane.getComponentCount() == 0) {
             context.setXORMode(Color.WHITE);
         }
     }
