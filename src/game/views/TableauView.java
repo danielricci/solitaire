@@ -36,27 +36,33 @@ import framework.core.factories.ViewFactory;
 import framework.core.mvc.view.PanelView;
 import framework.core.physics.ICollidable;
 
+import game.config.OptionsPreferences;
 import game.controllers.CardController;
 import game.models.CardModel;
 
 public class TableauView extends AbstractPileView implements ICollidable {
        
-    PanelView pv = new PanelView();
+    private final PanelView _noCardPanelView = new PanelView();
 
-    
+    private final OptionsPreferences _preferences = new OptionsPreferences();
     /**
      * Constructs a new instance of this class type
      */
     private TableauView() {
+        
+        // Force the rendering engine to attempt to render this view so that it can
+        // render the panel view when no cards are available and the player is in outline mode
         setIsForceRendering(true);
         setOpaque(true);
         setBackground(new Color(0, 128, 0));
         
-        // TODO - limit the size and we are done!
-        pv.setSize(new Dimension(30,30));
-        pv.setPreferredSize(new Dimension(CardView.CARD_WIDTH, CardView.CARD_HEIGHT));
-        pv.setBackground(Color.red);
-        pv.render();
+        // Set the size of the panel
+        _noCardPanelView.setSize(new Dimension(CardView.CARD_WIDTH, CardView.CARD_HEIGHT));
+        _noCardPanelView.setPreferredSize(_noCardPanelView.getSize());
+        
+        // Set the background of the panel and render it
+        _noCardPanelView.setBackground(Color.BLACK);
+        _noCardPanelView.render();
     }
     
     /**
@@ -81,19 +87,16 @@ public class TableauView extends AbstractPileView implements ICollidable {
     }
     
     @Override public void preProcessGraphics(Graphics context) {
-        super.preProcessGraphics(context);
-        //System.out.printf("Highlighted: %s | Count: %d\n", Boolean.toString(getIsHighlighted()) ,layeredPane.getComponentCount());
         if(getIsHighlighted() && layeredPane.getComponentCount() == 0) {
-            add(pv);
-            
-            pv.render();
-            System.out.println("added");
+            _preferences.load();
+            if(_preferences.outlineDragging) {
+                add(_noCardPanelView);
+                context.setXORMode(Color.WHITE);
+            }
         }
         else {
-            remove(pv);
+            remove(_noCardPanelView);
         }
-        
-        
     }
 
     @Override public void render() {
