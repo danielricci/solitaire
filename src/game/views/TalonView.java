@@ -36,19 +36,19 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
-import javax.swing.JComponent;
 import javax.swing.JLayeredPane;
 
 import framework.core.factories.AbstractFactory;
 import framework.core.factories.ViewFactory;
 import framework.core.mvc.view.PanelView;
+import framework.core.physics.ICollidable;
 import framework.utils.logging.Tracelog;
 
 import game.config.OptionsPreferences;
 import game.config.OptionsPreferences.DrawOption;
 import game.models.CardModel;
 
-public final class TalonView extends TableauView {
+public final class TalonView extends AbstractPileView implements ICollidable {
     
     /**
      * The blank card associated to the talon view
@@ -306,24 +306,23 @@ public final class TalonView extends TableauView {
             }
         }
     }
-    
 
     @Override public boolean isValidCollision(Component source) {
         return false;
     }
     
-    @Override public String toString() {
-        StringBuilder builder = new StringBuilder();
-        String header = "=======TALON VIEW===========";
-        builder.append(header + System.getProperty("line.separator"));
-        
-        for(Component comp : layeredPane.getComponents()) {
-            if(comp instanceof JComponent) {
-                JComponent jcomp = (JComponent) comp;
-                builder.append((jcomp instanceof CardView ? jcomp : "[=======BLANK=======]" + "\t[" + JLayeredPane.getLayer(jcomp) + "]") + System.getProperty("line.separator"));
-            }
-        }
-        builder.append(new String(new char[header.length()]).replace("\0", "="));
-        return builder.toString();
-    }
+//    @Override public String toString() {
+//        StringBuilder builder = new StringBuilder();
+//        String header = "========" + this.getClass().getSimpleName().toUpperCase() + "========";
+//        builder.append(header + System.getProperty("line.separator"));
+//        
+//        for(Component comp : layeredPane.getComponents()) {
+//            if(comp instanceof JComponent) {
+//                JComponent jcomp = (JComponent) comp;
+//                builder.append((jcomp instanceof CardView ? jcomp : "[=======BLANK=======]" + "\t[" + JLayeredPane.getLayer(jcomp) + "]") + System.getProperty("line.separator"));
+//            }
+//        }
+//        builder.append(new String(new char[header.length()]).replace("\0", "="));
+//        return builder.toString();
+//    }
 }

@@ -31,11 +31,12 @@ import java.awt.Graphics;
 
 import framework.api.IView;
 import framework.communication.internal.signal.arguments.EventArgs;
+import framework.core.physics.ICollidable;
 
 import game.controllers.CardController;
 import game.entities.FoundationCardEntity;
 
-public class FoundationView extends TableauView {
+public class FoundationView extends AbstractPileView implements ICollidable {
 
     /**
      * Creates a new instance of this class type
@@ -52,7 +53,6 @@ public class FoundationView extends TableauView {
     }
 
     @Override public void preProcessGraphics(Graphics context) {
-        super.preProcessGraphics(context);
         if(getIsHighlighted() && layeredPane.getComponentCount() == 0) {
             context.setXORMode(Color.WHITE);
         }

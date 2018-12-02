@@ -54,7 +54,7 @@ import framework.core.mvc.view.PanelView;
 import framework.core.mvc.view.layout.DragListener;
 import framework.core.navigation.MenuBuilder;
 import framework.core.physics.CollisionListener;
-import framework.core.physics.ICollide;
+import framework.core.physics.ICollidable;
 import framework.core.system.Application;
 import framework.utils.globalisation.Localization;
 import framework.utils.logging.Tracelog;
@@ -74,7 +74,7 @@ import resources.LocalizationStrings;
  * @author Daniel Ricci <thedanny09@icloud.com>
  *
  */
-public final class CardView extends PanelView implements ICollide {
+public final class CardView extends PanelView implements ICollidable {
 
     /**
      * The card selection events for this proxy view
@@ -161,8 +161,8 @@ public final class CardView extends PanelView implements ICollide {
             
             // If there is a valid collider, set that as the new parent
             if(_collisionListener.getCollision() != null) {
-                ICollide collision = _collisionListener.getCollision();
-                TableauView pileView = (TableauView) collision;
+                ICollidable collision = _collisionListener.getCollision();
+                AbstractPileView pileView = (AbstractPileView) collision;
 
                 // Get the before movement type to know where the move is coming from
                 MovementType movementTypeFrom = MovementType.fromClass(_parentLayeredPane.getParent());
@@ -179,7 +179,7 @@ public final class CardView extends PanelView implements ICollide {
             }
             
             // Get the offset that was set, and use this within our calculations
-            TableauView parent = (TableauView) _parentLayeredPane.getParent();
+            AbstractPileView parent = (AbstractPileView) _parentLayeredPane.getParent();
             int offset = parent.CARD_OFFSET;
 
             // Get the list of components associated to the CardView.this reference. This list represents all the children associated

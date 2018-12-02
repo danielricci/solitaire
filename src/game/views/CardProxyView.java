@@ -47,7 +47,7 @@ import framework.core.mvc.view.PanelView;
 import framework.core.mvc.view.layout.DragListener;
 import framework.core.navigation.MenuBuilder;
 import framework.core.physics.CollisionListener;
-import framework.core.physics.ICollide;
+import framework.core.physics.ICollidable;
 import framework.core.system.Application;
 import framework.utils.globalisation.Localization;
 
@@ -85,15 +85,18 @@ public final class CardProxyView extends PanelView {
                 return;
             }
             
-            ICollide collider = _collisionListener.getCollision();
+            ICollidable collider = _collisionListener.getCollision();
             if(collider != null) {
                 
                 // Determine what the collision was with. Either it was with a card, or
                 // it is with the Foundation or an empty PileView
                 PanelView collidedView = (PanelView)collider;
-                CardView card = ((TableauView)collidedView).getLastCard();
-                if(card != null) {
-                    collidedView = card;
+                
+                if(collidedView instanceof AbstractPileView) {
+                    CardView card = ((AbstractPileView)collidedView).getLastCard();
+                    if(card != null) {
+                        collidedView = card;
+                    }    
                 }
                 
                 // If there was something that was already collided with
@@ -214,13 +217,13 @@ public final class CardProxyView extends PanelView {
                 return;
             }
             
-            ICollide collider = _collisionListener.getCollision();
+            ICollidable collider = _collisionListener.getCollision();
             _bounds = null;
             
             if(collider != null) {
             
                 // Get a reference to the pile view that has has been collided with
-                TableauView pileViewCollider = (TableauView) collider;
+                AbstractPileView pileViewCollider = (AbstractPileView) collider;
                 
                 // Get the before movement type to know where the move is coming from
                 MovementType movementTypeFrom = MovementType.fromClass(_cardView.getParent().getParent());

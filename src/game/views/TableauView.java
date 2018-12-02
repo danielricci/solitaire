@@ -24,42 +24,39 @@
 
 package game.views;
 
-import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.util.List;
-
-import javax.swing.JLayeredPane;
 
 import framework.api.IView;
 import framework.core.factories.ViewFactory;
 import framework.core.mvc.view.PanelView;
-import framework.core.physics.ICollide;
+import framework.core.physics.ICollidable;
 
 import game.controllers.CardController;
 import game.models.CardModel;
 
-public class TableauView extends PanelView implements ICollide {
-        
-    /**
-     * Specifies the offset of each card within this view
-     */
-    public int CARD_OFFSET = 12;
-    
-    /**
-     * The layered pane that holds the list of cards
-     */
-    protected final JLayeredPane layeredPane = new JLayeredPane();
+public class TableauView extends AbstractPileView implements ICollidable {
+       
+    PanelView pv = new PanelView();
 
+    
     /**
      * Constructs a new instance of this class type
      */
-    protected TableauView() {
-        setLayout(new BorderLayout());
-        setPreferredSize(new Dimension(CardView.CARD_WIDTH, this.getPreferredSize().height));
-        setOpaque(false);
-        add(layeredPane, BorderLayout.CENTER);
+    private TableauView() {
+        setIsForceRendering(true);
+        setOpaque(true);
+        setBackground(new Color(0, 128, 0));
+        
+        // TODO - limit the size and we are done!
+        pv.setSize(new Dimension(30,30));
+        pv.setPreferredSize(new Dimension(CardView.CARD_WIDTH, CardView.CARD_HEIGHT));
+        pv.setBackground(Color.red);
+        pv.render();
     }
     
     /**
@@ -70,7 +67,6 @@ public class TableauView extends PanelView implements ICollide {
     public TableauView(List<CardModel> cards) {
         this();
         for(int i = 0; i < cards.size(); ++i) {
-            
             //Create the card view
             cards.get(i).setBackside(i + 1 < cards.size());
             CardView view = ViewFactory.getFactory(ViewFactory.class).add(new CardView(cards.get(i)));
@@ -83,22 +79,23 @@ public class TableauView extends PanelView implements ICollide {
             view.setBounds(new Rectangle(0, CARD_OFFSET * i, view.getPreferredSize().width, view.getPreferredSize().height));
         } 
     }
+    
+    @Override public void preProcessGraphics(Graphics context) {
+        super.preProcessGraphics(context);
+        //System.out.printf("Highlighted: %s | Count: %d\n", Boolean.toString(getIsHighlighted()) ,layeredPane.getComponentCount());
+        if(getIsHighlighted() && layeredPane.getComponentCount() == 0) {
+            add(pv);
+            
+            pv.render();
+            System.out.println("added");
+        }
+        else {
+            remove(pv);
+        }
         
-    public void removeHighlight() {
-        for(Component comp : layeredPane.getComponents()) {
-            CardView cardView = (CardView)comp;
-            cardView.setIsHighlighted(false);
-        }
-        repaint();
+        
     }
-    
-    public CardView getLastCard() {
-        if(layeredPane.getComponentCount() == 0) {
-            return null;
-        }
-        return (CardView)layeredPane.getComponents()[0];
-    }
-    
+
     @Override public void render() {
         super.render();
         for(Component component : layeredPane.getComponents()) {
@@ -115,7 +112,8 @@ public class TableauView extends PanelView implements ICollide {
         // If there are no components then only allow a king to be placed
         if(layeredPane.getComponentCount() == 0) {
             IView cardView = (IView)source;
-            return cardView.getViewProperties().getEntity(CardController.class).getCard().getCardEntity().isCardKing();
+            boolean isValidCollision = cardView.getViewProperties().getEntity(CardController.class).getCard().getCardEntity().isCardKing(); 
+            return isValidCollision;
         }
         
         if(!(layeredPane.getComponent(0) instanceof CardView) ){
@@ -143,18 +141,5 @@ public class TableauView extends PanelView implements ICollide {
         }
         
         return false;
-    }
-    
-    @Override public String toString() {
-        StringBuilder builder = new StringBuilder();
-        String header = "========" + this.getClass().getSimpleName().toUpperCase() + "========";
-        builder.append(header + System.getProperty("line.separator"));
-        
-        for(Component comp : layeredPane.getComponents()) {
-            builder.append(comp + System.getProperty("line.separator"));
-        }
-        builder.append(new String(new char[header.length()]).replace("\0", "="));
-        
-        return builder.toString();
     }
 }
