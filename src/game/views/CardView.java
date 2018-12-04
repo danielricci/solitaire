@@ -480,9 +480,15 @@ public final class CardView extends PanelView implements ICollidable {
                     // Remove from the layered pane source
                     CardView.this.getParent().remove(CardView.this);;
                                                     
+                    // Record the component count before adding to the layered pane so that the proper
+                    // layer identifier can be used.
+                    //
+                    // Note: The layer identifier is 0th based
+                    int componentCount = foundationView.layeredPane.getComponentCount();
+                    
                     // Add to the layered pane destination
                     foundationView.layeredPane.add(CardView.this);
-                    foundationView.layeredPane.setLayer(CardView.this, foundationView.layeredPane.getComponentCount());
+                    foundationView.layeredPane.setLayer(CardView.this, componentCount);
                     
                     // Set the proper bounds of the component
                     CardView.this.setBounds(new Rectangle(0, 0, CardView.this.getPreferredSize().width, CardView.this.getPreferredSize().height));
