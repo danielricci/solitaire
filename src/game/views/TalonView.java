@@ -187,7 +187,7 @@ public final class TalonView extends AbstractPileView implements ICollidable {
      */
     public TalonCardState showCardHand() {
         
-        // If there is only one component then go o further. The idea is that the "blank" placeholder view that
+        // If there is only one component then dont go further. The idea is that the "blank" placeholder view that
         // mimics that switching of cards should never be removed from this view, thus if that is the only view that
         // exists then it should mean that all the playing cards having been removed from this view
         if(layeredPane.getComponentCount() == 1) {

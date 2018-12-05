@@ -58,8 +58,7 @@ public final class StockView extends PanelView {
         OptionsPreferences preferences = new OptionsPreferences();
         preferences.load();
         
-        addMouseListener(new MouseAdapter() {
-            
+        addMouseListener(new MouseAdapter() {            
             @Override public void mousePressed(MouseEvent event) {
                 TalonView talonView = AbstractFactory.getFactory(ViewFactory.class).get(TalonView.class);
                 

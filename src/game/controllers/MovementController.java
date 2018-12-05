@@ -39,23 +39,16 @@ public class MovementController extends BaseController {
     
     private boolean _canUndo;
     
-    private MovementType _fromOld;
-    private MovementType _fromNew;
-    
-    private MovementType _toOld;
-    private MovementType _toNew;
+    private MovementType _from;
+    private MovementType _to;
     
     public void recordMovement(MovementType from, MovementType to) {
         
         Tracelog.log(Level.INFO, true, String.format("Movement Detected: from [%s] to [%s]", from, to));
         
-        // Copy the values over that were last registered
-        _fromOld = _fromNew;
-        _toOld = _toNew;
-        
         // Assign the new values
-        _fromNew = from;
-        _toNew = to;
+        _from = from;
+        _to = to;
     
         _canUndo = true;
         
@@ -69,16 +62,12 @@ public class MovementController extends BaseController {
             return;
         }
 
-        _canUndo = false;
+        // Update the movement model
+        _movementModel.setMovement(_from, _to, true);
         
-        // Update the new values to be the old values
-        _fromNew = _fromOld;
-        _toNew = _toOld;
-        _toOld = null;
-        _fromOld = null;
-   
-        // Perform the movement
-        _movementModel.setMovement(_fromNew, _toNew, true);
+        // Reset the values
+        _canUndo = false;
+        _from = _to = null;
     }
     
     public boolean canUndo() {
