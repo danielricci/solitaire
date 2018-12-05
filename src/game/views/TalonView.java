@@ -39,6 +39,7 @@ import java.util.stream.Collectors;
 import javax.swing.JLayeredPane;
 
 import framework.core.factories.AbstractFactory;
+import framework.core.factories.ControllerFactory;
 import framework.core.factories.ViewFactory;
 import framework.core.mvc.view.PanelView;
 import framework.core.physics.ICollidable;
@@ -46,6 +47,8 @@ import framework.utils.logging.Tracelog;
 
 import game.config.OptionsPreferences;
 import game.config.OptionsPreferences.DrawOption;
+import game.controllers.MovementRecorderController;
+import game.gameplay.MovementType;
 import game.models.CardModel;
 
 public final class TalonView extends AbstractPileView implements ICollidable {
@@ -197,6 +200,9 @@ public final class TalonView extends AbstractPileView implements ICollidable {
         
         // Get the layer id of the blank card within this view
         Component blankCardLayer = Arrays.asList(layeredPane.getComponents()).stream().filter(z -> !(z instanceof CardView)).findFirst().get();
+
+        // Notify the movement controller that there was a movement that occured of the talon
+        AbstractFactory.getFactory(ControllerFactory.class).get(MovementRecorderController.class).recordMovement(MovementType.TALON, MovementType.TALON);
         
         // If we are at the end then restart the deck
         if(layeredPane.getLayer(blankCardLayer) == layeredPane.lowestLayer()) {

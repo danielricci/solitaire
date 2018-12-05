@@ -42,7 +42,7 @@ import framework.core.mvc.view.PanelView;
 
 import game.config.OptionsPreferences;
 import game.config.OptionsPreferences.ScoringOption;
-import game.controllers.MovementController;
+import game.controllers.MovementRecorderController;
 
 public final class StatusBarView extends PanelView {
 
@@ -103,7 +103,7 @@ public final class StatusBarView extends PanelView {
         _scoreView.render();
         
         // register the score view to recieve events from the movement controller
-        AbstractFactory.getFactory(ControllerFactory.class).get(MovementController.class).addSignalListener(_scoreView);
+        AbstractFactory.getFactory(ControllerFactory.class).get(MovementRecorderController.class).addSignalListener(_scoreView);
         
         if(preferences.scoringOption != ScoringOption.NONE) {
             rightSidePanel.add(_scoreView,BorderLayout.WEST);    

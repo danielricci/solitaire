@@ -37,7 +37,7 @@ import framework.core.factories.ViewFactory;
 import framework.core.mvc.view.PanelView;
 
 import game.controllers.CardController;
-import game.controllers.MovementController;
+import game.controllers.MovementRecorderController;
 import game.models.CardModel;
 
 /**
@@ -68,7 +68,7 @@ public final class GameView extends PanelView {
         List<CardModel> cards = CardModel.newInstances();
         
         // Create the globally available movement controller
-        AbstractFactory.getFactory(ControllerFactory.class).add(new MovementController(), true);
+        AbstractFactory.getFactory(ControllerFactory.class).add(new MovementRecorderController(), true);
         
         for(int row = _rowSize - 1; row >= 0; --row) {
             gameConstraints.gridy = row;

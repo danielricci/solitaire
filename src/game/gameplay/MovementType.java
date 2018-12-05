@@ -34,7 +34,8 @@ import game.views.TalonView;
 public enum MovementType {
     TALON,
     FOUNDATION,
-    TABLEAU;
+    TABLEAU, 
+    NONE;
     
     public static MovementType fromClass(Object clazz) {
         if(clazz instanceof TalonView) {
@@ -43,7 +44,7 @@ public enum MovementType {
         else if(clazz instanceof FoundationView) {
             return MovementType.FOUNDATION;
         }
-        else if(clazz instanceof TableauView) { // this should be last!!!!
+        else if(clazz instanceof TableauView) {
             return MovementType.TABLEAU;
         }
         

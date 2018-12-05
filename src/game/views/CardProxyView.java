@@ -52,7 +52,7 @@ import framework.core.physics.ICollidable;
 import framework.core.system.Application;
 import framework.utils.globalisation.Localization;
 
-import game.controllers.MovementController;
+import game.controllers.MovementRecorderController;
 import game.gameplay.MovementType;
 import game.menu.ExitMenuItem;
 import game.menu.NewGameMenuItem;
@@ -261,7 +261,7 @@ public final class CardProxyView extends PanelView {
                 pileViewCollider.repaint();
                 
                 // Record that the movement occurred
-                AbstractFactory.getFactory(ControllerFactory.class).get(MovementController.class).recordMovement(movementTypeFrom, MovementType.fromClass(collider));
+                AbstractFactory.getFactory(ControllerFactory.class).get(MovementRecorderController.class).recordMovement(movementTypeFrom, MovementType.fromClass(collider));
             }
             else {
                 Component[] layeredComponents = _layeredPane.getComponents();

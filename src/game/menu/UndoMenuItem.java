@@ -37,7 +37,7 @@ import framework.core.factories.ViewFactory;
 import framework.core.navigation.AbstractMenuItem;
 import framework.utils.globalisation.Localization;
 
-import game.controllers.MovementController;
+import game.controllers.MovementRecorderController;
 import game.views.StatusBarView;
 
 /**
@@ -69,7 +69,7 @@ public class UndoMenuItem extends AbstractMenuItem {
     }
     
     @Override protected boolean isEnabled() {
-        return AbstractFactory.getFactory(ControllerFactory.class).get(MovementController.class).canUndo();
+        return AbstractFactory.getFactory(ControllerFactory.class).get(MovementRecorderController.class).canUndo();
     }
     
     @Override public void onExecute(ActionEvent actionEvent) {

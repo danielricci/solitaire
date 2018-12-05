@@ -33,15 +33,38 @@ import framework.utils.logging.Tracelog;
 import game.gameplay.MovementType;
 import game.models.MovementModel;
 
-public class MovementController extends BaseController {
+/**
+ * The controller that handles recording of movement
+ * @author Daniel Ricci <thedanny09@icloud.com>
+ */
+public class MovementRecorderController extends BaseController {
     
+    /**
+     * The model representation of a movement
+     */
     private final MovementModel _movementModel = new MovementModel();
     
+    /**
+     * This flag indicates if the current state of the game can perform an undo
+     */
     private boolean _canUndo;
     
+    /**
+     * The last recorded `from` movement
+     */
     private MovementType _from;
+    
+    /**
+     * The last recorded `to` movement
+     */
     private MovementType _to;
     
+    /**
+     * Records the specified movement
+     *
+     * @param from The `from` movement that was performed
+     * @param to The `to` movement that was performed
+     */
     public void recordMovement(MovementType from, MovementType to) {
         
         Tracelog.log(Level.INFO, true, String.format("Movement Detected: from [%s] to [%s]", from, to));
@@ -50,12 +73,20 @@ public class MovementController extends BaseController {
         _from = from;
         _to = to;
     
-        _canUndo = true;
-        
+        if(from == MovementType.NONE || to == MovementType.NONE) {
+            _canUndo = false;
+        }
+        else {
+            _canUndo = true;
+        }
+            
         // Update the model
         _movementModel.setMovement(from, to, false);
     }
     
+    /**
+     * Performs an undo of the last recorded move
+     */
     public void undoLastMovement() {
         if(!canUndo()) {
             Tracelog.log(Level.SEVERE, true, "Cannot perform an undo");
@@ -69,9 +100,19 @@ public class MovementController extends BaseController {
         _canUndo = false;
         _from = _to = null;
     }
-    
+
+    /**
+     * @return TRUE if an undo operation can be made, FALSE otherwise
+     */
     public boolean canUndo() {
         return _canUndo;
+    }
+    
+    /**
+     * Clears the undo availability
+     */
+    public void clearUndo() {
+        _canUndo = false;
     }
     
     @Override public void addSignalListener(ISignalListener listener) {
