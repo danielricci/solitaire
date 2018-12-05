@@ -73,5 +73,6 @@ public class UndoMenuItem extends AbstractMenuItem {
     }
     
     @Override public void onExecute(ActionEvent actionEvent) {
+        AbstractFactory.getFactory(ControllerFactory.class).get(MovementRecorderController.class).undoLastMovement();
     }
 }
