@@ -42,6 +42,7 @@ import javax.swing.JOptionPane;
 import javax.swing.border.Border;
 
 import framework.core.factories.AbstractFactory;
+import framework.core.factories.ControllerFactory;
 import framework.core.factories.ViewFactory;
 import framework.core.mvc.view.PanelView;
 import framework.core.mvc.view.layout.DragListener;
@@ -51,6 +52,7 @@ import framework.core.physics.ICollidable;
 import framework.core.system.Application;
 import framework.utils.globalisation.Localization;
 
+import game.controllers.MovementController;
 import game.gameplay.MovementType;
 import game.menu.ExitMenuItem;
 import game.menu.NewGameMenuItem;
@@ -258,7 +260,8 @@ public final class CardProxyView extends PanelView {
                 _layeredPane.removeAll();
                 pileViewCollider.repaint();
                 
-                AbstractFactory.getFactory(ViewFactory.class).get(GameScoreView.class).updateScore(movementTypeFrom, MovementType.fromClass(collider));
+                // Record that the movement occurred
+                AbstractFactory.getFactory(ControllerFactory.class).get(MovementController.class).recordMovement(movementTypeFrom, MovementType.fromClass(collider));
             }
             else {
                 Component[] layeredComponents = _layeredPane.getComponents();

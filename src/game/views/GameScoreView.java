@@ -29,6 +29,7 @@ import java.util.logging.Level;
 
 import javax.swing.JLabel;
 
+import framework.communication.internal.signal.arguments.EventArgs;
 import framework.core.mvc.view.PanelView;
 import framework.core.system.Application;
 import framework.utils.logging.Tracelog;
@@ -37,6 +38,7 @@ import game.config.OptionsPreferences;
 import game.config.OptionsPreferences.DrawOption;
 import game.config.OptionsPreferences.ScoringOption;
 import game.gameplay.MovementType;
+import game.models.MovementModel;
 
 /**
  * This view shows the game score
@@ -68,7 +70,7 @@ public class GameScoreView extends PanelView {
     public GameScoreView() {
         this.setBackground(Color.WHITE);
         add(scoreTitle);
-        add(scoreValue);
+        add(scoreValue);  
     }
     
     /**
@@ -120,27 +122,27 @@ public class GameScoreView extends PanelView {
      * @param from Where the operation started from
      * @param to Where the operation ended at
      */
-    public void updateScore(MovementType from, MovementType to) {
+     protected void updateScore(MovementType from, MovementType to, boolean isUndo) {
         
         long scoreBefore = SCORE;
         if(from == MovementType.TALON && to == MovementType.TABLEAU) {
-            SCORE += 5;
+            SCORE += (isUndo ? -5 : 5);
         }
         else if(from == MovementType.TALON && to == MovementType.FOUNDATION) {
-            SCORE += 10;
+            SCORE += (isUndo ? -10 : 10);
         }
         else if (from == MovementType.TABLEAU && to == MovementType.FOUNDATION) {
-            SCORE += 10;
+            SCORE += (isUndo ? -10 : 10);
         }
         else if(from == MovementType.FOUNDATION && to == MovementType.TABLEAU) {
-            SCORE = Math.max(0, SCORE - 15);
+            SCORE = Math.max(0, SCORE + (isUndo ? 15 : -15));
         }
         else {
             return;
         }
         
         long scoreAfter = SCORE;
-        Tracelog.log(Level.INFO, true, String.format("Score Changed from %d to %d after performing move [%s, %s]", scoreBefore, scoreAfter, from, to));
+        Tracelog.log(Level.INFO, true, String.format("Score %s: Changed from %d to %d after performing move [%s, %s]", isUndo ? "Undo" : "Updated",scoreBefore, scoreAfter, from, to));
         
         scoreValue.setText(toString());
     }
@@ -163,5 +165,12 @@ public class GameScoreView extends PanelView {
         
     @Override public String toString() {
         return String.valueOf(SCORE);
+    }
+    
+    @Override public void update(EventArgs event) {
+        if(event.getSource() instanceof MovementModel) {
+            MovementModel movement = (MovementModel) event.getSource();
+            updateScore(movement.getFrom(), movement.getTo(), movement.getIsUndo());
+        }
     }
 }

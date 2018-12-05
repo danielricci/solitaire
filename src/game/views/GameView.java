@@ -32,10 +32,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import framework.core.factories.AbstractFactory;
+import framework.core.factories.ControllerFactory;
 import framework.core.factories.ViewFactory;
 import framework.core.mvc.view.PanelView;
 
 import game.controllers.CardController;
+import game.controllers.MovementController;
 import game.models.CardModel;
 
 /**
@@ -64,6 +66,9 @@ public final class GameView extends PanelView {
         
         // Create the total list of cards
         List<CardModel> cards = CardModel.newInstances();
+        
+        // Create the globally available movement controller
+        AbstractFactory.getFactory(ControllerFactory.class).add(new MovementController(), true);
         
         for(int row = _rowSize - 1; row >= 0; --row) {
             gameConstraints.gridy = row;

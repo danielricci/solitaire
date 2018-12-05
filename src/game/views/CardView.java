@@ -48,6 +48,7 @@ import framework.api.IView;
 import framework.communication.internal.signal.ISignalReceiver;
 import framework.communication.internal.signal.arguments.EventArgs;
 import framework.core.factories.AbstractFactory;
+import framework.core.factories.ControllerFactory;
 import framework.core.factories.ViewFactory;
 import framework.core.graphics.IRenderable;
 import framework.core.mvc.view.PanelView;
@@ -61,6 +62,7 @@ import framework.utils.logging.Tracelog;
 
 import game.config.OptionsPreferences;
 import game.controllers.CardController;
+import game.controllers.MovementController;
 import game.gameplay.MovementType;
 import game.menu.ExitMenuItem;
 import game.menu.NewGameMenuItem;
@@ -170,7 +172,7 @@ public final class CardView extends PanelView implements ICollidable {
                 Optional<Component> layeredPane = Arrays.asList(pileView.getComponents()).stream().filter(z -> z.getClass() == JLayeredPane.class).findFirst();
                 if(layeredPane.isPresent()) {
                     _parentLayeredPane = (JLayeredPane) layeredPane.get();
-                    AbstractFactory.getFactory(ViewFactory.class).get(GameScoreView.class).updateScore(movementTypeFrom, MovementType.fromClass(collision));
+                    AbstractFactory.getFactory(ControllerFactory.class).get(MovementController.class).recordMovement(movementTypeFrom, MovementType.fromClass(collision));                  
                 }
                 else {
                     Tracelog.log(Level.SEVERE, true, "Could not find JLayeredPane within the CardView mouseReleased event...");
@@ -339,7 +341,7 @@ public final class CardView extends PanelView implements ICollidable {
         // Set the collision style for this object
         _collisionListener.setIsSingularCollision(true);
         
-        cardModel.addListeners(this);
+        cardModel.addListener(this);
         _controller = new CardController(cardModel);
         getViewProperties().setEntity(_controller);   
 
@@ -463,8 +465,7 @@ public final class CardView extends PanelView implements ICollidable {
             // Go through the list of foundation views and see if there is a match
             for(FoundationView foundationView : foundationViews) {
                 if(foundationView.isValidCollision(CardView.this)) {
-
-                    AbstractFactory.getFactory(ViewFactory.class).get(GameScoreView.class).updateScore(MovementType.fromClass(CardView.this.getParentIView()), MovementType.FOUNDATION);
+                    AbstractFactory.getFactory(ControllerFactory.class).get(MovementController.class).recordMovement(MovementType.fromClass(CardView.this.getParentIView()), MovementType.FOUNDATION);
                     
                     // Halt any drag events that could occur
                     draggableListener.stopDragEvent();

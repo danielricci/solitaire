@@ -36,11 +36,13 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import framework.core.factories.AbstractFactory;
+import framework.core.factories.ControllerFactory;
 import framework.core.factories.ViewFactory;
 import framework.core.mvc.view.PanelView;
 
 import game.config.OptionsPreferences;
 import game.config.OptionsPreferences.ScoringOption;
+import game.controllers.MovementController;
 
 public final class StatusBarView extends PanelView {
 
@@ -99,6 +101,9 @@ public final class StatusBarView extends PanelView {
         // Create the score view based on the currently set scoring standard
         _scoreView = AbstractFactory.getFactory(ViewFactory.class).add(preferences.scoringOption == ScoringOption.VEGAS ? new VegasGameScoreView() : new GameScoreView(), true);
         _scoreView.render();
+        
+        // register the score view to recieve events from the movement controller
+        AbstractFactory.getFactory(ControllerFactory.class).get(MovementController.class).addSignalListener(_scoreView);
         
         if(preferences.scoringOption != ScoringOption.NONE) {
             rightSidePanel.add(_scoreView,BorderLayout.WEST);    

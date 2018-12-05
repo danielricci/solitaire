@@ -58,19 +58,19 @@ public class VegasGameScoreView extends GameScoreView {
     @Override public void updateScoreCardTurnOver() {
     }
     
-    @Override public void updateScore(MovementType from, MovementType to) {
+    @Override protected void updateScore(MovementType from, MovementType to, boolean isUndo) {
         long scoreBefore = SCORE;
         if(from == MovementType.TALON && to == MovementType.TABLEAU) {
-            SCORE += 5;
+            SCORE += (isUndo ? -5 : 5);
         }
         else if(from == MovementType.TALON && to == MovementType.FOUNDATION) {
-            SCORE += 5;
+            SCORE += (isUndo ? -5 : 5);
         }
         else if (from == MovementType.TABLEAU && to == MovementType.FOUNDATION) {
-            SCORE += 5;
+            SCORE += (isUndo ? -5 : 5);
         }
         else if(from == MovementType.FOUNDATION && to == MovementType.TABLEAU) {
-            SCORE -= 5;
+            SCORE += (isUndo ? 5 : -5);
         }
         else {
             return;
