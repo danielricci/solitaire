@@ -46,7 +46,9 @@ public class MovementController extends BaseController {
     private MovementType _toNew;
     
     public void recordMovement(MovementType from, MovementType to) {
-                
+        
+        Tracelog.log(Level.INFO, true, String.format("Movement Detected: from [%s] to [%s]", from, to));
+        
         // Copy the values over that were last registered
         _fromOld = _fromNew;
         _toOld = _toNew;

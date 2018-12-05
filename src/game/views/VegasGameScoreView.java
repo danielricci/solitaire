@@ -77,7 +77,7 @@ public class VegasGameScoreView extends GameScoreView {
         }
         
         long scoreAfter = SCORE;
-        Tracelog.log(Level.INFO, true, String.format("Score Changed from %d to %d after performing move [%s, %s]", scoreBefore, scoreAfter, from, to));        
+        Tracelog.log(Level.INFO, true, String.format("Score %s: Changed from %d to %d after performing move [%s] to [%s]", isUndo ? "Undo" : "Updated",scoreBefore, scoreAfter, from, to));
         scoreValue.setText(toString());
     }
     
