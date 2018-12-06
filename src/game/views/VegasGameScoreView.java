@@ -76,6 +76,11 @@ public class VegasGameScoreView extends GameScoreView {
             return;
         }
         
+        // Whenever there is an undo, subtract 2 from the score
+        if(isUndo) {
+            SCORE -= 2;
+        }
+        
         long scoreAfter = SCORE;
         Tracelog.log(Level.INFO, true, String.format("Score %s: Changed from %d to %d after performing move [%s] to [%s]", isUndo ? "Undo" : "Updated",scoreBefore, scoreAfter, from, to));
         scoreValue.setText(toString());

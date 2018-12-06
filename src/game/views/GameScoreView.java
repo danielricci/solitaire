@@ -135,11 +135,19 @@ public class GameScoreView extends PanelView {
             SCORE += (isUndo ? -10 : 10);
         }
         else if(from == MovementType.FOUNDATION && to == MovementType.TABLEAU) {
-            SCORE = Math.max(0, SCORE + (isUndo ? 15 : -15));
+            SCORE += (isUndo ? 15 : -15);
         }
         else {
             return;
         }
+        
+        // Whenever there is an undo, subtract 2 from the score
+        if(isUndo) {
+            SCORE -= 2;
+        }
+        
+        // Normalize the score such that it is never less than 0
+        SCORE = Math.max(0,  SCORE);
         
         long scoreAfter = SCORE;
         Tracelog.log(Level.INFO, true, String.format("Score %s: Changed from %d to %d after performing move [%s] to [%s]", isUndo ? "Undo" : "Updated",scoreBefore, scoreAfter, from, to));
