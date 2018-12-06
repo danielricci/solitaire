@@ -22,7 +22,6 @@
  * IN THE SOFTWARE.
  */
 
-
 package game.application;
 
 import java.awt.Dimension;
@@ -154,11 +153,11 @@ public final class Game extends Application {
     @Override protected void onBeforeEngineDataInitialized() {
         EngineProperties.instance().setProperty(Property.DATA_PATH_XML, "/generated/tilemap.xml");
         EngineProperties.instance().setProperty(Property.DATA_PATH_SHEET, "/generated/tilemap.png");
-        EngineProperties.instance().setProperty(Property.LOG_DIRECTORY,  System.getProperty("user.home") + File.separator + "desktop" + File.separator);
+        //EngineProperties.instance().setProperty(Property.LOG_DIRECTORY,  System.getProperty("user.home") + File.separator + "desktop" + File.separator);
         EngineProperties.instance().setProperty(Property.LOCALIZATION_PATH_CVS, "resources/localization.csv");
         EngineProperties.instance().setProperty(Property.ENGINE_OUTPUT, Boolean.toString(true));
         EngineProperties.instance().setProperty(Property.SUPPRESS_SIGNAL_REGISTRATION_OUTPUT, Boolean.toString(true));
-        EngineProperties.instance().setProperty(Property.DISABLE_TRANSLATIONS_PLACEHOLDER, Boolean.toString(true));
+        EngineProperties.instance().setProperty(Property.DISABLE_TRANSLATIONS_PLACEHOLDER, Boolean.toString(false));
     }
 
     @Override protected void onWindowInitialized() {
