@@ -86,6 +86,9 @@ public final class CardView extends PanelView implements ICollidable {
      */
     private final class CardSelectionEvents extends MouseAdapter {
         
+        /**
+         * The parent layer pane
+         */
         private JLayeredPane _parentLayeredPane;
         
         @Override public void mousePressed(MouseEvent event) {
