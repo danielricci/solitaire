@@ -38,11 +38,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
 
-import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JLayeredPane;
-import javax.swing.JOptionPane;
 
 import framework.api.IView;
 import framework.communication.internal.signal.ISignalReceiver;
@@ -53,22 +51,15 @@ import framework.core.factories.ViewFactory;
 import framework.core.graphics.IRenderable;
 import framework.core.mvc.view.PanelView;
 import framework.core.mvc.view.layout.DragListener;
-import framework.core.navigation.MenuBuilder;
 import framework.core.physics.CollisionListener;
 import framework.core.physics.ICollidable;
-import framework.core.system.Application;
-import framework.utils.globalisation.Localization;
 import framework.utils.logging.Tracelog;
 
 import game.config.OptionsPreferences;
 import game.controllers.CardController;
 import game.controllers.MovementRecorderController;
 import game.gameplay.MovementType;
-import game.menu.ExitMenuItem;
-import game.menu.NewGameMenuItem;
 import game.models.CardModel;
-
-import resources.LocalizationStrings;
 
 /**
  * This view represents the representation of a single card
@@ -116,13 +107,13 @@ public final class CardView extends PanelView implements ICollidable {
                     Collections.reverse(cardViews);
 
                     // Fixes a bug where the layered pane is chopped from the waist down
-                    CardView.this._layeredPane.setSize(_layeredPane.getWidth(), _layeredPane.getHeight() + (cardViews.size() * 12));
+                    CardView.this.layeredPane.setSize(layeredPane.getWidth(), layeredPane.getHeight() + (cardViews.size() * 12));
                     
                     // For each sibling add it into the associated layere pane and position it correctly within
                     // the pane, accounting for the fact that CardView.this is the temporary 'root'
                     for(int j = 0; j < cardViews.size(); ++j) {
-                        _layeredPane.add(cardViews.get(j));
-                        _layeredPane.setLayer(cardViews.get(j), j);
+                        layeredPane.add(cardViews.get(j));
+                        layeredPane.setLayer(cardViews.get(j), j);
                         
                         // Account for the border offsets of -1 for left and bottom
                         cardViews.get(j).setBounds(new Rectangle(-1, (12 * (j + 1)) - 1, cardViews.get(j).getPreferredSize().width, cardViews.get(j).getPreferredSize().height));
@@ -134,7 +125,7 @@ public final class CardView extends PanelView implements ICollidable {
                     Point initialLocation = CardView.this.getLocation();
                     
                     // Note: Add +2 to the width and height because of the initial border size offset
-                    CardView.this.setBounds(new Rectangle(_parentLayeredPane.getParent().getLocation().x + initialLocation.x, _parentLayeredPane.getParent().getLocation().y + initialLocation.y, _layeredPane.getWidth() + 2, _layeredPane.getHeight() + 2));
+                    CardView.this.setBounds(new Rectangle(_parentLayeredPane.getParent().getLocation().x + initialLocation.x, _parentLayeredPane.getParent().getLocation().y + initialLocation.y, layeredPane.getWidth() + 2, layeredPane.getHeight() + 2));
 
                     // Remove the card view reference from it's initial parent
                     _parentLayeredPane.remove(CardView.this);
@@ -160,6 +151,9 @@ public final class CardView extends PanelView implements ICollidable {
             }
             
             // Ensure that a valid parent was set on the mouse pressed before continuing
+            // TODO - can this be removed, investigate, this would involve a class that extends
+            // the mouse click, we did this i think because adding a mouse even when mouse down 
+            // occurs, releasing the mouse would cause this to happen.
             if(_parentLayeredPane == null) {
                 return;
             }
@@ -185,69 +179,8 @@ public final class CardView extends PanelView implements ICollidable {
             
             // Get the offset that was set, and use this within our calculations
             AbstractPileView parent = (AbstractPileView) _parentLayeredPane.getParent();
-            int offset = parent.CARD_OFFSET;
-
-            // Get the list of components associated to the CardView.this reference. This list represents all the children associated
-            // to the said CardView.this reference.
-            List<Component> components = Arrays.asList(CardView.this._layeredPane.getComponents());
-
-            // Reverse the list because layered panes associate objects closer to layer 0 as being closer to the screen.
-            Collections.reverse(components);
-
-            // Get the initial count of the number of components in the layered pane.  It is assumed that they hold only
-            // CardView or the calculations wont work properly.
-            // This number represents the number of cards that exist within the list after the drag operation had occured, so if
-            // you have a pile with 5 cards and you drag three out, then you would be left with 2 cards in the parent, CardView.this would
-            // represent the card actually being dragged, and the layered pane associated to CardView.this would attached itself.
-            int initialSize = _parentLayeredPane.getComponents().length;
-            
-            // Add this card view to the pane and update the layer within the component that it has been added to
-            _parentLayeredPane.add(CardView.this);
-            _parentLayeredPane.setLayer(CardView.this, initialSize);
-
-            // Set the bounds of this card so that it appears at the right position offset
-            CardView.this.setBounds(new Rectangle(0, offset * initialSize, CardView.this.getPreferredSize().width, CardView.this.getPreferredSize().height));
-
-            ViewFactory viewFactory = AbstractFactory.getFactory(ViewFactory.class);
-            GameView gameView = viewFactory.get(GameView.class);
-            gameView.remove(CardView.this);
-            
-            // Increment the initial size to include the fact that CardView.this was added back to the parent
-            ++initialSize;
-
-            // Take the remainder of the components held by this card and put them back into the parents pane
-            for(int i = 0; i < components.size(); ++i) {
-
-                // Add this card view to the pane and update the layer within the component that it has been added to
-                _parentLayeredPane.add(components.get(i));
-                _parentLayeredPane.setLayer(components.get(i), i + initialSize);
-
-                // Set the bounds of this card so that it appears at the right position offset                    
-                components.get(i).setBounds(new Rectangle(0, offset * (i + initialSize), components.get(i).getPreferredSize().width, components.get(i).getPreferredSize().height));
-            }
-            
-            // Clear the card views that were added within this cards' layered pane
-            CardView.this._layeredPane.removeAll();
-            
-            // Repaint the components accordingly
-            gameView.repaint();
-            _parentLayeredPane.repaint();
-            _parentLayeredPane = null;            
-
-            // Verify if there is a game winner
-            if(GameView.IsGameWinner()) {
-                // Stop the game timer
-                GameTimerView gameTimerView = AbstractFactory.getFactory(ViewFactory.class).get(GameTimerView.class);
-                gameTimerView.stop();
-                
-                // Show the dialog indicating that game has won
-                if(JOptionPane.showConfirmDialog(null, Localization.instance().getLocalizedString(LocalizationStrings.GAME_OVER), Localization.instance().getLocalizedString(LocalizationStrings.GAME_OVER_HEADER), JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE) == JOptionPane.YES_OPTION) { 
-                    MenuBuilder.search(Application.instance.getJMenuBar(), NewGameMenuItem.class).getComponent(AbstractButton.class).doClick();
-                }
-                else {
-                    MenuBuilder.search(Application.instance.getJMenuBar(), ExitMenuItem.class).getComponent(AbstractButton.class).doClick();
-                }
-            }
+            parent.addCard(CardView.this);
+            _parentLayeredPane = null;
         }
     }
 
@@ -305,7 +238,7 @@ public final class CardView extends PanelView implements ICollidable {
     /**
      * The layered pane that holds the potential list of cards that would be dragged along-side this card vuew
      */
-    private final JLayeredPane _layeredPane = new JLayeredPane();
+    protected final JLayeredPane layeredPane = new JLayeredPane();
    
     /**
      * Indicates if selections are enabled
@@ -339,7 +272,7 @@ public final class CardView extends PanelView implements ICollidable {
         setOpaque(true);
         setBackground(Color.BLACK);
         setBorder(BorderFactory.createLineBorder(Color.BLACK, 1, true));
-        add(_layeredPane);
+        add(layeredPane);
         
         // Set the collision style for this object
         _collisionListener.setIsSingularCollision(true);
@@ -501,7 +434,7 @@ public final class CardView extends PanelView implements ICollidable {
                     CardView.this.setBounds(new Rectangle(0, 0, CardView.this.getPreferredSize().width, CardView.this.getPreferredSize().height));
                                         
                     // Repaint the components
-                    _layeredPane.repaint();
+                    layeredPane.repaint();
                     foundationView.repaint();
                     
                     return true;

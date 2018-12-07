@@ -321,8 +321,4 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
     @Override public boolean isValidCollision(Component source) {
         return false;
     }
-
-    @Override public void addCard(CardView cardView, int position) {
-        // TODO - implement me
-    }
 }

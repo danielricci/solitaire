@@ -29,12 +29,24 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 
+import javax.swing.AbstractButton;
+import javax.swing.JOptionPane;
+
 import framework.api.IView;
 import framework.communication.internal.signal.arguments.EventArgs;
+import framework.core.factories.AbstractFactory;
+import framework.core.factories.ViewFactory;
+import framework.core.navigation.MenuBuilder;
 import framework.core.physics.ICollidable;
+import framework.core.system.Application;
+import framework.utils.globalisation.Localization;
 
 import game.controllers.CardController;
 import game.entities.FoundationCardEntity;
+import game.menu.ExitMenuItem;
+import game.menu.NewGameMenuItem;
+
+import resources.LocalizationStrings;
 
 /**
  * This view represents the foundation pile view
@@ -81,7 +93,24 @@ public final class FoundationPileView extends AbstractPileView implements IColli
         }
     }
 
-    @Override public void addCard(CardView cardView, int position) {
-        // TODO - implement me
+    @Override public void addCard(CardView cardView) {
+
+      super.addCard(cardView);
+        
+      // Verify if there is a game winner
+      if(GameView.IsGameWinner()) {
+          // Stop the game timer
+          GameTimerView gameTimerView = AbstractFactory.getFactory(ViewFactory.class).get(GameTimerView.class);
+          gameTimerView.stop();
+          
+          // Show the dialog indicating that game has won
+          if(JOptionPane.showConfirmDialog(null, Localization.instance().getLocalizedString(LocalizationStrings.GAME_OVER), Localization.instance().getLocalizedString(LocalizationStrings.GAME_OVER_HEADER), JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE) == JOptionPane.YES_OPTION) { 
+              MenuBuilder.search(Application.instance.getJMenuBar(), NewGameMenuItem.class).getComponent(AbstractButton.class).doClick();
+          }
+          else {
+              MenuBuilder.search(Application.instance.getJMenuBar(), ExitMenuItem.class).getComponent(AbstractButton.class).doClick();
+          }
+      }
+
     }
 }

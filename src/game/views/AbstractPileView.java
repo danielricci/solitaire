@@ -26,7 +26,13 @@ package game.views;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Rectangle;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import javax.swing.JLayeredPane;
 
@@ -79,16 +85,7 @@ public abstract class AbstractPileView extends PanelView {
         }
         return (CardView)layeredPane.getComponents()[0];
     }
-    
-    /**
-     * Adds the specified card view to this pile
-     *
-     * @param card The card to add to this pile
-     */
-    public final void addCard(CardView card) {
-        addCard(card, layeredPane.getComponentCount());
-    }
-    
+        
     /**
      * Adds the specified card view to this pile
      *
@@ -96,8 +93,42 @@ public abstract class AbstractPileView extends PanelView {
      * @param position The position of the card
      * 
      */
-    public abstract void addCard(CardView cardView, int position);
-    
+    public void addCard(CardView cardView) {
+        // Hold onto a reference of the parent for repainting reasons
+        Container parentCardView = cardView.getParent();
+        
+        // Get the list of components associated to the card view.
+        // This list represents all the children associated to the said CardView.this reference.
+        List<Component> components = new ArrayList<Component>(Arrays.asList(cardView.layeredPane.getComponents()));
+        
+        // Add the card view component, this will add it to the end
+        components.add(cardView);
+        
+        // Reverse the list because layered panes associate objects closer to layer 0 as being closer to the screen.
+        Collections.reverse(components);
+
+        // Calculate the number of component withint this pile to use
+        // as the layer identifier offset
+        int position = layeredPane.getComponents().length;
+        
+        // Add the cards to this pile view
+        for(Component comp : components) {
+            layeredPane.add(comp);
+            layeredPane.setLayer(comp, position);
+            comp.setBounds(new Rectangle(
+                0, 
+                this.CARD_OFFSET * position,  
+                comp.getPreferredSize().width, 
+                comp.getPreferredSize().height)
+            );
+            
+            ++position;
+        }
+        
+        parentCardView.repaint();
+        repaint();
+    }
+        
     @Override public void render() {
         super.render();
         for(Component component : layeredPane.getComponents()) {
