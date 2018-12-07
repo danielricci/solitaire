@@ -80,6 +80,24 @@ public abstract class AbstractPileView extends PanelView {
         return (CardView)layeredPane.getComponents()[0];
     }
     
+    /**
+     * Adds the specified card view to this pile
+     *
+     * @param card The card to add to this pile
+     */
+    public final void addCard(CardView card) {
+        addCard(card, layeredPane.getComponentCount());
+    }
+    
+    /**
+     * Adds the specified card view to this pile
+     *
+     * @param card The card to add to this pile
+     * @param position The position of the card
+     * 
+     */
+    public abstract void addCard(CardView cardView, int position);
+    
     @Override public void render() {
         super.render();
         for(Component component : layeredPane.getComponents()) {

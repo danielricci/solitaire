@@ -36,7 +36,12 @@ import framework.core.physics.ICollidable;
 import game.controllers.CardController;
 import game.entities.FoundationCardEntity;
 
-public class FoundationPileView extends AbstractPileView implements ICollidable {
+/**
+ * This view represents the foundation pile view
+ * 
+ * @author Daniel Ricci <thedanny09@icloud.com>
+ */
+public final class FoundationPileView extends AbstractPileView implements ICollidable {
 
     /**
      * Creates a new instance of this class type
@@ -74,5 +79,9 @@ public class FoundationPileView extends AbstractPileView implements ICollidable 
             CardView thisCardView = (CardView) layeredPane.getComponent(0);
             return thisCardView.isValidCollision(source);
         }
+    }
+
+    @Override public void addCard(CardView cardView, int position) {
+        // TODO - implement me
     }
 }

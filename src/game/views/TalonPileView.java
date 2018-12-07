@@ -1,5 +1,5 @@
 /**
- * Daniel Ricci <thedanny09@icloud.com>
+* Daniel Ricci <thedanny09@icloud.com>
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -51,6 +51,11 @@ import game.controllers.MovementRecorderController;
 import game.gameplay.MovementType;
 import game.models.CardModel;
 
+/**
+ * This views represents the talon pile view
+ * 
+ * @author Daniel Ricci <thedanny09@icloud.com>
+ */
 public final class TalonPileView extends AbstractPileView implements ICollidable {
     
     /**
@@ -316,19 +321,8 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
     @Override public boolean isValidCollision(Component source) {
         return false;
     }
-    
-//    @Override public String toString() {
-//        StringBuilder builder = new StringBuilder();
-//        String header = "========" + this.getClass().getSimpleName().toUpperCase() + "========";
-//        builder.append(header + System.getProperty("line.separator"));
-//        
-//        for(Component comp : layeredPane.getComponents()) {
-//            if(comp instanceof JComponent) {
-//                JComponent jcomp = (JComponent) comp;
-//                builder.append((jcomp instanceof CardView ? jcomp : "[=======BLANK=======]" + "\t[" + JLayeredPane.getLayer(jcomp) + "]") + System.getProperty("line.separator"));
-//            }
-//        }
-//        builder.append(new String(new char[header.length()]).replace("\0", "="));
-//        return builder.toString();
-//    }
+
+    @Override public void addCard(CardView cardView, int position) {
+        // TODO - implement me
+    }
 }
