@@ -47,8 +47,14 @@ import game.models.CardModel;
  */
 public class TableauPileView extends AbstractPileView implements ICollidable {
        
+    /**
+     * This panel is used as a placeholder within this view when there are no cards to be shown
+     */
     private final PanelView _noCardPanelView = new PanelView();
 
+    /**
+     * A reference to the options preferences resource
+     */
     private final OptionsPreferences _preferences = new OptionsPreferences();
     
     /**
