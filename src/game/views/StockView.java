@@ -38,7 +38,7 @@ import game.config.OptionsPreferences;
 import game.config.OptionsPreferences.DrawOption;
 import game.config.OptionsPreferences.ScoringOption;
 import game.entities.TalonCardEntity;
-import game.views.TalonView.TalonCardState;
+import game.views.TalonPileView.TalonCardState;
 
 public final class StockView extends PanelView {
 
@@ -60,7 +60,7 @@ public final class StockView extends PanelView {
         
         addMouseListener(new MouseAdapter() {            
             @Override public void mousePressed(MouseEvent event) {
-                TalonView talonView = AbstractFactory.getFactory(ViewFactory.class).get(TalonView.class);
+                TalonPileView talonView = AbstractFactory.getFactory(ViewFactory.class).get(TalonPileView.class);
                 
                 TalonCardState cardState = talonView.showCardHand();
                 if(cardState == TalonCardState.EMPTY) {

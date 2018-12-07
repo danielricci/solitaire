@@ -40,15 +40,21 @@ import game.config.OptionsPreferences;
 import game.controllers.CardController;
 import game.models.CardModel;
 
-public class TableauView extends AbstractPileView implements ICollidable {
+/**
+ * This view represents a single Tableau pile 
+ * 
+ * @author Daniel Ricci <thedanny09@icloud.com>
+ */
+public class TableauPileView extends AbstractPileView implements ICollidable {
        
     private final PanelView _noCardPanelView = new PanelView();
 
     private final OptionsPreferences _preferences = new OptionsPreferences();
+    
     /**
      * Constructs a new instance of this class type
      */
-    private TableauView() {
+    private TableauPileView() {
         
         // Force the rendering engine to attempt to render this view so that it can
         // render the panel view when no cards are available and the player is in outline mode
@@ -70,7 +76,7 @@ public class TableauView extends AbstractPileView implements ICollidable {
      * 
      * @param cards A list of card models to associate to this pile view
      */
-    public TableauView(List<CardModel> cards) {
+    public TableauPileView(List<CardModel> cards) {
         this();
         for(int i = 0; i < cards.size(); ++i) {
             //Create the card view

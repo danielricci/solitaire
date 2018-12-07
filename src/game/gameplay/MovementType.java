@@ -24,9 +24,9 @@
 
 package game.gameplay;
 
-import game.views.FoundationView;
-import game.views.TableauView;
-import game.views.TalonView;
+import game.views.FoundationPileView;
+import game.views.TableauPileView;
+import game.views.TalonPileView;
 
 /**
  * @author Daniel Ricci <thedanny09@icloud.com>
@@ -38,13 +38,13 @@ public enum MovementType {
     NONE;
     
     public static MovementType fromClass(Object clazz) {
-        if(clazz instanceof TalonView) {
+        if(clazz instanceof TalonPileView) {
             return MovementType.TALON;
         }
-        else if(clazz instanceof FoundationView) {
+        else if(clazz instanceof FoundationPileView) {
             return MovementType.FOUNDATION;
         }
-        else if(clazz instanceof TableauView) {
+        else if(clazz instanceof TableauPileView) {
             return MovementType.TABLEAU;
         }
         

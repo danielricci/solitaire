@@ -96,7 +96,7 @@ public final class GameView extends PanelView {
                         break;
                     }
                     case 1: {
-                        TalonView talonView = viewFactory.add(new TalonView(cards), true);
+                        TalonPileView talonView = viewFactory.add(new TalonPileView(cards), true);
                         GridBagConstraints talonConstraints = (GridBagConstraints)gameConstraints.clone();
                         // Get a reference to the current constraints and subtract 20 from the right so that
                         // it is positioned at an offset to the right of +20, then increase the size
@@ -111,7 +111,7 @@ public final class GameView extends PanelView {
                     case 5:
                     case 6:
                         // Create the foundation view
-                        FoundationView foundationView = viewFactory.add(new FoundationView());
+                        FoundationPileView foundationView = viewFactory.add(new FoundationPileView());
                         this.add(foundationView, gameConstraints);
                     break;
                     }
@@ -119,7 +119,7 @@ public final class GameView extends PanelView {
                 else {
                     
                     List<CardModel> subList = cards.subList(0, gameConstraints.gridx + 1);
-                    TableauView view = viewFactory.add(new TableauView(new ArrayList<CardModel>(subList)));
+                    TableauPileView view = viewFactory.add(new TableauPileView(new ArrayList<CardModel>(subList)));
                     subList.clear();
                     
                     this.add(view, gameConstraints);
@@ -130,7 +130,7 @@ public final class GameView extends PanelView {
     
     public static boolean IsGameWinner() {
         boolean winner = true;
-        for(FoundationView foundationView : AbstractFactory.getFactory(ViewFactory.class).getAll(FoundationView.class)) {
+        for(FoundationPileView foundationView : AbstractFactory.getFactory(ViewFactory.class).getAll(FoundationPileView.class)) {
             if(foundationView.layeredPane.getComponentCount() == 13) { 
                 CardView cardView = (CardView) foundationView.layeredPane.getComponent(0);
                 if(!cardView.getViewProperties().getEntity(CardController.class).isKing()) {

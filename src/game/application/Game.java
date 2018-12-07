@@ -51,11 +51,11 @@ import game.menu.ExitMenuItem;
 import game.menu.NewGameMenuItem;
 import game.menu.OptionsMenuItem;
 import game.menu.UndoMenuItem;
-import game.views.FoundationView;
+import game.views.FoundationPileView;
 import game.views.GameView;
 import game.views.StatusBarView;
-import game.views.TableauView;
-import game.views.TalonView;
+import game.views.TableauPileView;
+import game.views.TalonPileView;
 
 import resources.LocalizationStrings;
 
@@ -78,12 +78,12 @@ public final class Game extends Application {
                 @Override public void keyReleased(KeyEvent event) {
                     if(event.getKeyCode() == KeyEvent.VK_F1) {
                         ViewFactory viewFactory = AbstractFactory.getFactory(ViewFactory.class);
-                        System.out.println(viewFactory.get(TalonView.class).toString());
-                        List<TableauView> pileViews =  viewFactory.getAll(TableauView.class);
+                        System.out.println(viewFactory.get(TalonPileView.class).toString());
+                        List<TableauPileView> pileViews =  viewFactory.getAll(TableauPileView.class);
                         for(int i = pileViews.size() - 1; i >= 0; --i) {
                             System.out.println(pileViews.get(i));
                         }
-                        List<FoundationView> foundationViews =  viewFactory.getAll(FoundationView.class);
+                        List<FoundationPileView> foundationViews =  viewFactory.getAll(FoundationPileView.class);
                         for(int i = foundationViews.size() - 1; i >= 0; --i) {
                             System.out.println(foundationViews.get(i));
                         }

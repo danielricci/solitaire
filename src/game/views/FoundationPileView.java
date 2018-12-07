@@ -36,12 +36,12 @@ import framework.core.physics.ICollidable;
 import game.controllers.CardController;
 import game.entities.FoundationCardEntity;
 
-public class FoundationView extends AbstractPileView implements ICollidable {
+public class FoundationPileView extends AbstractPileView implements ICollidable {
 
     /**
      * Creates a new instance of this class type
      */
-    public FoundationView() {
+    public FoundationPileView() {
         
         // The background the the opaqueness of this view
         // must be set this way to achieve the proper xor effect

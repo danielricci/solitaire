@@ -51,7 +51,7 @@ import game.controllers.MovementRecorderController;
 import game.gameplay.MovementType;
 import game.models.CardModel;
 
-public final class TalonView extends AbstractPileView implements ICollidable {
+public final class TalonPileView extends AbstractPileView implements ICollidable {
     
     /**
      * The blank card associated to the talon view
@@ -63,7 +63,7 @@ public final class TalonView extends AbstractPileView implements ICollidable {
      * 
      * @param cards The card models to load within this view
      */
-    public TalonView(List<CardModel> cards) {
+    public TalonPileView(List<CardModel> cards) {
 
         _blankCard.setBackground(new Color(0, 128, 0));
         _blankCard.setPreferredSize(new Dimension(CardView.CARD_WIDTH, CardView.CARD_HEIGHT));
@@ -92,7 +92,7 @@ public final class TalonView extends AbstractPileView implements ICollidable {
                     layeredPane.getComponentsInLayer(layeredPane.highestLayer())[0].setEnabled(true);
                     
                     // If the card is no longer associated to the talon, then remove its association to this event
-                    if(!(cardView.getParentIView() instanceof TalonView)) {
+                    if(!(cardView.getParentIView() instanceof TalonPileView)) {
                         cardView.removeMouseListener(this);
                         
                         // The top-most card cannot be the layered pane

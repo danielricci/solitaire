@@ -455,18 +455,18 @@ public final class CardView extends PanelView implements ICollidable {
         if(!_controller.getCard().getIsBackside()) {
             
             // Make sure that we are not double clicking on an ACE. That doesn't make much sense here in this case
-            if(AbstractFactory.getFactory(ViewFactory.class).getAll(FoundationView.class).stream().anyMatch(z -> z.layeredPane.getComponentCount() == 1 && z.layeredPane.getComponents()[0] == CardView.this)) {
+            if(AbstractFactory.getFactory(ViewFactory.class).getAll(FoundationPileView.class).stream().anyMatch(z -> z.layeredPane.getComponentCount() == 1 && z.layeredPane.getComponents()[0] == CardView.this)) {
                 return false;
             }
             
             // Get the list of foundation views. 
-            List<FoundationView> foundationViews = AbstractFactory.getFactory(ViewFactory.class).getAll(FoundationView.class);
+            List<FoundationPileView> foundationViews = AbstractFactory.getFactory(ViewFactory.class).getAll(FoundationPileView.class);
             
             // Reverse the list, so that the card populating the left-most foundation view, this just looks a lot better
             Collections.reverse(foundationViews);
             
             // Go through the list of foundation views and see if there is a match
-            for(FoundationView foundationView : foundationViews) {
+            for(FoundationPileView foundationView : foundationViews) {
                 if(foundationView.isValidCollision(CardView.this)) {
                     AbstractFactory.getFactory(ControllerFactory.class).get(MovementRecorderController.class).recordMovement(MovementType.fromClass(CardView.this.getParentIView()), MovementType.FOUNDATION);
                     
@@ -525,7 +525,7 @@ public final class CardView extends PanelView implements ICollidable {
         IView view = (IView)source;
         
         // A card is coming into this card, and we are on the foundation view
-        if(getParent().getParent() instanceof FoundationView) {
+        if(getParent().getParent() instanceof FoundationPileView) {
             CardController thisCardViewController = view.getViewProperties().getEntity(CardController.class);
             return _controller.isValidFoundationMove(thisCardViewController.getCard());            
         }
