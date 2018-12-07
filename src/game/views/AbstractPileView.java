@@ -32,6 +32,11 @@ import javax.swing.JLayeredPane;
 
 import framework.core.mvc.view.PanelView;
 
+/**
+ * Abstract representation of a pile view
+ * 
+ * @author Daniel Ricci <thedanny09@icloud.com>
+ */
 public abstract class AbstractPileView extends PanelView {
         
     /**
@@ -54,6 +59,9 @@ public abstract class AbstractPileView extends PanelView {
         add(layeredPane, BorderLayout.CENTER);
     }
 
+    /**
+     * Removes the highlight from all the cards held within this pile view
+     */
     public void removeHighlight() {
         for(Component comp : layeredPane.getComponents()) {
             CardView cardView = (CardView)comp;
@@ -61,7 +69,10 @@ public abstract class AbstractPileView extends PanelView {
         }
         repaint();
     }
-    
+
+    /**
+     * @return The last ordered card held within this pile view
+     */
     public CardView getLastCard() {
         if(layeredPane.getComponentCount() == 0) {
             return null;
