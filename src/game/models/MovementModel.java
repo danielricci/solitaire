@@ -26,10 +26,34 @@ package game.models;
 
 import framework.core.mvc.model.BaseModel;
 
-import game.gameplay.MovementType;
+import game.views.FoundationPileView;
+import game.views.TableauPileView;
+import game.views.TalonPileView;
 
 public class MovementModel extends BaseModel {
-
+    
+    public enum MovementType {
+        TALON,
+        FOUNDATION,
+        TABLEAU, 
+        NONE;
+        
+        public static MovementType fromClass(Object clazz) {
+            if(clazz instanceof TalonPileView) {
+                return MovementType.TALON;
+            }
+            else if(clazz instanceof FoundationPileView) {
+                return MovementType.FOUNDATION;
+            }
+            else if(clazz instanceof TableauPileView) {
+                return MovementType.TABLEAU;
+            }
+            else {
+                return MovementType.NONE;
+            }
+        }
+    }
+    
     private MovementType _from;
     private MovementType _to;
     private boolean _isUndo;

@@ -53,7 +53,6 @@ import framework.core.system.Application;
 import framework.utils.globalisation.Localization;
 
 import game.controllers.MovementRecorderController;
-import game.gameplay.MovementType;
 import game.menu.ExitMenuItem;
 import game.menu.NewGameMenuItem;
 import game.views.components.ExclusiveLineBorder;
@@ -228,7 +227,7 @@ public final class CardProxyView extends PanelView {
                 AbstractPileView pileViewCollider = (AbstractPileView) collider;
                 
                 // Get the before movement type to know where the move is coming from
-                MovementType movementTypeFrom = MovementType.fromClass(_cardView.getParent().getParent());
+                AbstractPileView fromPileView = (AbstractPileView) _cardView.getParent().getParent();
                 
                 // Unselect all the cards within this pile view to remove the outline xor'd highlight
                 pileViewCollider.removeHighlight();
@@ -261,7 +260,7 @@ public final class CardProxyView extends PanelView {
                 pileViewCollider.repaint();
                 
                 // Record that the movement occurred
-                AbstractFactory.getFactory(ControllerFactory.class).get(MovementRecorderController.class).recordMovement(movementTypeFrom, MovementType.fromClass(collider));
+                AbstractFactory.getFactory(ControllerFactory.class).get(MovementRecorderController.class).recordMovement(fromPileView, pileViewCollider);
             }
             else {
                 Component[] layeredComponents = _layeredPane.getComponents();

@@ -30,8 +30,9 @@ import framework.communication.internal.signal.ISignalListener;
 import framework.core.mvc.controller.BaseController;
 import framework.utils.logging.Tracelog;
 
-import game.gameplay.MovementType;
 import game.models.MovementModel;
+import game.models.MovementModel.MovementType;
+import game.views.AbstractPileView;
 
 /**
  * The controller that handles recording of movement
@@ -52,28 +53,30 @@ public class MovementRecorderController extends BaseController {
     /**
      * The last recorded `from` movement
      */
-    private MovementType _from;
+    private AbstractPileView _from;
     
     /**
      * The last recorded `to` movement
      */
-    private MovementType _to;
-    
+    public AbstractPileView _to;
+        
     /**
-     * Records the specified movement
+     * Records the specified movement from one pile view implement to the other
      *
-     * @param from The `from` movement that was performed
-     * @param to The `to` movement that was performed
+     * @param from The pile view implementation source
+     * @param to The pile view implementation destination
+     * 
      */
-    public void recordMovement(MovementType from, MovementType to) {
-        
-        Tracelog.log(Level.INFO, true, String.format("Movement Detected: from [%s] to [%s]", from, to));
-        
-        // Assign the new values
+    public void recordMovement(AbstractPileView from, AbstractPileView to) {
         _from = from;
         _to = to;
-    
-        if(from == MovementType.NONE || to == MovementType.NONE) {
+        
+        MovementType fromMovement = MovementType.fromClass(from);
+        MovementType toMovement = MovementType.fromClass(to);
+
+        Tracelog.log(Level.INFO, true, String.format("Movement Detected: from [%s] to [%s]", fromMovement, toMovement));
+            
+        if(fromMovement == MovementType.NONE || toMovement == MovementType.NONE) {
             _canUndo = false;
         }
         else {
@@ -81,9 +84,9 @@ public class MovementRecorderController extends BaseController {
         }
             
         // Update the model
-        _movementModel.setMovement(from, to, false);
+        _movementModel.setMovement(fromMovement, toMovement, false);
     }
-    
+        
     /**
      * Performs an undo of the last recorded move
      */
@@ -94,7 +97,7 @@ public class MovementRecorderController extends BaseController {
         }
 
         // Update the movement model
-        _movementModel.setMovement(_from, _to, true);
+        _movementModel.setMovement(MovementType.fromClass(_from), MovementType.fromClass(_to), true);
         
         // Reset the values
         _canUndo = false;

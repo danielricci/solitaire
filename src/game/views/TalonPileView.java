@@ -48,7 +48,6 @@ import framework.utils.logging.Tracelog;
 import game.config.OptionsPreferences;
 import game.config.OptionsPreferences.DrawOption;
 import game.controllers.MovementRecorderController;
-import game.gameplay.MovementType;
 import game.models.CardModel;
 
 /**
@@ -207,7 +206,7 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
         Component blankCardLayer = Arrays.asList(layeredPane.getComponents()).stream().filter(z -> !(z instanceof CardView)).findFirst().get();
 
         // Notify the movement controller that there was a movement that occured of the talon
-        AbstractFactory.getFactory(ControllerFactory.class).get(MovementRecorderController.class).recordMovement(MovementType.TALON, MovementType.TALON);
+        AbstractFactory.getFactory(ControllerFactory.class).get(MovementRecorderController.class).recordMovement(this, this);
         
         // If we are at the end then restart the deck
         if(layeredPane.getLayer(blankCardLayer) == layeredPane.lowestLayer()) {

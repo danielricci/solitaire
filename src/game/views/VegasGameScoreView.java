@@ -29,7 +29,7 @@ import java.util.logging.Level;
 
 import framework.utils.logging.Tracelog;
 
-import game.gameplay.MovementType;
+import game.models.MovementModel.MovementType;
 
 /**
  * This view shows the game score when playing in a vegas styled environment

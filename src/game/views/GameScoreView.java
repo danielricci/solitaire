@@ -37,8 +37,8 @@ import framework.utils.logging.Tracelog;
 import game.config.OptionsPreferences;
 import game.config.OptionsPreferences.DrawOption;
 import game.config.OptionsPreferences.ScoringOption;
-import game.gameplay.MovementType;
 import game.models.MovementModel;
+import game.models.MovementModel.MovementType;
 
 /**
  * This view shows the game score
