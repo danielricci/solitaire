@@ -33,6 +33,7 @@ import framework.utils.logging.Tracelog;
 import game.models.MovementModel;
 import game.models.MovementModel.MovementType;
 import game.views.AbstractPileView;
+import game.views.CardView;
 
 /**
  * The controller that handles recording of movement
@@ -51,6 +52,11 @@ public class MovementRecorderController extends BaseController {
     private boolean _canUndo;
     
     /**
+     * This flag indicates if this instance can record undo's.
+     */
+    private boolean _lockRecording;
+    
+    /**
      * The last recorded `from` movement
      */
     private AbstractPileView _from;
@@ -67,7 +73,13 @@ public class MovementRecorderController extends BaseController {
      * @param to The pile view implementation destination
      * 
      */
-    public void recordMovement(AbstractPileView from, AbstractPileView to) {
+    public void recordMovement(AbstractPileView from, AbstractPileView to, CardView cardView) {
+        
+        // Do not preoceed with the record movement if the lock is enabled
+        if(_lockRecording) {
+            return;
+        }
+        
         _from = from;
         _to = to;
         
@@ -96,8 +108,17 @@ public class MovementRecorderController extends BaseController {
             return;
         }
 
+        // Prevent recording undo's, to avoid performing an undo and have that movement recorded
+        _lockRecording = true;
+        
+        // Undo the move that was performed 
+        //_from.addCard(resource);
+        
         // Update the movement model
         _movementModel.setMovement(MovementType.fromClass(_from), MovementType.fromClass(_to), true);
+        
+        // Enable back the lock
+        _lockRecording = false;
         
         // Reset the values
         _canUndo = false;
