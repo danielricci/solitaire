@@ -66,13 +66,14 @@ public abstract class AbstractPileView extends PanelView {
     }
 
     /**
-     * Removes the highlight from all the cards held within this pile view
+     * Removes the highlights from this view and its underlying cards
      */
     public void removeHighlight() {
         for(Component comp : layeredPane.getComponents()) {
             CardView cardView = (CardView)comp;
             cardView.setIsHighlighted(false);
         }
+        setIsHighlighted(false);
         repaint();
     }
 
