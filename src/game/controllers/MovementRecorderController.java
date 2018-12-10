@@ -31,8 +31,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 
-import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
-
 import framework.communication.internal.signal.ISignalListener;
 import framework.core.factories.AbstractFactory;
 import framework.core.factories.ViewFactory;
@@ -81,6 +79,12 @@ public class MovementRecorderController extends BaseController {
      */
     private CardView _cardView;
     
+    /**
+     * The list of cards associated to the children of the card view.
+     * 
+     * Note: These are needed because when a card goes from one location to another, the underlying
+     *       cards get removed after the destination is applied. This will keep a hold of them
+     */
     private final List<Component> _cardViewChildren = new ArrayList<Component>();
     
     /**
@@ -97,12 +101,15 @@ public class MovementRecorderController extends BaseController {
             return;
         }
         
+        // Reset the values of this recorder
+        reset();
+        
         _cardView = cardView;
-        _cardViewChildren.clear();
         if(_cardView != null) {
             _cardViewChildren.addAll(Arrays.asList(_cardView.getLayeredPane().getComponents()));
             Collections.reverse(_cardViewChildren);
         }
+
         _from = from;
         _to = to;
         
@@ -149,11 +156,8 @@ public class MovementRecorderController extends BaseController {
         // Enable back the lock
         _lockRecording = false;
         
-        // Reset the values
-        _canUndo = false;
-        _from = null; 
-        _to = null;
-        _cardView = null;
+        // Reset the contents of this recorder
+        reset();
     }
 
     /**
@@ -168,6 +172,19 @@ public class MovementRecorderController extends BaseController {
      */
     public void clearUndo() {
         _canUndo = false;
+        reset();
+    }
+    
+    /**
+     * Resets the contents of this recorder
+     */
+    private void reset() {
+        // Reset the values
+        _canUndo = false;
+        _from = null; 
+        _to = null;
+        _cardView = null;
+        _cardViewChildren.clear();
     }
     
     @Override public void addSignalListener(ISignalListener listener) {
