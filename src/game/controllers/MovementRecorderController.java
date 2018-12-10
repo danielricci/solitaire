@@ -24,9 +24,18 @@
 
 package game.controllers;
 
+import java.awt.Component;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.logging.Level;
 
+import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
+
 import framework.communication.internal.signal.ISignalListener;
+import framework.core.factories.AbstractFactory;
+import framework.core.factories.ViewFactory;
 import framework.core.mvc.controller.BaseController;
 import framework.utils.logging.Tracelog;
 
@@ -34,6 +43,7 @@ import game.models.MovementModel;
 import game.models.MovementModel.MovementType;
 import game.views.AbstractPileView;
 import game.views.CardView;
+import game.views.GameView;
 
 /**
  * The controller that handles recording of movement
@@ -64,8 +74,15 @@ public class MovementRecorderController extends BaseController {
     /**
      * The last recorded `to` movement
      */
-    public AbstractPileView _to;
-        
+    private AbstractPileView _to;
+    
+    /**
+     * The card view associated with the move
+     */
+    private CardView _cardView;
+    
+    private final List<Component> _cardViewChildren = new ArrayList<Component>();
+    
     /**
      * Records the specified movement from one pile view implement to the other
      *
@@ -80,6 +97,12 @@ public class MovementRecorderController extends BaseController {
             return;
         }
         
+        _cardView = cardView;
+        _cardViewChildren.clear();
+        if(_cardView != null) {
+            _cardViewChildren.addAll(Arrays.asList(_cardView.getLayeredPane().getComponents()));
+            Collections.reverse(_cardViewChildren);
+        }
         _from = from;
         _to = to;
         
@@ -112,17 +135,25 @@ public class MovementRecorderController extends BaseController {
         _lockRecording = true;
         
         // Undo the move that was performed 
-        //_from.addCard(resource);
-        
+        _from.addCard(_cardView);
+        for(Component comp : _cardViewChildren) {
+            _from.addCard((CardView)comp);
+        }
+               
         // Update the movement model
         _movementModel.setMovement(MovementType.fromClass(_from), MovementType.fromClass(_to), true);
+        
+        // Repaint the game
+        AbstractFactory.getFactory(ViewFactory.class).get(GameView.class).repaint();
         
         // Enable back the lock
         _lockRecording = false;
         
         // Reset the values
         _canUndo = false;
-        _from = _to = null;
+        _from = null; 
+        _to = null;
+        _cardView = null;
     }
 
     /**

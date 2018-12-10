@@ -206,7 +206,7 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
         Component blankCardLayer = Arrays.asList(layeredPane.getComponents()).stream().filter(z -> !(z instanceof CardView)).findFirst().get();
 
         // Notify the movement controller that there was a movement that occured of the talon
-        AbstractFactory.getFactory(ControllerFactory.class).get(MovementRecorderController.class).recordMovement(this, this);
+        AbstractFactory.getFactory(ControllerFactory.class).get(MovementRecorderController.class).recordMovement(this, this, null);
         
         // If we are at the end then restart the deck
         if(layeredPane.getLayer(blankCardLayer) == layeredPane.lowestLayer()) {

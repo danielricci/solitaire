@@ -260,7 +260,7 @@ public final class CardProxyView extends PanelView {
                 pileViewCollider.repaint();
                 
                 // Record that the movement occurred
-                AbstractFactory.getFactory(ControllerFactory.class).get(MovementRecorderController.class).recordMovement(fromPileView, pileViewCollider);
+                AbstractFactory.getFactory(ControllerFactory.class).get(MovementRecorderController.class).recordMovement(fromPileView, pileViewCollider, _cardView);
             }
             else {
                 Component[] layeredComponents = _layeredPane.getComponents();

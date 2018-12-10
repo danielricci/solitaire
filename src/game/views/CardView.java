@@ -165,8 +165,8 @@ public final class CardView extends PanelView implements ICollidable {
                 // Get the before movement type to know where the move is coming from
                 Optional<Component> layeredPane = Arrays.asList(pileView.getComponents()).stream().filter(z -> z.getClass() == JLayeredPane.class).findFirst();
                 if(layeredPane.isPresent()) {
+                    AbstractFactory.getFactory(ControllerFactory.class).get(MovementRecorderController.class).recordMovement((AbstractPileView)_parentLayeredPane.getParent(), (AbstractPileView)collision, CardView.this);                  
                     _parentLayeredPane = (JLayeredPane) layeredPane.get();
-                    AbstractFactory.getFactory(ControllerFactory.class).get(MovementRecorderController.class).recordMovement((AbstractPileView)_parentLayeredPane.getParent(), (AbstractPileView)collision);                  
                 }
                 else {
                     Tracelog.log(Level.SEVERE, true, "Could not find JLayeredPane within the CardView mouseReleased event...");
@@ -357,7 +357,7 @@ public final class CardView extends PanelView implements ICollidable {
             _controller.getCard().refresh();
             
             // Record the movement
-            AbstractFactory.getFactory(ControllerFactory.class).get(MovementRecorderController.class).recordMovement((AbstractPileView)CardView.this.getParentIView(), null);
+            AbstractFactory.getFactory(ControllerFactory.class).get(MovementRecorderController.class).recordMovement((AbstractPileView)CardView.this.getParentIView(), null, null);
 
             // Only allow this card view to have dragging and collision working `vanilla`
             // style if the outline option is not selected
@@ -401,7 +401,7 @@ public final class CardView extends PanelView implements ICollidable {
             // Go through the list of foundation views and see if there is a match
             for(FoundationPileView foundationView : foundationViews) {
                 if(foundationView.isValidCollision(CardView.this)) {
-                    AbstractFactory.getFactory(ControllerFactory.class).get(MovementRecorderController.class).recordMovement((AbstractPileView)CardView.this.getParentIView(), foundationView);
+                    AbstractFactory.getFactory(ControllerFactory.class).get(MovementRecorderController.class).recordMovement((AbstractPileView)CardView.this.getParentIView(), foundationView, CardView.this);
                     
                     // Halt any drag events that could occur
                     draggableListener.stopDragEvent();
@@ -501,8 +501,15 @@ public final class CardView extends PanelView implements ICollidable {
             super.setBounds(x, y, width, height);
         }
     }
-    
+        
     @Override public String toString() {
         return (isVisible() ? "[V] " : "[H]") + getViewProperties().getEntity(CardController.class).getCard().toString() + "\t[" + JLayeredPane.getLayer(this) + "]";
+    }
+
+    /**
+     * @return The layered pane associated to this view
+     */
+    public JLayeredPane getLayeredPane() {
+        return layeredPane;
     }
 }
