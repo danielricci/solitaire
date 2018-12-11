@@ -141,23 +141,25 @@ public class MovementRecorderController extends BaseController {
         // Prevent recording undo's, to avoid performing an undo and have that movement recorded
         _lockRecording = true;
         
-        // Undo the move that was performed 
-        _from.addCard(_cardView);
-        for(Component comp : _cardViewChildren) {
-            _from.addCard((CardView)comp);
+        // Undo the move that was performed
+        if(_cardView != null) {
+            _from.addCard(_cardView);
+            for(Component comp : _cardViewChildren) {
+                _from.addCard((CardView)comp);    
+            }
+            
+            // Update the movement model
+            _movementModel.setMovement(MovementType.fromClass(_from), MovementType.fromClass(_to), true);
+            
+            // Repaint the game
+            AbstractFactory.getFactory(ViewFactory.class).get(GameView.class).repaint();
+                    
+            // Reset the contents of this recorder
+            reset();
         }
                
-        // Update the movement model
-        _movementModel.setMovement(MovementType.fromClass(_from), MovementType.fromClass(_to), true);
-        
-        // Repaint the game
-        AbstractFactory.getFactory(ViewFactory.class).get(GameView.class).repaint();
-        
         // Enable back the lock
         _lockRecording = false;
-        
-        // Reset the contents of this recorder
-        reset();
     }
 
     /**
