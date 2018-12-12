@@ -29,11 +29,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Rectangle;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Stream;
 
 import framework.api.IView;
 import framework.core.factories.ViewFactory;
@@ -50,9 +46,7 @@ import game.models.CardModel;
  * @author Daniel Ricci <thedanny09@icloud.com>
  */
 public class TableauPileView extends AbstractPileView implements ICollidable, IUndoable {
-
-    private final UndoableContainer _undoableContainer = new UndoableContainer();
-    
+       
     /**
      * This panel is used as a placeholder within this view when there are no cards to be shown
      */
@@ -166,30 +160,13 @@ public class TableauPileView extends AbstractPileView implements ICollidable, IU
 
     @Override public void undoLastAction() {
         
-        // Get the list of components that were previously stored
-        @SuppressWarnings("unchecked") 
-        HashMap<Component, Integer> components = (HashMap<Component, Integer>) _undoableContainer.data.get("components");
-        
-        Stream<Component> layeredPaneComponentStream = Arrays.stream(layeredPane.getComponents());
-        for(Map.Entry<Component, Integer> kvp : components.entrySet()) {
-            if(!layeredPaneComponentStream.anyMatch(z -> z.equals(kvp.getKey()))) {
-                layeredPane.add(kvp.getKey());
-                layeredPane.setLayer(kvp.getKey(), kvp.getValue());    
-            }
-        }
-        
-        repaint();
     }
 
     @Override public void performBackup() {
-        Map<Component, Integer> components = new HashMap<Component, Integer>();
-        for(Component comp : layeredPane.getComponents()) {
-            components.put(comp, layeredPane.getLayer(comp));
-        }
-        _undoableContainer.data.put("components", components);
+        
     }
 
     @Override public void clearBackup() {        
-        _undoableContainer.data.clear();
+        
     }
 }
