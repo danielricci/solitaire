@@ -159,8 +159,14 @@ public class TableauPileView extends AbstractPileView implements ICollidable, IU
     }
 
     @Override public void undoLastAction() {
+        
     }
 
     @Override public void performBackup() {
+        
+    }
+
+    @Override public void clearBackup() {        
+        
     }
 }

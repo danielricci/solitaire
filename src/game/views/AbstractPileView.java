@@ -43,7 +43,7 @@ import framework.core.mvc.view.PanelView;
  * 
  * @author Daniel Ricci <thedanny09@icloud.com>
  */
-public abstract class AbstractPileView extends PanelView {
+public abstract class AbstractPileView extends PanelView implements IUndoable {
         
     /**
      * Specifies the offset of each card within this view

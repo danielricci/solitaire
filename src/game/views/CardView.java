@@ -165,7 +165,7 @@ public final class CardView extends PanelView implements ICollidable {
                 // Get the before movement type to know where the move is coming from
                 Optional<Component> layeredPane = Arrays.asList(pileView.getComponents()).stream().filter(z -> z.getClass() == JLayeredPane.class).findFirst();
                 if(layeredPane.isPresent()) {
-                    AbstractFactory.getFactory(ControllerFactory.class).get(MovementRecorderController.class).recordMovement((AbstractPileView)_parentLayeredPane.getParent(), (AbstractPileView)collision, CardView.this);                  
+                    AbstractFactory.getFactory(ControllerFactory.class).get(MovementRecorderController.class).recordMovement((IUndoable)_parentLayeredPane.getParent(), (IUndoable)collision);                  
                     _parentLayeredPane = (JLayeredPane) layeredPane.get();
                 }
                 else {
@@ -357,7 +357,7 @@ public final class CardView extends PanelView implements ICollidable {
             _controller.getCard().refresh();
             
             // Record the movement
-            AbstractFactory.getFactory(ControllerFactory.class).get(MovementRecorderController.class).recordMovement((AbstractPileView)CardView.this.getParentIView(), null, null);
+            AbstractFactory.getFactory(ControllerFactory.class).get(MovementRecorderController.class).recordMovement((IUndoable)CardView.this.getParentIView(), null);
 
             // Only allow this card view to have dragging and collision working `vanilla`
             // style if the outline option is not selected
@@ -401,7 +401,7 @@ public final class CardView extends PanelView implements ICollidable {
             // Go through the list of foundation views and see if there is a match
             for(FoundationPileView foundationView : foundationViews) {
                 if(foundationView.isValidCollision(CardView.this)) {
-                    AbstractFactory.getFactory(ControllerFactory.class).get(MovementRecorderController.class).recordMovement((AbstractPileView)CardView.this.getParentIView(), foundationView, CardView.this);
+                    AbstractFactory.getFactory(ControllerFactory.class).get(MovementRecorderController.class).recordMovement((AbstractPileView)CardView.this.getParentIView(), foundationView);
                     
                     // Halt any drag events that could occur
                     draggableListener.stopDragEvent();

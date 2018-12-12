@@ -24,28 +24,19 @@
 
 package game.controllers;
 
-import java.awt.Component;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import java.util.logging.Level;
 
 import framework.communication.internal.signal.ISignalListener;
-import framework.core.factories.AbstractFactory;
-import framework.core.factories.ViewFactory;
 import framework.core.mvc.controller.BaseController;
 import framework.utils.logging.Tracelog;
 
 import game.models.MovementModel;
 import game.models.MovementModel.MovementType;
-import game.views.AbstractPileView;
-import game.views.CardView;
-import game.views.GameView;
 import game.views.IUndoable;
 
 /**
  * The controller that handles recording of movement
+ * 
  * @author Daniel Ricci <thedanny09@icloud.com>
  */
 public class MovementRecorderController extends BaseController {
@@ -68,39 +59,21 @@ public class MovementRecorderController extends BaseController {
     /**
      * The last recorded `from` movement
      */
-    private AbstractPileView _from;
+    private IUndoable _source;
     
     /**
-     * The last recorded `to` movement
+     * The last recorded `from` movement
      */
-    private AbstractPileView _to;
-    
-    /**
-     * The card view associated with the move
-     */
-    private CardView _cardView;
-    
-    /**
-     * The list of cards associated to the children of the card view.
-     * 
-     * Note: These are needed because when a card goes from one location to another, the underlying
-     *       cards get removed after the destination is applied. This will keep a hold of them
-     */
-    private final List<Component> _cardViewChildren = new ArrayList<Component>();
-    
-    public void recordMovement(IUndoable from, IUndoable to) {
-    
-    }
+    private IUndoable _destination;
     
     /**
      * Records the specified movement from one pile view implement to the other
      *
-     * @param from The pile view implementation source
-     * @param to The pile view implementation destination
+     * @param source The pile view implementation source
+     * @param destination The pile view implementation destination
      * 
      */
-    public void recordMovement(AbstractPileView from, AbstractPileView to, CardView cardView) {
-        
+    public void recordMovement(IUndoable source, IUndoable destination) {
         // Do not preoceed with the record movement if the lock is enabled
         if(_lockRecording) {
             return;
@@ -108,18 +81,14 @@ public class MovementRecorderController extends BaseController {
         
         // Reset the values of this recorder
         reset();
-        
-        _cardView = cardView;
-        if(_cardView != null) {
-            _cardViewChildren.addAll(Arrays.asList(_cardView.getLayeredPane().getComponents()));
-            Collections.reverse(_cardViewChildren);
-        }
 
-        _from = from;
-        _to = to;
+        // Perform a backup on the source location
+        _source = source;
+        _source.performBackup();
+        _destination = destination;
         
-        MovementType fromMovement = MovementType.fromClass(from);
-        MovementType toMovement = MovementType.fromClass(to);
+        MovementType fromMovement = MovementType.fromClass(source);
+        MovementType toMovement = MovementType.fromClass(destination);
 
         Tracelog.log(Level.INFO, true, String.format("Movement Detected: from [%s] to [%s]", fromMovement, toMovement));
             
@@ -145,23 +114,12 @@ public class MovementRecorderController extends BaseController {
 
         // Prevent recording undo's, to avoid performing an undo and have that movement recorded
         _lockRecording = true;
-        
-        // Undo the move that was performed
-        if(_cardView != null) {
-            _from.addCard(_cardView);
-            for(Component comp : _cardViewChildren) {
-                _from.addCard((CardView)comp);    
-            }
-            
-            // Update the movement model
-            _movementModel.setMovement(MovementType.fromClass(_from), MovementType.fromClass(_to), true);
-            
-            // Repaint the game
-            AbstractFactory.getFactory(ViewFactory.class).get(GameView.class).repaint();
-                    
-            // Reset the contents of this recorder
-            reset();
-        }
+
+        // Update the model to notify listeners that a movement has occurred
+        _movementModel.setMovement(MovementType.fromClass(_source), MovementType.fromClass(_destination), true);
+
+        // Reset the state of this recorder
+        reset();
                
         // Enable back the lock
         _lockRecording = false;
@@ -186,12 +144,17 @@ public class MovementRecorderController extends BaseController {
      * Resets the contents of this recorder
      */
     private void reset() {
-        // Reset the values
         _canUndo = false;
-        _from = null; 
-        _to = null;
-        _cardView = null;
-        _cardViewChildren.clear();
+        
+        if(_source != null) {
+            _source.clearBackup();
+        }
+        _source = null;
+        
+        if(_destination != null) {
+            _destination.clearBackup();
+        }
+        _destination = null;
     }
     
     @Override public void addSignalListener(ISignalListener listener) {

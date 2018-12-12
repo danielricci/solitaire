@@ -39,5 +39,10 @@ public interface IUndoable {
     /**
      * Performs a logical backup with respect to the state and business logic of this component
      */
-    public void performBackup();   
+    public void performBackup();
+    
+    /**
+     * Clears the backup associated to this component
+     */
+    public void clearBackup();
 }
