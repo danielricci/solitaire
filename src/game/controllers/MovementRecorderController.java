@@ -42,6 +42,7 @@ import game.models.MovementModel.MovementType;
 import game.views.AbstractPileView;
 import game.views.CardView;
 import game.views.GameView;
+import game.views.IUndoable;
 
 /**
  * The controller that handles recording of movement
@@ -86,6 +87,10 @@ public class MovementRecorderController extends BaseController {
      *       cards get removed after the destination is applied. This will keep a hold of them
      */
     private final List<Component> _cardViewChildren = new ArrayList<Component>();
+    
+    public void recordMovement(IUndoable from, IUndoable to) {
+    
+    }
     
     /**
      * Records the specified movement from one pile view implement to the other

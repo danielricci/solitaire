@@ -45,7 +45,7 @@ import game.models.CardModel;
  * 
  * @author Daniel Ricci <thedanny09@icloud.com>
  */
-public class TableauPileView extends AbstractPileView implements ICollidable {
+public class TableauPileView extends AbstractPileView implements ICollidable, IUndoable {
        
     /**
      * This panel is used as a placeholder within this view when there are no cards to be shown
@@ -156,5 +156,11 @@ public class TableauPileView extends AbstractPileView implements ICollidable {
         }
         
         return false;
+    }
+
+    @Override public void undoLastAction() {
+    }
+
+    @Override public void performBackup() {
     }
 }
