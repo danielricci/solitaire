@@ -86,6 +86,7 @@ public class MovementRecorderController extends BaseController {
         _source = source;
         _source.performBackup();
         _destination = destination;
+        _destination.performBackup();
         
         MovementType fromMovement = MovementType.fromClass(source);
         MovementType toMovement = MovementType.fromClass(destination);
@@ -115,6 +116,9 @@ public class MovementRecorderController extends BaseController {
         // Prevent recording undo's, to avoid performing an undo and have that movement recorded
         _lockRecording = true;
 
+        // Undo the last action associated to the source
+        _source.undoLastAction();
+        
         // Update the model to notify listeners that a movement has occurred
         _movementModel.setMovement(MovementType.fromClass(_source), MovementType.fromClass(_destination), true);
 

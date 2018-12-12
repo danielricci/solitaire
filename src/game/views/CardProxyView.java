@@ -228,6 +228,9 @@ public final class CardProxyView extends PanelView {
                 
                 // Get the before movement type to know where the move is coming from
                 AbstractPileView fromPileView = (AbstractPileView) _cardView.getParent().getParent();
+
+                // Record that the movement occurred
+                AbstractFactory.getFactory(ControllerFactory.class).get(MovementRecorderController.class).recordMovement(fromPileView, pileViewCollider);
                 
                 // Unselect all the cards within this pile view to remove the outline xor'd highlight
                 pileViewCollider.removeHighlight();
@@ -259,8 +262,7 @@ public final class CardProxyView extends PanelView {
                 _layeredPane.removeAll();
                 pileViewCollider.repaint();
                 
-                // Record that the movement occurred
-                AbstractFactory.getFactory(ControllerFactory.class).get(MovementRecorderController.class).recordMovement(fromPileView, pileViewCollider);
+
             }
             else {
                 Component[] layeredComponents = _layeredPane.getComponents();
