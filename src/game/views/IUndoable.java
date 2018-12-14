@@ -24,9 +24,6 @@
 
 package game.views;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import framework.api.IView;
 
 /**
@@ -35,11 +32,7 @@ import framework.api.IView;
  * @author Daniel Ricci <thedanny09@icloud.com>
  */
 public interface IUndoable extends IView {    
-       
-    public class UndoableContainer {
-        public Map<String, Object> data = new HashMap<String, Object>();
-    }
-    
+           
     /**
      * Performs an undo based on the last backup that was performed on this component
      */

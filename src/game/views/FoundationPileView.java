@@ -113,13 +113,4 @@ public final class FoundationPileView extends AbstractPileView implements IColli
       }
 
     }
-
-    @Override public void undoLastAction() {
-    }
-
-    @Override public void performBackup() {
-    }
-
-    @Override public void clearBackup() {
-    }
 }
