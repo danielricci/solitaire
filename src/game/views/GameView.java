@@ -25,6 +25,7 @@
 package game.views;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -126,6 +127,16 @@ public final class GameView extends PanelView {
                 }
             }
         }
+    }
+    
+    public CardView getCardComponent() {
+        for(Component comp : getComponents()) {
+            if(comp instanceof CardView) {
+                return (CardView) comp;
+            }
+        }
+        
+        return null;
     }
     
     public static boolean IsGameWinner() {

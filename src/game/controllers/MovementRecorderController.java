@@ -27,11 +27,14 @@ package game.controllers;
 import java.util.logging.Level;
 
 import framework.communication.internal.signal.ISignalListener;
+import framework.core.factories.AbstractFactory;
+import framework.core.factories.ViewFactory;
 import framework.core.mvc.controller.BaseController;
 import framework.utils.logging.Tracelog;
 
 import game.models.MovementModel;
 import game.models.MovementModel.MovementType;
+import game.views.GameView;
 import game.views.IUndoable;
 
 /**
@@ -86,7 +89,6 @@ public class MovementRecorderController extends BaseController {
         _source = source;
         _source.performBackup();
         _destination = destination;
-        _destination.performBackup();
         
         MovementType fromMovement = MovementType.fromClass(source);
         MovementType toMovement = MovementType.fromClass(destination);
@@ -122,6 +124,11 @@ public class MovementRecorderController extends BaseController {
         // Update the model to notify listeners that a movement has occurred
         _movementModel.setMovement(MovementType.fromClass(_source), MovementType.fromClass(_destination), true);
 
+        // Repaint the source and destination
+        AbstractFactory.getFactory(ViewFactory.class).get(GameView.class).repaint();
+        _source.getContainerClass().repaint();
+        _destination.getContainerClass().repaint();
+        
         // Reset the state of this recorder
         reset();
                

@@ -33,9 +33,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
+import java.util.OptionalInt;
 
 import framework.api.IView;
+import framework.core.factories.AbstractFactory;
 import framework.core.factories.ViewFactory;
 import framework.core.mvc.view.PanelView;
 import framework.core.physics.ICollidable;
@@ -168,13 +169,12 @@ public class TableauPileView extends AbstractPileView implements ICollidable, IU
         
         // Get the list of components that were previously stored
         @SuppressWarnings("unchecked") 
-        HashMap<Component, Integer> components = (HashMap<Component, Integer>) _undoableContainer.data.get("components");
+        HashMap<CardView, Integer> components = (HashMap<CardView, Integer>) _undoableContainer.data.get("components");
         
-        Stream<Component> layeredPaneComponentStream = Arrays.stream(layeredPane.getComponents());
-        for(Map.Entry<Component, Integer> kvp : components.entrySet()) {
-            if(!layeredPaneComponentStream.anyMatch(z -> z.equals(kvp.getKey()))) {
-                layeredPane.add(kvp.getKey());
-                layeredPane.setLayer(kvp.getKey(), kvp.getValue());    
+        List<Component> componentsList = Arrays.asList(layeredPane.getComponents());
+        for(Map.Entry<CardView, Integer> kvp : components.entrySet()) {
+            if(!componentsList.contains(kvp.getKey())) {
+                addCard(kvp.getKey(), kvp.getValue());
             }
         }
         
@@ -182,10 +182,29 @@ public class TableauPileView extends AbstractPileView implements ICollidable, IU
     }
 
     @Override public void performBackup() {
-        Map<Component, Integer> components = new HashMap<Component, Integer>();
+        
+        // Create a map and store all the components currently in this view into there.
+        Map<CardView, Integer> components = new HashMap<CardView, Integer>();
         for(Component comp : layeredPane.getComponents()) {
-            components.put(comp, layeredPane.getLayer(comp));
+            components.put((CardView)comp, layeredPane.getLayer(comp));
         }
+        
+        // Calculate the highest listed layer to date
+        OptionalInt highestLayerOptional = components.values().stream().mapToInt(i -> i).max();
+        int highestLayer = -1;
+        if(highestLayerOptional.isPresent()) {
+            highestLayer = highestLayerOptional.getAsInt();
+        }
+
+        CardView cardView = AbstractFactory.getFactory(ViewFactory.class).get(GameView.class).getCardComponent();
+        if(cardView != null) {
+            components.put(cardView, ++highestLayer);
+            
+            for(Component comp : cardView.layeredPane.getComponents()) {
+                components.put((CardView)comp,  ++highestLayer);
+            }
+        }
+        
         _undoableContainer.data.put("components", components);
     }
 

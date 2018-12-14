@@ -95,6 +95,11 @@ public abstract class AbstractPileView extends PanelView implements IUndoable {
      * 
      */
     public void addCard(CardView cardView) {
+        addCard(cardView, layeredPane.getComponents().length);
+    }
+    
+    public void addCard(CardView cardView, int layerPosition) {
+     
         // Hold onto a reference of the parent for repainting reasons
         Container parentCardView = cardView.getParent();
         
@@ -110,20 +115,20 @@ public abstract class AbstractPileView extends PanelView implements IUndoable {
 
         // Calculate the number of component withint this pile to use
         // as the layer identifier offset
-        int position = layeredPane.getComponents().length;
+        int offsetY = layeredPane.getComponents().length;
         
         // Add the cards to this pile view
         for(Component comp : components) {
             layeredPane.add(comp);
-            layeredPane.setLayer(comp, position);
+            layeredPane.setLayer(comp, layerPosition);
             comp.setBounds(new Rectangle(
                 0, 
-                this.CARD_OFFSET * position,  
+                this.CARD_OFFSET * offsetY,  
                 comp.getPreferredSize().width, 
                 comp.getPreferredSize().height)
             );
             
-            ++position;
+            ++offsetY;
         }
         
         parentCardView.repaint();
