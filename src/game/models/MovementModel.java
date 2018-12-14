@@ -27,19 +27,24 @@ package game.models;
 import framework.core.mvc.model.BaseModel;
 
 import game.views.FoundationPileView;
+import game.views.StockView;
 import game.views.TableauPileView;
 import game.views.TalonPileView;
 
 public class MovementModel extends BaseModel {
     
     public enum MovementType {
+        STOCK,
         TALON,
         FOUNDATION,
         TABLEAU, 
         NONE;
         
         public static MovementType fromClass(Object clazz) {
-            if(clazz instanceof TalonPileView) {
+            if(clazz instanceof StockView) {
+                return MovementType.STOCK;
+            }
+            else if(clazz instanceof TalonPileView) {
                 return MovementType.TALON;
             }
             else if(clazz instanceof FoundationPileView) {
@@ -55,7 +60,9 @@ public class MovementModel extends BaseModel {
     }
     
     private MovementType _from;
+    
     private MovementType _to;
+    
     private boolean _isUndo;
     
     public void setMovement(MovementType from, MovementType to, boolean isUndo) {

@@ -40,7 +40,7 @@ import game.config.OptionsPreferences.ScoringOption;
 import game.entities.TalonCardEntity;
 import game.views.TalonPileView.TalonCardState;
 
-public final class StockView extends PanelView {
+public final class StockView extends PanelView implements IUndoable {
 
     /**
      * The number of times that the deck was played
@@ -114,5 +114,23 @@ public final class StockView extends PanelView {
         super.update(event);
         addRenderableContent(backside);
         repaint();
+    }
+
+    @Override
+    public void undoLastAction() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void performBackup() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void clearBackup() {
+        // TODO Auto-generated method stub
+        
     }
 }

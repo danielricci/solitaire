@@ -32,7 +32,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -61,6 +63,8 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
      * The blank card associated to the talon view
      */
     private final PanelView _blankCard = new PanelView();
+    
+    private final Map<String, Object> _undoableContainer = new HashMap<String, Object>();
     
     /**
      * Constructs a new instance of this class type
@@ -205,8 +209,11 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
         // Get the layer id of the blank card within this view
         Component blankCardLayer = Arrays.asList(layeredPane.getComponents()).stream().filter(z -> !(z instanceof CardView)).findFirst().get();
 
-        // Notify the movement controller that there was a movement that occured of the talon
-        AbstractFactory.getFactory(ControllerFactory.class).get(MovementRecorderController.class).recordMovement(this, this);
+        // Notify the movement controller that there was a movement that occured of the talon, from the stock view
+        AbstractFactory.getFactory(ControllerFactory.class).get(MovementRecorderController.class).recordMovement(
+                AbstractFactory.getFactory(ViewFactory.class).get(StockView.class), 
+                this
+        );
         
         // If we are at the end then restart the deck
         if(layeredPane.getLayer(blankCardLayer) == layeredPane.lowestLayer()) {
@@ -325,6 +332,7 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
     }
 
     @Override public void performBackup() {
+        int x = 55;
     }
 
     @Override public void clearBackup() {
