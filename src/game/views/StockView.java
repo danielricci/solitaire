@@ -116,21 +116,15 @@ public final class StockView extends PanelView implements IUndoable {
         repaint();
     }
 
-    @Override
-    public void undoLastAction() {
-        // TODO Auto-generated method stub
+    @Override public void undoLastAction() {
         
     }
 
-    @Override
-    public void performBackup() {
-        // TODO Auto-generated method stub
+    @Override public void performBackup() {
         
     }
 
-    @Override
-    public void clearBackup() {
-        // TODO Auto-generated method stub
+    @Override public void clearBackup() {
         
     }
 }

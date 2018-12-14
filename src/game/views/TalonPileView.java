@@ -30,6 +30,7 @@ import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -329,12 +330,38 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
     }
 
     @Override public void undoLastAction() {
+//        // Get the list of components that were previously stored
+//        @SuppressWarnings("unchecked") 
+//        List<ComponHashMap<CardView, Integer> components = (HashMap<CardView, Integer>) _undoableContainer.get("components");
+//        
+//        List<Component> componentsList = Arrays.asList(layeredPane.getComponents());
+//        for(Map.Entry<CardView, Integer> kvp : components.entrySet()) {
+//            if(!componentsList.contains(kvp.getKey())) {
+//                addCard(kvp.getKey(), kvp.getValue());
+//            }
+//        }
+//        
+//        repaint();
     }
 
     @Override public void performBackup() {
-        int x = 55;
+        List<Component> components = new ArrayList<Component>();
+        
+        CardView cardView = AbstractFactory.getFactory(ViewFactory.class).get(GameView.class).getCardComponent();
+        if(cardView != null) {
+            components.add(cardView);
+        }
+        else if(layeredPane.highestLayer() != JLayeredPane.getLayer(_blankCard)) {
+            components.add(layeredPane.getComponentsInLayer(layeredPane.highestLayer())[0]);
+        }
+        else {
+            Tracelog.log(Level.SEVERE, true, "Cannot perform a backup on the talon view");
+        }
+        
+        _undoableContainer.put("components", components);
     }
 
     @Override public void clearBackup() {
+        _undoableContainer.clear();
     }
 }
