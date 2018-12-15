@@ -30,12 +30,9 @@ import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -65,7 +62,10 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
      */
     private final PanelView _blankCard = new PanelView();
     
-    private final Map<String, Object> _undoableContainer = new HashMap<String, Object>();
+    /**
+     * The undoable container associated to this view
+     */
+    private CardView _undoableCard = null;
     
     /**
      * Constructs a new instance of this class type
@@ -93,16 +93,13 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
             MouseAdapter adapter = new MouseAdapter() {
                 @Override public void mouseReleased(MouseEvent event) {
             
+                    // Prevent other released events from being called by other cards that are not yet enabled
                     if(!cardView.isEnabled()) {
                         return;
                     }
-                    
-                    // When the mouse is released, ensure that the component located at the highest layer is enabled
-                    layeredPane.getComponentsInLayer(layeredPane.highestLayer())[0].setEnabled(true);
-                    
-                    // If the card is no longer associated to the talon, then remove its association to this event
+                   
+                    // If the card is no longer associated to the talon then attempt to get the next one
                     if(!(cardView.getParentIView() instanceof TalonPileView)) {
-                        cardView.removeMouseListener(this);
                         
                         // The top-most card cannot be the layered pane
                         boolean cond1 = layeredPane.highestLayer() != JLayeredPane.getLayer(_blankCard);
@@ -149,6 +146,9 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
                             cardView.setBounds(bounds);
                         }
                     }
+                    
+                    // When the mouse is released, ensure that the component located at the highest layer is enabled
+                    layeredPane.getComponentsInLayer(layeredPane.highestLayer())[0].setEnabled(true);
                 }
             };
             cardView.addMouseListener(adapter);
@@ -179,9 +179,11 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
         // Add it to the top, but make sure that the layer number is unique
         layeredPane.add(_blankCard);
         
-        // Ad the blank card at the top of the deck 
+        // Add the blank card at the top of the deck 
         layeredPane.setLayer(_blankCard, layeredPane.getComponentCount() - 1);
     }
+    
+    
     
     public enum TalonCardState {
         // An Empty Deck
@@ -191,7 +193,7 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
         // Normal card played
         NORMAL
     }
-    
+        
     /**
      * Displays the next card hand on this view
      * 
@@ -330,38 +332,25 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
     }
 
     @Override public void undoLastAction() {
-//        // Get the list of components that were previously stored
-//        @SuppressWarnings("unchecked") 
-//        List<ComponHashMap<CardView, Integer> components = (HashMap<CardView, Integer>) _undoableContainer.get("components");
-//        
-//        List<Component> componentsList = Arrays.asList(layeredPane.getComponents());
-//        for(Map.Entry<CardView, Integer> kvp : components.entrySet()) {
-//            if(!componentsList.contains(kvp.getKey())) {
-//                addCard(kvp.getKey(), kvp.getValue());
-//            }
-//        }
-//        
-//        repaint();
+        if(_undoableCard != null ) {
+            layeredPane.add(_undoableCard);
+            layeredPane.setLayer(_undoableCard, layeredPane.highestLayer() + 1);
+            _undoableCard.setBounds(new Rectangle(0, 0, _undoableCard.getPreferredSize().width, _undoableCard.getPreferredSize().height));
+            
+            repaint();
+        }
     }
 
     @Override public void performBackup() {
-        List<Component> components = new ArrayList<Component>();
-        
         CardView cardView = AbstractFactory.getFactory(ViewFactory.class).get(GameView.class).getCardComponent();
-        if(cardView != null) {
-            components.add(cardView);
-        }
-        else if(layeredPane.highestLayer() != JLayeredPane.getLayer(_blankCard)) {
-            components.add(layeredPane.getComponentsInLayer(layeredPane.highestLayer())[0]);
-        }
-        else {
-            Tracelog.log(Level.SEVERE, true, "Cannot perform a backup on the talon view");
+        if(cardView == null && layeredPane.highestLayer() != JLayeredPane.getLayer(_blankCard)) {
+            cardView = (CardView) layeredPane.getComponentsInLayer(layeredPane.highestLayer())[0];
         }
         
-        _undoableContainer.put("components", components);
+        _undoableCard = cardView;
     }
 
     @Override public void clearBackup() {
-        _undoableContainer.clear();
+        _undoableCard = null;
     }
 }
