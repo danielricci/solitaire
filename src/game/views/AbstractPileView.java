@@ -102,7 +102,7 @@ public abstract class AbstractPileView extends PanelView implements IUndoable {
      * 
      */
     public void addCard(CardView cardView) {
-        addCard(cardView, layeredPane.getComponents().length);
+        addCard(cardView,layeredPane.getComponents().length);
     }
     
     public void addCard(CardView cardView, int layerPosition) {
@@ -136,6 +136,7 @@ public abstract class AbstractPileView extends PanelView implements IUndoable {
             );
             
             ++offsetY;
+            ++layerPosition;
         }
         
         parentCardView.repaint();
