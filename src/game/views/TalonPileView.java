@@ -118,33 +118,7 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
                     // Make sure that the card is enabled. Since when a card is not enabled, the event
                     // handlers are not applied to the card
                     else if(cardView.isEnabled()){
-                        // The position of the card when playing with `three` is all that concerns us since position
-                        // matters, vs `single` card which are all stacked.
-                        OptionsPreferences preferences = new OptionsPreferences();
-                        preferences.load();
-                        if(preferences.drawOption == DrawOption.THREE) {
-                            
-                            List<Component> visibleCards = Arrays.asList(layeredPane.getComponents()).stream().filter(z -> !z.equals(_blankCard) && z.isVisible()).collect(Collectors.toList());
-                            Collections.reverse(visibleCards);
-                            Rectangle bounds = new Rectangle(0, 0, cardView.getPreferredSize().width, cardView.getPreferredSize().height);
-                            switch(visibleCards.indexOf(cardView)) {
-                            case 0: // Left-most
-                                bounds.x = bounds.y = 0;
-                                break;
-                            case 1: // Center
-                                bounds.x = CARD_OFFSET;
-                                bounds.y = 0;
-                                break;
-                            case 2: // Right-most
-                                bounds.x = CARD_OFFSET * 2;
-                                bounds.y = 0;
-                                break;
-                            default:
-                                Tracelog.log(Level.SEVERE, true, "Could not place card back into the talon, given index is " + visibleCards.indexOf(cardView));
-                                break;
-                            }
-                            cardView.setBounds(bounds);
-                        }
+                        setCardBounds(cardView);
                     }
                     
                     // When the mouse is released, ensure that the component located at the highest layer is enabled
@@ -154,6 +128,7 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
             cardView.addMouseListener(adapter);
             cardView.getProxyView().addMouseListener(adapter);
             
+            // Set the default bounds of the card
             cardView.setBounds(new Rectangle(0, 0, cardView.getPreferredSize().width, cardView.getPreferredSize().height));
             
             // All cards are disabled by default, and should be disabled by default after a subsequent deck has been played through
@@ -292,7 +267,7 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
                     // Set the bounding position of the card
                     card.setBounds(new Rectangle(
                             (iterations - 1) * CARD_OFFSET, 
-                            0, // TODO - this needs to compond down the y-axis 
+                            0, 
                             card.getPreferredSize().width, 
                             card.getPreferredSize().height));
                     }
@@ -318,6 +293,40 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
         return TalonCardState.NORMAL;
     }
     
+    private void setCardBounds(CardView cardView) {
+
+        // Set the default bounds of the card view
+        Rectangle bounds = new Rectangle(0, 0, cardView.getPreferredSize().width, cardView.getPreferredSize().height);
+
+        // The position of the card when playing with `three` is all that concerns us since position
+        // matters, vs `single` card which are all stacked.
+        OptionsPreferences preferences = new OptionsPreferences();
+        preferences.load();
+        if(preferences.drawOption == DrawOption.THREE) {
+            
+            List<Component> visibleCards = Arrays.asList(layeredPane.getComponents()).stream().filter(z -> !z.equals(_blankCard) && z.isVisible()).collect(Collectors.toList());
+            Collections.reverse(visibleCards);
+            switch(visibleCards.indexOf(cardView)) {
+            case 0: // Left-most
+                bounds.x = bounds.y = 0;
+                break;
+            case 1: // Center
+                bounds.x = CARD_OFFSET;
+                bounds.y = 0;
+                break;
+            case 2: // Right-most
+                bounds.x = CARD_OFFSET * 2;
+                bounds.y = 0;
+                break;
+            default:
+                Tracelog.log(Level.SEVERE, true, "Could not place card back into the talon, given index is " + visibleCards.indexOf(cardView));
+                break;
+            }
+        } 
+        
+        cardView.setBounds(bounds);
+    }
+    
     @Override public void render() {
         super.render();
         for(Component comp : layeredPane.getComponents()) {
@@ -333,10 +342,19 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
 
     @Override public void undoLastAction() {
         if(_undoableCard != null ) {
-            layeredPane.add(_undoableCard);
-            layeredPane.setLayer(_undoableCard, layeredPane.highestLayer() + 1);
-            _undoableCard.setBounds(new Rectangle(0, 0, _undoableCard.getPreferredSize().width, _undoableCard.getPreferredSize().height));
             
+            // Get the highest component and set the enabled flag to so that it does not move anymore
+            Component highestComponent = layeredPane.getComponentsInLayer(layeredPane.highestLayer())[0];
+            highestComponent.setEnabled(false);
+            
+            // Add the card to the layered pane
+            layeredPane.add(_undoableCard);
+            
+            // Set the layer of the card to be the highest layer
+            layeredPane.setLayer(_undoableCard, layeredPane.highestLayer() + 1);
+            
+            // Set the bounds of the card
+            setCardBounds(_undoableCard);
             repaint();
         }
     }
