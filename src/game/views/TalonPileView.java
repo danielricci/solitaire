@@ -319,7 +319,7 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
                 bounds.y = 0;
                 break;
             default:
-                Tracelog.log(Level.SEVERE, true, "Could not place card back into the talon, given index is " + visibleCards.indexOf(cardView));
+                // TODO - this needs to flip the cards back
                 break;
             }
         } 
