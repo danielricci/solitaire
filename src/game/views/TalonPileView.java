@@ -136,6 +136,11 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
                     // Make sure that the card is enabled. Since when a card is not enabled, the event
                     // handlers are not applied to the card
                     else if(cardView.isEnabled()){
+                        // If the blank card is on the same layer as this card, put this card to the next layer. This could only
+                        // occur if this was already top-most
+                        if(JLayeredPane.getLayer(_blankCard) == JLayeredPane.getLayer(cardView)) {
+                            layeredPane.setLayer(cardView, JLayeredPane.getLayer(cardView) + 1);
+                        }
                         setBounds(cardView);
                     }
                     
@@ -321,7 +326,7 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
                     break;
                 }
             }
-            
+
             if(layeredPane.lowestLayer() == JLayeredPane.getLayer(_blankCard)) {
                 return TalonCardState.DECK_PLAYED;
             }
@@ -337,26 +342,38 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
      */
     private void setBounds(Component component) {
 
-        // Set the default bounds of the card view
-        Rectangle bounds = new Rectangle(0, 0, component.getPreferredSize().width, component.getPreferredSize().height);
-
         // The position of the card when playing with `three` is all that concerns us since position matters, vs `single` card which are all stacked.
         OptionsPreferences preferences = new OptionsPreferences();
         preferences.load();
         if(preferences.drawOption == DrawOption.THREE) {
-            // Based on the position within it's layer, adjust the x-axis position w.r.t the card offset accordingly
-            switch(layeredPane.getPosition(component)) {
-            case 0:
-                bounds.x = 2 * CARD_OFFSET;
-                break;
-            case 1:
-                bounds.x = 1 * CARD_OFFSET;
-                break;
-            }
+            // Re-order the cards that exist currently, before determining where this card should be placed.
+            Component[] components = layeredPane.getComponentsInLayer(layeredPane.getLayer(component));
+            for(int i = components.length - 1; i >= 0; --i) {
+                
+                Rectangle bounds = new Rectangle(0, 0, component.getPreferredSize().width, component.getPreferredSize().height);                
+                int positionIndex = layeredPane.getPosition(components[i]);
+                int offset = 3 - components.length;
+                switch(positionIndex + offset) {
+                case 0:
+                    bounds.x = 2 * CARD_OFFSET;
+                    break;
+                case 1:
+                    bounds.x = CARD_OFFSET;
+                    break;
+                case 2:
+                    bounds.x = 0;
+                    break;
+                }
+                
+                // Set the new bounds of the specified component
+                components[i].setBounds(bounds);
+            }            
         }
-        
-        // Set the new bounds of the specified component
-        component.setBounds(bounds);
+        else {
+            // Set the default bounds of the card view
+            Rectangle bounds = new Rectangle(0, 0, component.getPreferredSize().width, component.getPreferredSize().height);
+            component.setBounds(bounds);
+        }
     }
     
     @Override public String toString() {

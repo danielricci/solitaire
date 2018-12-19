@@ -507,7 +507,7 @@ public final class CardView extends PanelView implements ICollidable {
         JLayeredPane parentLayeredPane = (JLayeredPane) this.getParent();
         List<Component> components = Arrays.asList(parentLayeredPane.getComponentsInLayer(layer));
         int positionWithinlayer = components.indexOf(CardView.this);
-        return (isVisible() ? "[V] " : "[H]") + getViewProperties().getEntity(CardController.class).getCard().toString() + "\t[" + layer + "][" + positionWithinlayer + "]";
+        return (isVisible() ? "[V]" : "[H]") + getViewProperties().getEntity(CardController.class).getCard().toString() + "\t[" + layer + "][" + positionWithinlayer + "]";
     }
 
     /**
