@@ -109,6 +109,9 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
         for(int i = 0, layer = 0; i < cards.size(); ++i) {
             CardView cardView = AbstractFactory.getFactory(ViewFactory.class).add(new CardView(cards.get(i)));
             MouseAdapter adapter = new MouseAdapter() {
+//                @Override public void mousePressed(MouseEvent event) {
+//                    int x = 55;
+//                }
                 @Override public void mouseReleased(MouseEvent event) {
             
                     // Prevent other released events from being called by other cards that are not yet enabled
@@ -136,8 +139,8 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
                     // Make sure that the card is enabled. Since when a card is not enabled, the event
                     // handlers are not applied to the card
                     else if(cardView.isEnabled()){
-                        // If the blank card is on the same layer as this card, put this card to the next layer. This could only
-                        // occur if this was already top-most
+                        // If the blank card is on the same layer as this card, put this card to the next layer above. 
+                        // This could only occur if this was already top-most
                         if(JLayeredPane.getLayer(_blankCard) == JLayeredPane.getLayer(cardView)) {
                             layeredPane.setLayer(cardView, JLayeredPane.getLayer(cardView) + 1);
                         }
