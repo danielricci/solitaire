@@ -65,8 +65,29 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
      */
     private CardView _undoableCard = null;
     
+    private class TalonCardReference {
+
+        /**
+         * The last card that was clicked
+         */
+        public final CardView card;
+
+        /**
+         * The layer of the last card that was clicked
+         */
+        public final int layer;
+        
+        
+        public TalonCardReference(CardView card) {
+            this.card = card;
+            layer = JLayeredPane.getLayer(card);
+        }
+    }
+    
     /**
-    private int _lastCardLayer = 0;
+     * The last card that was interacted with
+     */
+    public TalonCardReference lastCardInteracted = null;
     
     /**
      * Constructs a new instance of this class type
@@ -112,9 +133,16 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
         for(int i = 0, layer = 0; i < cards.size(); ++i) {
             CardView cardView = AbstractFactory.getFactory(ViewFactory.class).add(new CardView(cards.get(i)));
             MouseAdapter adapter = new MouseAdapter() {
-//                @Override public void mousePressed(MouseEvent event) {
-//                    int x = 55;
-//                }
+                @Override public void mousePressed(MouseEvent event) {
+                    
+                    // Do not allow non-enabled cards to run
+                    if(!cardView.isEnabled()) {
+                        return;
+                    }
+                    
+                    // Take the card that was pressed on and record it's layer location 
+                    lastCardInteracted = new TalonCardReference(cardView);
+                }
                 @Override public void mouseReleased(MouseEvent event) {
             
                     // Prevent other released events from being called by other cards that are not yet enabled
@@ -193,8 +221,13 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
         OptionsPreferences preferences = new OptionsPreferences();
         preferences.load();
         if(preferences.drawOption == DrawOption.THREE) {
-            addCard(cardView, layeredPane.highestLayer());
-            layeredPane.setPosition(cardView, 0);
+            if(cardView == lastCardInteracted.card) {
+                addCard(cardView, lastCardInteracted.layer);
+            }
+            else {
+                addCard(cardView, layeredPane.highestLayer());
+            } 
+            layeredPane.setPosition(cardView, 0);           
         }
         else {
             super.addCard(cardView);
