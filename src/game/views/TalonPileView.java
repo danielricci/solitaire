@@ -66,6 +66,9 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
     private CardView _undoableCard = null;
     
     /**
+    private int _lastCardLayer = 0;
+    
+    /**
      * Constructs a new instance of this class type
      */
     private TalonPileView() {
@@ -416,6 +419,8 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
     }
 
     @Override public void undoLastAction() {
+        
+        // If there was a card recoreded
         if(_undoableCard != null ) {
             
             // Get the highest component and set the enabled flag to so that it does not move anymore
@@ -435,11 +440,21 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
     }
 
     @Override public void performBackup() {
+        
+        // Get the card that is owned by the game view. When a drag occurs, the card is owned by the game view so that
+        // it can be freely dragged around the entire game.
         CardView cardView = AbstractFactory.getFactory(ViewFactory.class).get(GameView.class).getCardComponent();
+        
+        // If the card cannot be found and if the talon doesnt have the blank card as the top most card
         if(cardView == null && layeredPane.highestLayer() != JLayeredPane.getLayer(_blankCard)) {
+            
+            // Take the card that is at the top-most of the talon. This is the case when we are
+            // playing in outline mode, and the card still exists on the talon, because the card proxy
+            // is the thing that is actually movings
             cardView = (CardView) layeredPane.getComponentsInLayer(layeredPane.highestLayer())[0];
         }
         
+        // Set the undoable card as the card that can be undone
         _undoableCard = cardView;
     }
 
