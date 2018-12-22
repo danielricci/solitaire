@@ -497,9 +497,9 @@ public final class CardView extends PanelView implements ICollidable {
     @Override public void setBounds(int x, int y, int width, int height) {
         // HACK I feel so bad doing this. but I must, for I love cake and I want my game to work properly for now.
         // TODO Stop being a bad boy and fix the actual root cause of the bug.
-        if(x != 10 && y != 5) {
+        if(!(x == 10 && y == 5)) {
             super.setBounds(x, y, width, height);
-        }
+        }        
     }
         
     @Override public String toString() {
