@@ -41,6 +41,7 @@ import framework.core.factories.ControllerFactory;
 import framework.core.factories.ViewFactory;
 import framework.core.mvc.view.PanelView;
 import framework.core.physics.ICollidable;
+import framework.core.system.Application;
 import framework.utils.logging.Tracelog;
 
 import game.config.OptionsPreferences;
@@ -221,12 +222,7 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
         OptionsPreferences preferences = new OptionsPreferences();
         preferences.load();
         if(preferences.drawOption == DrawOption.THREE) {
-            if(cardView == lastCardInteracted.card) {
-                addCard(cardView, lastCardInteracted.layer);
-            }
-            else {
-                addCard(cardView, layeredPane.highestLayer());
-            } 
+            addCard(cardView, lastCardInteracted.layer);
             layeredPane.setPosition(cardView, 0);           
         }
         else {
@@ -281,11 +277,13 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
                 }
                 break;
             case THREE:
+
+                layeredPane.removeAll();
+                
                 
                 // Remove all the cards from the layered pane
                 layeredPane.remove(_blankCard);
                 Component[] allComponents = layeredPane.getComponents();
-                layeredPane.removeAll();
                 
                 // Re-populate the layered pane 
                 for(int i = 0, layer = 0; i < allComponents.length; ++i) {
@@ -307,6 +305,11 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
                 
                 // Repaint the layered pane
                 layeredPane.repaint();
+                
+                // Repaint the parent. This fixes a bug where the card would be partially left over 
+                // when in draw three and the deck has recycled
+                getParent().repaint();
+                
                 break;
             }   
         }
@@ -460,11 +463,7 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
             Component highestComponent = layeredPane.getComponentsInLayer(layeredPane.highestLayer())[0];
             highestComponent.setEnabled(false);
             
-            // Add the card to the layered pane
-            layeredPane.add(_undoableCard);
-            
-            // Set the layer of the card to be the highest layer
-            layeredPane.setLayer(_undoableCard, layeredPane.highestLayer() + 1);
+            addCard(_undoableCard);
             
             // Set the bounds of the card
             setBounds(_undoableCard);
