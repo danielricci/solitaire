@@ -67,20 +67,12 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
     private CardView _undoableCard = null;
     
     private class TalonCardReference {
-
-        /**
-         * The last card that was clicked
-         */
-        public final CardView card;
-
         /**
          * The layer of the last card that was clicked
          */
         public final int layer;
         
-        
         public TalonCardReference(CardView card) {
-            this.card = card;
             layer = JLayeredPane.getLayer(card);
         }
     }
@@ -385,6 +377,53 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
         }
                 
         return TalonCardState.NORMAL;
+    }
+    
+    public boolean isDeckPlayed() {
+        return layeredPane.lowestLayer() == JLayeredPane.getLayer(_blankCard);
+    }
+    
+    public boolean isDeckEmpty() {
+        return layeredPane.getComponentCount() == 1;
+    }
+    
+    /**
+     * Reverts the last hand played
+     */
+    public void revertLastHand() {
+        OptionsPreferences preferences = new OptionsPreferences();
+        preferences.load();
+        if(preferences.drawOption == DrawOption.ONE) {
+            
+            // Get the component with the highest layer, record it's layer and remove it from the list
+            int compLayer = layeredPane.highestLayer();
+            Component comp = layeredPane.getComponentsInLayer(compLayer)[0];
+            layeredPane.remove(comp);
+            
+            // Now that this is the highet layer, record what it is
+            int compToSwitchWithLayer = layeredPane.highestLayer();
+            Component compToSwitchWith = layeredPane.getComponentsInLayer(compToSwitchWithLayer)[0];
+            
+            // Put the old selection to the place where the first `comp` was removed
+            layeredPane.setLayer(compToSwitchWith, compLayer);
+            
+            // Add the removed `comp` and put it's layer to the one that was played before
+            layeredPane.add(comp);
+            layeredPane.setLayer(comp, compToSwitchWithLayer);
+            
+            // Redraw
+            layeredPane.repaint();
+            
+            // Swap the enabled states 
+            comp.setEnabled(false);
+            compToSwitchWith.setEnabled(true);
+        }
+        else if(preferences.drawOption == DrawOption.THREE) {
+            
+        }
+        else {
+            Tracelog.log(Level.WARNING, true, String.format("Invalid draw option %s trying to be reverted", preferences.drawOption));
+        }
     }
     
     /**

@@ -24,8 +24,11 @@
 
 package game.views;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 import framework.communication.internal.signal.arguments.EventArgs;
 import framework.communication.internal.signal.arguments.ViewEventArgs;
@@ -48,7 +51,7 @@ public final class StockView extends PanelView implements IUndoable {
     private int _deckPlays;
     
     public TalonCardEntity backside = new TalonCardEntity();
-    
+        
     /**
      * Constructs a new instance of this class type
      */
@@ -123,11 +126,24 @@ public final class StockView extends PanelView implements IUndoable {
     }
 
     @Override public void undoLastAction() {
+        TalonPileView talonView = AbstractFactory.getFactory(ViewFactory.class).get(TalonPileView.class);
+        talonView.revertLastHand();
+
+        if(talonView.isDeckPlayed()) {
+            backside.enableTalonRecycled();
+        }
+        else {
+            backside = new TalonCardEntity();
+        }
         
+        render();
     }
 
     @Override public void performBackup() {
-        
+        // There is nothing here we need to backup, because the data can be easily
+        // retrieved.
+        // Also, this method gets called too early in this case, so we can't read
+        // the talon in time
     }
 
     @Override public void clearBackup() {
