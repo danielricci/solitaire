@@ -41,7 +41,7 @@ import framework.core.factories.ControllerFactory;
 import framework.core.factories.ViewFactory;
 import framework.core.mvc.view.PanelView;
 import framework.core.physics.ICollidable;
-import framework.core.system.Application;
+import framework.utils.MouseListenerEvent;
 import framework.utils.logging.Tracelog;
 
 import game.config.OptionsPreferences;
@@ -111,7 +111,7 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
         // Add a listener to the blank card since it is sitting above the board. If someone tries to click in this area
         // the timer will start, unknowing to the player that they really clicked on a special area of the board
         _blankCard.addMouseListener(new MouseAdapter() {
-            @Override public void mousePressed(MouseEvent e) {
+            @Override public void mousePressed(MouseEvent event) {
                 GameTimerView gameTimerView = AbstractFactory.getFactory(ViewFactory.class).get(GameTimerView.class);
                 if(gameTimerView != null) {
                     gameTimerView.startGameTimer();
@@ -133,8 +133,13 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
         
         for(int i = 0, layer = 0; i < cards.size(); ++i) {
             CardView cardView = AbstractFactory.getFactory(ViewFactory.class).add(new CardView(cards.get(i)));
-            MouseAdapter adapter = new MouseAdapter() {
+            MouseListenerEvent adapter = new MouseListenerEvent() {
                 @Override public void mousePressed(MouseEvent event) {
+                    
+                    super.mousePressed(event);
+                    if(event.isConsumed()) {
+                        return;
+                    }
                     
                     // Do not allow non-enabled cards to run
                     if(!cardView.isEnabled()) {
@@ -146,6 +151,11 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
                 }
                 @Override public void mouseReleased(MouseEvent event) {
             
+                    super.mouseReleased(event);
+                    if(event.isConsumed()) {
+                        return;
+                    }
+                    
                     // Prevent other released events from being called by other cards that are not yet enabled
                     if(!cardView.isEnabled()) {
                         return;

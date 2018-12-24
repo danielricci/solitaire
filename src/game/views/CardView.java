@@ -30,7 +30,6 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Arrays;
 import java.util.Collections;
@@ -53,6 +52,7 @@ import framework.core.mvc.view.PanelView;
 import framework.core.mvc.view.layout.DragListener;
 import framework.core.physics.CollisionListener;
 import framework.core.physics.ICollidable;
+import framework.utils.MouseListenerEvent;
 import framework.utils.logging.Tracelog;
 
 import game.config.OptionsPreferences;
@@ -74,7 +74,7 @@ public final class CardView extends PanelView implements ICollidable {
      * @author Daniel Ricci <thedanny09@icloud.com>
      *
      */
-    private final class CardSelectionEvents extends MouseAdapter {
+    private final class CardSelectionEvents extends MouseListenerEvent {
         
         /**
          * The parent layer pane
@@ -83,6 +83,11 @@ public final class CardView extends PanelView implements ICollidable {
         
         @Override public void mousePressed(MouseEvent event) {
 
+            super.mousePressed(event);
+            if(event.isConsumed()) {
+                return;
+            }
+            
             if(!isEnabled()) {
                 return;
             }
@@ -145,6 +150,11 @@ public final class CardView extends PanelView implements ICollidable {
 
         @Override public void mouseReleased(MouseEvent event) {
             
+            super.mouseReleased(event);
+            if(event.isConsumed()) {
+                return;
+            }
+            
             if(!isEnabled()) {
                 return;
             }
@@ -156,7 +166,7 @@ public final class CardView extends PanelView implements ICollidable {
             if(_parentLayeredPane == null) {
                 return;
             }
-            
+           
             // If there is a valid collider, set that as the new parent
             if(_collisionListener.getCollision() != null) {
                 ICollidable collision = _collisionListener.getCollision();
@@ -184,8 +194,13 @@ public final class CardView extends PanelView implements ICollidable {
     /**
      * This mouse adapter handles events when the card is pressed with the mouse
      */
-    private MouseAdapter _mouseAdapter = new MouseAdapter() {
+    private MouseListenerEvent _mouseActionListener = new MouseListenerEvent() {
         @Override public void mousePressed(MouseEvent event) {
+            
+            super.mousePressed(event);
+            if(event.isConsumed()) {
+                return;
+            }
             
             if(!isEnabled()) {
                 return;
@@ -206,6 +221,7 @@ public final class CardView extends PanelView implements ICollidable {
             }
         }
     };
+    
     
     /**
      * The preferred width of this card
@@ -288,7 +304,7 @@ public final class CardView extends PanelView implements ICollidable {
         //       initiate the proxy, thus the double click of the proxy will be called
         //
         // Note: This mouse listener should be before any other mouse listener within this class
-        addMouseListener(_mouseAdapter);
+        addMouseListener(_mouseActionListener);
 
         /**
          * Listen in on events when we need to synchronize withthe online option

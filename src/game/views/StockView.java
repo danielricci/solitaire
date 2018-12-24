@@ -25,7 +25,6 @@
 package game.views;
 
 import java.awt.Dimension;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import framework.communication.internal.signal.arguments.EventArgs;
@@ -33,6 +32,7 @@ import framework.communication.internal.signal.arguments.ViewEventArgs;
 import framework.core.factories.AbstractFactory;
 import framework.core.factories.ViewFactory;
 import framework.core.mvc.view.PanelView;
+import framework.utils.MouseListenerEvent;
 
 import game.config.OptionsPreferences;
 import game.config.OptionsPreferences.DrawOption;
@@ -58,8 +58,14 @@ public final class StockView extends PanelView implements IUndoable {
         OptionsPreferences preferences = new OptionsPreferences();
         preferences.load();
         
-        addMouseListener(new MouseAdapter() {            
+        addMouseListener(new MouseListenerEvent() {            
             @Override public void mousePressed(MouseEvent event) {
+                
+                super.mousePressed(event);
+                if(event.isConsumed()) {
+                    return;
+                }
+                
                 TalonPileView talonView = AbstractFactory.getFactory(ViewFactory.class).get(TalonPileView.class);
                 
                 TalonCardState cardState = talonView.showCardHand();

@@ -28,7 +28,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.util.Arrays;
@@ -50,6 +49,7 @@ import framework.core.navigation.MenuBuilder;
 import framework.core.physics.CollisionListener;
 import framework.core.physics.ICollidable;
 import framework.core.system.Application;
+import framework.utils.MouseListenerEvent;
 import framework.utils.globalisation.Localization;
 
 import game.controllers.MovementRecorderController;
@@ -125,10 +125,15 @@ public final class CardProxyView extends PanelView {
      * @author Daniel Ricci <thedanny09@icloud.com>
      *
      */
-    private class CardSelectionEvents extends MouseAdapter {
+    private class CardSelectionEvents extends MouseListenerEvent {
         
         @Override public void mousePressed(MouseEvent event) {
 
+            super.mousePressed(event);
+            if(event.isConsumed()) {
+                return;
+            }
+            
             if(!isEnabled()) {
                 return;
             }
@@ -213,6 +218,11 @@ public final class CardProxyView extends PanelView {
         }
         
         @Override public void mouseReleased(MouseEvent event) {
+            
+            super.mouseReleased(event);
+            if(event.isConsumed()) {
+                return;
+            }
             
             if(!isEnabled()) {
                 return;
@@ -350,20 +360,27 @@ public final class CardProxyView extends PanelView {
         _cardView = cardView;
         getViewProperties().setEntity(cardView.getViewProperties().getEntity());
         
-        addMouseListener(new MouseAdapter() {
+        
+        MouseListenerEvent mle = new MouseListenerEvent() {
             @Override public void mousePressed(MouseEvent event) {
+                super.mousePressed(event);
+                if(event.isConsumed()) {
+                    return;
+                }
+                
                 GameTimerView gameTimerView = AbstractFactory.getFactory(ViewFactory.class).get(GameTimerView.class);
                 if(gameTimerView != null) {
                     gameTimerView.startGameTimer();
                 }
             }
-        });
-        
-        // Add a mouse listener to listen to when there is a drag on this proxy. When there is a drag
-        // then we should perform the set border call. 
-        addMouseMotionListener(new MouseAdapter() {
+            
             @Override public void mouseDragged(MouseEvent event) {
-    
+                
+                super.mouseDragged(event);
+                if(event.isConsumed()) {
+                    return;
+                }
+                
                 if(!isEnabled()) {
                     return;
                 }
@@ -388,7 +405,9 @@ public final class CardProxyView extends PanelView {
                     }
                 }                    
             }
-        });
+        };
+        addMouseListener(mle);
+        addMouseMotionListener(mle);
     }
     
     @Override public void setEnabled(boolean enabled) {
