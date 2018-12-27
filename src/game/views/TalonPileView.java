@@ -395,28 +395,17 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
         preferences.load();
         if(preferences.drawOption == DrawOption.ONE) {
             
-            // Get the component with the highest layer, record it's layer and remove it from the list
-            int compLayer = layeredPane.highestLayer();
-            Component comp = layeredPane.getComponentsInLayer(compLayer)[0];
-            layeredPane.remove(comp);
-            
-            // Now that this is the highet layer, record what it is
-            int compToSwitchWithLayer = layeredPane.highestLayer();
-            Component compToSwitchWith = layeredPane.getComponentsInLayer(compToSwitchWithLayer)[0];
-            
-            // Put the old selection to the place where the first `comp` was removed
-            layeredPane.setLayer(compToSwitchWith, compLayer);
-            
-            // Add the removed `comp` and put it's layer to the one that was played before
-            layeredPane.add(comp);
-            layeredPane.setLayer(comp, compToSwitchWithLayer);
-            
-            // Redraw
-            layeredPane.repaint();
-            
-            // Swap the enabled states 
+            // Get the top-most component and set it underneath the blank card.
+            Component comp = layeredPane.getComponentsInLayer(layeredPane.highestLayer())[0];
             comp.setEnabled(false);
-            compToSwitchWith.setEnabled(true);
+            layeredPane.setLayer(comp, JLayeredPane.getLayer(_blankCard));
+            layeredPane.getComponentsInLayer(layeredPane.highestLayer())[0].setEnabled(true);
+
+            // From the bottom upwards, re-order the layer of each card
+            Component[] components = layeredPane.getComponents();
+            for(int layer = 0, i = components.length - 1; i >= 0; --i, ++layer) {
+                layeredPane.setLayer(components[i], layer);
+            }
         }
         else if(preferences.drawOption == DrawOption.THREE) {
             
