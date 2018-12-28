@@ -247,16 +247,12 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
         // New deck has the score updated
         AbstractFactory.getFactory(ViewFactory.class).get(GameScoreView.class).updateScoreDeckFinished();
         
-        // Go through the list in reverse order and re-assign the layer identifiers.
-        // Make sure to reference a static list of components so that when the layer identifiers change
-        // within the loop, the order of the layers will not go out of position
-        Component[] components = layeredPane.getComponents();
-        
         OptionsPreferences preferences = new OptionsPreferences();
         preferences.load();
         
         switch(preferences.drawOption) {
         case ONE:
+            Component[] components = layeredPane.getComponents();
             for(int i = components.length - 1; i >= 0; --i) {
                 Component component = components[i];
                 layeredPane.setLayer(component, i);
@@ -268,9 +264,6 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
             break;
         case THREE:
 
-            layeredPane.removeAll();
-            
-            
             // Remove all the cards from the layered pane
             layeredPane.remove(_blankCard);
             Component[] allComponents = layeredPane.getComponents();
@@ -285,6 +278,8 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
                 
                 if(preferences.drawOption == DrawOption.THREE) {
                     layeredPane.setLayer(allComponents[i], layer / 3);
+                    allComponents[i].setVisible(false);
+                    allComponents[i].setEnabled(false);
                     ++layer;
                 }
             }
@@ -292,13 +287,6 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
             // Add back the blank card as the top-most card
             layeredPane.add(_blankCard);
             layeredPane.setLayer(_blankCard, layeredPane.highestLayer() + 1);
-            
-            // Repaint the layered pane
-            layeredPane.repaint();
-            
-            // Repaint the parent. This fixes a bug where the card would be partially left over 
-            // when in draw three and the deck has recycled
-            getParent().repaint();
             
             break;
         } 
@@ -435,17 +423,30 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
         OptionsPreferences preferences = new OptionsPreferences();
         preferences.load();
         if(preferences.drawOption == DrawOption.ONE) {
-            
-            // Get the top-most component and set it underneath the blank card.
-            Component comp = layeredPane.getComponentsInLayer(layeredPane.highestLayer())[0];
-            comp.setEnabled(false);
-            layeredPane.setLayer(comp, JLayeredPane.getLayer(_blankCard));
-            layeredPane.getComponentsInLayer(layeredPane.highestLayer())[0].setEnabled(true);
-
-            // From the bottom upwards, re-order the layer of each card
-            Component[] components = layeredPane.getComponents();
-            for(int layer = 0, i = components.length - 1; i >= 0; --i, ++layer) {
-                layeredPane.setLayer(components[i], layer);
+            if(JLayeredPane.getLayer(_blankCard) == layeredPane.highestLayer()) {
+                
+                Component[] components = layeredPane.getComponents();
+                for(int i = 0; i < components.length; ++i) {
+                    layeredPane.setLayer(components[i], i);
+                }
+                
+                // Enable the top-most card so that it can be used
+                Component comp = layeredPane.getComponentsInLayer(layeredPane.highestLayer())[0];
+                comp.setEnabled(true);
+                comp.setVisible(true);
+            }
+            else {
+                // Get the top-most component and set it underneath the blank card.
+                Component comp = layeredPane.getComponentsInLayer(layeredPane.highestLayer())[0];
+                comp.setEnabled(false);
+                layeredPane.setLayer(comp, JLayeredPane.getLayer(_blankCard));
+                layeredPane.getComponentsInLayer(layeredPane.highestLayer())[0].setEnabled(true);
+    
+                // From the bottom upwards, re-order the layer of each card
+                Component[] components = layeredPane.getComponents();
+                for(int layer = 0, i = components.length - 1; i >= 0; --i, ++layer) {
+                    layeredPane.setLayer(components[i], layer);
+                }
             }
         }
         else if(preferences.drawOption == DrawOption.THREE) {
