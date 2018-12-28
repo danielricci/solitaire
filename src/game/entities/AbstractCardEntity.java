@@ -153,6 +153,10 @@ public abstract class AbstractCardEntity extends AbstractDataEntity {
         return ordinal == 12;
     }
     
+    @Override public void refresh() {
+        backsideCardEntity.refresh();
+    }
+    
     @Override public Image getRenderableContent() {
         if(getBacksideVisible()) {
             return backsideCardEntity.getRenderableContent();

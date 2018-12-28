@@ -32,16 +32,15 @@ import generated.DataLookup;
 
 
 public class BacksideCardEntity extends AbstractDataEntity {
+
+    public static final String DECK_BACKSIDE_UPDATED = "DECK_BACKSIDE_UPDATED";
     
     private boolean _isBacksideVisible = false;
 
     private DataLookup.BACKSIDES _backside;
     
     public BacksideCardEntity() {
-        OptionsPreferences preferences = new OptionsPreferences();
-        preferences.load();
-        _backside = preferences.deck;
-        super.setActiveData(preferences.deck.identifier);
+        setBackside();
     }
     
     public void setIsBacksideShowing(boolean isShowing) {
@@ -54,5 +53,16 @@ public class BacksideCardEntity extends AbstractDataEntity {
     
     public DataLookup.BACKSIDES getBacksideData() {
         return _backside;
+    }
+    
+    private void setBackside() {
+        OptionsPreferences preferences = new OptionsPreferences();
+        preferences.load();
+        _backside = preferences.deck;
+        super.setActiveData(preferences.deck.identifier);
+    }
+
+    @Override public void refresh() {
+        setBackside();
     }
 }

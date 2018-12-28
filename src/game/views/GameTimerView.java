@@ -58,8 +58,8 @@ public final class GameTimerView extends PanelView {
             return;
         }
         
-        _tick = 0;        
         _running = true;
+        _tick = 0;        
         _timer.schedule(new TimerTask() {
             @Override public void run() {
                 ++_tick;

@@ -24,12 +24,10 @@
 
 package game.views;
 
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.List;
 
+import framework.communication.internal.signal.ISignalReceiver;
 import framework.communication.internal.signal.arguments.EventArgs;
 import framework.communication.internal.signal.arguments.ViewEventArgs;
 import framework.core.factories.AbstractFactory;
@@ -37,31 +35,29 @@ import framework.core.factories.ViewFactory;
 import framework.core.mvc.view.PanelView;
 import framework.utils.MouseListenerEvent;
 
-import game.config.OptionsPreferences;
-import game.config.OptionsPreferences.DrawOption;
-import game.config.OptionsPreferences.ScoringOption;
-import game.entities.TalonCardEntity;
+import game.entities.BacksideCardEntity;
+import game.entities.StockCardEntity;
 import game.views.TalonPileView.TalonCardState;
 
 public final class StockView extends PanelView implements IUndoable {
 
     /**
-     * The number of times that the deck was played
+     * The backside card entity associated to this view
      */
-    private int _deckPlays;
-    
-    public TalonCardEntity backside = new TalonCardEntity();
+    private StockCardEntity _stockCardEntity = new StockCardEntity();
         
     /**
      * Constructs a new instance of this class type
      */
     public StockView() {
         setOpaque(false);
-        
-        OptionsPreferences preferences = new OptionsPreferences();
-        preferences.load();
-        
-        addMouseListener(new MouseListenerEvent() {            
+        addMouseListener(new MouseListenerEvent() {
+            @Override public void mousePressed(MouseEvent event) {
+                AbstractFactory.getFactory(ViewFactory.class).get(GameTimerView.class).startGameTimer();
+                removeMouseListener(this);
+            }
+        });
+        addMouseListener(new MouseListenerEvent() {
             @Override public void mousePressed(MouseEvent event) {
                 
                 super.mousePressed(event);
@@ -70,42 +66,31 @@ public final class StockView extends PanelView implements IUndoable {
                 }
                 
                 TalonPileView talonView = AbstractFactory.getFactory(ViewFactory.class).get(TalonPileView.class);
+                talonView.cycleNextHand();
                 
-                TalonCardState cardState = talonView.showCardHand();
-                if(cardState == TalonCardState.EMPTY) {
-                    removeMouseListener(this);
-                }
-                else if(cardState == TalonCardState.DECK_PLAYED) {
-                    
-                    // Increase the number of times that the deck has been cycled through
-                    ++_deckPlays;
-                    
-                    //In Draw One Vegas, you can only cycle through the card system once.
-                    if(preferences.drawOption == DrawOption.ONE && preferences.scoringOption == ScoringOption.VEGAS && _deckPlays == 1) {
-                        removeMouseListener(this);
-                        backside.enableTalonEnd();
+                TalonCardState talonState = talonView.getState();
+                if(talonState == TalonCardState.DECK_PLAYED) {
+                    if(talonView.isTalonEnded()) {
+                        _stockCardEntity.enableTalonEnd();
                     }
-                    // In Draw Three Vegas, you can only cycle through the card system three times
-                    else if(preferences.drawOption == DrawOption.THREE && preferences.scoringOption == ScoringOption.VEGAS && _deckPlays == 3) {
-                        removeMouseListener(this);
-                        backside.enableTalonEnd();
+                    else {
+                        _stockCardEntity.enableTalonRecycled();
                     }
-                    else
-                    {
-                        backside.enableTalonRecycled();
-                    }
-                    
-                    render();
                 }
                 else {
-                    backside = new TalonCardEntity();
-                    render();
-                    
+                    _stockCardEntity = new StockCardEntity();
                     GameTimerView gameTimerView = AbstractFactory.getFactory(ViewFactory.class).get(GameTimerView.class);
                     if(gameTimerView != null) {
                         gameTimerView.startGameTimer();
                     }
                 }
+                
+                render();
+            }
+        });
+        addSignalListener(BacksideCardEntity.DECK_BACKSIDE_UPDATED, new ISignalReceiver<EventArgs>() {
+            @Override public void signalReceived(EventArgs event) {
+                _stockCardEntity.refresh();
             }
         });
     }
@@ -118,10 +103,10 @@ public final class StockView extends PanelView implements IUndoable {
         super.render();
         update(new ViewEventArgs(this, ""));
     }
-    
+
     @Override public void update(EventArgs event) {
         super.update(event);
-        addRenderableContent(backside);
+        addRenderableContent(_stockCardEntity);
         repaint();
     }
 
@@ -130,10 +115,10 @@ public final class StockView extends PanelView implements IUndoable {
         talonView.revertLastHand();
 
         if(talonView.isDeckPlayed()) {
-            backside.enableTalonRecycled();
+            _stockCardEntity.enableTalonRecycled();
         }
         else {
-            backside = new TalonCardEntity();
+            _stockCardEntity = new StockCardEntity();
         }
         
         render();
@@ -147,6 +132,5 @@ public final class StockView extends PanelView implements IUndoable {
     }
 
     @Override public void clearBackup() {
-        
     }
 }

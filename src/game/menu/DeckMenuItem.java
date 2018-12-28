@@ -40,6 +40,7 @@ import framework.core.navigation.AbstractMenuItem;
 import framework.utils.globalisation.Localization;
 
 import game.config.OptionsPreferences;
+import game.entities.BacksideCardEntity;
 import game.models.CardModel;
 import game.views.DeckSelectionDialogView;
 import game.views.StatusBarView;
@@ -87,12 +88,8 @@ public class DeckMenuItem extends AbstractMenuItem {
             OptionsPreferences preferences = new OptionsPreferences();
             preferences.load();
 
-            // Update the image on the stock view
-            StockView stockView = AbstractFactory.getFactory(ViewFactory.class).get(StockView.class);
-            if(stockView.backside != null) {
-                stockView.backside.setActiveData(preferences.deck.identifier);
-                stockView.update(args);
-            }
+            // Send out the signal to the stockview
+            AbstractFactory.getFactory(ViewFactory.class).multicastSignalListeners(StockView.class, new EventArgs(this, BacksideCardEntity.DECK_BACKSIDE_UPDATED));
         }
     }
 }

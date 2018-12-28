@@ -26,13 +26,23 @@ package game.entities;
 
 import generated.DataLookup;
 
-public final class TalonCardEntity extends BacksideCardEntity {
+public final class StockCardEntity extends AbstractCardEntity {
+    
+    public StockCardEntity() {
+        setBacksideVisible(true);
+    }
     
     public void enableTalonRecycled() {
         setActiveData(DataLookup.MISC.TALON_RESTART.identifier);
+        setBacksideVisible(false);
     }
     
     public void enableTalonEnd() {
         setActiveData(DataLookup.MISC.TALON_END.identifier);
+        setBacksideVisible(false);
+    }
+    
+    @Override public boolean isOppositeSuite(AbstractCardEntity card) {
+        return false;
     }
 }
