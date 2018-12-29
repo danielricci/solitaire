@@ -56,7 +56,66 @@ import game.models.CardModel;
  * @author Daniel Ricci <thedanny09@icloud.com>
  */
 public final class TalonPileView extends AbstractPileView implements ICollidable {
-   
+
+    /**
+     * The available states of the talon
+     * 
+     * @author Daniel Ricci <thedanny09@icloud.com>
+     */
+    public enum TalonCardState {
+        // An Empty Deck
+        EMPTY,
+        // The Deck has been played through
+        DECK_PLAYED,
+        // Normal card played
+        NORMAL
+    }
+
+    /**
+     * A helper class for holding onto a layer and it's associated card state
+     * 
+     * @author Daniel Ricci <thedanny09@icloud.com>
+     */
+    private class TalonCardReference {
+        /**
+         * The layer of the last card that was clicked
+         */
+        public final int layer;
+        
+        /**
+         * The last card that was clicked w.r.t this view
+         */
+        public final CardView card;
+        
+        /**
+         * Constructs a new instance of this class type
+         *
+         * @param card A card view
+         * @param layer A specified layer
+         */
+        public TalonCardReference(CardView card, int layer) {
+            this.card = card;
+            this.layer = layer;
+        }
+        
+        /**
+         * Constructs a new instance of this class type
+         *
+         * @param card A card view
+         */
+        public TalonCardReference(CardView card) {
+            this.card = card;
+            this.layer = JLayeredPane.getLayer(card);
+        }
+        
+        @Override public String toString() {
+            return String.format("Layer: %s | Card: %s", this.layer, this.card);
+        }
+    }
+    
+    /**
+     * The last card hand state of this talon
+     */
     private TalonCardState _lastCardHandState = null;
     
     /**
@@ -68,27 +127,16 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
      * The blank card associated to the talon view
      */
     private final PanelView _blankCard = new PanelView();
-    
-    /**
-     * The undoable container associated to this view
-     */
-    private CardView _undoableCard = null;
-    
-    private class TalonCardReference {
-        /**
-         * The layer of the last card that was clicked
-         */
-        public final int layer;
-        
-        public TalonCardReference(CardView card) {
-            layer = JLayeredPane.getLayer(card);
-        }
-    }
-    
+
     /**
      * The last card that was interacted with
      */
-    public TalonCardReference lastCardInteracted = null;
+    private TalonCardReference _lastCardInteracted = null;
+    
+    /**
+     * The card that can be undone
+     */
+    private TalonCardReference _undoableCard = null;
     
     /**
      * Constructs a new instance of this class type
@@ -147,7 +195,7 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
                     }
                     
                     // Take the card that was pressed on and record it's layer location 
-                    lastCardInteracted = new TalonCardReference(cardView);
+                    _lastCardInteracted = new TalonCardReference(cardView);
                 }
                 @Override public void mouseReleased(MouseEvent event) {
             
@@ -219,20 +267,11 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
         layeredPane.setLayer(_blankCard, layeredPane.highestLayer() + 1);
     }
      
-    public enum TalonCardState {
-        // An Empty Deck
-        EMPTY,
-        // The Deck has been played through
-        DECK_PLAYED,
-        // Normal card played
-        NORMAL
-    }
-    
     @Override public void addCard(CardView cardView) {
         OptionsPreferences preferences = new OptionsPreferences();
         preferences.load();
         if(preferences.drawOption == DrawOption.THREE) {
-            addCard(cardView, lastCardInteracted.layer);
+            addCard(cardView, _lastCardInteracted.layer);
             layeredPane.setPosition(cardView, 0);           
         }
         else {
@@ -528,6 +567,13 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
                 builder.append("===BLANK CARD===\t[" + blankLayer + "][" + blankPositionWithinlayer + "]" + System.getProperty("line.separator"));
             }
         }
+        
+        builder.append(System.getProperty("line.separator"));
+        builder.append("Decks Played: " + _deckPlays + System.getProperty("line.separator"));
+        builder.append("Last Card Hand State: " + _lastCardHandState + System.getProperty("line.separator"));
+        builder.append("Undoable Card: " + String.valueOf(_undoableCard) + System.getProperty("line.separator"));
+        builder.append("Last Card Interacted: " + String.valueOf(_lastCardInteracted) + System.getProperty("line.separator"));
+        builder.append(System.getProperty("line.separator"));
         builder.append(new String(new char[header.length()]).replace("\0", "="));
         
         return builder.toString();
@@ -555,10 +601,15 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
             Component highestComponent = layeredPane.getComponentsInLayer(layeredPane.highestLayer())[0];
             highestComponent.setEnabled(false);
             
-            addCard(_undoableCard);
+            // This is required to be done, because when we call `addCard` below, it uses the `_lastCardInteracted`, so we
+            // update this value accordingly
+            TalonCardReference temp = _lastCardInteracted;
+            _lastCardInteracted = _undoableCard;
+            addCard(_undoableCard.card);
+            _lastCardInteracted = temp;
             
             // Set the bounds of the card
-            setBounds(_undoableCard);
+            setBounds(_undoableCard.card);
             repaint();
         }
     }
@@ -579,7 +630,7 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
         }
         
         // Set the undoable card as the card that can be undone
-        _undoableCard = cardView;
+        _undoableCard = new TalonCardReference(cardView, _lastCardInteracted.layer);
     }
 
     @Override public void clearBackup() {
