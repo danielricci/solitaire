@@ -76,8 +76,13 @@ public final class Game extends Application {
             addKeyListener(new KeyAdapter() {
                 @Override public void keyReleased(KeyEvent event) {
                     if(event.getKeyCode() == KeyEvent.VK_F1) {
+                        OptionsPreferences options = new OptionsPreferences();
+                        options.load();
+                        System.out.println(options);
+                        
                         ViewFactory viewFactory = AbstractFactory.getFactory(ViewFactory.class);
                         System.out.println(viewFactory.get(TalonPileView.class).toString());
+                        
                         List<TableauPileView> pileViews =  viewFactory.getAll(TableauPileView.class);
                         for(int i = pileViews.size() - 1; i >= 0; --i) {
                             System.out.println(pileViews.get(i));
@@ -86,10 +91,6 @@ public final class Game extends Application {
                         for(int i = foundationViews.size() - 1; i >= 0; --i) {
                             System.out.println(foundationViews.get(i));
                         }
-                        
-                        OptionsPreferences options = new OptionsPreferences();
-                        options.load();
-                        System.out.println(options);
                     }
                 }
             });
