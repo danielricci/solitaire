@@ -526,34 +526,39 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
         }
         else if(preferences.drawOption == DrawOption.THREE) {
             
-            // From the blank card upwards, up each components layer by 1
-            int blankCardLayer = JLayeredPane.getLayer(_blankCard);
-            Component[] components = layeredPane.getComponents();
-            for(Component comp : components) {
-                if(layeredPane.getLayer(comp) >= blankCardLayer) {
-                    layeredPane.setLayer(comp, layeredPane.getLayer(comp) + 1);
+            if(JLayeredPane.getLayer(_blankCard) == layeredPane.highestLayer()) {
+                
+            }
+            else {
+                // From the blank card upwards, up each components layer by 1
+                int blankCardLayer = JLayeredPane.getLayer(_blankCard);
+                Component[] components = layeredPane.getComponents();
+                for(Component comp : components) {
+                    if(layeredPane.getLayer(comp) >= blankCardLayer) {
+                        layeredPane.setLayer(comp, layeredPane.getLayer(comp) + 1);
+                    }
                 }
-            }
-            
-            // Take the top three cards and move them to the original blank card index
-            Component[] cardsBeingReverted = layeredPane.getComponentsInLayer(layeredPane.highestLayer());
-            for(Component comp : cardsBeingReverted) {
-                layeredPane.setLayer(comp, blankCardLayer);
-                comp.setVisible(false);
-            }
-            
-            // Take the highest layered cards at this point, set their screen position accordingly, and enable
-            // the first card to be moved
-            Component[] highestCards = layeredPane.getComponentsInLayer(layeredPane.highestLayer());
-            
-            // If the card is not the blank card, then remove the cards and re-add them, they will
-            // go through the process of being properly re-positioned
-            if(!(highestCards.length == 1 && highestCards[0] == _blankCard)) {
-               for(Component comp : highestCards) {
-                   setBounds(comp);
-               }
-               
-               highestCards[0].setEnabled(true);
+                
+                // Take the top three cards and move them to the original blank card index
+                Component[] cardsBeingReverted = layeredPane.getComponentsInLayer(layeredPane.highestLayer());
+                for(Component comp : cardsBeingReverted) {
+                    layeredPane.setLayer(comp, blankCardLayer);
+                    comp.setVisible(false);
+                }
+                
+                // Take the highest layered cards at this point, set their screen position accordingly, and enable
+                // the first card to be moved
+                Component[] highestCards = layeredPane.getComponentsInLayer(layeredPane.highestLayer());
+                
+                // If the card is not the blank card, then remove the cards and re-add them, they will
+                // go through the process of being properly re-positioned
+                if(!(highestCards.length == 1 && highestCards[0] == _blankCard)) {
+                   for(Component comp : highestCards) {
+                       setBounds(comp);
+                   }
+                   
+                   highestCards[0].setEnabled(true);
+                }
             }
         }
         else {
