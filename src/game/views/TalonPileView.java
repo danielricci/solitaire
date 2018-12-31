@@ -30,6 +30,7 @@ import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
@@ -352,6 +353,22 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
         }
         else if(preferences.drawOption == DrawOption.THREE) {
             
+            // Take all the components by layer and put them into an ordered list. Ommit layer gaps
+            List<Component[]> componentsGroupedByLayer = new ArrayList<Component[]>();
+            for(int i = 0; i <= layeredPane.highestLayer(); ++i) {
+                Component[] comps = layeredPane.getComponentsInLayer(i);
+                if(comps.length > 0) {
+                    componentsGroupedByLayer.add(layeredPane.getComponentsInLayer(i));
+                }
+            }
+            
+            // Re-input components by their layer, ensuring that their layer is ordered
+            // sequentially WITHOUT any gaps between layer numbers
+            for(int i = 0; i < componentsGroupedByLayer.size(); ++i) {
+                for(Component comp : componentsGroupedByLayer.get(i)) {
+                    layeredPane.setLayer(comp, i);
+                }
+            }
         }
         else {
             Tracelog.log(Level.SEVERE, true, "Implement me");
