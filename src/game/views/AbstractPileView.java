@@ -143,6 +143,21 @@ public abstract class AbstractPileView extends PanelView implements IUndoable {
         repaint();
     }
     
+    /**
+     * @return The components associated to the layered pane of this view, grouped by layer identifier.
+     */
+    protected final List<Component[]> getComponentsGroupedByLayer() {
+        List<Component[]> components = new ArrayList<Component[]>();
+        for(int i = 0; i <= layeredPane.highestLayer(); ++i) {
+            Component[] comps = layeredPane.getComponentsInLayer(i);
+            if(comps.length > 0) {
+                components.add(layeredPane.getComponentsInLayer(i));
+            }
+        }
+        
+        return components;
+    }
+    
     @Override public void undoLastAction() {
         
         // Get the list of components that were previously stored
