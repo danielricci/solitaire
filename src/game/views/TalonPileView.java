@@ -491,6 +491,12 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
     public void revertLastHand() {
         OptionsPreferences preferences = new OptionsPreferences();
         preferences.load();
+
+        // If the blank card is at the top then make sure to reduce the deck plays by one.
+        if(JLayeredPane.getLayer(_blankCard) == layeredPane.highestLayer()) {
+            _deckPlays = Math.max(0, _deckPlays - 1);
+        }
+        
         if(preferences.drawOption == DrawOption.ONE) {
             if(JLayeredPane.getLayer(_blankCard) == layeredPane.highestLayer()) {
                 Component[] components = layeredPane.getComponents();
@@ -519,9 +525,23 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
         }
         else if(preferences.drawOption == DrawOption.THREE) {
             if(JLayeredPane.getLayer(_blankCard) == layeredPane.highestLayer()) {
-                Component[] components = layeredPane.getComponents();
+                List<Component[]> components = getComponentsGroupedByLayer();
                 layeredPane.removeAll();
                 
+                for(int layer = 0, i = components.size() - 1; i >= 0; --i, ++layer) {
+                    Component[] comps = components.get(i);
+                    for(int j = 0; j < comps.length; ++j) {
+                        layeredPane.add(comps[j]);
+                        layeredPane.setLayer(comps[j], layer);
+                    }
+                }
+
+                // Show all the top-most cards, and set the first card to be enabled
+                Component[] highestLayerComps = layeredPane.getComponentsInLayer(layeredPane.highestLayer());
+                for(int i = 0; i < highestLayerComps.length; ++i) {
+                    highestLayerComps[i].setEnabled(i == 0);
+                    highestLayerComps[i].setVisible(true);
+                }
             }
             else {
                 // From the blank card upwards, up each components layer by 1
@@ -557,14 +577,6 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
         }
         else {
             Tracelog.log(Level.WARNING, true, String.format("Invalid draw option %s trying to be reverted", preferences.drawOption));
-        }
-
-        // If the talon can no longer be played because the deck count has been reached, reduce the deck count
-        // by one so that when the stock is clicked on, it will show the card accordingly.  Without this
-        // you would not be able to show another card after performing an undo, if you had reached
-        // the talon recycle limit for the specified game mode
-        if(isTalonEnded()) {
-            --_deckPlays;
         }
     }
     
