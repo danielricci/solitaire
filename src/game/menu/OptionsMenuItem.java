@@ -76,6 +76,11 @@ public class OptionsMenuItem extends AbstractMenuItem {
     }
 
     @Override public void onExecute(ActionEvent actionEvent) {
+        
+        // Clear the description when the execution has occured. This is so that the description does not stay
+        // stuck until the dialog has closed
+        AbstractFactory.getFactory(ViewFactory.class).get(StatusBarView.class).clearMenuDescription();
+        
         OptionsDialogView options = new OptionsDialogView();
         options.render();
         
