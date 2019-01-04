@@ -301,7 +301,7 @@ public final class CardProxyView extends PanelView {
             // Verify if there is a game winner
             if(GameView.IsGameWinner()) {
                 // Stop the game timer
-                GameTimerView gameTimerView = AbstractFactory.getFactory(ViewFactory.class).get(GameTimerView.class);
+                TimerView gameTimerView = AbstractFactory.getFactory(ViewFactory.class).get(TimerView.class);
                 gameTimerView.stop();
                 
                 // Show the dialog indicating that game has won
@@ -368,7 +368,7 @@ public final class CardProxyView extends PanelView {
                     return;
                 }
                 
-                GameTimerView gameTimerView = AbstractFactory.getFactory(ViewFactory.class).get(GameTimerView.class);
+                TimerView gameTimerView = AbstractFactory.getFactory(ViewFactory.class).get(TimerView.class);
                 if(gameTimerView != null) {
                     gameTimerView.startGameTimer();
                 }

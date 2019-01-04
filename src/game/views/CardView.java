@@ -206,7 +206,7 @@ public final class CardView extends PanelView implements ICollidable {
                 return;
             }
             
-            GameTimerView gameTimerView = AbstractFactory.getFactory(ViewFactory.class).get(GameTimerView.class);
+            TimerView gameTimerView = AbstractFactory.getFactory(ViewFactory.class).get(TimerView.class);
             if(gameTimerView != null) {
                 gameTimerView.startGameTimer();
             }
@@ -417,6 +417,7 @@ public final class CardView extends PanelView implements ICollidable {
             // Go through the list of foundation views and see if there is a match
             for(FoundationPileView foundationView : foundationViews) {
                 if(foundationView.isValidCollision(CardView.this)) {
+                    
                     AbstractFactory.getFactory(ControllerFactory.class).get(MovementRecorderController.class).recordMovement((AbstractPileView)CardView.this.getParentIView(), foundationView);
                     
                     // Halt any drag events that could occur
@@ -430,9 +431,6 @@ public final class CardView extends PanelView implements ICollidable {
                     //          that is required for this to have any meaning.
                     _cardSelectionEvents._parentLayeredPane = null;
                     
-                    // Remove from the layered pane source
-                    CardView.this.getParent().remove(CardView.this);;
-                                                    
                     // Record the component count before adding to the layered pane so that the proper
                     // layer identifier can be used.
                     //
@@ -511,11 +509,12 @@ public final class CardView extends PanelView implements ICollidable {
     }
     
     @Override public void setBounds(int x, int y, int width, int height) {
-        // HACK I feel so bad doing this. but I must, for I love cake and I want my game to work properly for now.
-        // TODO Stop being a bad boy and fix the actual root cause of the bug.
-        if(!(x == 10 && y == 5)) {
+        // HACK
+        // TODO Need to find a way to prevent this from the root cause
+        // Prevent an update of the UI while the card is dragging to reposition itself at the coordinates (8,5)
+        if(x != 8 && y != 5) {
             super.setBounds(x, y, width, height);
-        }        
+        }
     }
         
     @Override public String toString() {
@@ -532,6 +531,10 @@ public final class CardView extends PanelView implements ICollidable {
 
         return (isVisible() ? "[V]" : "[H]") + getViewProperties().getEntity(CardController.class).getCard().toString() + "\t[" + layer + "][" + positionWithinlayer + "]";    
     }
+    
+    
+    
+    
 
     /**
      * @return The layered pane associated to this view

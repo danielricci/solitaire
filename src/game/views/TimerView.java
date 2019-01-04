@@ -34,7 +34,7 @@ import framework.core.factories.AbstractFactory;
 import framework.core.factories.ViewFactory;
 import framework.core.mvc.view.PanelView;
 
-public final class GameTimerView extends PanelView {
+public final class TimerView extends PanelView {
 
     private Timer _timer = new Timer(true);
 
@@ -47,7 +47,7 @@ public final class GameTimerView extends PanelView {
     /**
      * Constructs a new instance of this class type
      */
-    public GameTimerView() {
+    public TimerView() {
         this.setBackground(Color.WHITE);
         _label.setText(this.toString());
         add(_label);
@@ -63,9 +63,9 @@ public final class GameTimerView extends PanelView {
         _timer.schedule(new TimerTask() {
             @Override public void run() {
                 ++_tick;
-                _label.setText(GameTimerView.this.toString());
+                _label.setText(TimerView.this.toString());
                 if(_tick % 10 == 0) {
-                    AbstractFactory.getFactory(ViewFactory.class).get(GameScoreView.class).updateScoreTimerTick();
+                    AbstractFactory.getFactory(ViewFactory.class).get(ScoreView.class).updateScoreTimerTick();
                 }
             }
         }, 1000, 1000);

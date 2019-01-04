@@ -36,12 +36,12 @@ import game.models.MovementModel.MovementType;
  * 
  * @author Daniel Ricci <thedanny09@icloud.com>
  */
-public class VegasGameScoreView extends GameScoreView {
+public class VegasScoreView extends ScoreView {
 
     /**
      * Constructs a new instance of this class type
      */
-    public VegasGameScoreView() {
+    public VegasScoreView() {
         SCORE -= 52;
     }
     

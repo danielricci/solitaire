@@ -161,7 +161,7 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
         // the timer will start, unknowing to the player that they really clicked on a special area of the board
         _blankCard.addMouseListener(new MouseAdapter() {
             @Override public void mousePressed(MouseEvent event) {
-                GameTimerView gameTimerView = AbstractFactory.getFactory(ViewFactory.class).get(GameTimerView.class);
+                TimerView gameTimerView = AbstractFactory.getFactory(ViewFactory.class).get(TimerView.class);
                 if(gameTimerView != null) {
                     gameTimerView.startGameTimer();
                 }
@@ -285,7 +285,7 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
      */
     public void recycleDeck() {
         // New deck has the score updated
-        AbstractFactory.getFactory(ViewFactory.class).get(GameScoreView.class).updateScoreDeckFinished();
+        AbstractFactory.getFactory(ViewFactory.class).get(ScoreView.class).updateScoreDeckFinished();
         
         OptionsPreferences preferences = new OptionsPreferences();
         preferences.load();

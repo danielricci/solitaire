@@ -53,7 +53,7 @@ public final class StockView extends PanelView implements IUndoable {
         setOpaque(false);
         addMouseListener(new MouseListenerEvent() {
             @Override public void mousePressed(MouseEvent event) {
-                AbstractFactory.getFactory(ViewFactory.class).get(GameTimerView.class).startGameTimer();
+                AbstractFactory.getFactory(ViewFactory.class).get(TimerView.class).startGameTimer();
                 removeMouseListener(this);
             }
         });
@@ -79,7 +79,7 @@ public final class StockView extends PanelView implements IUndoable {
                 }
                 else {
                     _stockCardEntity = new StockCardEntity();
-                    GameTimerView gameTimerView = AbstractFactory.getFactory(ViewFactory.class).get(GameTimerView.class);
+                    TimerView gameTimerView = AbstractFactory.getFactory(ViewFactory.class).get(TimerView.class);
                     if(gameTimerView != null) {
                         gameTimerView.startGameTimer();
                     }

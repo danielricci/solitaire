@@ -45,7 +45,7 @@ import game.models.MovementModel.MovementType;
  * 
  * @author Daniel Ricci <thedanny09@icloud.com>
  */
-public class GameScoreView extends PanelView {
+public class ScoreView extends PanelView {
 
     /**
      * The score title
@@ -67,7 +67,7 @@ public class GameScoreView extends PanelView {
     /**
      * Constructs a new instance of this class type
      */
-    public GameScoreView() {
+    public ScoreView() {
         this.setBackground(Color.WHITE);
         add(scoreTitle);
         add(scoreValue);  
@@ -123,7 +123,7 @@ public class GameScoreView extends PanelView {
      * @param to Where the operation ended at
      */
      protected void updateScore(MovementType from, MovementType to, boolean isUndo) {
-        
+         
         long scoreBefore = SCORE;
         if(from == MovementType.TALON && to == MovementType.TABLEAU) {
             SCORE += (isUndo ? -5 : 5);

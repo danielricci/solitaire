@@ -100,7 +100,7 @@ public final class FoundationPileView extends AbstractPileView implements IColli
       // Verify if there is a game winner
       if(GameView.IsGameWinner()) {
           // Stop the game timer
-          GameTimerView gameTimerView = AbstractFactory.getFactory(ViewFactory.class).get(GameTimerView.class);
+          TimerView gameTimerView = AbstractFactory.getFactory(ViewFactory.class).get(TimerView.class);
           gameTimerView.stop();
           
           // Show the dialog indicating that game has won

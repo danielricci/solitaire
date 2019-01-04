@@ -49,12 +49,12 @@ public final class StatusBarView extends PanelView {
     /**
      * The game timer view
      */
-    private final GameTimerView _gameTimerView = AbstractFactory.getFactory(ViewFactory.class).add(new GameTimerView(), true);
+    private final TimerView _gameTimerView = AbstractFactory.getFactory(ViewFactory.class).add(new TimerView(), true);
     
     /**
      * The game score view
      */
-    private GameScoreView _scoreView = null;
+    private ScoreView _scoreView = null;
     
     /**
      * The menu description label
@@ -99,7 +99,7 @@ public final class StatusBarView extends PanelView {
         preferences.load();
         
         // Create the score view based on the currently set scoring standard
-        _scoreView = AbstractFactory.getFactory(ViewFactory.class).add(preferences.scoringOption == ScoringOption.VEGAS ? new VegasGameScoreView() : new GameScoreView(), true);
+        _scoreView = AbstractFactory.getFactory(ViewFactory.class).add(preferences.scoringOption == ScoringOption.VEGAS ? new VegasScoreView() : new ScoreView(), true);
         _scoreView.render();
         
         // register the score view to recieve events from the movement controller
