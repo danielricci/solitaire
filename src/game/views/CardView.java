@@ -512,9 +512,10 @@ public final class CardView extends PanelView implements ICollidable {
         // HACK
         // TODO Need to find a way to prevent this from the root cause
         // Prevent an update of the UI while the card is dragging to reposition itself at the coordinates (8,5)
-        if(x != 8 && y != 5) {
-            super.setBounds(x, y, width, height);
+        if(x == 8 && y == 5) {
+            return;
         }
+        super.setBounds(x, y, width, height);
     }
         
     @Override public String toString() {
