@@ -137,7 +137,8 @@ public class GameScoreView extends PanelView {
         else if(from == MovementType.FOUNDATION && to == MovementType.TABLEAU) {
             SCORE += (isUndo ? 15 : -15);
         }
-        else {
+        else if(!isUndo) {
+            // Go no further if none of the scoring conditions were done, and there wasn't an undo being performed.
             return;
         }
         
