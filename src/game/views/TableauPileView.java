@@ -68,10 +68,6 @@ public class TableauPileView extends AbstractPileView implements ICollidable {
         setOpaque(true);
         setBackground(new Color(0, 128, 0));
         
-        // Set the size of the panel
-        _noCardPanelView.setSize(new Dimension(CardView.CARD_WIDTH, CardView.CARD_HEIGHT));
-        _noCardPanelView.setPreferredSize(_noCardPanelView.getSize());
-        
         // Set the background of the panel and render it
         _noCardPanelView.setBackground(Color.BLACK);
         _noCardPanelView.render();
@@ -102,6 +98,8 @@ public class TableauPileView extends AbstractPileView implements ICollidable {
         if(getIsHighlighted() && layeredPane.getComponentCount() == 0) {
             _preferences.load();
             if(_preferences.outlineDragging) {
+                _noCardPanelView.setSize(new Dimension(CardView.CARD_WIDTH, CardView.CARD_HEIGHT));
+                _noCardPanelView.setPreferredSize(_noCardPanelView.getSize());
                 add(_noCardPanelView);
                 context.setXORMode(Color.WHITE);
             }
