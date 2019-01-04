@@ -168,11 +168,11 @@ public abstract class AbstractPileView extends PanelView implements IUndoable {
     }
 
     @Override public void performBackup() {
-        
-        // Create a map and store all the components currently in this view into there.
-        for(Component comp : layeredPane.getComponents()) {
-            _previousCards.add(comp);
-        }
+
+        // Get all the cards currently in the pile view
+        List<Component> allComponents = Arrays.asList(layeredPane.getComponents());
+        Collections.reverse(allComponents);
+        _previousCards.addAll(allComponents);
         
         // Attempt to get the card that is currently being dragged.
         // Note: This is only valid in a non-outline scenario. In this scenario, the card that we are getting

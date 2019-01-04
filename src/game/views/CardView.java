@@ -532,10 +532,6 @@ public final class CardView extends PanelView implements ICollidable {
         return (isVisible() ? "[V]" : "[H]") + getViewProperties().getEntity(CardController.class).getCard().toString() + "\t[" + layer + "][" + positionWithinlayer + "]";    
     }
     
-    
-    
-    
-
     /**
      * @return The layered pane associated to this view
      */
