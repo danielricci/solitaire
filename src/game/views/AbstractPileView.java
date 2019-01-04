@@ -32,10 +32,7 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.OptionalInt;
 
 import javax.swing.JLayeredPane;
 
@@ -60,7 +57,7 @@ public abstract class AbstractPileView extends PanelView implements IUndoable {
      */
     protected final JLayeredPane layeredPane = new JLayeredPane();
 
-    private final Map<String, Object> _undoableContainer = new HashMap<String, Object>();
+    private final List<Component> _previousCards = new ArrayList<Component>();
     
     /**
      * Constructs a new instance of this class type
@@ -158,16 +155,12 @@ public abstract class AbstractPileView extends PanelView implements IUndoable {
         return components;
     }
     
+    
     @Override public void undoLastAction() {
-        
-        // Get the list of components that were previously stored
-        @SuppressWarnings("unchecked") 
-        HashMap<CardView, Integer> components = (HashMap<CardView, Integer>) _undoableContainer.get("components");
-        
         List<Component> componentsList = Arrays.asList(layeredPane.getComponents());
-        for(Map.Entry<CardView, Integer> kvp : components.entrySet()) {
-            if(!componentsList.contains(kvp.getKey())) {
-                addCard(kvp.getKey(), kvp.getValue());
+        for(Component comp : _previousCards) {
+            if(!componentsList.contains(comp)) {
+                addCard((CardView) comp);
             }
         }
         
@@ -177,32 +170,32 @@ public abstract class AbstractPileView extends PanelView implements IUndoable {
     @Override public void performBackup() {
         
         // Create a map and store all the components currently in this view into there.
-        Map<CardView, Integer> components = new HashMap<CardView, Integer>();
         for(Component comp : layeredPane.getComponents()) {
-            components.put((CardView)comp, layeredPane.getLayer(comp));
+            _previousCards.add(comp);
         }
         
-        // Calculate the highest listed layer to date
-        OptionalInt highestLayerOptional = components.values().stream().mapToInt(i -> i).max();
-        int highestLayer = -1;
-        if(highestLayerOptional.isPresent()) {
-            highestLayer = highestLayerOptional.getAsInt();
-        }
-
+        // Attempt to get the card that is currently being dragged.
+        // Note: This is only valid in a non-outline scenario. In this scenario, the card that we are getting
+        //       here is the card that was clicked on. The subsequent cards that are being dragged along with it
+        //       if any can be found in the layered pane associated to this clicked card.
         CardView cardView = AbstractFactory.getFactory(ViewFactory.class).get(GameView.class).getCardComponent();
         if(cardView != null) {
-            components.put(cardView, ++highestLayer);
+            _previousCards.add(cardView);
             
-            for(Component comp : cardView.layeredPane.getComponents()) {
-                components.put((CardView)comp,  ++highestLayer);
+            List<Component> components = Arrays.asList(cardView.layeredPane.getComponents());
+            Collections.reverse(components);
+            
+            // Add any subsequent cards below the clicked card if any
+            for(Component comp : components) {
+                _previousCards.add(comp);
             }
         }
         
-        _undoableContainer.put("components", components);
+        _previousCards.forEach(z -> System.out.println(z));
     }
 
     @Override public void clearBackup() {        
-        _undoableContainer.clear();
+        _previousCards.clear();
     }
         
     @Override public void render() {
