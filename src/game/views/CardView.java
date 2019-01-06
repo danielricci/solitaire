@@ -428,8 +428,6 @@ public final class CardView extends PanelView implements ICollidable {
                     //          that is required for this to have any meaning.
                     _cardSelectionEvents._parentLayeredPane = null;
                     
-                    IView parent = CardView.this.getParentIView();
-                    
                     // Record the component count before adding to the layered pane so that the proper
                     // layer identifier can be used.
                     //
@@ -450,7 +448,6 @@ public final class CardView extends PanelView implements ICollidable {
                     // Repaint the game view, this will fix a rendering bug where in outline mode, the status bar and
                     // the tableau view would not render properly. Look at bug #128.
                     AbstractFactory.getFactory(ViewFactory.class).get(GameView.class).repaint();
-                    
                     
                     return true;
                 }
