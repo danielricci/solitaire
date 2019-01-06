@@ -188,8 +188,7 @@ public final class CardProxyView extends PanelView {
                             _layeredPane.setLayer(proxy, j);
                             
                             // The bounds here contains `-1` because I want the border to be perfectly overlapped
-                            proxy.setBounds(new Rectangle(-1, 12 * (j + 1), cardViews.get(j).getPreferredSize().width, cardViews.get(j).getPreferredSize().height));
-                            //proxy.setBorder(proxy._border);
+                            proxy.setBounds(new Rectangle(-1, 12 * (j + 1), cardViews.get(j).getPreferredSize().width, cardViews.get(j).getPreferredSize().height + _layeredPane.getHeight()));
                         }
     
                         // Position the card at the same place where the drag was attempted from, because when you
