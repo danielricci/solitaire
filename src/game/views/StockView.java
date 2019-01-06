@@ -88,7 +88,7 @@ public final class StockView extends PanelView implements IUndoable {
                 render();
             }
         });
-        addSignalListener(BacksideCardEntity.DECK_BACKSIDE_UPDATED, new ISignalReceiver<EventArgs>() {
+        addSignal(BacksideCardEntity.DECK_BACKSIDE_UPDATED, new ISignalReceiver<EventArgs>() {
             @Override public void signalReceived(EventArgs event) {
                 _stockCardEntity.refresh();
             }

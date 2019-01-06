@@ -32,6 +32,7 @@ import java.awt.Rectangle;
 import java.util.List;
 
 import framework.api.IView;
+import framework.core.factories.AbstractFactory;
 import framework.core.factories.ViewFactory;
 import framework.core.mvc.view.PanelView;
 import framework.core.physics.ICollidable;
@@ -83,7 +84,7 @@ public class TableauPileView extends AbstractPileView implements ICollidable {
         for(int i = 0; i < cards.size(); ++i) {
             //Create the card view
             cards.get(i).setBackside(i + 1 < cards.size());
-            CardView view = ViewFactory.getFactory(ViewFactory.class).add(new CardView(cards.get(i)));
+            CardView view = AbstractFactory.getFactory(ViewFactory.class).add(new CardView(cards.get(i)));
             
             // Add the view to the layered pane
             layeredPane.add(view);

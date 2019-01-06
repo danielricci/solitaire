@@ -294,8 +294,9 @@ public final class CardView extends PanelView implements ICollidable {
         _controller = new CardController(cardModel);
         getViewProperties().setEntity(_controller);   
 
-        // Create the card proxy view
+        // Create the card proxy view and render it
         _cardProxy = new CardProxyView(this);
+        _cardProxy.render();
         
         // Add the mouse listener responsible for handling single clicks and double clicks on this card.
         // Note: This will sometimes not be called depending on if the proxy is enabled or not, since the 
@@ -309,12 +310,12 @@ public final class CardView extends PanelView implements ICollidable {
         /**
          * Listen in on events when we need to synchronize withthe online option
          */
-        addSignalListener(EVENT_OUTLINE_SYNCHRONIZE, new ISignalReceiver<EventArgs>() {
+        addSignal(EVENT_OUTLINE_SYNCHRONIZE, new ISignalReceiver<EventArgs>() {
             @Override public void signalReceived(EventArgs event) {
                 synchronizeWithOptions();                
             }
-        });
-    
+        });       
+
         // Synchronize with the options preferences.
         // 
         // Note: 
@@ -351,10 +352,6 @@ public final class CardView extends PanelView implements ICollidable {
                 add(_cardProxy);
             }   
         } 
-        
-        // TODO - Is this really necessary???
-        repaint();
-        _cardProxy.repaint();
     }
     
     /**
@@ -531,12 +528,5 @@ public final class CardView extends PanelView implements ICollidable {
         }
 
         return (isVisible() ? "[V]" : "[H]") + getViewProperties().getEntity(CardController.class).getCard().toString() + "\t[" + layer + "][" + positionWithinlayer + "]";    
-    }
-    
-    /**
-     * @return The layered pane associated to this view
-     */
-    public JLayeredPane getLayeredPane() {
-        return layeredPane;
     }
 }

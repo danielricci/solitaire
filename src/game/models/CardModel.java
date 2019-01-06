@@ -53,7 +53,7 @@ public class CardModel extends BaseModel {
     public CardModel(AbstractCardEntity cardEntity) {
         _cardEntity = cardEntity;
         
-        addSignalListener(EVENT_UPDATE_BACKSIDE, new ISignalReceiver<EventArgs>() {
+        addSignal(EVENT_UPDATE_BACKSIDE, new ISignalReceiver<EventArgs>() {
             @Override public void signalReceived(EventArgs event) {
                 OptionsPreferences preferences = new OptionsPreferences();
                 preferences.load();

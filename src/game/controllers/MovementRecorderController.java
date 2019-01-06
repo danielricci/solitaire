@@ -168,8 +168,7 @@ public class MovementRecorderController extends BaseController {
         _destination = null;
     }
     
-    @Override public void addSignalListener(ISignalListener listener) {
-        super.addSignalListener(listener);
+    public void addSignalListener(ISignalListener listener) {
         _movementModel.addListener(listener);
     }
 }

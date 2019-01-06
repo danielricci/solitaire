@@ -360,7 +360,6 @@ public final class CardProxyView extends PanelView {
         _cardView = cardView;
         getViewProperties().setEntity(cardView.getViewProperties().getEntity());
         
-        
         MouseListenerEvent mle = new MouseListenerEvent() {
             @Override public void mousePressed(MouseEvent event) {
                 super.mousePressed(event);
