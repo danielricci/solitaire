@@ -42,14 +42,13 @@ public class VegasScoreView extends ScoreView {
      * Constructs a new instance of this class type
      */
     public VegasScoreView() {
-        SCORE -= 52;
+        super(-52);
     }
     
     @Override public void updateScoreBonus(int seconds) {
-        // Do nothing
     }
     
-    @Override public void updateScoreDeckFinished() {
+    @Override public void updateScoreDeckFinished(int deckPlays) {
     }
     
     @Override public void updateScoreTimerTick() {
@@ -61,24 +60,22 @@ public class VegasScoreView extends ScoreView {
     @Override protected void updateScore(MovementType from, MovementType to, boolean isUndo) {
         long scoreBefore = SCORE;
         if(from == MovementType.TALON && to == MovementType.TABLEAU) {
-            SCORE += (isUndo ? -5 : 5);
+            addToScore(isUndo ? -5 : 5);
         }
         else if(from == MovementType.TALON && to == MovementType.FOUNDATION) {
-            SCORE += (isUndo ? -5 : 5);
+            addToScore(isUndo ? -5 : 5);
         }
         else if (from == MovementType.TABLEAU && to == MovementType.FOUNDATION) {
-            SCORE += (isUndo ? -5 : 5);
+            addToScore(isUndo ? -5 : 5);
         }
         else if(from == MovementType.FOUNDATION && to == MovementType.TABLEAU) {
-            SCORE += (isUndo ? 5 : -5);
+            addToScore(isUndo ? 5 : -5);
         }
         else {
             return;
         }
                 
-        long scoreAfter = SCORE;
-        Tracelog.log(Level.INFO, true, String.format("Score %s: Changed from %d to %d after performing move [%s] to [%s]", isUndo ? "Undo" : "Updated",scoreBefore, scoreAfter, from, to));
-        scoreValue.setText(toString());
+        Tracelog.log(Level.INFO, true, String.format("Score %s: Changed from %d to %d after performing move [%s] to [%s]", isUndo ? "Undo" : "Updated",scoreBefore, SCORE, from, to));
     }
     
     @Override public String toString() {

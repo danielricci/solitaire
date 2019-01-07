@@ -285,7 +285,7 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
      */
     public void recycleDeck() {
         // New deck has the score updated
-        AbstractFactory.getFactory(ViewFactory.class).get(ScoreView.class).updateScoreDeckFinished();
+        AbstractFactory.getFactory(ViewFactory.class).get(ScoreView.class).updateScoreDeckFinished(_deckPlays);
         
         OptionsPreferences preferences = new OptionsPreferences();
         preferences.load();

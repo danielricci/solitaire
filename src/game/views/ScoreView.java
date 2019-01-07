@@ -62,7 +62,7 @@ public class ScoreView extends PanelView {
      * 
      * Note: The score is static because in some cases the score persists to the next game, but not if the application exist
      */
-    protected static long SCORE = 0;
+    protected static long SCORE = 1000;
     
     /**
      * Constructs a new instance of this class type
@@ -71,6 +71,16 @@ public class ScoreView extends PanelView {
         this.setBackground(Color.WHITE);
         add(scoreTitle);
         add(scoreValue);  
+    }
+
+    protected ScoreView(int initialScore) {
+        this();
+        SCORE = initialScore;
+    }
+    
+    protected void addToScore(int score) {
+        SCORE = Math.max(0, SCORE + score);
+        scoreValue.setText(toString());
     }
     
     /**
@@ -81,39 +91,36 @@ public class ScoreView extends PanelView {
      */
     public void updateScoreBonus(int seconds) {
         if(seconds > 30) {
-            SCORE += (700000 / seconds);
-            scoreValue.setText(toString());
+            addToScore(700000 / seconds);
         }
     }
     
-    public void updateScoreDeckFinished() {
+    public void updateScoreDeckFinished(int deckPlays) {
         OptionsPreferences preferences = new OptionsPreferences();
         preferences.load();
         
         if(preferences.drawOption == DrawOption.THREE && preferences.scoringOption == ScoringOption.STANDARD) {
-            SCORE = Math.max(0, SCORE - 20);
+            if(deckPlays > 3) {
+                addToScore(-20);
+            }
         }
         else {
-            SCORE = Math.max(0, SCORE - 100);    
+            addToScore(-100);    
         }
-        
-        scoreValue.setText(toString());
     }
     
     /**
      * Updates the score based on a timer interval tick of the game
      */
     public void updateScoreTimerTick() {
-        SCORE = Math.max(0, SCORE - 2);
-        scoreValue.setText(toString());
+        addToScore(-2);
     }
     
     /**
      * Updates the score based on a cards' backside being revealed
      */
     public void updateScoreCardTurnOver() {
-        SCORE += 5;
-        scoreValue.setText(toString());
+        addToScore(5);
     }
     
     /**
@@ -123,19 +130,19 @@ public class ScoreView extends PanelView {
      * @param to Where the operation ended at
      */
      protected void updateScore(MovementType from, MovementType to, boolean isUndo) {
-         
+
         long scoreBefore = SCORE;
         if(from == MovementType.TALON && to == MovementType.TABLEAU) {
-            SCORE += (isUndo ? -5 : 5);
+            addToScore(isUndo ? -5 : 5);
         }
         else if(from == MovementType.TALON && to == MovementType.FOUNDATION) {
-            SCORE += (isUndo ? -10 : 10);
+            addToScore(isUndo ? -10 : 10);
         }
         else if (from == MovementType.TABLEAU && to == MovementType.FOUNDATION) {
-            SCORE += (isUndo ? -10 : 10);
+            addToScore(isUndo ? -10 : 10);
         }
         else if(from == MovementType.FOUNDATION && to == MovementType.TABLEAU) {
-            SCORE += (isUndo ? 15 : -15);
+            addToScore(isUndo ? 15 : -15);
         }
         else if(!isUndo) {
             // Go no further if none of the scoring conditions were done, and there wasn't an undo being performed.
@@ -144,21 +151,15 @@ public class ScoreView extends PanelView {
         
         // Whenever there is an undo, subtract 2 from the score
         if(isUndo) {
-            SCORE -= 2;
+            addToScore(-2);
         }
-        
-        // Normalize the score such that it is never less than 0
-        SCORE = Math.max(0,  SCORE);
-        
-        long scoreAfter = SCORE;
-        Tracelog.log(Level.INFO, true, String.format("Score %s: Changed from %d to %d after performing move [%s] to [%s]", isUndo ? "Undo" : "Updated",scoreBefore, scoreAfter, from, to));
-        
-        scoreValue.setText(toString());
+
+        Tracelog.log(Level.INFO, true, String.format("Score %s: Changed from %d to %d after performing move [%s] to [%s]", isUndo ? "Undo" : "Updated", scoreBefore, SCORE, from, to));
     }
     
     @Override public void render() {
         super.render();
-        scoreValue.setText(this.toString());
+        addToScore(0);
     }
     
     @Override public void destructor() {
