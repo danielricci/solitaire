@@ -86,7 +86,6 @@ public class OptionsMenuItem extends AbstractMenuItem {
         
         if(options.getDialogResult() == JOptionPane.OK_OPTION) {
             if(options.refreshGameRequired) {
-                Application.instance.isRestarting = true;
                 MenuBuilder.search(Application.instance.getJMenuBar(), NewGameMenuItem.class).getComponent(AbstractButton.class).doClick();
             }
             else {
