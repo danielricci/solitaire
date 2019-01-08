@@ -29,6 +29,7 @@ import java.util.logging.Level;
 
 import framework.utils.logging.Tracelog;
 
+import game.config.OptionsPreferences;
 import game.models.MovementModel.MovementType;
 
 /**
@@ -42,7 +43,19 @@ public class VegasScoreView extends ScoreView {
      * Constructs a new instance of this class type
      */
     public VegasScoreView() {
-        super(-52);
+        OptionsPreferences preferences = new OptionsPreferences();
+        preferences.load();
+        if(preferences.cumulativeScore) {
+            SCORE += -52;            
+        }
+        else {
+            SCORE = -52;
+        }
+    }
+    
+    @Override protected void addToScore(int score) {
+        SCORE += score;
+        scoreValue.setText(toString());
     }
     
     @Override public void updateScoreBonus(int seconds) {
@@ -76,6 +89,15 @@ public class VegasScoreView extends ScoreView {
         }
                 
         Tracelog.log(Level.INFO, true, String.format("Score %s: Changed from %d to %d after performing move [%s] to [%s]", isUndo ? "Undo" : "Updated",scoreBefore, SCORE, from, to));
+    }
+    
+
+    @Override public void destructor() {
+        OptionsPreferences preferences = new OptionsPreferences();
+        preferences.load();
+        if(!preferences.cumulativeScore) {
+            super.destructor();
+        }
     }
     
     @Override public String toString() {

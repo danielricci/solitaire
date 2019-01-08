@@ -190,8 +190,6 @@ public abstract class AbstractPileView extends PanelView implements IUndoable {
                 _previousCards.add(comp);
             }
         }
-        
-        _previousCards.forEach(z -> System.out.println(z));
     }
 
     @Override public void clearBackup() {        
