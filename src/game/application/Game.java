@@ -125,6 +125,9 @@ public final class Game extends Application {
             
             // Remove everything from the application UI
             Application.instance.getContentPane().removeAll();
+            
+            // Indicate that the application is no longer in a restart state
+            isRestarting = false;
         }
         
         // Spawn a new game view and render its contents

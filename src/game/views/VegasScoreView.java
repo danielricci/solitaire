@@ -27,6 +27,7 @@ package game.views;
 import java.awt.Color;
 import java.util.logging.Level;
 
+import framework.core.system.Application;
 import framework.utils.logging.Tracelog;
 
 import game.config.OptionsPreferences;
@@ -95,7 +96,7 @@ public class VegasScoreView extends ScoreView {
     @Override public void destructor() {
         OptionsPreferences preferences = new OptionsPreferences();
         preferences.load();
-        if(!preferences.cumulativeScore) {
+        if(!preferences.cumulativeScore || Application.instance.isRestarting) {
             super.destructor();
         }
     }
