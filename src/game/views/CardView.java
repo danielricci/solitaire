@@ -501,11 +501,11 @@ public final class CardView extends PanelView implements ICollidable {
     }
     
     @Override public void setBounds(int x, int y, int width, int height) {
-        // HACK
         // Prevent an update of the UI while the card is dragging to reposition itself at the coordinates (8,5)
-        if(x == 8 && y == 5) {
+        if((x == 8 || x == 10) && y == 5) {
             return;
         }
+
         super.setBounds(x, y, width, height);
     }
         
