@@ -67,7 +67,9 @@ import resources.LocalizationStrings;
  */
 public final class CardProxyView extends PanelView {
 
-    // TODO Get rid of this and find out the root cause to why the component is being displayed at the wrong initial coordinate
+    /**
+     * The current bounds that have been set to this proxy
+     */
     private Rectangle _bounds = null;
     
     /**
@@ -194,11 +196,9 @@ public final class CardProxyView extends PanelView {
                         // Position the card at the same place where the drag was attempted from, because when you
                         // add to the application it will position the component at the origin which is not desired
                         Point initialLocation = _cardView.getLocation();
-                        // TODO Get rid of this and find out the root cause to why the component is being displayed at the wrong initial coordinate
-                        _bounds = new Rectangle(_cardView.getParent().getParent().getLocation().x + initialLocation.x + 1, _cardView.getParent().getParent().getLocation().y + initialLocation.y + 1, _layeredPane.getWidth(), _layeredPane.getHeight());
                         
-                        // Set the border of this proxy
-                        //setBorder(_border);
+                        // Update the bounds of the card view
+                        _bounds = new Rectangle(_cardView.getParent().getParent().getLocation().x + initialLocation.x + 1, _cardView.getParent().getParent().getLocation().y + initialLocation.y + 1, _layeredPane.getWidth(), _layeredPane.getHeight());
                         
                         // Get a reference to the game view and status view, and add the card into the proper
                         // z-order so that it appears underneath the status bar, but over everything else in the game
@@ -423,11 +423,11 @@ public final class CardProxyView extends PanelView {
     }
     
     @Override public void setBounds(int x, int y, int width, int height) {
-        // TODO Get rid of this and find out the root cause to why the component is being displayed at the wrong initial coordinate
+        // Prevent issues related to the view being updated because of other components, causing this component
+        // to be position improperly.
         if(_bounds != null && !_dragListener.isDragging()) {
             super.setBounds(_bounds.x, _bounds.y, _bounds.width, _bounds.height);
         }
-        // TODO Get rid of this and find out the root cause to why the component keeps going back to this position on tick of the timer
         else if(x != 10 && y != 5) {
             super.setBounds(x, y, width, height);
         }

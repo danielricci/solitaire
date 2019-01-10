@@ -159,14 +159,6 @@ public final class CardView extends PanelView implements ICollidable {
                 return;
             }
             
-            // Ensure that a valid parent was set on the mouse pressed before continuing
-            // TODO - can this be removed, investigate, this would involve a class that extends
-            // the mouse click, we did this i think because adding a mouse even when mouse down 
-            // occurs, releasing the mouse would cause this to happen.
-            if(_parentLayeredPane == null) {
-                return;
-            }
-           
             // If there is a valid collider, set that as the new parent
             if(_collisionListener.getCollision() != null) {
                 ICollidable collision = _collisionListener.getCollision();
@@ -427,14 +419,6 @@ public final class CardView extends PanelView implements ICollidable {
                     // Halt any drag events that could occur
                     draggableListener.stopDragEvent();
                     
-                    // Hack:    Update the card selection event because there are cases where the mouse up event would reset all that is done here
-                    // Ex:      Double clicking on an ace that is in the pile view (outline mode off) will cause the card to go to a foundation
-                    //          on mouse down (the second mouse down), however once the mouse button is released, the mouseReleased code would
-                    //          have thought that there was no valid move, thus putting the card back to the parent layered pane that was
-                    //          originally recorded when the first mouse down was initiated. There is a guard within the mouse released code
-                    //          that is required for this to have any meaning.
-                    _cardSelectionEvents._parentLayeredPane = null;
-                    
                     // Record the component count before adding to the layered pane so that the proper
                     // layer identifier can be used.
                     //
@@ -518,7 +502,6 @@ public final class CardView extends PanelView implements ICollidable {
     
     @Override public void setBounds(int x, int y, int width, int height) {
         // HACK
-        // TODO Need to find a way to prevent this from the root cause
         // Prevent an update of the UI while the card is dragging to reposition itself at the coordinates (8,5)
         if(x == 8 && y == 5) {
             return;
