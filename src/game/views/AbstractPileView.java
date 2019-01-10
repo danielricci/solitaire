@@ -28,6 +28,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -50,13 +51,16 @@ public abstract class AbstractPileView extends PanelView implements IUndoable {
     /**
      * Specifies the offset of each card within this view
      */
-    public int CARD_OFFSET = 12;
+    @Deprecated public int CARD_OFFSET = 12;
     
     /**
      * The layered pane that holds the list of cards
      */
     protected final JLayeredPane layeredPane = new JLayeredPane();
 
+    /**
+     * The list of cards that were previously moved, used for undo purposes
+     */
     private final List<Component> _previousCards = new ArrayList<Component>();
     
     /**
@@ -117,28 +121,28 @@ public abstract class AbstractPileView extends PanelView implements IUndoable {
         // Reverse the list because layered panes associate objects closer to layer 0 as being closer to the screen.
         Collections.reverse(components);
 
-        // Calculate the number of component withint this pile to use
-        // as the layer identifier offset
-        int offsetY = layeredPane.getComponents().length;
-        
         // Add the cards to this pile view
         for(Component comp : components) {
             layeredPane.add(comp);
             layeredPane.setLayer(comp, layerPosition);
-            comp.setBounds(new Rectangle(
-                0, 
-                this.CARD_OFFSET * offsetY,  
-                comp.getPreferredSize().width, 
-                comp.getPreferredSize().height)
-            );
-            
-            ++offsetY;
+            Point offset = getCardOffset((CardView)comp);
+            comp.setBounds(new Rectangle(offset.x, offset.y, comp.getPreferredSize().width, comp.getPreferredSize().height));
+
             ++layerPosition;
         }
         
         parentCardView.repaint();
         repaint();
     }
+    
+    /**
+     * Gets the offset that should be set to the specified card view
+     *
+     * @param cardView The cardview
+     * 
+     * @return The offset that this card should be at
+     */
+    protected abstract Point getCardOffset(CardView cardView);
     
     /**
      * @return The components associated to the layered pane of this view, grouped by layer identifier.
@@ -154,7 +158,6 @@ public abstract class AbstractPileView extends PanelView implements IUndoable {
         
         return components;
     }
-    
     
     @Override public void undoLastAction() {
         List<Component> componentsList = Arrays.asList(layeredPane.getComponents());

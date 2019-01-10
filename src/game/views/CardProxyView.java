@@ -251,7 +251,8 @@ public final class CardProxyView extends PanelView {
                 int initialSize = pileViewCollider.layeredPane.getComponents().length;
                 pileViewCollider.layeredPane.add(_cardView);
                 pileViewCollider.layeredPane.setLayer(_cardView, initialSize);
-                _cardView.setBounds(new Rectangle(0, pileViewCollider.CARD_OFFSET * initialSize, _cardView.getPreferredSize().width, _cardView.getPreferredSize().height));
+                Point offset = pileViewCollider.getCardOffset(_cardView);
+                _cardView.setBounds(new Rectangle(offset.x, offset.y, _cardView.getPreferredSize().width, _cardView.getPreferredSize().height));
 
                 // Increment the initial size to prepare for the other cards to be inserted
                 ++initialSize;
@@ -266,7 +267,8 @@ public final class CardProxyView extends PanelView {
                     pileViewCollider.layeredPane.setLayer(proxy._cardView, initialSize + i);
                     proxy._cardView.add(proxy);
                     proxy.setBorder(null);
-                    proxy._cardView.setBounds(new Rectangle(0, pileViewCollider.CARD_OFFSET * (i + initialSize), proxy._cardView.getPreferredSize().width, proxy._cardView.getPreferredSize().height));
+                    Point offsetProxy = pileViewCollider.getCardOffset(proxy._cardView);
+                    proxy._cardView.setBounds(new Rectangle(offsetProxy.x, offsetProxy.y, proxy._cardView.getPreferredSize().width, proxy._cardView.getPreferredSize().height));
                 }
                 _layeredPane.removeAll();
                 pileViewCollider.repaint();

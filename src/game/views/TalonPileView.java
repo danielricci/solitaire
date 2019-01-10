@@ -27,6 +27,7 @@ package game.views;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -711,5 +712,10 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
 
     @Override public void clearBackup() {
         _undoableCard = null;
+    }
+
+    @Override protected Point getCardOffset(CardView cardView) {
+        // Handled by setBounds
+        return new Point(0, 0);
     }
 }

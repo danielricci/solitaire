@@ -28,14 +28,19 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.Rectangle;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
 
 import framework.api.IView;
 import framework.core.factories.AbstractFactory;
 import framework.core.factories.ViewFactory;
 import framework.core.mvc.view.PanelView;
 import framework.core.physics.ICollidable;
+import framework.utils.logging.Tracelog;
 
 import game.config.OptionsPreferences;
 import game.controllers.CardController;
@@ -47,6 +52,16 @@ import game.models.CardModel;
  * @author Daniel Ricci <thedanny09@icloud.com>
  */
 public class TableauPileView extends AbstractPileView implements ICollidable {
+    
+    /**
+     * The backside offset that the card should assume
+     */
+    private final int CARD_OFFSET_BACKSIDE = 3;
+    
+    /**
+     * The offset for each card when in this view
+     */
+    private final int CARD_OFFSET = 12;
     
     /**
      * This panel is used as a placeholder within this view when there are no cards to be shown
@@ -91,8 +106,9 @@ public class TableauPileView extends AbstractPileView implements ICollidable {
             layeredPane.setLayer(view, i);
             
             // Set the bounds of the view within the layered pane
-            view.setBounds(new Rectangle(0, CARD_OFFSET * i, view.getPreferredSize().width, view.getPreferredSize().height));
-        } 
+            Point offset = getCardOffset(view);
+            view.setBounds(new Rectangle(offset.x, offset.y, view.getPreferredSize().width, view.getPreferredSize().height));
+        }
     }
     
     @Override public void preProcessGraphics(Graphics context) {
@@ -156,4 +172,34 @@ public class TableauPileView extends AbstractPileView implements ICollidable {
         
         return false;
     }
+
+    @Override protected Point getCardOffset(CardView cardView) {
+        
+        List<Component> cardComponents = Arrays.asList(layeredPane.getComponents());
+        Collections.reverse(cardComponents);
+        int index = cardComponents.indexOf(cardView);
+        if(index == -1) {
+            Tracelog.log(Level.SEVERE, true, "Cannot find the offset for the card " + cardView);
+            return new Point();
+        }
+        
+        // If there is only one card then it will have an offset of 0
+        if(index == 0) {
+            return new Point();
+        }
+       
+        // Get a reference to the previous card and it's bounds
+        CardView previousCard = (CardView)cardComponents.get(index - 1);
+        Rectangle previousCardBounds = previousCard.getBounds();
+        
+        // If the card before this one has it's backside showing, then it should be
+        // positioned 3 pixels lower than that card
+        if(previousCard.isBacksideShowing()) {
+            return new Point(0, previousCardBounds.y + CARD_OFFSET_BACKSIDE);
+        }
+        // Subsequent cards should be 12 pixels down from the previous card
+        else {
+            return new Point(0, previousCardBounds.y + CARD_OFFSET);
+        }
+    }   
 }

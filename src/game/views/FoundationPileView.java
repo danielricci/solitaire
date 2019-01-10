@@ -28,6 +28,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Point;
 
 import javax.swing.AbstractButton;
 import javax.swing.JOptionPane;
@@ -64,8 +65,6 @@ public final class FoundationPileView extends AbstractPileView implements IColli
         // must be set this way to achieve the proper xor effect
         this.setBackground(Color.BLACK);
         this.setOpaque(true);
-        
-        CARD_OFFSET = 0;
         addRenderableContent(new FoundationCardEntity());
     }
 
@@ -95,22 +94,26 @@ public final class FoundationPileView extends AbstractPileView implements IColli
 
     @Override public void addCard(CardView cardView) {
 
-      super.addCard(cardView);
+        super.addCard(cardView);
         
-      // Verify if there is a game winner
-      if(GameView.IsGameWinner()) {
-          // Stop the game timer
-          TimerView gameTimerView = AbstractFactory.getFactory(ViewFactory.class).get(TimerView.class);
-          gameTimerView.stop();
-          
-          // Show the dialog indicating that game has won
-          if(JOptionPane.showConfirmDialog(null, Localization.instance().getLocalizedString(LocalizationStrings.GAME_OVER), Localization.instance().getLocalizedString(LocalizationStrings.GAME_OVER_HEADER), JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE) == JOptionPane.YES_OPTION) { 
-              MenuBuilder.search(Application.instance.getJMenuBar(), NewGameMenuItem.class).getComponent(AbstractButton.class).doClick();
-          }
-          else {
-              MenuBuilder.search(Application.instance.getJMenuBar(), ExitMenuItem.class).getComponent(AbstractButton.class).doClick();
-          }
-      }
+        // Verify if there is a game winner
+        if(GameView.IsGameWinner()) {
+        
+            // Stop the game timer
+            TimerView gameTimerView = AbstractFactory.getFactory(ViewFactory.class).get(TimerView.class);
+            gameTimerView.stop();
+      
+            // Show the dialog indicating that game has won
+            if(JOptionPane.showConfirmDialog(null, Localization.instance().getLocalizedString(LocalizationStrings.GAME_OVER), Localization.instance().getLocalizedString(LocalizationStrings.GAME_OVER_HEADER), JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE) == JOptionPane.YES_OPTION) { 
+                MenuBuilder.search(Application.instance.getJMenuBar(), NewGameMenuItem.class).getComponent(AbstractButton.class).doClick();
+            }
+            else {
+                MenuBuilder.search(Application.instance.getJMenuBar(), ExitMenuItem.class).getComponent(AbstractButton.class).doClick();
+            }
+        }
+    }
 
+    @Override protected Point getCardOffset(CardView cardView) {
+        return new Point(0, 0);
     }
 }

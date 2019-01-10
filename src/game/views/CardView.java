@@ -192,6 +192,13 @@ public final class CardView extends PanelView implements ICollidable {
     }
 
     /**
+     * @return TRUE of the backside is showing, FALSE otherwise
+     */
+    public boolean isBacksideShowing() {
+        return _controller.getCard().getIsBackside();
+    }
+    
+    /**
      * This mouse adapter handles events when the card is pressed with the mouse
      */
     private MouseListenerEvent _mouseActionListener = new MouseListenerEvent() {
