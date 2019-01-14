@@ -428,21 +428,16 @@ public final class CardView extends PanelView implements ICollidable {
                     
                     AbstractFactory.getFactory(ControllerFactory.class).get(MovementRecorderController.class).recordMovement((AbstractPileView)CardView.this.getParentIView(), foundationView);
                     
-                    // Halt any drag events that could occur
+                    // Stop the current drag listener of this card from doing anything, so that things
+                    // like drag will stop being processed
                     draggableListener.stopDragEvent();
-                    
-                    // Record the component count before adding to the layered pane so that the proper
-                    // layer identifier can be used.
-                    //
-                    // Note: The layer identifier is 0th based
-                    int componentCount = foundationView.layeredPane.getComponentCount();
                     
                     // Add to the layered pane destination
                     foundationView.layeredPane.add(CardView.this);
-                    foundationView.layeredPane.setLayer(CardView.this, componentCount);
                     
                     // Set the proper bounds of the component
-                    CardView.this.setBounds(new Rectangle(0, 0, CardView.this.getPreferredSize().width, CardView.this.getPreferredSize().height));
+                    Point offset = foundationView.getCardOffset(CardView.this);
+                    CardView.this.setBounds(new Rectangle(offset.x, offset.y, CardView.this.getPreferredSize().width, CardView.this.getPreferredSize().height));
                                         
                     // Repaint the components
                     layeredPane.repaint();
