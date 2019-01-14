@@ -25,6 +25,7 @@
 package game.views;
 
 import java.awt.Dimension;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import framework.communication.internal.signal.ISignalReceiver;
@@ -34,6 +35,7 @@ import framework.core.factories.AbstractFactory;
 import framework.core.factories.ViewFactory;
 import framework.core.mvc.view.PanelView;
 import framework.utils.MouseListenerEvent;
+import framework.utils.MouseListenerEvent.SupportedActions;
 
 import game.entities.BacksideCardEntity;
 import game.entities.StockCardEntity;
@@ -51,13 +53,13 @@ public final class StockView extends PanelView implements IUndoable {
      */
     public StockView() {
         setOpaque(false);
-        addMouseListener(new MouseListenerEvent() {
+        addMouseListener(new MouseAdapter() {
             @Override public void mousePressed(MouseEvent event) {
                 AbstractFactory.getFactory(ViewFactory.class).get(TimerView.class).startGameTimer();
                 removeMouseListener(this);
             }
         });
-        addMouseListener(new MouseListenerEvent() {
+        addMouseListener(new MouseListenerEvent(SupportedActions.LEFT) {
             @Override public void mousePressed(MouseEvent event) {
                 
                 super.mousePressed(event);

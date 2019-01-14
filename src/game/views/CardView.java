@@ -30,6 +30,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Arrays;
 import java.util.Collections;
@@ -53,6 +54,7 @@ import framework.core.mvc.view.layout.DragListener;
 import framework.core.physics.CollisionListener;
 import framework.core.physics.ICollidable;
 import framework.utils.MouseListenerEvent;
+import framework.utils.MouseListenerEvent.SupportedActions;
 import framework.utils.logging.Tracelog;
 
 import game.config.OptionsPreferences;
@@ -80,6 +82,13 @@ public final class CardView extends PanelView implements ICollidable {
          * The parent layer pane
          */
         private JLayeredPane _parentLayeredPane;
+        
+        /**
+         * Constructs a new instance of this class type
+         */
+        public CardSelectionEvents() {
+            super(SupportedActions.LEFT);
+        }
         
         @Override public void mousePressed(MouseEvent event) {
 
@@ -193,9 +202,8 @@ public final class CardView extends PanelView implements ICollidable {
     /**
      * This mouse adapter handles events when the card is pressed with the mouse
      */
-    private MouseListenerEvent _mouseActionListener = new MouseListenerEvent() {
+    private MouseListenerEvent _mouseActionListener = new MouseListenerEvent(SupportedActions.LEFT) {
         @Override public void mousePressed(MouseEvent event) {
-            
             super.mousePressed(event);
             if(event.isConsumed()) {
                 return;
@@ -204,12 +212,7 @@ public final class CardView extends PanelView implements ICollidable {
             if(!isEnabled()) {
                 return;
             }
-            
-            TimerView gameTimerView = AbstractFactory.getFactory(ViewFactory.class).get(TimerView.class);
-            if(gameTimerView != null) {
-                gameTimerView.startGameTimer();
-            }
-            
+
             if(CardView.this.getParent().getComponents()[0].equals(CardView.this)) {
                 if(event.getClickCount() == 1) {
                     uncoverBackside();
@@ -306,6 +309,15 @@ public final class CardView extends PanelView implements ICollidable {
         // Note: This mouse listener should be before any other mouse listener within this class
         addMouseListener(_mouseActionListener);
 
+        addMouseListener(new MouseAdapter() {
+            @Override public void mousePressed(MouseEvent e) {
+                TimerView gameTimerView = AbstractFactory.getFactory(ViewFactory.class).get(TimerView.class);
+                if(gameTimerView != null) {
+                    gameTimerView.startGameTimer();
+                }
+            }
+        });
+        
         /**
          * Listen in on events when we need to synchronize withthe online option
          */

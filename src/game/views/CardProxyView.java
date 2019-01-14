@@ -28,6 +28,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.util.Arrays;
@@ -50,6 +51,7 @@ import framework.core.physics.CollisionListener;
 import framework.core.physics.ICollidable;
 import framework.core.system.Application;
 import framework.utils.MouseListenerEvent;
+import framework.utils.MouseListenerEvent.SupportedActions;
 import framework.utils.globalisation.Localization;
 
 import game.controllers.MovementRecorderController;
@@ -128,6 +130,10 @@ public final class CardProxyView extends PanelView {
      *
      */
     private class CardSelectionEvents extends MouseListenerEvent {
+        
+        public CardSelectionEvents() {
+            super(SupportedActions.LEFT);
+        }
         
         @Override public void mousePressed(MouseEvent event) {
 
@@ -360,17 +366,21 @@ public final class CardProxyView extends PanelView {
         // Set the controller of this proxy to the same controller of the specified card
         _cardView = cardView;
         getViewProperties().setEntity(cardView.getViewProperties().getEntity());
+
+        addMouseListener(new MouseAdapter() {
+            @Override public void mousePressed(MouseEvent e) {
+                TimerView gameTimerView = AbstractFactory.getFactory(ViewFactory.class).get(TimerView.class);
+                if(gameTimerView != null) {
+                    gameTimerView.startGameTimer();
+                }
+            }
+        });
         
-        MouseListenerEvent mle = new MouseListenerEvent() {
+        MouseListenerEvent mle = new MouseListenerEvent(SupportedActions.LEFT) {
             @Override public void mousePressed(MouseEvent event) {
                 super.mousePressed(event);
                 if(event.isConsumed()) {
                     return;
-                }
-                
-                TimerView gameTimerView = AbstractFactory.getFactory(ViewFactory.class).get(TimerView.class);
-                if(gameTimerView != null) {
-                    gameTimerView.startGameTimer();
                 }
             }
             

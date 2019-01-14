@@ -43,6 +43,7 @@ import framework.core.factories.ViewFactory;
 import framework.core.mvc.view.PanelView;
 import framework.core.physics.ICollidable;
 import framework.utils.MouseListenerEvent;
+import framework.utils.MouseListenerEvent.SupportedActions;
 import framework.utils.logging.Tracelog;
 
 import game.config.OptionsPreferences;
@@ -183,7 +184,7 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
         
         for(int i = 0, layer = 0; i < cards.size(); ++i) {
             CardView cardView = AbstractFactory.getFactory(ViewFactory.class).add(new CardView(cards.get(i)));
-            MouseListenerEvent adapter = new MouseListenerEvent() {
+            MouseListenerEvent adapter = new MouseListenerEvent(SupportedActions.LEFT) {
                 @Override public void mousePressed(MouseEvent event) {
                     
                     super.mousePressed(event);
