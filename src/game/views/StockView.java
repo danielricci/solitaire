@@ -28,8 +28,6 @@ import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-import javax.swing.SwingUtilities;
-
 import framework.communication.internal.signal.ISignalReceiver;
 import framework.communication.internal.signal.arguments.EventArgs;
 import framework.communication.internal.signal.arguments.ViewEventArgs;
