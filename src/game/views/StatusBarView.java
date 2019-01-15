@@ -76,16 +76,6 @@ public final class StatusBarView extends PanelView {
             @Override public void mousePressed(MouseEvent event) {
             }
         });
-    
-        AbstractFactory.getFactory(ViewFactory.class).get(GameView.class).addMouseListener(new MouseAdapter() {
-            @Override public void mousePressed(MouseEvent event) {
-                OptionsPreferences preferences = new OptionsPreferences();
-                preferences.load();
-                if(preferences.timedGame) {
-                    _gameTimerView.startGameTimer();
-                }
-            }
-        });
         
         // Menu Descrition
         _menuDescription.setBorder(new EmptyBorder(0, 5, 0, 0));

@@ -26,8 +26,6 @@ package game.application;
 
 import java.awt.Dimension;
 import java.awt.EventQueue;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.List;
@@ -52,10 +50,8 @@ import game.menu.OptionsMenuItem;
 import game.menu.UndoMenuItem;
 import game.views.FoundationPileView;
 import game.views.GameView;
-import game.views.StatusBarView;
 import game.views.TableauPileView;
 import game.views.TalonPileView;
-import game.views.ViewHelper;
 
 import resources.LocalizationStrings;
 
@@ -92,9 +88,6 @@ public final class Game extends Application {
                         for(int i = foundationViews.size() - 1; i >= 0; --i) {
                             System.out.println(foundationViews.get(i));
                         }
-                    }
-                    else if(event.getKeyCode() == KeyEvent.VK_F3) {
-                        ViewHelper.PerformCardsAutomove();
                     }
                 }
             });
@@ -137,21 +130,7 @@ public final class Game extends Application {
         // Spawn a new game view and render its contents
         GameView gameView = AbstractFactory.getFactory(ViewFactory.class).add(new GameView(), true);
         Application.instance.setContentPane(gameView);
-        
-        StatusBarView statusBarView = AbstractFactory.getFactory(ViewFactory.class).add(new StatusBarView(), true);
-        GridBagConstraints barConstraints = new GridBagConstraints(); 
-        barConstraints.anchor = GridBagConstraints.SOUTH;
-        barConstraints.gridx = 0;
-        barConstraints.gridy = 1;
-        barConstraints.fill = GridBagConstraints.HORIZONTAL;
-        barConstraints.weightx = 1.0;
-        barConstraints.weighty = 1.0;
-        barConstraints.gridwidth = 7;
-        barConstraints.insets = new Insets(0, -2, 0, -2);
-        
-        gameView.add(statusBarView, barConstraints, 0);
         gameView.render();
-
     }
     
     @Override protected void onBeforeEngineDataInitialized() {

@@ -29,6 +29,8 @@ import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +39,7 @@ import framework.core.factories.ControllerFactory;
 import framework.core.factories.ViewFactory;
 import framework.core.mvc.view.PanelView;
 
+import game.config.OptionsPreferences;
 import game.controllers.CardController;
 import game.controllers.MovementRecorderController;
 import game.models.CardModel;
@@ -55,7 +58,7 @@ public final class GameView extends PanelView {
     public GameView() {
         this.setLayout(new GridBagLayout());
         this.setBackground(new Color(0, 128, 0));
-    
+        
         // Configure constraint initial values
         final int _rowSize = 2;
         final int _columnSize = 7;
@@ -127,6 +130,31 @@ public final class GameView extends PanelView {
                 }
             }
         }
+        
+        addStatusBarView();
+        addMouseListener(new MouseAdapter() {
+            @Override public void mousePressed(MouseEvent event) {
+                OptionsPreferences preferences = new OptionsPreferences();
+                preferences.load();
+                if(preferences.timedGame) {
+                    AbstractFactory.getFactory(ViewFactory.class).get(TimerView.class).startGameTimer();
+                }
+            }
+        });
+    }
+    
+    private void addStatusBarView() {
+        StatusBarView statusBarView = AbstractFactory.getFactory(ViewFactory.class).add(new StatusBarView(), true);
+        GridBagConstraints barConstraints = new GridBagConstraints(); 
+        barConstraints.anchor = GridBagConstraints.SOUTH;
+        barConstraints.gridx = 0;
+        barConstraints.gridy = 1;
+        barConstraints.fill = GridBagConstraints.HORIZONTAL;
+        barConstraints.weightx = 1.0;
+        barConstraints.weighty = 1.0;
+        barConstraints.gridwidth = 7;
+        barConstraints.insets = new Insets(0, -2, 0, -2);
+        add(statusBarView, barConstraints, 0);
     }
     
     public CardView getCardComponent() {
