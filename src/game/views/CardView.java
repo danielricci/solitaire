@@ -433,11 +433,7 @@ public final class CardView extends PanelView implements ICollidable {
                     draggableListener.stopDragEvent();
                     
                     // Add to the layered pane destination
-                    foundationView.layeredPane.add(CardView.this);
-                    
-                    // Set the proper bounds of the component
-                    Point offset = foundationView.getCardOffset(CardView.this);
-                    CardView.this.setBounds(new Rectangle(offset.x, offset.y, CardView.this.getPreferredSize().width, CardView.this.getPreferredSize().height));
+                    foundationView.addCard(CardView.this);
                                         
                     // Repaint the components
                     layeredPane.repaint();
