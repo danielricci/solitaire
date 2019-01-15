@@ -92,7 +92,13 @@ public abstract class AbstractPileView extends PanelView implements IUndoable {
         if(layeredPane.getComponentCount() == 0) {
             return null;
         }
-        return (CardView)layeredPane.getComponents()[0];
+        
+        Component comp = layeredPane.getComponents()[0];
+        if(!(comp instanceof CardView)) {
+            return null;
+        }
+        
+        return (CardView)comp;
     }
         
     /**

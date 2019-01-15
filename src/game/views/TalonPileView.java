@@ -707,8 +707,14 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
             cardView = (CardView) layeredPane.getComponentsInLayer(layeredPane.highestLayer())[0];
         }
         
+        // If no card was specified and a backup is required, take the top most
+        // card. This can only happen if an automove occurs
+        if(_lastCardInteracted == null) {
+            _lastCardInteracted = new TalonCardReference(getLastCard());
+        }
+        
         // Set the undoable card as the card that can be undone
-        _undoableCard = new TalonCardReference(cardView, _lastCardInteracted.layer);
+        _undoableCard = new TalonCardReference(cardView, _lastCardInteracted.layer);            
     }
 
     @Override public void clearBackup() {

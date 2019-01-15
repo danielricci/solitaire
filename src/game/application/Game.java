@@ -55,6 +55,7 @@ import game.views.GameView;
 import game.views.StatusBarView;
 import game.views.TableauPileView;
 import game.views.TalonPileView;
+import game.views.ViewHelper;
 
 import resources.LocalizationStrings;
 
@@ -91,6 +92,9 @@ public final class Game extends Application {
                         for(int i = foundationViews.size() - 1; i >= 0; --i) {
                             System.out.println(foundationViews.get(i));
                         }
+                    }
+                    else if(event.getKeyCode() == KeyEvent.VK_F3) {
+                        ViewHelper.PerformCardsAutomove();
                     }
                 }
             });
