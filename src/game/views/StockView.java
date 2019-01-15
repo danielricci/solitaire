@@ -28,6 +28,8 @@ import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import javax.swing.SwingUtilities;
+
 import framework.communication.internal.signal.ISignalReceiver;
 import framework.communication.internal.signal.arguments.EventArgs;
 import framework.communication.internal.signal.arguments.ViewEventArgs;
@@ -54,7 +56,7 @@ public final class StockView extends PanelView implements IUndoable {
     public StockView() {
         setOpaque(false);
         
-        //ViewHelper.registerForCardsAutoMove(this);
+        ViewHelper.registerForCardsAutoMove(this);
         
         addMouseListener(new MouseAdapter() {
             @Override public void mousePressed(MouseEvent event) {
@@ -67,10 +69,10 @@ public final class StockView extends PanelView implements IUndoable {
             @Override public void mousePressed(MouseEvent event) {
                 
                 super.mousePressed(event);
-                if(event.isConsumed()) {
+                if(getIsConsumed()) {
                     return;
                 }
-                
+
                 TalonPileView talonView = AbstractFactory.getFactory(ViewFactory.class).get(TalonPileView.class);
                 talonView.cycleNextHand();
                 

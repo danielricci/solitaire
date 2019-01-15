@@ -46,7 +46,7 @@ public class ViewHelper {
         view.getContainerClass().addMouseListener(new MouseListenerEvent(SupportedActions.RIGHT) {
             @Override public void mousePressed(MouseEvent event) {
                 super.mousePressed(event);
-                if(event.isConsumed()) {
+                if(this.getIsConsumed()) {
                     return;
                 }
                 if(SwingUtilities.isLeftMouseButton(event)) {
