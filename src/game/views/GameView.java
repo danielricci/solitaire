@@ -138,9 +138,12 @@ public final class GameView extends PanelView {
                 preferences.load();
                 if(preferences.timedGame) {
                     AbstractFactory.getFactory(ViewFactory.class).get(TimerView.class).startGameTimer();
+                    removeMouseListener(this);
                 }
             }
         });
+        
+        ViewHelper.registerForCardsAutoMove(this);
     }
     
     private void addStatusBarView() {

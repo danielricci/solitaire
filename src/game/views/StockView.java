@@ -53,12 +53,16 @@ public final class StockView extends PanelView implements IUndoable {
      */
     public StockView() {
         setOpaque(false);
+        
+        //ViewHelper.registerForCardsAutoMove(this);
+        
         addMouseListener(new MouseAdapter() {
             @Override public void mousePressed(MouseEvent event) {
                 AbstractFactory.getFactory(ViewFactory.class).get(TimerView.class).startGameTimer();
                 removeMouseListener(this);
             }
         });
+        
         addMouseListener(new MouseListenerEvent(SupportedActions.LEFT) {
             @Override public void mousePressed(MouseEvent event) {
                 
@@ -90,6 +94,7 @@ public final class StockView extends PanelView implements IUndoable {
                 render();
             }
         });
+        
         addSignal(BacksideCardEntity.DECK_BACKSIDE_UPDATED, new ISignalReceiver<EventArgs>() {
             @Override public void signalReceived(EventArgs event) {
                 _stockCardEntity.refresh();

@@ -24,51 +24,69 @@
 
 package game.views;
 
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.swing.SwingUtilities;
+
+import framework.api.IView;
 import framework.core.factories.AbstractFactory;
 import framework.core.factories.ViewFactory;
+import framework.utils.MouseListenerEvent;
+import framework.utils.MouseListenerEvent.SupportedActions;
 
 /**
  * @author Daniel Ricci <thedanny09@icloud.com>
  */
 public class ViewHelper {
-    public static void PerformCardsAutomove() {
-        
-        ViewFactory viewFactory = AbstractFactory.getFactory(ViewFactory.class);
-        List<CardView> cards = new ArrayList<CardView>();
-        
-        // Talon
-        CardView talonCard = viewFactory.get(TalonPileView.class).getLastCard();
-        if(talonCard != null) {
-            cards.add(talonCard);    
-        }
-        
-        // Tableau
-        List<TableauPileView> tableauPileViews = viewFactory.getAll(TableauPileView.class);
-        Collections.reverse(tableauPileViews);
-        for(TableauPileView view : tableauPileViews) {
-            CardView card = view.getLastCard();
-            if(card != null && !card.isBacksideShowing()) {
-                cards.add(card);
-            }
-        }
-        
-        while(cards.size() > 0) {
-            boolean keepGoing = false;
-            for(int i = 0; i < cards.size(); ++i) {
-                if(cards.get(i).performCardAutoMovement()) {
-                    cards.remove(i);
-                    keepGoing = true;
-                    break;
+    
+    public static void registerForCardsAutoMove(IView view) {
+        view.getContainerClass().addMouseListener(new MouseListenerEvent(SupportedActions.RIGHT) {
+            @Override public void mousePressed(MouseEvent event) {
+                super.mousePressed(event);
+                if(event.isConsumed()) {
+                    return;
+                }
+                if(SwingUtilities.isLeftMouseButton(event)) {
+                    return;
+                }
+                
+                ViewFactory viewFactory = AbstractFactory.getFactory(ViewFactory.class);
+                List<CardView> cards = new ArrayList<CardView>();
+                
+                // Talon
+                CardView talonCard = viewFactory.get(TalonPileView.class).getLastCard();
+                if(talonCard != null) {
+                    cards.add(talonCard);    
+                }
+                
+                // Tableau
+                List<TableauPileView> tableauPileViews = viewFactory.getAll(TableauPileView.class);
+                Collections.reverse(tableauPileViews);
+                for(TableauPileView view : tableauPileViews) {
+                    CardView card = view.getLastCard();
+                    if(card != null && !card.isBacksideShowing()) {
+                        cards.add(card);
+                    }
+                }
+                
+                while(cards.size() > 0) {
+                    boolean keepGoing = false;
+                    for(int i = 0; i < cards.size(); ++i) {
+                        if(cards.get(i).performCardAutoMovement()) {
+                            cards.remove(i);
+                            keepGoing = true;
+                            break;
+                        }
+                    }
+                    
+                    if(!keepGoing) {
+                        break;
+                    }
                 }
             }
-            
-            if(!keepGoing) {
-                break;
-            }
-        }
+        });
     }
 }

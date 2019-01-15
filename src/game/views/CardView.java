@@ -314,9 +314,14 @@ public final class CardView extends PanelView implements ICollidable {
                 TimerView gameTimerView = AbstractFactory.getFactory(ViewFactory.class).get(TimerView.class);
                 if(gameTimerView != null) {
                     gameTimerView.startGameTimer();
+                    removeMouseListener(this);
                 }
             }
         });
+        
+        // Register this view and it's underlying proxy to perform auto moves
+        //ViewHelper.registerForCardsAutoMove(this);
+        //ViewHelper.registerForCardsAutoMove(_cardProxy);
         
         /**
          * Listen in on events when we need to synchronize withthe online option
