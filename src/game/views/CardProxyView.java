@@ -378,15 +378,7 @@ public final class CardProxyView extends PanelView {
         });
         
         MouseListenerEvent mle = new MouseListenerEvent(SupportedActions.LEFT) {
-            @Override public void mousePressed(MouseEvent event) {
-                super.mousePressed(event);
-                if(event.isConsumed()) {
-                    return;
-                }
-            }
-            
             @Override public void mouseDragged(MouseEvent event) {
-                
                 super.mouseDragged(event);
                 if(event.isConsumed()) {
                     return;
