@@ -93,7 +93,7 @@ public final class CardView extends PanelView implements ICollidable {
         @Override public void mousePressed(MouseEvent event) {
 
             super.mousePressed(event);
-            if(event.isConsumed()) {
+            if(getIsConsumed() && event.isConsumed()) {
                 return;
             }
             
@@ -160,11 +160,15 @@ public final class CardView extends PanelView implements ICollidable {
         @Override public void mouseReleased(MouseEvent event) {
             
             super.mouseReleased(event);
-            if(event.isConsumed()) {
+            if(getIsConsumed() && event.isConsumed()) {
                 return;
             }
             
             if(!isEnabled()) {
+                return;
+            }
+            
+            if(_parentLayeredPane == null) {
                 return;
             }
             
@@ -205,7 +209,7 @@ public final class CardView extends PanelView implements ICollidable {
     private MouseListenerEvent _mouseActionListener = new MouseListenerEvent(SupportedActions.LEFT) {
         @Override public void mousePressed(MouseEvent event) {
             super.mousePressed(event);
-            if(event.isConsumed()) {
+            if(getIsConsumed() && event.isConsumed()) {
                 return;
             }
             
@@ -320,7 +324,7 @@ public final class CardView extends PanelView implements ICollidable {
         });
         
         // Register this view and it's underlying proxy to perform auto moves
-        //ViewHelper.registerForCardsAutoMove(this);
+        ViewHelper.registerForCardsAutoMove(this);
         //ViewHelper.registerForCardsAutoMove(_cardProxy);
         
         /**
