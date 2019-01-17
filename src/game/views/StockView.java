@@ -28,6 +28,8 @@ import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import javax.swing.SwingUtilities;
+
 import framework.communication.internal.signal.ISignalReceiver;
 import framework.communication.internal.signal.arguments.EventArgs;
 import framework.communication.internal.signal.arguments.ViewEventArgs;
@@ -58,8 +60,10 @@ public final class StockView extends PanelView implements IUndoable {
         
         addMouseListener(new MouseAdapter() {
             @Override public void mousePressed(MouseEvent event) {
-                AbstractFactory.getFactory(ViewFactory.class).get(TimerView.class).startGameTimer();
-                removeMouseListener(this);
+                if(!SwingUtilities.isRightMouseButton(event)) {
+                    AbstractFactory.getFactory(ViewFactory.class).get(TimerView.class).startGameTimer();
+                    removeMouseListener(this);
+                }
             }
         });
         
@@ -85,9 +89,8 @@ public final class StockView extends PanelView implements IUndoable {
                 }
                 else {
                     _stockCardEntity = new StockCardEntity();
-                    TimerView gameTimerView = AbstractFactory.getFactory(ViewFactory.class).get(TimerView.class);
-                    if(gameTimerView != null) {
-                        gameTimerView.startGameTimer();
+                    if(!SwingUtilities.isRightMouseButton(event)) {
+                        AbstractFactory.getFactory(ViewFactory.class).get(TimerView.class).startGameTimer();
                     }
                 }
                 

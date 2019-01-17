@@ -41,6 +41,7 @@ import java.util.logging.Level;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JLayeredPane;
+import javax.swing.SwingUtilities;
 
 import framework.api.IView;
 import framework.communication.internal.signal.ISignalReceiver;
@@ -314,10 +315,9 @@ public final class CardView extends PanelView implements ICollidable {
         addMouseListener(_mouseActionListener);
 
         addMouseListener(new MouseAdapter() {
-            @Override public void mousePressed(MouseEvent e) {
-                TimerView gameTimerView = AbstractFactory.getFactory(ViewFactory.class).get(TimerView.class);
-                if(gameTimerView != null) {
-                    gameTimerView.startGameTimer();
+            @Override public void mousePressed(MouseEvent event) {
+                if(!SwingUtilities.isRightMouseButton(event)) {
+                    AbstractFactory.getFactory(ViewFactory.class).get(TimerView.class).startGameTimer();
                     removeMouseListener(this);
                 }
             }
@@ -325,7 +325,7 @@ public final class CardView extends PanelView implements ICollidable {
         
         // Register this view and it's underlying proxy to perform auto moves
         ViewHelper.registerForCardsAutoMove(this);
-        //ViewHelper.registerForCardsAutoMove(_cardProxy);
+        ViewHelper.registerForCardsAutoMove(_cardProxy);
         
         /**
          * Listen in on events when we need to synchronize withthe online option

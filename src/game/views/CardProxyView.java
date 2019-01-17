@@ -39,6 +39,7 @@ import javax.swing.AbstractButton;
 import javax.swing.BoxLayout;
 import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 
 import framework.core.factories.AbstractFactory;
@@ -368,10 +369,10 @@ public final class CardProxyView extends PanelView {
         getViewProperties().setEntity(cardView.getViewProperties().getEntity());
 
         addMouseListener(new MouseAdapter() {
-            @Override public void mousePressed(MouseEvent e) {
-                TimerView gameTimerView = AbstractFactory.getFactory(ViewFactory.class).get(TimerView.class);
-                if(gameTimerView != null) {
-                    gameTimerView.startGameTimer();
+            @Override public void mousePressed(MouseEvent event) {
+                if(!SwingUtilities.isRightMouseButton(event)) {
+                    AbstractFactory.getFactory(ViewFactory.class).get(TimerView.class).startGameTimer();
+                    removeMouseListener(this);
                 }
             }
         });

@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import javax.swing.JLayeredPane;
+import javax.swing.SwingUtilities;
 
 import framework.core.factories.AbstractFactory;
 import framework.core.factories.ControllerFactory;
@@ -159,16 +160,22 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
             CARD_OFFSET = 0;    
         }
         
+        // The blank card will always be in this view, so right clicking on it should autocomplete
+        // whatever is on the board
+        ViewHelper.registerForCardsAutoMove(_blankCard);
+        
         // Add a listener to the blank card since it is sitting above the board. If someone tries to click in this area
         // the timer will start, unknowing to the player that they really clicked on a special area of the board
         _blankCard.addMouseListener(new MouseAdapter() {
             @Override public void mousePressed(MouseEvent event) {
-                TimerView gameTimerView = AbstractFactory.getFactory(ViewFactory.class).get(TimerView.class);
-                if(gameTimerView != null) {
-                    gameTimerView.startGameTimer();
+                if(!SwingUtilities.isRightMouseButton(event)) {
+                    AbstractFactory.getFactory(ViewFactory.class).get(TimerView.class).startGameTimer();
+                    _blankCard.removeMouseListener(this);
                 }
             }
         });
+        
+        
     }
     
     /**

@@ -34,6 +34,8 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.SwingUtilities;
+
 import framework.core.factories.AbstractFactory;
 import framework.core.factories.ControllerFactory;
 import framework.core.factories.ViewFactory;
@@ -137,8 +139,10 @@ public final class GameView extends PanelView {
                 OptionsPreferences preferences = new OptionsPreferences();
                 preferences.load();
                 if(preferences.timedGame) {
-                    AbstractFactory.getFactory(ViewFactory.class).get(TimerView.class).startGameTimer();
-                    removeMouseListener(this);
+                    if(!SwingUtilities.isRightMouseButton(event)) {
+                        AbstractFactory.getFactory(ViewFactory.class).get(TimerView.class).startGameTimer();
+                        removeMouseListener(this);
+                    }
                 }
             }
         });
