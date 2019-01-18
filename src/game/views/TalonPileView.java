@@ -174,8 +174,6 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
                 }
             }
         });
-        
-        
     }
     
     /**
