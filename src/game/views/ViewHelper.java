@@ -61,6 +61,9 @@ public class ViewHelper {
                 if(talonCard != null) {
                     cards.add(talonCard);    
                 }
+                else {
+                    talonCard = null;
+                }
                 
                 // Tableau
                 List<TableauPileView> tableauPileViews = viewFactory.getAll(TableauPileView.class);
@@ -84,6 +87,14 @@ public class ViewHelper {
                     
                     if(!keepGoing) {
                         break;
+                    }
+                }
+                
+                // If the talon card was moved then enabled the top-most card
+                if(talonCard != null && !cards.contains(talonCard)) {
+                    CardView lastTalonCard = viewFactory.get(TalonPileView.class).getLastCard();
+                    if(lastTalonCard != null) {
+                        lastTalonCard.setEnabled(true);
                     }
                 }
             }
