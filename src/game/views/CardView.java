@@ -332,7 +332,7 @@ public final class CardView extends PanelView implements ICollidable {
          */
         addSignal(EVENT_OUTLINE_SYNCHRONIZE, new ISignalReceiver<EventArgs>() {
             @Override public void signalReceived(EventArgs event) {
-                synchronizeWithOptions();                
+                synchronizeProxyWithOptions();              
             }
         });       
 
@@ -341,13 +341,13 @@ public final class CardView extends PanelView implements ICollidable {
         // Note: 
         //      This must be done at the end to ensure that the order of added events is done properly
         synchronizeWithOptions();
+        synchronizeProxyWithOptions();
     }
     
     /**
      * Synchronizes this card view w.r.t the current outline options that are set within the game.
      */
-    private void synchronizeWithOptions()
-    {
+    private void synchronizeWithOptions() {
         // Verify if the option for highlighting is enabled or not
         OptionsPreferences optionsPreferences = new OptionsPreferences();
         optionsPreferences.load();
@@ -357,6 +357,13 @@ public final class CardView extends PanelView implements ICollidable {
         // then do not allow dragging or collision to work as normal
         draggableListener.setEnabled(!_controller.getCard().getIsBackside() && !optionsPreferences.outlineDragging);
         _collisionListener.setEnabled(!_controller.getCard().getIsBackside() && !optionsPreferences.outlineDragging);
+    }
+    
+    private void synchronizeProxyWithOptions() {
+        // Verify if the option for highlighting is enabled or not
+        OptionsPreferences optionsPreferences = new OptionsPreferences();
+        optionsPreferences.load();
+        _highlightsEnabled = optionsPreferences.outlineDragging;
         
         // If the backside is not being shown, then add the event handler for card drag event
         // Note: In the event that the options preferences calls for outline mode, the entire
@@ -370,8 +377,8 @@ public final class CardView extends PanelView implements ICollidable {
             else {
                 removeMouseListener(_cardSelectionEvents);
                 add(_cardProxy);
-            }   
-        } 
+            }
+        }
     }
     
     /**
