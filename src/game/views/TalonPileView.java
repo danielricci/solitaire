@@ -193,7 +193,7 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
                 @Override public void mousePressed(MouseEvent event) {
                     
                     super.mousePressed(event);
-                    if(event.isConsumed()) {
+                    if(event.isConsumed() && getIsConsumed()) {
                         return;
                     }
                     
@@ -208,7 +208,7 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
                 @Override public void mouseReleased(MouseEvent event) {
             
                     super.mouseReleased(event);
-                    if(event.isConsumed()) {
+                    if(event.isConsumed() && getIsConsumed()) {
                         return;
                     }
                     
