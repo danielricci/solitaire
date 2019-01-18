@@ -56,7 +56,7 @@ public class TableauPileView extends AbstractPileView implements ICollidable {
     /**
      * The backside offset that the card should assume
      */
-    private final int CARD_OFFSET_BACKSIDE = 3;
+    private final int CARD_OFFSET_BACKSIDE = 4;
     
     /**
      * The offset for each card when in this view
