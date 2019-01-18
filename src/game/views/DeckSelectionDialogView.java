@@ -180,8 +180,10 @@ public final class DeckSelectionDialogView extends DialogView {
                 JButton button = new JButton(new ImageIcon(entity.getRenderableContent().getScaledInstance(_buttonImageWidth, _buttonImageHeight, java.awt.Image.SCALE_SMOOTH)));
                 
                 // Set the border of the button based on what was currently set in the preferences, and make sure to set it as active within this dialog
-                button.setBorder(preferences.deck == backsides[index] ? BorderFactory.createLineBorder(Color.BLUE, 2) : null);
-                _activeButton = button;
+                if(preferences.deck == backsides[index]) {
+                    button.setBorder(BorderFactory.createLineBorder(Color.BLUE, 2));
+                    _activeButton = button;
+                }
                 
                 button.setModel(new FixedStateButtonModel());
                 button.setContentAreaFilled(false);
