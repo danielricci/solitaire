@@ -84,6 +84,8 @@ public final class CardView extends PanelView implements ICollidable {
          */
         private JLayeredPane _parentLayeredPane;
         
+        private IView _parentPanelView;
+        
         /**
          * Constructs a new instance of this class type
          */
@@ -104,6 +106,9 @@ public final class CardView extends PanelView implements ICollidable {
             
             // Get the parent of this card view, used as a reference to go back to whatever we were coming from
             _parentLayeredPane = (JLayeredPane) CardView.this.getParent();
+            
+            // Get the parent IView w.r.t this card view, this is used to make sure that we are not trying to collide with ourselves
+            _parentPanelView = CardView.this.getParentIView();
 
             // Get the list of components that the parent owns
             Component[] components =_parentLayeredPane.getComponents();
@@ -170,23 +175,27 @@ public final class CardView extends PanelView implements ICollidable {
             }
             
             if(_parentLayeredPane == null) {
+                _parentPanelView = null;
                 return;
             }
             
             // If there is a valid collider, set that as the new parent
             if(_collisionListener.getCollision() != null) {
-                ICollidable collision = _collisionListener.getCollision();
-                AbstractPileView pileView = (AbstractPileView) collision;
-
-                // Get the before movement type to know where the move is coming from
-                Optional<Component> layeredPane = Arrays.asList(pileView.getComponents()).stream().filter(z -> z.getClass() == JLayeredPane.class).findFirst();
-                if(layeredPane.isPresent()) {
-                    AbstractFactory.getFactory(ControllerFactory.class).get(MovementRecorderController.class).recordMovement((IUndoable)_parentLayeredPane.getParent(), (IUndoable)collision);                  
-                    _parentLayeredPane = (JLayeredPane) layeredPane.get();
-                }
-                else {
-                    Tracelog.log(Level.SEVERE, true, "Could not find JLayeredPane within the CardView mouseReleased event...");
-                    return;
+                AbstractPileView pileView = (AbstractPileView) _collisionListener.getCollision();
+                
+                // Do not go further if what we have collided with is where we were already, that is not considered a valid collision.
+                // Note: Should this go inside of the drag listener?
+                if(!pileView.equals(_parentPanelView)) { 
+                    // Get the before movement type to know where the move is coming from
+                    Optional<Component> layeredPane = Arrays.asList(pileView.getComponents()).stream().filter(z -> z.getClass() == JLayeredPane.class).findFirst();
+                    if(layeredPane.isPresent()) {
+                        AbstractFactory.getFactory(ControllerFactory.class).get(MovementRecorderController.class).recordMovement((IUndoable)_parentLayeredPane.getParent(), pileView);                  
+                        _parentLayeredPane = (JLayeredPane) layeredPane.get();
+                    }
+                    else {
+                        Tracelog.log(Level.SEVERE, true, "Could not find JLayeredPane within the CardView mouseReleased event...");
+                        return;
+                    }
                 }
             }
             
@@ -194,6 +203,7 @@ public final class CardView extends PanelView implements ICollidable {
             AbstractPileView parent = (AbstractPileView) _parentLayeredPane.getParent();
             parent.addCard(CardView.this);
             _parentLayeredPane = null;
+            _parentPanelView = null;
         }
     }
 
