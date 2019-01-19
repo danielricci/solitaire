@@ -431,7 +431,7 @@ public final class CardProxyView extends PanelView {
         if(_bounds != null && !_dragListener.isDragging()) {
             super.setBounds(_bounds.x, _bounds.y, _bounds.width, _bounds.height);
         }
-        else if(x != 10 && y != 5) {
+        else if(y != 5) {
             super.setBounds(x, y, width, height);
         }
     }
