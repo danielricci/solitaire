@@ -258,12 +258,12 @@ public final class CardView extends PanelView implements ICollidable {
     /**
      * The draggable listener associated to this view
      */
-    protected final DragListener draggableListener = new DragListener(this);
+    private final DragListener _dragListener = new DragListener(SupportedActions.LEFT);
 
     /**
      * The collision listener associated to this view
      */
-    private final CollisionListener _collisionListener = new CollisionListener(this);
+    private final CollisionListener _collisionListener = new CollisionListener(this, SupportedActions.LEFT);
 
     /**
      * The layered pane that holds the potential list of cards that would be dragged along-side this card vuew
@@ -315,6 +315,12 @@ public final class CardView extends PanelView implements ICollidable {
         _cardProxy = new CardProxyView(this);
         _cardProxy.render();
         
+        addMouseListener(_dragListener);
+        addMouseMotionListener(_dragListener);
+        
+        addMouseListener(_collisionListener);
+        addMouseMotionListener(_collisionListener);
+        
         // Add the mouse listener responsible for handling single clicks and double clicks on this card.
         // Note: This will sometimes not be called depending on if the proxy is enabled or not, since the 
         //       proxy sits on top of this card. However, when the backside is being shown, this would indeed
@@ -350,6 +356,8 @@ public final class CardView extends PanelView implements ICollidable {
         // 
         // Note: 
         //      This must be done at the end to ensure that the order of added events is done properly
+        addMouseListener(_cardSelectionEvents);
+        addMouseMotionListener(_cardSelectionEvents);
         synchronizeWithOptions();
         synchronizeProxyWithOptions();
     }
@@ -365,7 +373,7 @@ public final class CardView extends PanelView implements ICollidable {
 
         // If the card has its backside shown or the outline option is enabled
         // then do not allow dragging or collision to work as normal
-        draggableListener.setEnabled(!_controller.getCard().getIsBackside() && !optionsPreferences.outlineDragging);
+        _dragListener.setEnabled(!_controller.getCard().getIsBackside() && !optionsPreferences.outlineDragging);
         _collisionListener.setEnabled(!_controller.getCard().getIsBackside() && !optionsPreferences.outlineDragging);
     }
     
@@ -382,13 +390,15 @@ public final class CardView extends PanelView implements ICollidable {
         if(!_controller.getCard().getIsBackside()) {
             if(!optionsPreferences.outlineDragging) {
                 remove(_cardProxy);
-                addMouseListener(_cardSelectionEvents);
             }
             else {
-                removeMouseListener(_cardSelectionEvents);
                 add(_cardProxy);
             }
-        }
+        } 
+        
+        // The selection events associated to this view should only be enabled if the
+        // backside is not shown and the outline mode is not enabled
+        _cardSelectionEvents.setEnabled(!_controller.getCard().getIsBackside() && !optionsPreferences.outlineDragging);
     }
     
     /**
@@ -402,7 +412,7 @@ public final class CardView extends PanelView implements ICollidable {
      * Attempts to uncover the backside of this view
      */
     private void uncoverBackside() {
-        if(_controller.getCard().getIsBackside()){
+        if(_controller.getCard().getIsBackside()) {
             _controller.getCard().setBackside(false);
             _controller.getCard().refresh();
             
@@ -414,18 +424,17 @@ public final class CardView extends PanelView implements ICollidable {
             OptionsPreferences preferences = new OptionsPreferences();
             preferences.load();
             if(!preferences.outlineDragging) {
-                draggableListener.setEnabled(true);
+                _dragListener.setEnabled(true);
                 _collisionListener.setEnabled(true);
+                _cardSelectionEvents.setEnabled(true);
             }
             
-            if(!preferences.outlineDragging) {
-                addMouseListener(_cardSelectionEvents);
-            }
-            else {
+            if(preferences.outlineDragging) {
                 add(_cardProxy);
                 _cardProxy.setVisible(true);
-                repaint();
             }
+            
+            repaint();
         }
     }
     
@@ -456,7 +465,7 @@ public final class CardView extends PanelView implements ICollidable {
                     
                     // Stop the current drag listener of this card from doing anything, so that things
                     // like drag will stop being processed
-                    draggableListener.stopDragEvent();
+                    _dragListener.stopDragEvent();
                     
                     // Add to the layered pane destination
                     foundationView.addCard(CardView.this);
@@ -485,7 +494,7 @@ public final class CardView extends PanelView implements ICollidable {
             _cardProxy.setEnabled(enabled);
         }
 
-        draggableListener.setEnabled(enabled);
+        _dragListener.setEnabled(enabled);
         _collisionListener.setEnabled(enabled);
     }
     
@@ -513,7 +522,7 @@ public final class CardView extends PanelView implements ICollidable {
     
     @Override public void removeAll() {
         super.removeAll();
-        draggableListener.setEnabled(false);
+        _dragListener.setEnabled(false);
         _collisionListener.setEnabled(false);
     }
 

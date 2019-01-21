@@ -331,12 +331,12 @@ public final class CardProxyView extends PanelView {
     /**
      * The draggable listener associated to this view
      */
-    private final DragListener _dragListener = new DragListener(this);
+    private final DragListener _dragListener = new DragListener(SupportedActions.LEFT);
 
     /**
      * The collision listener associated to this view
      */
-    private final CollisionListener _collisionListener = new CollisionListener(this);
+    private final CollisionListener _collisionListener = new CollisionListener(this, SupportedActions.LEFT);
     
     /**
      * The card view associated to this proxy
@@ -358,6 +358,13 @@ public final class CardProxyView extends PanelView {
         setPreferredSize(new Dimension(CardView.CARD_WIDTH, CardView.CARD_HEIGHT));
         setOpaque(false);
         add(_layeredPane);
+        
+        addMouseListener(_dragListener);
+        addMouseMotionListener(_dragListener);
+        
+        addMouseListener(_collisionListener);
+        addMouseMotionListener(_collisionListener);
+        
         addMouseListener(new CardSelectionEvents());
         addMouseMotionListener(new CardDragEvents());
         
