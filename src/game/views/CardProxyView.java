@@ -91,6 +91,11 @@ public final class CardProxyView extends PanelView {
                 return;
             }
             
+            // If we are dragging the mouse but the drag listener is not working properly go no further
+            if(!_dragListener.isDragging() || !_dragListener.getIsEnabled()) {
+            	return;
+            }
+            
             ICollidable collider = _collisionListener.getCollision();
             if(collider != null) {
                 
@@ -147,9 +152,8 @@ public final class CardProxyView extends PanelView {
                 return;
             }
             
-            // Indicates if the auto move had occured successfully
+            // Indicates if the auto move had occurred successfully
             boolean hasAutomoveWorked = false;
-            
             
             // If the click count is two then perform the double click event of the underlying card
             // and go no further. This will handle cases where the outline mode is enabled, and the user
@@ -162,13 +166,14 @@ public final class CardProxyView extends PanelView {
                 // Perform the double click operation
                 hasAutomoveWorked = _cardView.performCardAutoMovement();
                 if(hasAutomoveWorked) {
-                    // Disable the drag listener, it should be re-enabled on mouse released iff this component
-                    // is enabled
-                    _dragListener.setEnabled(false);
-                    
-                    // Perform a repaint of the parent
-                    parent.repaint();
+                    // Stop the drag listener from dragging, this is because you could still drag when you have the
+                	// second mouse down, and this causes the border outline to still render. This is also guard is other
+                	// mouseDragged events in this class, where we check to see that the dragListener component is being dragged
+                    _dragListener.stopDragEvent();
                 }
+                
+                // Perform a repaint of the parent
+                parent.repaint();
             }
         
             if(!hasAutomoveWorked) {
@@ -387,16 +392,13 @@ public final class CardProxyView extends PanelView {
         MouseListenerEvent mle = new MouseListenerEvent(SupportedActions.LEFT) {
             @Override public void mouseDragged(MouseEvent event) {
                 super.mouseDragged(event);
-                if(event.isConsumed()) {
-                    return;
-                }
-                
-                if(!isEnabled()) {
-                    return;
-                }
-                
-                if(!_dragListener.getIsEnabled()) {
-                    return;
+
+                // 1. Event is consumed
+                // 2. This card proxy is not in an enabled state
+                // 3. The drag listener component is not in the state of being dragged
+                // 4. The drag listener is not enabled
+                if(event.isConsumed() || !isEnabled() || !_dragListener.isDragging() || !_dragListener.getIsEnabled()) {
+                	return;
                 }
                 
                 // If the border has not yet been set
