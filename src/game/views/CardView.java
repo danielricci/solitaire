@@ -84,6 +84,9 @@ public final class CardView extends PanelView implements ICollidable {
          */
         private JLayeredPane _parentLayeredPane;
         
+        /**
+         * The parent panel view
+         */
         private IView _parentPanelView;
         
         /**
@@ -239,7 +242,6 @@ public final class CardView extends PanelView implements ICollidable {
         }
     };
     
-    
     /**
      * The preferred width of this card
      */
@@ -343,23 +345,17 @@ public final class CardView extends PanelView implements ICollidable {
         ViewHelper.registerForCardsAutoMove(this);
         ViewHelper.registerForCardsAutoMove(_cardProxy);
         
-        /**
-         * Listen in on events when we need to synchronize withthe online option
-         */
-        addSignal(EVENT_OUTLINE_SYNCHRONIZE, new ISignalReceiver<EventArgs>() {
-            @Override public void signalReceived(EventArgs event) {
-                synchronizeProxyWithOptions();              
-            }
-        });       
-
-        // Synchronize with the options preferences.
-        // 
-        // Note: 
-        //      This must be done at the end to ensure that the order of added events is done properly
+        // Register this view to handle the events raised by the card selection events
         addMouseListener(_cardSelectionEvents);
         addMouseMotionListener(_cardSelectionEvents);
+        
+        // Listen in on events when we need to synchronize withthe online option
+        addSignal(EVENT_OUTLINE_SYNCHRONIZE, new ISignalReceiver<EventArgs>() {
+            @Override public void signalReceived(EventArgs event) {
+                synchronizeWithOptions();              
+            }
+        });       
         synchronizeWithOptions();
-        synchronizeProxyWithOptions();
     }
     
     /**
@@ -375,13 +371,6 @@ public final class CardView extends PanelView implements ICollidable {
         // then do not allow dragging or collision to work as normal
         _dragListener.setEnabled(!_controller.getCard().getIsBackside() && !optionsPreferences.outlineDragging);
         _collisionListener.setEnabled(!_controller.getCard().getIsBackside() && !optionsPreferences.outlineDragging);
-    }
-    
-    private void synchronizeProxyWithOptions() {
-        // Verify if the option for highlighting is enabled or not
-        OptionsPreferences optionsPreferences = new OptionsPreferences();
-        optionsPreferences.load();
-        _highlightsEnabled = optionsPreferences.outlineDragging;
         
         // If the backside is not being shown, then add the event handler for card drag event
         // Note: In the event that the options preferences calls for outline mode, the entire
