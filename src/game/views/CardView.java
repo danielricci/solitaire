@@ -59,6 +59,7 @@ import framework.utils.MouseListenerEvent.SupportedActions;
 import framework.utils.logging.Tracelog;
 
 import game.config.OptionsPreferences;
+import game.config.OptionsPreferences.DrawOption;
 import game.controllers.CardController;
 import game.controllers.MovementRecorderController;
 import game.models.CardModel;
@@ -352,7 +353,19 @@ public final class CardView extends PanelView implements ICollidable {
         // Listen in on events when we need to synchronize withthe online option
         addSignal(EVENT_OUTLINE_SYNCHRONIZE, new ISignalReceiver<EventArgs>() {
             @Override public void signalReceived(EventArgs event) {
-                synchronizeWithOptions();              
+                synchronizeWithOptions();
+
+                // When playing in draw three, make sure that cards that are not top-most are not enabled. This
+                // needs to be done after the synchronize.
+                OptionsPreferences optionsPreferences = new OptionsPreferences();
+                optionsPreferences.load();
+                if(optionsPreferences.drawOption == DrawOption.THREE && CardView.this.getParentIView().getClass() == TalonPileView.class) {
+                    if(((JLayeredPane)getParent()).getPosition(CardView.this) > 0) {
+                        _dragListener.setEnabled(false);
+                        _collisionListener.setEnabled(false);
+                        _cardSelectionEvents.setEnabled(false);
+                    }
+                }
             }
         });       
         synchronizeWithOptions();
@@ -369,8 +382,9 @@ public final class CardView extends PanelView implements ICollidable {
 
         // If the card has its backside shown or the outline option is enabled
         // then do not allow dragging or collision to work as normal
-        _dragListener.setEnabled(!_controller.getCard().getIsBackside() && !optionsPreferences.outlineDragging);
-        _collisionListener.setEnabled(!_controller.getCard().getIsBackside() && !optionsPreferences.outlineDragging);
+        boolean isAvailable = !_controller.getCard().getIsBackside() && !optionsPreferences.outlineDragging;
+        _dragListener.setEnabled(isAvailable);
+        _collisionListener.setEnabled(isAvailable);
         
         // If the backside is not being shown, then add the event handler for card drag event
         // Note: In the event that the options preferences calls for outline mode, the entire
