@@ -66,7 +66,7 @@ public final class FoundationPileView extends AbstractPileView implements IColli
         this.setBackground(Color.BLACK);
         this.setOpaque(true);
         addRenderableContent(new FoundationCardEntity());
-        ViewHelper.registerForCardsAutoMove(this);
+        ViewHelper.registerForCardsAutocomplete(this);
     }
 
     @Override public void preProcessGraphics(Graphics context) {

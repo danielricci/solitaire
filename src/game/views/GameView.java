@@ -147,7 +147,7 @@ public final class GameView extends PanelView {
             }
         });
         
-        ViewHelper.registerForCardsAutoMove(this);
+        ViewHelper.registerForCardsAutocomplete(this);
     }
     
     private void addStatusBarView() {

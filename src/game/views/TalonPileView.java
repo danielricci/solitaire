@@ -162,7 +162,7 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
         
         // The blank card will always be in this view, so right clicking on it should autocomplete
         // whatever is on the board
-        ViewHelper.registerForCardsAutoMove(_blankCard);
+        ViewHelper.registerForCardsAutocomplete(_blankCard);
         
         // Add a listener to the blank card since it is sitting above the board. If someone tries to click in this area
         // the timer will start, unknowing to the player that they really clicked on a special area of the board

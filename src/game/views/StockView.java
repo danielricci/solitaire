@@ -56,7 +56,7 @@ public final class StockView extends PanelView implements IUndoable {
     public StockView() {
         setOpaque(false);
         
-        ViewHelper.registerForCardsAutoMove(this);
+        ViewHelper.registerForCardsAutocomplete(this);
         
         addMouseListener(new MouseAdapter() {
             @Override public void mousePressed(MouseEvent event) {

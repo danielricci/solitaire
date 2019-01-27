@@ -343,8 +343,8 @@ public final class CardView extends PanelView implements ICollidable {
         });
         
         // Register this view and it's underlying proxy to perform auto moves
-        ViewHelper.registerForCardsAutoMove(this);
-        ViewHelper.registerForCardsAutoMove(_cardProxy);
+        ViewHelper.registerForCardsAutocomplete(this);
+        ViewHelper.registerForCardsAutocomplete(_cardProxy);
         
         // Register this view to handle the events raised by the card selection events
         addMouseListener(_cardSelectionEvents);
