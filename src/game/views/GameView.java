@@ -34,17 +34,25 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.AbstractButton;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import framework.core.factories.AbstractFactory;
 import framework.core.factories.ControllerFactory;
 import framework.core.factories.ViewFactory;
 import framework.core.mvc.view.PanelView;
+import framework.core.navigation.MenuBuilder;
+import framework.core.system.Application;
+import framework.utils.globalisation.Localization;
 
 import game.config.OptionsPreferences;
 import game.controllers.CardController;
 import game.controllers.MovementRecorderController;
+import game.menu.NewGameMenuItem;
 import game.models.CardModel;
+
+import resources.LocalizationStrings;
 
 /**
  * The game view wraps a draggable layout around the entire game
@@ -174,22 +182,44 @@ public final class GameView extends PanelView {
         return null;
     }
     
-    public static boolean IsGameWinner() {
-        boolean winner = true;
-        for(FoundationPileView foundationView : AbstractFactory.getFactory(ViewFactory.class).getAll(FoundationPileView.class)) {
-            if(foundationView.layeredPane.getComponentCount() == 13) { 
-                CardView cardView = (CardView) foundationView.layeredPane.getComponent(0);
-                if(!cardView.getViewProperties().getEntity(CardController.class).isKing()) {
-                    winner = false;
-                    break;
+    public static void scanBoardForWin() {
+        scanBoardForWin(false);
+    }
+    public static void scanBoardForWin(boolean overrideWinningConditions) {
+        if(overrideWinningConditions) {
+            processWin();
+        }
+        else {
+            for(FoundationPileView foundationView : AbstractFactory.getFactory(ViewFactory.class).getAll(FoundationPileView.class)) {
+                if(foundationView.layeredPane.getComponentCount() == 13) { 
+                    CardView cardView = (CardView) foundationView.layeredPane.getComponent(0);
+                    if(!cardView.getViewProperties().getEntity(CardController.class).isKing()) {
+                        processWin();
+                        break;
+                    }
                 }
             }
-            else {
-                winner = false;
-                break;
-            }
         }
+    }
+    
+    private static void processWin() {
+        // Stop the game timer
+        TimerView gameTimerView = AbstractFactory.getFactory(ViewFactory.class).get(TimerView.class);
+        gameTimerView.stop();
 
-        return winner;
+        // Update the bonus
+        long bonus = AbstractFactory.getFactory(ViewFactory.class).get(ScoreView.class).updateScoreBonus(gameTimerView.getTime());
+        
+        // Show the updated text on the status bar
+        AbstractFactory.getFactory(ViewFactory.class).get(StatusBarView.class).setMenuDescription(String.format(Localization.instance().getLocalizedString(LocalizationStrings.GAME_WON_STATUS_BAR), bonus));
+        
+        // Show the dialog indicating that game has won
+        if(JOptionPane.showConfirmDialog(Application.instance, Localization.instance().getLocalizedString(LocalizationStrings.GAME_OVER), Localization.instance().getLocalizedString(LocalizationStrings.GAME_OVER_HEADER), JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) { 
+            MenuBuilder.search(Application.instance.getJMenuBar(), NewGameMenuItem.class).getComponent(AbstractButton.class).doClick();
+        }
+        else {
+            // Clear the description and other status bar texts
+            AbstractFactory.getFactory(ViewFactory.class).get(StatusBarView.class).clearMenuDescription();
+        }
     }
 }

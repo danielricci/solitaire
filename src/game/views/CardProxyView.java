@@ -35,10 +35,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import javax.swing.AbstractButton;
 import javax.swing.BoxLayout;
 import javax.swing.JLayeredPane;
-import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 
@@ -47,20 +45,13 @@ import framework.core.factories.ControllerFactory;
 import framework.core.factories.ViewFactory;
 import framework.core.mvc.view.PanelView;
 import framework.core.mvc.view.layout.DragListener;
-import framework.core.navigation.MenuBuilder;
 import framework.core.physics.CollisionListener;
 import framework.core.physics.ICollidable;
-import framework.core.system.Application;
 import framework.utils.MouseListenerEvent;
 import framework.utils.MouseListenerEvent.SupportedActions;
-import framework.utils.globalisation.Localization;
 
 import game.controllers.MovementRecorderController;
-import game.menu.ExitMenuItem;
-import game.menu.NewGameMenuItem;
 import game.views.components.ExclusiveLineBorder;
-
-import resources.LocalizationStrings;
 
 /**
  * This view represents the outline of a normal card view
@@ -311,20 +302,9 @@ public final class CardProxyView extends PanelView {
             // the code got this far it should be re-enabled
             _dragListener.setEnabled(true);
             
-            // Verify if there is a game winner
-            if(GameView.IsGameWinner()) {
-                // Stop the game timer
-                TimerView gameTimerView = AbstractFactory.getFactory(ViewFactory.class).get(TimerView.class);
-                gameTimerView.stop();
-                
-                // Show the dialog indicating that game has won
-                if(JOptionPane.showConfirmDialog(null, Localization.instance().getLocalizedString(LocalizationStrings.GAME_OVER), Localization.instance().getLocalizedString(LocalizationStrings.GAME_OVER_HEADER), JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE) == JOptionPane.YES_OPTION) { 
-                    MenuBuilder.search(Application.instance.getJMenuBar(), NewGameMenuItem.class).getComponent(AbstractButton.class).doClick();
-                }
-                else {
-                    MenuBuilder.search(Application.instance.getJMenuBar(), ExitMenuItem.class).getComponent(AbstractButton.class).doClick();
-                }
-            }
+
+            // See if the board is in a winning state
+            GameView.scanBoardForWin(false);
         }
     }
     

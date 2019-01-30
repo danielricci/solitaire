@@ -4,11 +4,12 @@ Github,https://github.com/danielricci/minesweeper
 Title,Solitaire
 Game,Game
 GameIcon,content/solitaire_logo.png
-GameOver, New Game?
-GameOverHeader, Game Over
+GameOver, Deal Again?
+GameOverHeader, Solitaire
 Help,Help
 Deal,Deal
 Undo,Undo
 Deck,Deck...
 Options,Options...
 Exit,Exit
+GameWonStatusBar, Bonus: %s  Press Esc or a mouse button to stop...

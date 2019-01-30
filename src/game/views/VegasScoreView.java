@@ -54,12 +54,13 @@ public class VegasScoreView extends ScoreView {
         }
     }
     
-    @Override protected void addToScore(int score) {
+    @Override protected void addToScore(long score) {
         SCORE += score;
         scoreValue.setText(toString());
     }
     
-    @Override public void updateScoreBonus(int seconds) {
+    @Override public long updateScoreBonus(long seconds) {
+        return 0;
     }
     
     @Override public void updateScoreDeckFinished(int deckPlays) {

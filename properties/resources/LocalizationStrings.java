@@ -38,6 +38,7 @@ public class LocalizationStrings {
      public static String GAME_ICON = "GameIcon";
      public static String GAME_OVER = "GameOver";
      public static String GAME_OVER_HEADER = "GameOverHeader";
+     public static String GAME_WON_STATUS_BAR = "GameWonStatusBar";
      public static String HELP = "Help";
      public static String DEAL = "Deal";
      public static String UNDO = "Undo";

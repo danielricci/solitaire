@@ -25,6 +25,7 @@
 package game.views;
 
 import java.awt.Color;
+import java.awt.FlowLayout;
 
 import javax.swing.JLabel;
 
@@ -71,11 +72,16 @@ public class ScoreView extends PanelView {
      */
     public ScoreView() {
         this.setBackground(Color.WHITE);
+
+        // Set the VGap so that the score renders appropriately
+        FlowLayout layout = (FlowLayout) this.getLayout();
+        layout.setVgap(0);
+
         add(scoreTitle);
-        add(scoreValue);  
+        add(scoreValue);
     }
     
-    protected void addToScore(int score) {
+    protected void addToScore(long score) {
         SCORE = Math.max(0, SCORE + score);
         scoreValue.setText(toString());        
     }
@@ -105,13 +111,19 @@ public class ScoreView extends PanelView {
     /**
      * Updates the score based on the bonus logic
      *
-     *
      * @param seconds The number of seconds that has elapsed in the game
+     * 
+     * @return The bonus that will be used
      */
-    public void updateScoreBonus(int seconds) {
+    public long updateScoreBonus(long seconds) {
+        long bonus = 0;
+        
         if(seconds > 30) {
-            addToScore(700000 / seconds);
+            bonus = 700000 / seconds;
+            addToScore(bonus);
         }
+        
+        return bonus;
     }
     
     public void updateScoreDeckFinished(int deckPlays) {

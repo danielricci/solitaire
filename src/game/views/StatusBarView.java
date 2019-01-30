@@ -65,11 +65,12 @@ public final class StatusBarView extends PanelView {
      * Constructs a new instance of this class type
      */
     public StatusBarView() {
-        this.setLayout(new BorderLayout());
         this.setBackground(Color.WHITE);
-        this.setPreferredSize(new Dimension(getPreferredSize().width, 24));
+
+        this.setLayout(new BorderLayout());
+        this.setPreferredSize(new Dimension(getPreferredSize().width, 17));
         this.setFocusable(false);
-        setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.BLACK));
+        setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.GRAY));
         
         // Add a dummy mouse listener to avoid the click from hitting the green background
         addMouseListener(new MouseAdapter() {
@@ -83,13 +84,16 @@ public final class StatusBarView extends PanelView {
         
         // Game Score + Game Timer
         JPanel rightSidePanel = new JPanel(new BorderLayout());
+        rightSidePanel.setBorder(BorderFactory.createEmptyBorder());
+
         
         // The scoring option should only be shown in Standard and Vegas scoring modes
         OptionsPreferences preferences = new OptionsPreferences();
         preferences.load();
         
-        // Create the score view based on the currently set scoring standard
+        // Create the score view based on the currently set scoring standard      
         _scoreView = AbstractFactory.getFactory(ViewFactory.class).add(preferences.scoringOption == ScoringOption.VEGAS ? new VegasScoreView() : new ScoreView(), true);
+        _scoreView.setBorder(null);
         _scoreView.render();
         
         // register the score view to recieve events from the movement controller
@@ -99,7 +103,7 @@ public final class StatusBarView extends PanelView {
             rightSidePanel.add(_scoreView,BorderLayout.WEST);    
         }
         
-        rightSidePanel.add(_gameTimerView,BorderLayout.EAST);
+        rightSidePanel.add(_gameTimerView, BorderLayout.EAST);
         add(rightSidePanel, BorderLayout.EAST); 
         
         // Synchronize w.r.t the currently set options
