@@ -234,7 +234,7 @@ public final class CardView extends PanelView implements ICollidable {
 
             if(CardView.this.getParent().getComponents()[0].equals(CardView.this)) {
                 if(event.getClickCount() == 1) {
-                    uncoverBackside();
+                    uncoverBackside(false);
                 }
                 else {
                     performCardAutoMovement();
@@ -414,13 +414,15 @@ public final class CardView extends PanelView implements ICollidable {
     /**
      * Attempts to uncover the backside of this view
      */
-    private void uncoverBackside() {
+    public void uncoverBackside(boolean forceBackside) {
         if(_controller.getCard().getIsBackside()) {
             _controller.getCard().setBackside(false);
             _controller.getCard().refresh();
             
             // Record the movement
-            AbstractFactory.getFactory(ControllerFactory.class).get(MovementRecorderController.class).recordMovement((IUndoable)CardView.this.getParentIView(), null);
+            if(!forceBackside) {
+                AbstractFactory.getFactory(ControllerFactory.class).get(MovementRecorderController.class).recordMovement((IUndoable)CardView.this.getParentIView(), null);
+            }
 
             // Only allow this card view to have dragging and collision working `vanilla`
             // style if the outline option is not selected
@@ -464,7 +466,7 @@ public final class CardView extends PanelView implements ICollidable {
             for(FoundationPileView foundationView : foundationViews) {
                 if(foundationView.isValidCollision(CardView.this)) {
                     
-                    AbstractFactory.getFactory(ControllerFactory.class).get(MovementRecorderController.class).recordMovement((AbstractPileView)CardView.this.getParentIView(), foundationView);
+                    //AbstractFactory.getFactory(ControllerFactory.class).get(MovementRecorderController.class).recordMovement((AbstractPileView)CardView.this.getParentIView(), foundationView);
                     
                     // Stop the current drag listener of this card from doing anything, so that things
                     // like drag will stop being processed

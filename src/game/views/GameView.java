@@ -47,7 +47,6 @@ import framework.core.system.Application;
 import framework.utils.globalisation.Localization;
 
 import game.config.OptionsPreferences;
-import game.controllers.CardController;
 import game.controllers.MovementRecorderController;
 import game.menu.NewGameMenuItem;
 import game.models.CardModel;
@@ -182,22 +181,45 @@ public final class GameView extends PanelView {
         return null;
     }
     
-    public static void scanBoardForWin() {
-        scanBoardForWin(false);
-    }
-    public static void scanBoardForWin(boolean overrideWinningConditions) {
-        if(overrideWinningConditions) {
-            processWin();
+    public static void scanBoardForWin(boolean forceWin) {
+        if(forceWin) {
+            forceCardsToFoundation();
         }
         else {
+            
+            boolean isWinner = true;
             for(FoundationPileView foundationView : AbstractFactory.getFactory(ViewFactory.class).getAll(FoundationPileView.class)) {
-                if(foundationView.layeredPane.getComponentCount() == 13) { 
-                    CardView cardView = (CardView) foundationView.layeredPane.getComponent(0);
-                    if(!cardView.getViewProperties().getEntity(CardController.class).isKing()) {
-                        processWin();
-                        break;
-                    }
+                if(foundationView.layeredPane.getComponentCount() != 13) {
+                    isWinner = false;
+                    break;
                 }
+            }
+            
+            if(isWinner) {
+                processWin();
+            }
+        }
+    }
+    
+    private static void forceCardsToFoundation() {
+        
+        List<CardView> cards = AbstractFactory.getFactory(ViewFactory.class).getAll(CardView.class);
+        cards.stream().forEach(z -> z.uncoverBackside(true));
+        cards.stream().forEach(z -> z.setVisible(true));
+        
+        while(cards.size() > 0) {
+            boolean keepGoing = false;
+            for(int i = 0; i < cards.size(); ++i) {
+                if(cards.get(i).performCardAutoMovement()) {
+                    cards.get(i).setEnabled(false);
+                    cards.remove(i);
+                    keepGoing = true;
+                    break;
+                }
+            }
+            
+            if(!keepGoing) {
+                break;
             }
         }
     }
@@ -212,6 +234,8 @@ public final class GameView extends PanelView {
         
         // Show the updated text on the status bar
         AbstractFactory.getFactory(ViewFactory.class).get(StatusBarView.class).setMenuDescription(String.format(Localization.instance().getLocalizedString(LocalizationStrings.GAME_WON_STATUS_BAR), bonus));
+        
+        // TODO animation code goes here
         
         // Show the dialog indicating that game has won
         if(JOptionPane.showConfirmDialog(Application.instance, Localization.instance().getLocalizedString(LocalizationStrings.GAME_OVER), Localization.instance().getLocalizedString(LocalizationStrings.GAME_OVER_HEADER), JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) { 

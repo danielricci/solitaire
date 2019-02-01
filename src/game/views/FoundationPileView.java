@@ -83,7 +83,7 @@ public final class FoundationPileView extends AbstractPileView implements IColli
 
     @Override public void addCard(CardView cardView) {
         super.addCard(cardView);
-        GameView.scanBoardForWin();
+        GameView.scanBoardForWin(false);
     }
 
     @Override protected Point getCardOffset(CardView cardView) {
