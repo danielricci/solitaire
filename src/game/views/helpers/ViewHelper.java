@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package game.views;
+package game.views.helpers;
 
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -36,6 +36,10 @@ import framework.core.factories.AbstractFactory;
 import framework.core.factories.ViewFactory;
 import framework.utils.MouseListenerEvent;
 import framework.utils.MouseListenerEvent.SupportedActions;
+
+import game.views.CardView;
+import game.views.TableauPileView;
+import game.views.TalonPileView;
 
 /**
  * Helper class for common view related functionality

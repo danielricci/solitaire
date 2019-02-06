@@ -36,6 +36,7 @@ import framework.core.physics.ICollidable;
 
 import game.controllers.CardController;
 import game.entities.FoundationCardEntity;
+import game.views.helpers.ViewHelper;
 
 /**
  * This view represents the foundation pile view

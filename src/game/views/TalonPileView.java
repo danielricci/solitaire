@@ -52,6 +52,7 @@ import game.config.OptionsPreferences.DrawOption;
 import game.config.OptionsPreferences.ScoringOption;
 import game.controllers.MovementRecorderController;
 import game.models.CardModel;
+import game.views.helpers.ViewHelper;
 
 /**
  * This views represents the talon pile view

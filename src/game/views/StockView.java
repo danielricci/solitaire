@@ -42,6 +42,7 @@ import framework.utils.MouseListenerEvent.SupportedActions;
 import game.entities.BacksideCardEntity;
 import game.entities.StockCardEntity;
 import game.views.TalonPileView.TalonCardState;
+import game.views.helpers.ViewHelper;
 
 public final class StockView extends PanelView implements IUndoable {
 

@@ -63,6 +63,7 @@ import game.config.OptionsPreferences.DrawOption;
 import game.controllers.CardController;
 import game.controllers.MovementRecorderController;
 import game.models.CardModel;
+import game.views.helpers.ViewHelper;
 
 /**
  * This view represents the representation of a single card
