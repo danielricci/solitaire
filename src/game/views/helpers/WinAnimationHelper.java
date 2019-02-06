@@ -25,8 +25,10 @@
 package game.views.helpers;
 
 import java.awt.Point;
-import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -35,7 +37,9 @@ import framework.core.factories.ViewFactory;
 import framework.core.system.Application;
 
 import game.views.CardView;
+import game.views.FoundationPileView;
 import game.views.GameView;
+import game.views.StatusBarView;
 
 /**
  * This helper class performs a win animation on the specified card
@@ -46,7 +50,7 @@ public class WinAnimationHelper {
 
     private static Timer _timer = new Timer(true);
 
-    private static List<WinAnimationHelper> _helpers = new ArrayList<WinAnimationHelper>();
+    private static Queue<FoundationPileView> _foundations = new LinkedList<FoundationPileView>();
     
     private final CardView _cardView;
     
@@ -70,14 +74,26 @@ public class WinAnimationHelper {
     
     static {
         _timer.schedule(new TimerTask() {
+            WinAnimationHelper helper = null;
             @Override public void run() {
-                if(_helpers.size() > 0) {
-                    if(!_helpers.get(0).update()) {
-                        _helpers.remove(0);
+                if(_foundations.size() > 0) {
+                    
+                    if(helper != null) {
+                        if(!helper.update()) {
+                            helper = null;
+                        }
+                    }
+                    else {
+                        FoundationPileView foundation = _foundations.remove();
+                        CardView cardView = foundation.getLastCard();
+                        if(cardView != null) {
+                            helper = new WinAnimationHelper(cardView);
+                        }
+                        _foundations.add(foundation);
                     }
                 }
             }
-        }, 0, 1000/90);
+        }, 0, 1000/60);
     }
     
     /**
@@ -85,8 +101,10 @@ public class WinAnimationHelper {
      * 
      * @param cardView The card view to animate
      */
-    private WinAnimationHelper(CardView cardView, Point initialPoint) {
+    private WinAnimationHelper(CardView cardView) {
         _cardView = cardView;
+        Point initialPoint = cardView.getParentIView().getContainerClass().getLocation();
+
         _x = initialPoint.x;
         _y = initialPoint.y;
         
@@ -95,45 +113,51 @@ public class WinAnimationHelper {
         }
     }
     
-    public void preProcessCard() {
+    private void preProcessCard() {
         if(!_isPreProcessed) {
-            _isPreProcessed = false;
-            GameView gameView = AbstractFactory.getFactory(ViewFactory.class).get(GameView.class); 
-            //gameView.add(card);
-            //card.setLocation(new Point(foundation.getLocation().x, foundation.getLocation().y));
+            _isPreProcessed = true;
+            
+            ViewFactory viewFactory = AbstractFactory.getFactory(ViewFactory.class);
+            GameView gameView = viewFactory.get(GameView.class);
+            Point parentLocation = this._cardView.getParentIView().getContainerClass().getLocation();
+            
+            gameView.add(this._cardView, gameView.getComponentZOrder(viewFactory.get(StatusBarView.class)) + 1);
+            this._cardView.setLocation(parentLocation);
         }
     }
     
-    public static void processCard(CardView cardView, Point initialPoint) {
-        synchronized(_helpers) {
-            _helpers.add(new WinAnimationHelper(cardView, initialPoint));
+    public static void processCards() {
+        ViewFactory viewFactory = AbstractFactory.getFactory(ViewFactory.class);
+        List<FoundationPileView> foundationsList = viewFactory.getAll(FoundationPileView.class);
+        Collections.reverse(foundationsList);
+        
+        synchronized(_foundations) {
+            _foundations.addAll(foundationsList);
         }
     }
     
-    public boolean update() {
-        synchronized(_helpers) {
-            System.out.println("Updating " + this._cardView);
-            
-            _x += _deltaX;
-            _y += _deltaY;
-            
-            if(_x < (-_widthHalf) || _x > (_gameWidth + _widthHalf)) {
-                return false;
-            }
-            
-            if(_y > _gameHeight - _heightHalf) {
-                _y = _gameHeight - _heightHalf;
-                _deltaY = -_deltaY * 0.85;
-            }
-            
-            _deltaY += 0.98;
-            
-            int newPosX = (int)Math.floor(_x - _widthHalf);
-            int newPosY = (int)Math.floor(_y - _heightHalf);
-            System.out.println(String.format("(,%d,%d)", newPosX, newPosY));
-            _cardView.setLocation(newPosX, newPosY);
-            
-            return true;
+    private boolean update() {
+        preProcessCard();
+        
+        _x += _deltaX;
+        _y += _deltaY;
+        
+        if(_x < (-_widthHalf) || _x > (_gameWidth + _widthHalf)) {
+            return false;
         }
+        
+        if(_y > _gameHeight - _heightHalf) {
+            _y = _gameHeight - _heightHalf;
+            _deltaY = -_deltaY * 0.85;
+        }
+        
+        _deltaY += 0.98;
+        
+        int newPosX = (int)Math.floor(_x - _widthHalf);
+        int newPosY = (int)Math.floor(_y - _heightHalf);
+        _cardView.setLocation(newPosX, newPosY);
+        System.out.println(_cardView.getLocation());
+        
+        return true;        
     }
 }

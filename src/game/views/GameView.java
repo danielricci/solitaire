@@ -29,13 +29,10 @@ import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 
 import javax.swing.SwingUtilities;
 
@@ -43,7 +40,6 @@ import framework.core.factories.AbstractFactory;
 import framework.core.factories.ControllerFactory;
 import framework.core.factories.ViewFactory;
 import framework.core.mvc.view.PanelView;
-import framework.core.system.Application;
 import framework.utils.globalisation.Localization;
 
 import game.config.OptionsPreferences;
@@ -230,14 +226,19 @@ public final class GameView extends PanelView {
         TimerView gameTimerView = AbstractFactory.getFactory(ViewFactory.class).get(TimerView.class);
         gameTimerView.stop();
 
-        // Update the bonus
+        // Update the score with the bonus
         long bonus = AbstractFactory.getFactory(ViewFactory.class).get(ScoreView.class).updateScoreBonus(gameTimerView.getTime());
         
         // Show the updated text on the status bar
         AbstractFactory.getFactory(ViewFactory.class).get(StatusBarView.class).setMenuDescription(String.format(Localization.instance().getLocalizedString(LocalizationStrings.GAME_WON_STATUS_BAR), bonus));
         
-        // TODO animation code goes here
-        performGameFinishedAnimation();
+//        GameView gameView = AbstractFactory.getFactory(ViewFactory.class).get(GameView.class);
+//        for(TableauPileView view : AbstractFactory.getFactory(ViewFactory.class).getAll(TableauPileView.class)) {
+//            //view.setVisible(false);
+//        }
+        
+        // Perform the animation on all the cards
+        WinAnimationHelper.processCards();
         
         // Show the dialog indicating that game has won
 //        if(JOptionPane.showConfirmDialog(Application.instance, Localization.instance().getLocalizedString(LocalizationStrings.GAME_OVER), Localization.instance().getLocalizedString(LocalizationStrings.GAME_OVER_HEADER), JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) { 
@@ -247,73 +248,5 @@ public final class GameView extends PanelView {
 //            // Clear the description and other status bar texts
 //            AbstractFactory.getFactory(ViewFactory.class).get(StatusBarView.class).clearMenuDescription();
 //        }
-    }
-    
-    
-    
-    private static void performGameFinishedAnimation() {
-        
-        ViewFactory viewFactory = AbstractFactory.getFactory(ViewFactory.class);
-        Queue<FoundationPileView> foundations = new LinkedList<FoundationPileView>(viewFactory.getAll(FoundationPileView.class));
-        
-//        FoundationPileView foundation = foundations.peek();
-//        CardView card = foundation.getLastCard();
-//        GameView gameView = viewFactory.get(GameView.class); 
-//        gameView.add(card, gameView.getComponentZOrder(viewFactory.get(StatusBarView.class)) + 1);
-//        card.setLocation(new Point(foundation.getLocation().x, foundation.getLocation().y));
-//        WinAnimationHelper.processCard(card, foundation.getLocation());
-//        
-        
-        for(int i = 0; i < 7; ++i) {
-        //while(!foundations.isEmpty()) {
-            FoundationPileView foundation = foundations.remove();
-            CardView card = foundation.getLastCard();
-            if(card != null) {
-                WinAnimationHelper.processCard(card, foundation.getLocation());
-                foundations.add(foundation);
-            }
-        }
-        //}
-        
-        // Go through each foundation
-        
-        // For each foundation, take the top-most card and process it
-        
-        // Once the card is done processing, remove that card from it's parent
-        
-        // Go to the next foundation and repeat the process
-        
-        
-        
-        
-        
-        
-//        CardView cardView = null;
-//
-//        Timer timer = new Timer();
-//        TimerTask task = new TimerTask() {
-//            @Override public void run() {
-//                view.setLocation(view.getLocation().x + 2, view.getLocation().y + 2);
-//                view.repaint();
-//                gameView.repaint();
-//            }
-//        };
-//        timer.schedule(task, 0, 10);
-//        task.run();
-//        
-//        
-//        
-//        
-//        
-//        while ((cardView = foundations.get(0).getLastCard()) != null) {
-//            
-//        }
-//        
-//        
-//        CardView view = cardViews.get(0);
-//        GameView gameView = AbstractFactory.getFactory(ViewFactory.class).get(GameView.class);
-//        StatusBarView statusBarView = AbstractFactory.getFactory(ViewFactory.class).get(StatusBarView.class);
-//        gameView.add(view, gameView.getComponentZOrder(statusBarView) + 1);
-
     }
 }
