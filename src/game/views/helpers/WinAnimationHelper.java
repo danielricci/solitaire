@@ -99,9 +99,8 @@ public class WinAnimationHelper {
         if(!_isPreProcessed) {
             _isPreProcessed = false;
             GameView gameView = AbstractFactory.getFactory(ViewFactory.class).get(GameView.class); 
-            gameView.add(card);
+            //gameView.add(card);
             //card.setLocation(new Point(foundation.getLocation().x, foundation.getLocation().y));
-            
         }
     }
     
