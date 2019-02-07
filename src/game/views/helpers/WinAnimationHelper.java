@@ -34,8 +34,8 @@ import java.util.TimerTask;
 
 import framework.core.factories.AbstractFactory;
 import framework.core.factories.ViewFactory;
-import framework.core.system.Application;
 
+import game.config.OptionsPreferences;
 import game.views.CardView;
 import game.views.FoundationPileView;
 import game.views.GameView;
@@ -54,17 +54,17 @@ public class WinAnimationHelper {
     
     private final CardView _cardView;
     
-    private int _x;
+    private float _x;
     
-    private int _y;
+    private float _y;
     
-    private final int _widthHalf = CardView.CARD_WIDTH / 2;
+    private final int _cardWidthHalf = CardView.CARD_WIDTH / 2;
+
+    private final int _cardHeightHalf = CardView.CARD_HEIGHT / 2;
     
-    private final int _heightHalf = CardView.CARD_HEIGHT / 2;
+    private static final int _gameWidth;
     
-    private final int _gameWidth = Application.instance.getWidth();
-    
-    private final int _gameHeight = Application.instance.getHeight();
+    private static final int _gameHeight;
     
     private double _deltaX = Math.floor(Math.random() * 6 - 3) * 2;
     
@@ -73,6 +73,13 @@ public class WinAnimationHelper {
     private boolean _isPreProcessed;
     
     static {
+        OptionsPreferences preferences = new OptionsPreferences();
+        preferences.load();
+        
+        GameView gameView = AbstractFactory.getFactory(ViewFactory.class).get(GameView.class);
+        _gameWidth = gameView.getWidth() + 4;
+        _gameHeight = gameView.getHeight() - (preferences.statusBar ? AbstractFactory.getFactory(ViewFactory.class).get(StatusBarView.class).getHeight() : 0);
+                
         _timer.schedule(new TimerTask() {
             WinAnimationHelper helper = null;
             @Override public void run() {
@@ -139,22 +146,31 @@ public class WinAnimationHelper {
     private boolean update() {
         preProcessCard();
         
+        // Take the change in X and the change in Y and apply them respectively
         _x += _deltaX;
         _y += _deltaY;
         
-        if(_x < (-_widthHalf) || _x > (_gameWidth + _widthHalf)) {
+        // TODO -2 is the offset of the extr border from each card. Technically this can be removed
+        // once an explicit border is no longer necessary because the art style will have a border
+        // around it by default
+        if(_x < (-_cardWidthHalf - 2) || _x > (_gameWidth + _cardWidthHalf)) {
+            System.out.println("STOP");
             return false;
         }
         
-        if(_y > _gameHeight - _heightHalf) {
-            _y = _gameHeight - _heightHalf;
+        // If y position is more than half the card height in distnce to the 
+        // bottom of the game view, reposition the y-pos to be at that length
+        // and bounce the card upwards by applying an inverse force to the change in y
+        if(_y > _gameHeight - _cardHeightHalf) {
+            _y = _gameHeight - _cardHeightHalf;
             _deltaY = -_deltaY * 0.85;
         }
         
         _deltaY += 0.98;
         
-        int newPosX = (int)Math.floor(_x - _widthHalf);
-        int newPosY = (int)Math.floor(_y - _heightHalf);
+        // Calculate the new position by subtracting half the width|height from the current locations
+        int newPosX = (int)Math.floor(_x - _cardWidthHalf);
+        int newPosY = (int)Math.floor(_y - _cardHeightHalf);
         _cardView.setLocation(newPosX, newPosY);
         System.out.println(_cardView.getLocation());
         
