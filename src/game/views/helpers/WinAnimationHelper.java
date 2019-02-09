@@ -104,7 +104,9 @@ public class WinAnimationHelper {
                         _foundations.add(foundation);
                     }
                 }
-                _timer.cancel();
+                else {
+                    _timer.cancel();
+                }
             }
         }, 0, 1000/60);
     }
@@ -146,15 +148,14 @@ public class WinAnimationHelper {
      * Process all the cards help by the foundation views
      */
     public static void processCards() {
-        
-        initialize();
-        
+
         ViewFactory viewFactory = AbstractFactory.getFactory(ViewFactory.class);
         List<FoundationPileView> foundationsList = viewFactory.getAll(FoundationPileView.class);
         Collections.reverse(foundationsList);
         
         synchronized(_foundations) {
             _foundations.addAll(foundationsList);
+            initialize();
         }
     }
     
