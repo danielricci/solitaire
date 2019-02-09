@@ -80,14 +80,14 @@ public class WinAnimationHelper {
         _gameWidth = gameView.getWidth() + 4;
         _gameHeight = gameView.getHeight() - (preferences.statusBar ? AbstractFactory.getFactory(ViewFactory.class).get(StatusBarView.class).getHeight() : 0);
         
-        if(_timer != null) {
-            _timer.cancel();
-        }
+        // Clear this class before proceeding
+        clear();
         
         _timer = new Timer(true);
         _timer.schedule(new TimerTask() {
             WinAnimationHelper helper = null;
             @Override public void run() {
+                System.out.println("WEEEE");
                 if(_foundations.size() > 0) {
                     
                     if(helper != null) {
@@ -149,13 +149,14 @@ public class WinAnimationHelper {
      */
     public static void processCards() {
 
+        initialize();
+        
         ViewFactory viewFactory = AbstractFactory.getFactory(ViewFactory.class);
         List<FoundationPileView> foundationsList = viewFactory.getAll(FoundationPileView.class);
         Collections.reverse(foundationsList);
         
         synchronized(_foundations) {
             _foundations.addAll(foundationsList);
-            initialize();
         }
     }
     
