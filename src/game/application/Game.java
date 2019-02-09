@@ -52,6 +52,7 @@ import game.views.FoundationPileView;
 import game.views.GameView;
 import game.views.TableauPileView;
 import game.views.TalonPileView;
+import game.views.helpers.WinAnimationHelper;
 
 import resources.LocalizationStrings;
 
@@ -97,8 +98,10 @@ public final class Game extends Application {
                         }
                     }
                     else if(event.getKeyCode() == KeyEvent.VK_F3) {
-                        System.out.println("Simulating Game Won...");
-                        GameView.scanBoardForWin(true);
+                        GameView.forceCardsToFoundation();
+                    }
+                    else if(event.getKeyCode() == KeyEvent.VK_F4) {
+                        GameView.processWin();
                     }
                 }
             });
@@ -137,6 +140,8 @@ public final class Game extends Application {
             // Indicate that the application is no longer in a restart state
             isRestarting = false;
         }
+
+        WinAnimationHelper.clear();
         
         // Spawn a new game view and render its contents
         GameView gameView = AbstractFactory.getFactory(ViewFactory.class).add(new GameView(), true);

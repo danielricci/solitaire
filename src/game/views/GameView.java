@@ -178,27 +178,22 @@ public final class GameView extends PanelView {
         return null;
     }
     
-    public static void scanBoardForWin(boolean forceWin) {
-        if(forceWin) {
-            forceCardsToFoundation();
+    public static void scanBoardForWin() {
+        boolean isWinner = true;
+        for(FoundationPileView foundationView : AbstractFactory.getFactory(ViewFactory.class).getAll(FoundationPileView.class)) {
+            if(foundationView.layeredPane.getComponentCount() != 13) {
+                isWinner = false;
+                break;
+            }
         }
-        else {
-            
-            boolean isWinner = true;
-            for(FoundationPileView foundationView : AbstractFactory.getFactory(ViewFactory.class).getAll(FoundationPileView.class)) {
-                if(foundationView.layeredPane.getComponentCount() != 13) {
-                    isWinner = false;
-                    break;
-                }
-            }
-            
-            if(isWinner) {
-                processWin();
-            }
+        
+        if(isWinner) {
+            // TODO - put this back when the forcing of cards + animations all works together
+            //processWin();
         }
     }
     
-    private static void forceCardsToFoundation() {
+    public static void forceCardsToFoundation() {
         
         List<CardView> cards = AbstractFactory.getFactory(ViewFactory.class).getAll(CardView.class);
         cards.stream().forEach(z -> z.uncoverBackside(true));
@@ -219,9 +214,12 @@ public final class GameView extends PanelView {
                 break;
             }
         }
+        
+        // TODO - put this back when the forcing of cards + animations all works together
+        //processWin();
     }
     
-    private static void processWin() {
+    public static void processWin() {
         // Stop the game timer
         TimerView gameTimerView = AbstractFactory.getFactory(ViewFactory.class).get(TimerView.class);
         gameTimerView.stop();

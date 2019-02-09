@@ -48,9 +48,13 @@ import game.views.StatusBarView;
  */
 public class WinAnimationHelper {
 
-    private static Timer _timer = new Timer(true);
+    private static Timer _timer;
 
     private static Queue<FoundationPileView> _foundations = new LinkedList<FoundationPileView>();
+
+    private static int _gameWidth;
+    
+    private static int _gameHeight;
     
     private final CardView _cardView;
     
@@ -62,24 +66,25 @@ public class WinAnimationHelper {
 
     private final int _cardHeightHalf = CardView.CARD_HEIGHT / 2;
     
-    private static final int _gameWidth;
-    
-    private static final int _gameHeight;
-    
     private double _deltaX = Math.floor(Math.random() * 6 - 3) * 2;
     
     private double _deltaY = -Math.random() * 16;
     
     private boolean _isPreProcessed;
     
-    static {
+    private static void initialize() {
         OptionsPreferences preferences = new OptionsPreferences();
         preferences.load();
         
         GameView gameView = AbstractFactory.getFactory(ViewFactory.class).get(GameView.class);
         _gameWidth = gameView.getWidth() + 4;
         _gameHeight = gameView.getHeight() - (preferences.statusBar ? AbstractFactory.getFactory(ViewFactory.class).get(StatusBarView.class).getHeight() : 0);
-                
+        
+        if(_timer != null) {
+            _timer.cancel();
+        }
+        
+        _timer = new Timer(true);
         _timer.schedule(new TimerTask() {
             WinAnimationHelper helper = null;
             @Override public void run() {
@@ -99,6 +104,7 @@ public class WinAnimationHelper {
                         _foundations.add(foundation);
                     }
                 }
+                _timer.cancel();
             }
         }, 0, 1000/60);
     }
@@ -120,6 +126,9 @@ public class WinAnimationHelper {
         }
     }
     
+    /**
+     * Performs a preprocess of the currently set card view
+     */
     private void preProcessCard() {
         if(!_isPreProcessed) {
             _isPreProcessed = true;
@@ -133,7 +142,13 @@ public class WinAnimationHelper {
         }
     }
     
+    /**
+     * Process all the cards help by the foundation views
+     */
     public static void processCards() {
+        
+        initialize();
+        
         ViewFactory viewFactory = AbstractFactory.getFactory(ViewFactory.class);
         List<FoundationPileView> foundationsList = viewFactory.getAll(FoundationPileView.class);
         Collections.reverse(foundationsList);
@@ -143,6 +158,11 @@ public class WinAnimationHelper {
         }
     }
     
+    /**
+     * Performs an update
+     *
+     * @return TRUE if the operation was successful, false otherwise
+     */
     private boolean update() {
         preProcessCard();
         
@@ -154,7 +174,6 @@ public class WinAnimationHelper {
         // once an explicit border is no longer necessary because the art style will have a border
         // around it by default
         if(_x < (-_cardWidthHalf - 2) || _x > (_gameWidth + _cardWidthHalf)) {
-            System.out.println("STOP");
             return false;
         }
         
@@ -172,8 +191,19 @@ public class WinAnimationHelper {
         int newPosX = (int)Math.floor(_x - _cardWidthHalf);
         int newPosY = (int)Math.floor(_y - _cardHeightHalf);
         _cardView.setLocation(newPosX, newPosY);
-        System.out.println(_cardView.getLocation());
         
         return true;        
+    }
+
+    /**
+     * Clears the contents of this helper
+     */
+    public static void clear() {
+        if(_timer != null) {
+            _timer.cancel();
+            _timer = null;
+        }
+        
+        _foundations.clear();
     }
 }
