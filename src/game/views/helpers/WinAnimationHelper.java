@@ -61,11 +61,9 @@ public class WinAnimationHelper {
     
     private final double _cardWidthHalf = CardView.CARD_WIDTH / 2;
 
-    private final double _cardHeightHalf = CardView.CARD_HEIGHT / 2;
+    private int _x;
     
-    private double _x;
-    
-    private double _y;
+    private int _y;
     
     private double _deltaX = Math.floor(Math.random() * 6 - 3) * 2;
     
@@ -84,7 +82,7 @@ public class WinAnimationHelper {
         _y = initialPoint.y;
         
         if(_deltaX == 0) {
-            _deltaX = 2;
+            _deltaX = 1;
         }
     }
     
@@ -111,7 +109,7 @@ public class WinAnimationHelper {
         preferences.load();
         
         GameView gameView = AbstractFactory.getFactory(ViewFactory.class).get(GameView.class);
-        _gameWidth = gameView.getWidth() + 4;
+        _gameWidth = gameView.getWidth();
         _gameHeight = gameView.getHeight() - (preferences.statusBar ? AbstractFactory.getFactory(ViewFactory.class).get(StatusBarView.class).getHeight() : 0);
         
         // Clear this class before proceeding
@@ -143,48 +141,63 @@ public class WinAnimationHelper {
         }, 0, 1000/60);
     }
 
-    
     /**
-     * Performs an update
+     * Performs an update by performing both a next step point calculation and a draw routine
      *
      * @return TRUE if the operation was successful, false otherwise
      */
     private boolean update() {
 
-        // Take the change in X and the change in Y and apply them respectively
-        _x += _deltaX;
-        _y += _deltaY;
-        
-        // TODO -2 is the offset of the extr border from each card. Technically this can be removed
-        // once an explicit border is no longer necessary because the art style will have a border
-        // around it by default
-        if(_x < (-_cardWidthHalf - 2) || _x > (_gameWidth + _cardWidthHalf)) {
+        Point point = calculateNextStep();
+        if(point == null) {
             return false;
         }
         
-        // If y position is more than half the card height in distnce to the 
-        // bottom of the game view, reposition the y-pos to be at that length
-        // and bounce the card upwards by applying an inverse force to the change in y
-        if(_y > _gameHeight - _cardHeightHalf) {
-            _y = _gameHeight - _cardHeightHalf;
-            _deltaY = -_deltaY * 0.85;
-        }
-        
-        _deltaY += 0.98;
-        
-        // Calculate the new position by subtracting half the width|height from the current locations
-        int newPosX = (int)Math.floor(_x - _cardWidthHalf);
-        int newPosY = (int)Math.floor(_y - _cardHeightHalf);
-        
+        draw(point);
+        return true;    
+    }
+    
+    /**
+     * Draws the currently set card view to the specified position
+     *
+     * @param point The position to draw to
+     */
+    private void draw(Point point) {
         CardView cardView = CardView.createLightWeightCard(_cardView);
         cardView.render();
         
         ViewFactory viewFactory = AbstractFactory.getFactory(ViewFactory.class);
         GameView gameView = viewFactory.get(GameView.class);
-        gameView.add(cardView, 1);
-        cardView.setBounds(new Rectangle(newPosX, newPosY, 71, 96));
+        gameView.add(cardView, gameView.getComponentZOrder(viewFactory.get(StatusBarView.class)));
+        cardView.setBounds(new Rectangle(point.x, point.y, _cardView.getWidth(), _cardView.getHeight()));        
+    }
+    
+    /**
+     * Calculates the next position that the currently set card will be at
+     *
+     * @return The position associated to the next step where the card would be at 
+     */
+    private Point calculateNextStep() {
+
+        // Take the change in X and the change in Y and apply them respectively
+        _x += _deltaX;
+        _y += _deltaY;
         
-        return true;        
+        if(_x < (-_cardWidthHalf) || _x > (_gameWidth + _cardWidthHalf)) {
+            return null;
+        }
+        
+        // If y position is more than half the card height in distnce to the 
+        // bottom of the game view, reposition the y-pos to be at that length
+        // and bounce the card upwards by applying an inverse force to the change in y
+        if(_y > _gameHeight - CardView.CARD_HEIGHT) {
+            _y = _gameHeight - CardView.CARD_HEIGHT;
+            _deltaY = -_deltaY * 0.85;
+        }
+        
+        _deltaY += 0.98;
+        
+        return new Point(_x, _y);
     }
 
     /**
