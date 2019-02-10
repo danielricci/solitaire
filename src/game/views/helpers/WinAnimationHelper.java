@@ -59,20 +59,53 @@ public class WinAnimationHelper {
     
     private final CardView _cardView;
     
-    private float _x;
-    
-    private float _y;
-    
-    private final int _cardWidthHalf = CardView.CARD_WIDTH / 2;
+    private final double _cardWidthHalf = CardView.CARD_WIDTH / 2;
 
-    private final int _cardHeightHalf = CardView.CARD_HEIGHT / 2;
+    private final double _cardHeightHalf = CardView.CARD_HEIGHT / 2;
+    
+    private double _x;
+    
+    private double _y;
     
     private double _deltaX = Math.floor(Math.random() * 6 - 3) * 2;
     
     private double _deltaY = -Math.random() * 16;
     
-    private boolean _isPreProcessed;
+    /**
+     * Constructs a new instance of this class type
+     * 
+     * @param cardView The card view to animate
+     */
+    private WinAnimationHelper(CardView cardView) {
+        _cardView = cardView;
+        Point initialPoint = cardView.getParentIView().getContainerClass().getLocation();
+
+        _x = initialPoint.x;
+        _y = initialPoint.y;
+        
+        if(_deltaX == 0) {
+            _deltaX = 2;
+        }
+    }
     
+    /**
+     * Process all the cards help by the foundation views
+     */
+    public static void processCards() {
+        
+        initialize();
+        
+        ViewFactory viewFactory = AbstractFactory.getFactory(ViewFactory.class);
+        List<FoundationPileView> foundationsList = viewFactory.getAll(FoundationPileView.class);
+        Collections.reverse(foundationsList);
+        synchronized(_foundations) {
+            _foundations.addAll(foundationsList);
+        }
+    }
+    
+    /**
+     * Static initializer for this class type
+     */
     private static void initialize() {
         OptionsPreferences preferences = new OptionsPreferences();
         preferences.load();
@@ -107,55 +140,9 @@ public class WinAnimationHelper {
                     _timer.cancel();
                 }
             }
-        }, 0, 1000/120);
+        }, 0, 1000/60);
     }
-    
-    /**
-     * Constructs a new instance of this class type
-     * 
-     * @param cardView The card view to animate
-     */
-    private WinAnimationHelper(CardView cardView) {
-        _cardView = cardView;
-        Point initialPoint = cardView.getParentIView().getContainerClass().getLocation();
 
-        _x = initialPoint.x;
-        _y = initialPoint.y;
-        
-        if(_deltaX == 0) {
-            _deltaX = 2;
-        }
-    }
-    
-    /**
-     * Performs a preprocess of the currently set card view
-     */
-    private void preProcessCard() {
-        if(!_isPreProcessed) {
-            _isPreProcessed = true;
-            
-            ViewFactory viewFactory = AbstractFactory.getFactory(ViewFactory.class);
-            GameView gameView = viewFactory.get(GameView.class);
-            Point parentLocation = this._cardView.getParentIView().getContainerClass().getLocation();
-            this._cardView.setLocation(parentLocation);
-            gameView.add(this._cardView, 1);
-        }
-    }
-    
-    /**
-     * Process all the cards help by the foundation views
-     */
-    public static void processCards() {
-
-        initialize();
-        
-        ViewFactory viewFactory = AbstractFactory.getFactory(ViewFactory.class);
-        List<FoundationPileView> foundationsList = viewFactory.getAll(FoundationPileView.class);
-        Collections.reverse(foundationsList);
-        synchronized(_foundations) {
-            _foundations.addAll(foundationsList);
-        }
-    }
     
     /**
      * Performs an update
@@ -163,8 +150,7 @@ public class WinAnimationHelper {
      * @return TRUE if the operation was successful, false otherwise
      */
     private boolean update() {
-        //preProcessCard();
-        
+
         // Take the change in X and the change in Y and apply them respectively
         _x += _deltaX;
         _y += _deltaY;
@@ -192,7 +178,6 @@ public class WinAnimationHelper {
         
         CardView cardView = CardView.createLightWeightCard(_cardView);
         cardView.render();
-        
         
         ViewFactory viewFactory = AbstractFactory.getFactory(ViewFactory.class);
         GameView gameView = viewFactory.get(GameView.class);
