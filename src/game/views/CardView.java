@@ -211,13 +211,6 @@ public final class CardView extends PanelView implements ICollidable {
             _parentPanelView = null;
         }
     }
-
-    /**
-     * @return TRUE of the backside is showing, FALSE otherwise
-     */
-    public boolean isBacksideShowing() {
-        return _controller.getCard().getIsBackside();
-    }
     
     /**
      * This mouse adapter handles events when the card is pressed with the mouse
@@ -257,7 +250,7 @@ public final class CardView extends PanelView implements ICollidable {
     /**
      * The controller associated to this card view
      */
-    private final CardController _controller;
+    private CardController _controller;
 
     /**
      * The draggable listener associated to this view
@@ -294,22 +287,27 @@ public final class CardView extends PanelView implements ICollidable {
      */
     public final static String EVENT_OUTLINE_SYNCHRONIZE = "EVENT_OUTLINE_SYNCHRONIZE";
     
+    private CardView() {
+        getViewProperties().setShouldAlwaysRedraw(true);
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        setPreferredSize(new Dimension(CARD_WIDTH, CARD_HEIGHT));
+        setOpaque(true);
+        setBackground(Color.BLACK);
+        setBorder(BorderFactory.createLineBorder(Color.BLACK, 1, true));
+        
+        add(layeredPane);
+        
+        // Set the collision style for this object
+        _collisionListener.setIsSingularCollision(true);
+    }
+    
     /**
      * Constructs a new instance of this class type
      * 
      * @param cardModel The cards model underlying this card view
      */
     public CardView(CardModel cardModel) {
-        
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        setPreferredSize(new Dimension(CARD_WIDTH, CARD_HEIGHT));
-        setOpaque(true);
-        setBackground(Color.BLACK);
-        setBorder(BorderFactory.createLineBorder(Color.BLACK, 1, true));
-        add(layeredPane);
-        
-        // Set the collision style for this object
-        _collisionListener.setIsSingularCollision(true);
+        this();
         
         cardModel.addListener(this);
         _controller = new CardController(cardModel);
@@ -370,6 +368,13 @@ public final class CardView extends PanelView implements ICollidable {
             }
         });       
         synchronizeWithOptions();
+    }
+    
+    public static CardView createLightWeightCard(CardView cardView) {
+        CardView newCardView = new CardView();
+        newCardView.setEnabled(cardView.isEnabled());
+        cardView.getRenderableContent().forEach(z -> newCardView.addRenderableContent(z));
+        return newCardView;
     }
     
     /**
@@ -445,6 +450,13 @@ public final class CardView extends PanelView implements ICollidable {
     }
     
     /**
+     * @return TRUE of the backside is showing, FALSE otherwise
+     */
+    public boolean isBacksideShowing() {
+        return _controller.getCard().getIsBackside();
+    }
+    
+    /**
      * Performs an auto card movement, attempting to move this card to the foundation
      * 
      * @return TRUE if the auto movement was successfull, FALSE otherwise
@@ -496,7 +508,7 @@ public final class CardView extends PanelView implements ICollidable {
         super.setEnabled(enabled);
         
         // Propagate the state change to the proxy. Ensure that no circular reference could ever occur
-        if(_cardProxy.isEnabled() != enabled) {
+        if(_cardProxy != null && _cardProxy.isEnabled() != enabled) {
             _cardProxy.setEnabled(enabled);
         }
 
@@ -535,7 +547,10 @@ public final class CardView extends PanelView implements ICollidable {
     @Override public void render() {
         super.render();
         setRenderLimits(0, 0, this.getWidth(), this.getHeight());
-        _controller.refresh();
+        
+        if(_controller != null) {
+            _controller.refresh();
+        }
     }
 
     @Override public void update(EventArgs event) {
