@@ -51,7 +51,7 @@ public abstract class AbstractPileView extends PanelView implements IUndoable {
     /**
      * Specifies the offset of each card within this view
      */
-    @Deprecated public int CARD_OFFSET = 12;
+    public int CARD_OFFSET = 12;
     
     /**
      * The layered pane that holds the list of cards
