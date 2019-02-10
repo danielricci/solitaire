@@ -546,7 +546,7 @@ public final class CardView extends PanelView implements ICollidable {
 
     @Override public void render() {
         super.render();
-        setRenderLimits(0, 0, this.getWidth(), this.getHeight());
+        setRenderLimits(0, 0, this.getPreferredSize().width, this.getPreferredSize().height);
         
         if(_controller != null) {
             _controller.refresh();

@@ -25,6 +25,7 @@
 package game.views.helpers;
 
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -87,9 +88,7 @@ public class WinAnimationHelper {
         _timer.schedule(new TimerTask() {
             WinAnimationHelper helper = null;
             @Override public void run() {
-                System.out.println("WEEEE");
                 if(_foundations.size() > 0) {
-                    
                     if(helper != null) {
                         if(!helper.update()) {
                             helper = null;
@@ -97,9 +96,9 @@ public class WinAnimationHelper {
                     }
                     else {
                         FoundationPileView foundation = _foundations.remove();
-                        CardView cardView = foundation.getLastCard();
-                        if(cardView != null) {
-                            helper = new WinAnimationHelper(cardView);
+                        CardView card = foundation.getLastCard();
+                        if(card != null) {
+                            helper = new WinAnimationHelper(card);
                         }
                         _foundations.add(foundation);
                     }
@@ -108,7 +107,7 @@ public class WinAnimationHelper {
                     _timer.cancel();
                 }
             }
-        }, 0, 1000/60);
+        }, 0, 1000/120);
     }
     
     /**
@@ -138,9 +137,8 @@ public class WinAnimationHelper {
             ViewFactory viewFactory = AbstractFactory.getFactory(ViewFactory.class);
             GameView gameView = viewFactory.get(GameView.class);
             Point parentLocation = this._cardView.getParentIView().getContainerClass().getLocation();
-            
-            gameView.add(this._cardView, gameView.getComponentZOrder(viewFactory.get(StatusBarView.class)) + 1);
             this._cardView.setLocation(parentLocation);
+            gameView.add(this._cardView, 1);
         }
     }
     
@@ -154,7 +152,6 @@ public class WinAnimationHelper {
         ViewFactory viewFactory = AbstractFactory.getFactory(ViewFactory.class);
         List<FoundationPileView> foundationsList = viewFactory.getAll(FoundationPileView.class);
         Collections.reverse(foundationsList);
-        
         synchronized(_foundations) {
             _foundations.addAll(foundationsList);
         }
@@ -166,7 +163,7 @@ public class WinAnimationHelper {
      * @return TRUE if the operation was successful, false otherwise
      */
     private boolean update() {
-        preProcessCard();
+        //preProcessCard();
         
         // Take the change in X and the change in Y and apply them respectively
         _x += _deltaX;
@@ -192,7 +189,15 @@ public class WinAnimationHelper {
         // Calculate the new position by subtracting half the width|height from the current locations
         int newPosX = (int)Math.floor(_x - _cardWidthHalf);
         int newPosY = (int)Math.floor(_y - _cardHeightHalf);
-        _cardView.setLocation(newPosX, newPosY);
+        
+        CardView cardView = CardView.createLightWeightCard(_cardView);
+        cardView.render();
+        
+        
+        ViewFactory viewFactory = AbstractFactory.getFactory(ViewFactory.class);
+        GameView gameView = viewFactory.get(GameView.class);
+        gameView.add(cardView, 1);
+        cardView.setBounds(new Rectangle(newPosX, newPosY, 71, 96));
         
         return true;        
     }
