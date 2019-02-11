@@ -34,16 +34,21 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.AbstractButton;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import framework.core.factories.AbstractFactory;
 import framework.core.factories.ControllerFactory;
 import framework.core.factories.ViewFactory;
 import framework.core.mvc.view.PanelView;
+import framework.core.navigation.MenuBuilder;
+import framework.core.system.Application;
 import framework.utils.globalisation.Localization;
 
 import game.config.OptionsPreferences;
 import game.controllers.MovementRecorderController;
+import game.menu.NewGameMenuItem;
 import game.models.CardModel;
 import game.views.helpers.ViewHelper;
 import game.views.helpers.WinAnimationHelper;
@@ -188,12 +193,11 @@ public final class GameView extends PanelView {
         }
         
         if(isWinner) {
-            // TODO - put this back when the forcing of cards + animations all works together
-            //processWin();
+            processWin();
         }
     }
     
-    public static void forceCardsToFoundation() {
+    public static void forceGameWin() {
         
         List<CardView> cards = AbstractFactory.getFactory(ViewFactory.class).getAll(CardView.class);
         cards.stream().forEach(z -> z.uncoverBackside(true));
@@ -215,11 +219,10 @@ public final class GameView extends PanelView {
             }
         }
         
-        // TODO - put this back when the forcing of cards + animations all works together
-        //processWin();
+        processWin();
     }
     
-    public static void processWin() {
+    private static void processWin() {
         // Stop the game timer
         TimerView gameTimerView = AbstractFactory.getFactory(ViewFactory.class).get(TimerView.class);
         gameTimerView.stop();
@@ -230,21 +233,18 @@ public final class GameView extends PanelView {
         // Show the updated text on the status bar
         AbstractFactory.getFactory(ViewFactory.class).get(StatusBarView.class).setMenuDescription(String.format(Localization.instance().getLocalizedString(LocalizationStrings.GAME_WON_STATUS_BAR), bonus));
         
-//        GameView gameView = AbstractFactory.getFactory(ViewFactory.class).get(GameView.class);
-//        for(TableauPileView view : AbstractFactory.getFactory(ViewFactory.class).getAll(TableauPileView.class)) {
-//            //view.setVisible(false);
-//        }
-        
         // Perform the animation on all the cards
         WinAnimationHelper.processCards();
-        
+    }
+    
+    public static void showGameOverAlert() {
         // Show the dialog indicating that game has won
-//        if(JOptionPane.showConfirmDialog(Application.instance, Localization.instance().getLocalizedString(LocalizationStrings.GAME_OVER), Localization.instance().getLocalizedString(LocalizationStrings.GAME_OVER_HEADER), JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) { 
-//            MenuBuilder.search(Application.instance.getJMenuBar(), NewGameMenuItem.class).getComponent(AbstractButton.class).doClick();
-//        }
-//        else {
-//            // Clear the description and other status bar texts
-//            AbstractFactory.getFactory(ViewFactory.class).get(StatusBarView.class).clearMenuDescription();
-//        }
+        if(JOptionPane.showConfirmDialog(Application.instance, Localization.instance().getLocalizedString(LocalizationStrings.GAME_OVER), Localization.instance().getLocalizedString(LocalizationStrings.GAME_OVER_HEADER), JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) { 
+            MenuBuilder.search(Application.instance.getJMenuBar(), NewGameMenuItem.class).getComponent(AbstractButton.class).doClick();
+        }
+        else {
+            // Clear the description and other status bar texts
+            AbstractFactory.getFactory(ViewFactory.class).get(StatusBarView.class).clearMenuDescription();
+        }
     }
 }

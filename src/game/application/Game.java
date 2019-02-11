@@ -75,12 +75,8 @@ public final class Game extends Application {
         
         if(isDebug) {
             addKeyListener(new KeyAdapter() {
-                @Override public void keyReleased(KeyEvent event) {
-                    if(event.getKeyCode() == KeyEvent.VK_F12) {
-                        System.out.println("F1: Print Debug Values");
-                        System.out.println("F3: Simulate Game Won");
-                    }
-                    else if(event.getKeyCode() == KeyEvent.VK_F1) {
+                @Override public void keyPressed(KeyEvent event) {
+                    if(event.getKeyCode() == KeyEvent.VK_F1) {
                         OptionsPreferences options = new OptionsPreferences();
                         options.load();
                         System.out.println(options);
@@ -97,15 +93,25 @@ public final class Game extends Application {
                             System.out.println(foundationViews.get(i));
                         }
                     }
-                    else if(event.getKeyCode() == KeyEvent.VK_F3) {
-                        GameView.forceCardsToFoundation();
-                    }
-                    else if(event.getKeyCode() == KeyEvent.VK_F4) {
-                        GameView.processWin();
-                    }
                 }
             });
         }
+        
+        addKeyListener(new KeyAdapter() {
+            @Override public void keyPressed(KeyEvent event) {
+                boolean _locked = false;
+                
+                //Alt + Shift + 2
+                if(event.getKeyCode() == KeyEvent.VK_2 && event.getModifiersEx() == (KeyEvent.ALT_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK)) {
+                    if(!_locked) { 
+                        _locked = true;
+                        GameView.forceGameWin();
+                        _locked = false;
+                    }
+                }
+            }
+        });
+        
     }
     
     /**
@@ -129,6 +135,8 @@ public final class Game extends Application {
     }
     
     @Override public void onRestart() {
+        super.onRestart();
+        
         if(AbstractFactory.isRunning()) {
             
             // Clear the factory of it's contents
