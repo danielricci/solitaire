@@ -26,6 +26,10 @@ package game.views.helpers;
 
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -35,6 +39,7 @@ import java.util.TimerTask;
 
 import framework.core.factories.AbstractFactory;
 import framework.core.factories.ViewFactory;
+import framework.core.system.Application;
 
 import game.config.OptionsPreferences;
 import game.views.CardView;
@@ -105,6 +110,7 @@ public class WinAnimationHelper {
      * Static initializer for this class type
      */
     private static void initialize() {
+        System.out.println("INITIALIZE");
         OptionsPreferences preferences = new OptionsPreferences();
         preferences.load();
         
@@ -114,6 +120,26 @@ public class WinAnimationHelper {
         
         // Clear this class before proceeding
         clear();
+        
+        KeyAdapter keyAdapter = new KeyAdapter() {
+            @Override public void keyPressed(KeyEvent event) {
+                Application.instance.removeKeyListener(this);
+                clear();
+                GameView.showGameOverAlert();
+            }
+        };
+        Application.instance.addKeyListener(keyAdapter);
+
+        
+        MouseAdapter mouseAdapter = new MouseAdapter() {
+            @Override public void mousePressed(MouseEvent event) {
+                gameView.removeMouseListener(this);
+                Application.instance.removeKeyListener(keyAdapter);
+                clear();
+                GameView.showGameOverAlert();
+            }
+        };
+        gameView.addMouseListener(mouseAdapter);
         
         _timer = new Timer(true);
         _timer.schedule(new TimerTask() {
@@ -135,7 +161,8 @@ public class WinAnimationHelper {
                     }
                 }
                 else {
-                    _timer.cancel();
+                    clear();
+                    GameView.showGameOverAlert();
                 }
             }
         }, 0, 1000/60);

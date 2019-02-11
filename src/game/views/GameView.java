@@ -218,8 +218,6 @@ public final class GameView extends PanelView {
                 break;
             }
         }
-        
-        processWin();
     }
     
     private static void processWin() {
