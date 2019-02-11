@@ -98,7 +98,7 @@ public final class Game extends Application {
         }
         
         addKeyListener(new KeyAdapter() {
-            @Override public void keyPressed(KeyEvent event) {
+            @Override public void keyReleased(KeyEvent event) {
                 boolean _locked = false;
                 
                 //Alt + Shift + 2
@@ -153,7 +153,7 @@ public final class Game extends Application {
         
         // Spawn a new game view and render its contents
         GameView gameView = AbstractFactory.getFactory(ViewFactory.class).add(new GameView(), true);
-        Application.instance.setContentPane(gameView);
+        instance.setContentPane(gameView);
         gameView.render();
     }
     

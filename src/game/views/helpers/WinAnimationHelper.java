@@ -57,6 +57,20 @@ public class WinAnimationHelper {
     private static Timer _timer;
 
     private static Queue<FoundationPileView> _foundations = new LinkedList<FoundationPileView>();
+    
+    private static KeyAdapter _keyAdapter = new KeyAdapter() {
+        @Override public void keyPressed(KeyEvent event) {
+            clear();
+            GameView.showGameOverAlert();
+        }
+    };
+    
+    private static MouseAdapter _mouseAdapter = new MouseAdapter() {
+        @Override public void mousePressed(MouseEvent event) {
+            clear();
+            GameView.showGameOverAlert();
+        }
+    };
 
     private static int _gameWidth;
     
@@ -110,7 +124,6 @@ public class WinAnimationHelper {
      * Static initializer for this class type
      */
     private static void initialize() {
-        System.out.println("INITIALIZE");
         OptionsPreferences preferences = new OptionsPreferences();
         preferences.load();
         
@@ -121,31 +134,16 @@ public class WinAnimationHelper {
         // Clear this class before proceeding
         clear();
         
-        KeyAdapter keyAdapter = new KeyAdapter() {
-            @Override public void keyPressed(KeyEvent event) {
-                Application.instance.removeKeyListener(this);
-                clear();
-                GameView.showGameOverAlert();
-            }
-        };
-        Application.instance.addKeyListener(keyAdapter);
-
-        
-        MouseAdapter mouseAdapter = new MouseAdapter() {
-            @Override public void mousePressed(MouseEvent event) {
-                gameView.removeMouseListener(this);
-                Application.instance.removeKeyListener(keyAdapter);
-                clear();
-                GameView.showGameOverAlert();
-            }
-        };
-        gameView.addMouseListener(mouseAdapter);
+        gameView.addMouseListener(_mouseAdapter);
+        Application.instance.addKeyListener(_keyAdapter);
         
         _timer = new Timer(true);
         _timer.schedule(new TimerTask() {
             WinAnimationHelper helper = null;
+            boolean hadValues = false;
             @Override public void run() {
                 if(_foundations.size() > 0) {
+                    hadValues = true;
                     if(helper != null) {
                         if(!helper.update()) {
                             helper = null;
@@ -161,8 +159,10 @@ public class WinAnimationHelper {
                     }
                 }
                 else {
-                    clear();
-                    GameView.showGameOverAlert();
+                    if(hadValues) {
+                        clear();
+                        GameView.showGameOverAlert();
+                    }
                 }
             }
         }, 0, 1000/60);
@@ -236,6 +236,16 @@ public class WinAnimationHelper {
             _timer = null;
         }
         
+        // TODO - remove both mouse and key adapters!!!!
+        ViewFactory viewFactory = AbstractFactory.getFactory(ViewFactory.class);
+        if(viewFactory != null) {
+            GameView gameView = viewFactory.get(GameView.class);
+            if(gameView != null) {
+                gameView.removeMouseListener(_mouseAdapter);
+            }
+        }
+        Application.instance.removeKeyListener(_keyAdapter);
+                
         _foundations.clear();
     }
 }
