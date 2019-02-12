@@ -243,6 +243,15 @@ public final class GameView extends PanelView {
         else {
             // Clear the description and other status bar texts
             AbstractFactory.getFactory(ViewFactory.class).get(StatusBarView.class).clearMenuDescription();
+            
+            // Clear the contents of the game view except for the status bar
+            for(Component component : AbstractFactory.getFactory(ViewFactory.class).get(GameView.class).getComponents()) {
+                if(!(component instanceof StatusBarView)) {
+                    component.getParent().remove(component);
+                }
+            }
+            
+            Application.instance.repaint();
         }
     }
 }
