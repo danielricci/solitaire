@@ -35,6 +35,7 @@ import javax.swing.JOptionPane;
 import framework.core.factories.AbstractFactory;
 import framework.core.factories.ViewFactory;
 import framework.core.navigation.AbstractMenuItem;
+import framework.core.system.Application;
 import framework.utils.globalisation.Localization;
 
 import game.views.StatusBarView;
@@ -71,7 +72,7 @@ public class AboutMenuItem extends AbstractMenuItem {
 
     @Override public void onExecute(ActionEvent actionEvent) {
         JOptionPane.showMessageDialog(
-            null,
+            Application.instance,
             Localization.instance().getLocalizedString(LocalizationStrings.GITHUB),
             Localization.instance().getLocalizedString(LocalizationStrings.ABOUT),
             JOptionPane.INFORMATION_MESSAGE
