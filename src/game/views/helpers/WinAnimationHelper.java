@@ -175,7 +175,7 @@ public class WinAnimationHelper {
                     }
                 }
             }
-        }, 0, 1000/1000);
+        }, 0, 1000/60);
     }
 
     /**
