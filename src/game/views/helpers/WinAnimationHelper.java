@@ -138,7 +138,6 @@ public class WinAnimationHelper {
         gameView.addMouseListener(_mouseAdapter);
         Application.instance.addKeyListener(_keyAdapter);
         
-        
         _timer = new Timer(true);
         _timer.schedule(new TimerTask() {
             WinAnimationHelper helper = null;
@@ -148,16 +147,25 @@ public class WinAnimationHelper {
                     hadValues = true;
                     if(helper != null) {
                         if(!helper.update()) {
+                        	helper._cardView.getParent().remove(helper._cardView);
                             helper = null;
                         }
                     }
                     else {
-                        FoundationPileView foundation = _foundations.remove();
-                        CardView card = foundation.getLastCard();
-                        if(card != null) {
-                            helper = new WinAnimationHelper(card);
+                    	// Get a reference to the current head of the foundations list
+                        FoundationPileView foundation = _foundations.poll();
+
+                    	// If the foundation exists then remove it from the list and get the
+                        // last card. Provided that it exists then create a helper object to
+                        // animate the card and put the foundation at the back of the queue
+                        if(foundation != null) {
+                        	_foundations.remove(foundation);
+                        	CardView card = foundation.getLastCard();
+                        	if(card != null) {
+                                helper = new WinAnimationHelper(card);
+                                _foundations.add(foundation);
+                            }
                         }
-                        _foundations.add(foundation);
                     }
                 }
                 else {
@@ -167,7 +175,7 @@ public class WinAnimationHelper {
                     }
                 }
             }
-        }, 0, 1000/60);
+        }, 0, 1000/1000);
     }
 
     /**
