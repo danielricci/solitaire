@@ -107,15 +107,13 @@ public class WinAnimationHelper {
      * Process all the cards help by the foundation views
      */
     public static void processCards() {
-        
-        initialize();
-        
+
         ViewFactory viewFactory = AbstractFactory.getFactory(ViewFactory.class);
         List<FoundationPileView> foundationsList = viewFactory.getAll(FoundationPileView.class);
         Collections.reverse(foundationsList);
-        synchronized(_foundations) {
-            _foundations.addAll(foundationsList);
-        }
+
+        initialize();
+        _foundations.addAll(foundationsList);
     }
     
     /**
@@ -131,9 +129,15 @@ public class WinAnimationHelper {
         
         // Clear this class before proceeding
         clear();
-        
+
+        Application.instance.getJMenuBar().addMouseListener(_mouseAdapter);
+        for(int i = 0; i < Application.instance.getJMenuBar().getMenuCount(); ++i) {
+            Application.instance.getJMenuBar().getMenu(i).setEnabled(false);
+        }
+
         gameView.addMouseListener(_mouseAdapter);
         Application.instance.addKeyListener(_keyAdapter);
+        
         
         _timer = new Timer(true);
         _timer.schedule(new TimerTask() {
@@ -243,7 +247,12 @@ public class WinAnimationHelper {
             }
         }
         Application.instance.removeKeyListener(_keyAdapter);
-                
+        Application.instance.getJMenuBar().removeMouseListener(_mouseAdapter);
+        
+        for(int i = 0; i < Application.instance.getJMenuBar().getMenuCount(); ++i) {
+            Application.instance.getJMenuBar().getMenu(i).setEnabled(true);
+        }
+        
         _foundations.clear();
     }
 }
