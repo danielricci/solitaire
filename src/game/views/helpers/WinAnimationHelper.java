@@ -78,8 +78,6 @@ public class WinAnimationHelper {
     
     private final CardView _cardView;
     
-    private final double _cardWidthHalf = CardView.CARD_WIDTH / 2;
-
     private int _x;
     
     private int _y;
@@ -210,7 +208,7 @@ public class WinAnimationHelper {
         _x += _deltaX;
         _y += _deltaY;
         
-        if(_x < (-_cardWidthHalf) || _x > (_gameWidth + _cardWidthHalf)) {
+        if(_x < (-CardView.CARD_HEIGHT) || _x > (_gameWidth + CardView.CARD_HEIGHT)) {
             return null;
         }
         
