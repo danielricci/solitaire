@@ -54,10 +54,19 @@ import game.views.StatusBarView;
  */
 public class WinAnimationHelper {
 
+    /**
+     * The timer used to update the position of the cards associated to the foundations
+     */
     private static Timer _timer;
 
+    /**
+     * The queue of foundation views, ordered in priority of rendering importance
+     */
     private static Queue<FoundationPileView> _foundations = new LinkedList<FoundationPileView>();
     
+    /**
+     * The key adapter that handles when a key is pressed during the animation phase
+     */
     private static KeyAdapter _keyAdapter = new KeyAdapter() {
         @Override public void keyPressed(KeyEvent event) {
             clear();
@@ -65,25 +74,44 @@ public class WinAnimationHelper {
         }
     };
     
+    /**
+     * The mouse adapter that handles when a mouse button is pressed during the animation phase
+     */
     private static MouseAdapter _mouseAdapter = new MouseAdapter() {
         @Override public void mousePressed(MouseEvent event) {
             clear();
             GameView.showGameOverAlert();
         }
     };
-
-    private static int _gameWidth;
     
-    private static int _gameHeight;
+    /**
+     * The canvas width
+     */
+    private static int _canvasWidth;
     
+    /**
+     * The canvas height
+     */
+    private static int _canvasHeight;
+    
+    /**
+     * The card view that is being manipulated
+     */
     private final CardView _cardView;
     
-    private int _x;
+    /**
+     * The position that is being used to render the card to
+     */
+    private final Point _position;
     
-    private int _y;
-    
+    /**
+     * The change in `x` over time
+     */
     private double _deltaX = Math.floor(Math.random() * 6 - 3) * 2;
     
+    /*
+     * The change in `y` over time
+     */
     private double _deltaY = -Math.random() * 16;
     
     /**
@@ -93,11 +121,8 @@ public class WinAnimationHelper {
      */
     private WinAnimationHelper(CardView cardView) {
         _cardView = cardView;
-        Point initialPoint = cardView.getParentIView().getContainerClass().getLocation();
+        _position = cardView.getParentIView().getContainerClass().getLocation();
 
-        _x = initialPoint.x;
-        _y = initialPoint.y;
-        
         if(_deltaX == 0) {
             _deltaX = 1;
         }
@@ -117,15 +142,15 @@ public class WinAnimationHelper {
     }
     
     /**
-     * Static initializer for this class type
+     * Initializes this helper in preparation for rendering the cards associated to the foundations
      */
     private static void initialize() {
         OptionsPreferences preferences = new OptionsPreferences();
         preferences.load();
         
         GameView gameView = AbstractFactory.getFactory(ViewFactory.class).get(GameView.class);
-        _gameWidth = gameView.getWidth();
-        _gameHeight = gameView.getHeight() - (preferences.statusBar ? AbstractFactory.getFactory(ViewFactory.class).get(StatusBarView.class).getHeight() : 0);
+        _canvasWidth = gameView.getWidth();
+        _canvasHeight = gameView.getHeight() - (preferences.statusBar ? AbstractFactory.getFactory(ViewFactory.class).get(StatusBarView.class).getHeight() : 0);
         
         // Clear this class before proceeding
         clear();
@@ -217,24 +242,24 @@ public class WinAnimationHelper {
     private Point calculateNextStep() {
 
         // Take the change in X and the change in Y and apply them respectively
-        _x += _deltaX;
-        _y += _deltaY;
+        _position.x += _deltaX;
+        _position.y += _deltaY;
         
-        if(_x < -CardView.CARD_WIDTH || _x > _gameWidth) {
+        if(_position.x < -CardView.CARD_WIDTH || _position.x > _canvasWidth) {
             return null;
         }
         
         // If y position is more than half the card height in distnce to the 
         // bottom of the game view, reposition the y-pos to be at that length
         // and bounce the card upwards by applying an inverse force to the change in y
-        if(_y > _gameHeight - CardView.CARD_HEIGHT) {
-            _y = _gameHeight - CardView.CARD_HEIGHT;
+        if(_position.y > _canvasHeight - CardView.CARD_HEIGHT) {
+            _position.y = _canvasHeight - CardView.CARD_HEIGHT;
             _deltaY = -_deltaY * 0.85;
         }
         
         _deltaY += 0.98;
         
-        return new Point(_x, _y);
+        return new Point(_position.x, _position.y);
     }
 
     /**
