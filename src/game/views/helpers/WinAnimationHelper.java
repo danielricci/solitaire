@@ -147,21 +147,21 @@ public class WinAnimationHelper {
                     hadValues = true;
                     if(helper != null) {
                         if(!helper.update()) {
-                        	helper._cardView.getParent().remove(helper._cardView);
+                            helper._cardView.getParent().remove(helper._cardView);
                             helper = null;
                         }
                     }
                     else {
-                    	// Get a reference to the current head of the foundations list
+                        // Get a reference to the current head of the foundations list
                         FoundationPileView foundation = _foundations.poll();
 
-                    	// If the foundation exists then remove it from the list and get the
+                        // If the foundation exists then remove it from the list and get the
                         // last card. Provided that it exists then create a helper object to
                         // animate the card and put the foundation at the back of the queue
                         if(foundation != null) {
-                        	_foundations.remove(foundation);
-                        	CardView card = foundation.getLastCard();
-                        	if(card != null) {
+                            _foundations.remove(foundation);
+                            CardView card = foundation.getLastCard();
+                            if(card != null) {
                                 helper = new WinAnimationHelper(card);
                                 _foundations.add(foundation);
                             }
@@ -220,7 +220,7 @@ public class WinAnimationHelper {
         _x += _deltaX;
         _y += _deltaY;
         
-        if(_x < (-CardView.CARD_HEIGHT) || _x > (_gameWidth + CardView.CARD_HEIGHT)) {
+        if(_x < -CardView.CARD_WIDTH || _x > _gameWidth) {
             return null;
         }
         
