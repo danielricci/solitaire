@@ -98,11 +98,16 @@ public class WinAnimationHelper {
      * The card view that is being manipulated
      */
     private final CardView _cardView;
+
+    /**
+     * The x-position being used for the card coordinate
+     */
+    private double _x;
     
     /**
-     * The position that is being used to render the card to
+     * The y-position being used for the card coordinate
      */
-    private final Point _position;
+    private double _y;
     
     /**
      * The change in `x` over time
@@ -121,7 +126,9 @@ public class WinAnimationHelper {
      */
     private WinAnimationHelper(CardView cardView) {
         _cardView = cardView;
-        _position = cardView.getParentIView().getContainerClass().getLocation();
+        Point position = cardView.getParentIView().getContainerClass().getLocation();
+        _x = position.getX();
+        _y = position.getY();
 
         if(_deltaX == 0) {
             _deltaX = 1;
@@ -200,7 +207,7 @@ public class WinAnimationHelper {
                     }
                 }
             }
-        }, 0, 1000/60);
+        }, 0, 1000/80);
     }
 
     /**
@@ -242,26 +249,31 @@ public class WinAnimationHelper {
     private Point calculateNextStep() {
 
         // Take the change in X and the change in Y and apply them respectively
-        _position.x += _deltaX;
-        _position.y += _deltaY;
-        
-        if(_position.x < -CardView.CARD_WIDTH || _position.x > _canvasWidth) {
+        _x += _deltaX;
+        _y += _deltaY;
+
+        // If you are outside the left or right canvas limits then the card should not 
+        // longer be positioned anywhere relevant so do not return any position
+        if(_x < -CardView.CARD_WIDTH || _x > _canvasWidth) {
             return null;
         }
         
-        // If y position is more than half the card height in distnce to the 
-        // bottom of the game view, reposition the y-pos to be at that length
-        // and bounce the card upwards by applying an inverse force to the change in y
-        if(_position.y > _canvasHeight - CardView.CARD_HEIGHT) {
-            _position.y = _canvasHeight - CardView.CARD_HEIGHT;
+        // If the position is outside canvas height (with respect to the bottom of the card)
+        if(_y > _canvasHeight - CardView.CARD_HEIGHT) {
+            
+            // Normalize the position of the card by placing it on the theoretical bottom of the canvas
+            _y = _canvasHeight - CardView.CARD_HEIGHT;
+            
+            // Take the change in `y` inverse it, this along will cause the card to bounce upwards
+            // Take only a small percentage of the delta so that it bounces less
             _deltaY = -_deltaY * 0.85;
-        }
-        
-        _deltaY += 0.98;
-        
-        return new Point(_position.x, _position.y);
-    }
+        } 
 
+        _deltaY += 0.98;
+
+        return new Point((int)_x, (int)_y);
+    }
+    
     /**
      * Clears the contents of this helper
      */
