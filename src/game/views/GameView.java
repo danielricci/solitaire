@@ -206,7 +206,7 @@ public final class GameView extends PanelView {
         while(cards.size() > 0) {
             boolean keepGoing = false;
             for(int i = 0; i < cards.size(); ++i) {
-                if(cards.get(i).performCardAutoMovement()) {
+                if(cards.get(i).performCardAutoMovement(true)) {
                     cards.get(i).setEnabled(false);
                     cards.remove(i);
                     keepGoing = true;

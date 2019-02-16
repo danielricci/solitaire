@@ -462,6 +462,17 @@ public final class CardView extends PanelView implements ICollidable {
      * @return TRUE if the auto movement was successfull, FALSE otherwise
      */
     public boolean performCardAutoMovement() {
+        return performCardAutoMovement(false);
+    }
+
+    /**
+     * Performs an auto card movement, attempting to move this card to the foundation
+     * 
+     * @param forcefully If the movement is forcefully being done (when the user cheats to win the game)
+     * 
+     * @return TRUE if the auto movement was successfull, FALSE otherwise
+     */
+    public boolean performCardAutoMovement(boolean forcefully) {
         if(!_controller.getCard().getIsBackside()) {
             
             // Make sure that we are not double clicking on an ACE. That doesn't make much sense here in this case
@@ -479,7 +490,10 @@ public final class CardView extends PanelView implements ICollidable {
             for(FoundationPileView foundationView : foundationViews) {
                 if(foundationView.isValidCollision(CardView.this)) {
                     
-                    //AbstractFactory.getFactory(ControllerFactory.class).get(MovementRecorderController.class).recordMovement((AbstractPileView)CardView.this.getParentIView(), foundationView);
+                    if(!forcefully) {
+                        // Record the fact that a movement occurred 
+                        AbstractFactory.getFactory(ControllerFactory.class).get(MovementRecorderController.class).recordMovement((AbstractPileView)CardView.this.getParentIView(), foundationView);
+                    }
                     
                     // Stop the current drag listener of this card from doing anything, so that things
                     // like drag will stop being processed
