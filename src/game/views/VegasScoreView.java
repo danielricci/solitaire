@@ -47,15 +47,15 @@ public class VegasScoreView extends ScoreView {
         OptionsPreferences preferences = new OptionsPreferences();
         preferences.load();
         if(preferences.cumulativeScore) {
-            SCORE += -52;            
+            SCORE_CURRENT += -52;            
         }
         else {
-            SCORE = -52;
+            SCORE_CURRENT = -52;
         }
     }
     
     @Override protected void addToScore(long score) {
-        SCORE += score;
+        SCORE_CURRENT += score;
         scoreValue.setText(toString());
     }
     
@@ -73,7 +73,7 @@ public class VegasScoreView extends ScoreView {
     }
     
     @Override protected void updateScore(MovementType from, MovementType to, boolean isUndo) {
-        long scoreBefore = SCORE;
+        long scoreBefore = SCORE_CURRENT;
         if(from == MovementType.TALON && to == MovementType.TABLEAU) {
             addToScore(isUndo ? -5 : 5);
         }
@@ -90,7 +90,7 @@ public class VegasScoreView extends ScoreView {
             return;
         }
                 
-        Tracelog.log(Level.INFO, true, String.format("Score %s: Changed from %d to %d after performing move [%s] to [%s]", isUndo ? "Undo" : "Updated",scoreBefore, SCORE, from, to));
+        Tracelog.log(Level.INFO, true, String.format("Score %s: Changed from %d to %d after performing move [%s] to [%s]", isUndo ? "Undo" : "Updated",scoreBefore, SCORE_CURRENT, from, to));
     }
     
 
@@ -104,7 +104,7 @@ public class VegasScoreView extends ScoreView {
     
     @Override public String toString() {
         
-        if(SCORE < 0) {
+        if(SCORE_CURRENT < 0) {
             scoreValue.setForeground(Color.RED);
         }
         else {
@@ -112,10 +112,10 @@ public class VegasScoreView extends ScoreView {
         }
         
         String result = "$";
-        if(SCORE < 0) {
+        if(SCORE_CURRENT < 0) {
             result = "-" + result;
         }
         
-        return result + String.valueOf(Math.abs(SCORE));
+        return result + String.valueOf(Math.abs(SCORE_CURRENT));
     }
 }

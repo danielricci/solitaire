@@ -31,12 +31,15 @@ import javax.swing.JLabel;
 
 import framework.communication.internal.signal.arguments.EventArgs;
 import framework.core.mvc.view.PanelView;
+import framework.utils.globalisation.Localization;
 
 import game.config.OptionsPreferences;
 import game.config.OptionsPreferences.DrawOption;
 import game.config.OptionsPreferences.ScoringOption;
 import game.models.MovementModel;
 import game.models.MovementModel.MovementType;
+
+import resources.LocalizationStrings;
 
 /**
  * This view shows the game score
@@ -46,26 +49,25 @@ import game.models.MovementModel.MovementType;
 public class ScoreView extends PanelView {
 
     /**
-     * The score title
+     * The label that represents the title of this class
      */
-    protected final JLabel scoreTitle = new JLabel("Score:");
+    protected final JLabel scoreTitle = new JLabel(Localization.instance().getLocalizedString(LocalizationStrings.SCORE_TITLE));
     
     /**
-     * The value of the score
+     * The label that represents the visual representation of this class
      */
     protected final JLabel scoreValue = new JLabel();
     
     /**
-     * The score. 
-     * 
-     * Note: The score is static because in some cases the score persists to the next game, but not if the application exist
+     * The current score 
      */
-    protected static long SCORE = 0;
+    protected static long SCORE_CURRENT;
     
     /**
-     * The previous score that was set
+     * The previous score
      */
-    private static long SCORE_BEFORE_OFFSET = SCORE;
+    @SuppressWarnings("unused")
+    private static long SCORE_BEFORE = SCORE_CURRENT;
     
     /**
      * Constructs a new instance of this class type
@@ -81,33 +83,32 @@ public class ScoreView extends PanelView {
         add(scoreValue);
     }
     
-    protected void addToScore(long score) {
-        SCORE = Math.max(0, SCORE + score);
+    /**
+     * Adds the specified offset to the current score.
+     *
+     * @param offsetToScore The score to offset the current score with, a +- value of something defined on your end
+     */
+    protected void addToScore(long offsetToScore) {
+        SCORE_CURRENT = Math.max(0, SCORE_CURRENT + offsetToScore);
         scoreValue.setText(toString());        
     }
     
-    protected final void addToScoreAndBackup(int offset) {
-        
-        // If the score would end up in the negatives then keep the current score
-        //
-        // The scenario to cover here is if you have 10 points left 
-        // and you cycle through the deck and lose 100 points, performing an undo should
-        // award you back the 10 points, not give you 100 points.
-        if(SCORE - offset < 0) {
-            SCORE_BEFORE_OFFSET = SCORE;
-        }
-        else {
-            SCORE_BEFORE_OFFSET = offset;
-        }
-        
-        addToScore(offset);
+    /**
+     * Adds the specified offset to the current score. This method will perform a backup of what the
+     * score previously was. How this method differs from the `addToScore` method is that it
+     * is friendly for performing an undo.
+     * 
+     * The reason to not call this method over the other is in the case where the score being perform
+     * could not ever be undone, such as when 10 seconds has elapsed and the score loses -2, you can never
+     * get that back so dont backup the score there
+     *
+     * @param offsetToScore The score to offset the current score with, a +- value of something defined on your end
+     */
+    private void addToScoreAndBackup(long offsetToScore) {
+        SCORE_BEFORE = SCORE_CURRENT;
+        addToScore(offsetToScore);
     }
-    
-    protected final void undoScore() {
-        SCORE = Math.max(0, SCORE - SCORE_BEFORE_OFFSET - 2);
-        scoreValue.setText(toString());
-    }
-    
+       
     /**
      * Updates the score based on the bonus logic
      *
@@ -126,6 +127,11 @@ public class ScoreView extends PanelView {
         return bonus;
     }
     
+    /**
+     * Updates the score based on the specified deck plays.
+     *
+     * @param deckPlays The number of decks played
+     */
     public void updateScoreDeckFinished(int deckPlays) {
         OptionsPreferences preferences = new OptionsPreferences();
         preferences.load();
@@ -157,29 +163,41 @@ public class ScoreView extends PanelView {
     /**
      * Updates the score based on an operation
      *
-     * @param from Where the operation started from
-     * @param to Where the operation ended at
+     * @param from where the operation started from
+     * @param to where the operation ended at
+     * @param isUndo If the operation being done is an undo operation
+     * 
      */
      protected void updateScore(MovementType from, MovementType to, boolean isUndo) {
+         long scoreFromMovement = getMovementScore(from, to, isUndo); 
+         addToScoreAndBackup(scoreFromMovement + (isUndo ? - 2 : 0));
+     }
+     
+    private long getMovementScore(MovementType from, MovementType to, boolean isUndo) {
+        
+        long score = 0;
+        
+        if(from == MovementType.TALON && to == MovementType.TABLEAU) {
+            score = 5;
+        }
+        else if(from == MovementType.TALON && to == MovementType.FOUNDATION) {
+            score = 10;
+        }
+        else if (from == MovementType.TABLEAU && to == MovementType.FOUNDATION) {
+            score = 10;
+        }
+        else if(from == MovementType.FOUNDATION && to == MovementType.TABLEAU) {
+            score = -15;
+        }
+        
+        // If the score is being undone then flip the sign of the score
         if(isUndo) {
-            undoScore();
+            score *= -1;
         }
-        else {
-            if(from == MovementType.TALON && to == MovementType.TABLEAU) {
-                addToScoreAndBackup(isUndo ? -5 : 5);
-            }
-            else if(from == MovementType.TALON && to == MovementType.FOUNDATION) {
-                addToScoreAndBackup(isUndo ? -10 : 10);
-            }
-            else if (from == MovementType.TABLEAU && to == MovementType.FOUNDATION) {
-                addToScoreAndBackup(isUndo ? -10 : 10);
-            }
-            else if(from == MovementType.FOUNDATION && to == MovementType.TABLEAU) {
-                addToScoreAndBackup(isUndo ? 15 : -15);
-            }
-        }
+        
+        return score;
     }
-    
+     
     @Override public void render() {
         super.render();
         addToScore(0);
@@ -187,14 +205,15 @@ public class ScoreView extends PanelView {
     
     @Override public void destructor() {
         super.destructor();
-        SCORE = 0;
+        SCORE_CURRENT = 0;
+        SCORE_BEFORE = 0;
     }
         
     @Override public String toString() {
-        return String.valueOf(SCORE);
+        return String.valueOf(SCORE_CURRENT);
     }
     
-    @Override public void update(EventArgs event) {
+    @Override public final void update(EventArgs event) {
         if(event.getSource() instanceof MovementModel) {
             MovementModel movement = (MovementModel) event.getSource();
             updateScore(movement.getFrom(), movement.getTo(), movement.getIsUndo());

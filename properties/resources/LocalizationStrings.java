@@ -45,4 +45,5 @@ public class LocalizationStrings {
      public static String DECK = "Deck";
      public static String OPTIONS = "Options";
      public static String EXIT = "Exit";
+     public static String SCORE_TITLE = "ScoreTitle";
 }
