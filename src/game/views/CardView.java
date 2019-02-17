@@ -473,7 +473,7 @@ public final class CardView extends PanelView implements ICollidable {
      * @return TRUE if the auto movement was successfull, FALSE otherwise
      */
     public boolean performCardAutoMovement(boolean forcefully) {
-        if(!_controller.getCard().getIsBackside()) {
+        if(!_controller.getCard().getIsBackside() && !(getParentIView() instanceof FoundationPileView)) {
             
             // Make sure that we are not double clicking on an ACE. That doesn't make much sense here in this case
             if(AbstractFactory.getFactory(ViewFactory.class).getAll(FoundationPileView.class).stream().anyMatch(z -> z.layeredPane.getComponentCount() == 1 && z.layeredPane.getComponents()[0] == CardView.this)) {
