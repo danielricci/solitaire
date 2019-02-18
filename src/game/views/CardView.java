@@ -140,7 +140,7 @@ public final class CardView extends PanelView implements ICollidable {
                         layeredPane.setLayer(cardViews.get(j), j);
                         
                         // Account for the border offsets of -1 for left and bottom
-                        cardViews.get(j).setBounds(new Rectangle(-1, (12 * (j + 1)) - 1, cardViews.get(j).getPreferredSize().width, cardViews.get(j).getPreferredSize().height));
+                        cardViews.get(j).setBounds(new Rectangle(0, (12 * (j + 1)), cardViews.get(j).getPreferredSize().width, cardViews.get(j).getPreferredSize().height));
                         _parentLayeredPane.remove(cardViews.get(j));
                     }
 
@@ -149,7 +149,7 @@ public final class CardView extends PanelView implements ICollidable {
                     Point initialLocation = CardView.this.getLocation();
                     
                     // Note: Add +2 to the width and height because of the initial border size offset
-                    CardView.this.setBounds(new Rectangle(_parentLayeredPane.getParent().getLocation().x + initialLocation.x, _parentLayeredPane.getParent().getLocation().y + initialLocation.y, layeredPane.getWidth() + 2, layeredPane.getHeight() + 2));
+                    CardView.this.setBounds(new Rectangle(_parentLayeredPane.getParent().getLocation().x + initialLocation.x, _parentLayeredPane.getParent().getLocation().y + initialLocation.y, layeredPane.getWidth(), layeredPane.getHeight()));
 
                     // Remove the card view reference from it's initial parent
                     _parentLayeredPane.remove(CardView.this);
@@ -293,7 +293,7 @@ public final class CardView extends PanelView implements ICollidable {
         setPreferredSize(new Dimension(CARD_WIDTH, CARD_HEIGHT));
         setOpaque(true);
         setBackground(Color.BLACK);
-        setBorder(BorderFactory.createLineBorder(Color.BLACK, 1, true));
+        //setBorder(BorderFactory.createLineBorder(Color.BLACK, 1, true));
         
         add(layeredPane);
         
