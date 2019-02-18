@@ -136,15 +136,19 @@ public class WinAnimationHelper {
     }
     
     /**
-     * Process all the cards help by the foundation views
+     * Process all the cards held by the foundation views
      */
     public static void processCards() {
-
-        ViewFactory viewFactory = AbstractFactory.getFactory(ViewFactory.class);
-        List<FoundationPileView> foundationsList = viewFactory.getAll(FoundationPileView.class);
+        // Get the list of foundation piles
+        List<FoundationPileView> foundationsList = AbstractFactory.getFactory(ViewFactory.class).getAll(FoundationPileView.class);
+        
+        // Reverse the list so that we start with the left-most pile.
         Collections.reverse(foundationsList);
 
+        // Initialize this helper class
         initialize();
+        
+        // Populate the queue of items to be processed
         _foundations.addAll(foundationsList);
     }
     
