@@ -38,7 +38,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
 
-import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JLayeredPane;
 import javax.swing.SwingUtilities;
