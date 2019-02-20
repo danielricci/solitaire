@@ -136,6 +136,36 @@ public class TableauPileView extends AbstractPileView implements ICollidable {
         }
         repaint();
     }
+    
+    @Override protected Point getCardOffset(CardView cardView) {
+        
+        List<Component> cardComponents = Arrays.asList(layeredPane.getComponents());
+        Collections.reverse(cardComponents);
+        int index = cardComponents.indexOf(cardView);
+        if(index == -1) {
+            Tracelog.log(Level.SEVERE, true, "Cannot find the offset for the card " + cardView);
+            return new Point();
+        }
+        
+        // If there is only one card then it will have an offset of 0
+        if(index == 0) {
+            return new Point();
+        }
+       
+        // Get a reference to the previous card and it's bounds
+        CardView previousCard = (CardView)cardComponents.get(index - 1);
+        Rectangle previousCardBounds = previousCard.getBounds();
+        
+        // If the card before this one has it's backside showing, then it should be
+        // positioned 3 pixels lower than that card
+        if(previousCard.isBacksideShowing()) {
+            return new Point(0, previousCardBounds.y + CARD_OFFSET_BACKSIDE);
+        }
+        // Subsequent cards should be 12 pixels down from the previous card
+        else {
+            return new Point(0, previousCardBounds.y + CARD_OFFSET);
+        }
+    }
 
     @Override public boolean isValidCollision(Component source) {
 
@@ -173,33 +203,17 @@ public class TableauPileView extends AbstractPileView implements ICollidable {
         return false;
     }
 
-    @Override protected Point getCardOffset(CardView cardView) {
-        
-        List<Component> cardComponents = Arrays.asList(layeredPane.getComponents());
-        Collections.reverse(cardComponents);
-        int index = cardComponents.indexOf(cardView);
-        if(index == -1) {
-            Tracelog.log(Level.SEVERE, true, "Cannot find the offset for the card " + cardView);
-            return new Point();
+    @Override public void onCollisionStart(Component source) {
+        CardView cardView = this.getLastCard();
+        if(cardView != null) {
+            cardView.onCollisionStart(source);
         }
-        
-        // If there is only one card then it will have an offset of 0
-        if(index == 0) {
-            return new Point();
-        }
-       
-        // Get a reference to the previous card and it's bounds
-        CardView previousCard = (CardView)cardComponents.get(index - 1);
-        Rectangle previousCardBounds = previousCard.getBounds();
-        
-        // If the card before this one has it's backside showing, then it should be
-        // positioned 3 pixels lower than that card
-        if(previousCard.isBacksideShowing()) {
-            return new Point(0, previousCardBounds.y + CARD_OFFSET_BACKSIDE);
-        }
-        // Subsequent cards should be 12 pixels down from the previous card
-        else {
-            return new Point(0, previousCardBounds.y + CARD_OFFSET);
+    }
+
+    @Override public void onCollisionStop(Component source) {
+        CardView cardView = this.getLastCard();
+        if(cardView != null) {
+            cardView.onCollisionStop(source);
         }
     }   
 }

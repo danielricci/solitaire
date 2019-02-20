@@ -290,9 +290,8 @@ public final class CardView extends PanelView implements ICollidable {
         getViewProperties().setShouldAlwaysRedraw(true);
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setPreferredSize(new Dimension(CARD_WIDTH, CARD_HEIGHT));
-        setOpaque(true);
+        setOpaque(false);
         setBackground(Color.BLACK);
-        //setBorder(BorderFactory.createLineBorder(Color.BLACK, 1, true));
         
         add(layeredPane);
         
@@ -529,21 +528,6 @@ public final class CardView extends PanelView implements ICollidable {
         _collisionListener.setEnabled(enabled);
     }
     
-    @Override public boolean isValidCollision(Component source) {
-        IView view = (IView)source;
-        
-        // A card is coming into this card, and we are on the foundation view
-        if(getParent().getParent() instanceof FoundationPileView) {
-            CardController thisCardViewController = view.getViewProperties().getEntity(CardController.class);
-            return _controller.isValidFoundationMove(thisCardViewController.getCard());            
-        }
-        // The card is coming onto this card which is on the pile view (should be, there are only two options for this game)
-        else {
-            CardController cardViewController = this.getViewProperties().getEntity(CardController.class);
-            return cardViewController.getCard().isCardBeforeAndOppositeSuite(view.getViewProperties().getEntity(CardController.class).getCard());
-        }
-    }
-    
     @Override public void preProcessGraphics(Graphics context) {
         super.preProcessGraphics(context);
         if(_highlightsEnabled && getIsHighlighted()) {
@@ -596,5 +580,32 @@ public final class CardView extends PanelView implements ICollidable {
         }
 
         return (isVisible() ? "[V]" : "[H]") + getViewProperties().getEntity(CardController.class).getCard().toString() + "\t[" + layer + "][" + positionWithinlayer + "]";    
+    }
+    
+    @Override public boolean isValidCollision(Component source) {
+        IView view = (IView)source;
+        
+        // A card is coming into this card, and we are on the foundation view
+        if(getParent().getParent() instanceof FoundationPileView) {
+            CardController thisCardViewController = view.getViewProperties().getEntity(CardController.class);
+            return _controller.isValidFoundationMove(thisCardViewController.getCard());            
+        }
+        // The card is coming onto this card which is on the pile view (should be, there are only two options for this game)
+        else {
+            CardController cardViewController = this.getViewProperties().getEntity(CardController.class);
+            return cardViewController.getCard().isCardBeforeAndOppositeSuite(view.getViewProperties().getEntity(CardController.class).getCard());
+        }
+    }
+
+    @Override public void onCollisionStart(Component source) {
+        // Set the opaque to true to color in the card. It is originally false so 
+        // that the corners with are transparent will not be shown, since setting this
+        // to true forces the card dimensions to show something.
+        this.setOpaque(true);
+    }
+
+    @Override public void onCollisionStop(Component source) {
+        // Set the opaque back to false which is the default for all cards
+        this.setOpaque(false);
     }
 }

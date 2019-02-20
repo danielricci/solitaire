@@ -90,4 +90,18 @@ public final class FoundationPileView extends AbstractPileView implements IColli
     @Override protected Point getCardOffset(CardView cardView) {
         return new Point(0, 0);
     }
+
+    @Override public void onCollisionStart(Component source) {
+        CardView cardView = this.getLastCard();
+        if(cardView != null) {
+            cardView.onCollisionStart(source);
+        }
+    }
+
+    @Override public void onCollisionStop(Component source) {
+        CardView cardView = this.getLastCard();
+        if(cardView != null) {
+            cardView.onCollisionStop(source);
+        }
+    }
 }

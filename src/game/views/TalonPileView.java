@@ -731,4 +731,12 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
         // Handled by setBounds
         return new Point(0, 0);
     }
+
+    @Override public void onCollisionStart(Component source) {
+        
+    }
+
+    @Override public void onCollisionStop(Component source) {
+        
+    }
 }
