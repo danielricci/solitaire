@@ -104,19 +104,20 @@ public final class GameView extends PanelView {
                 if(gameConstraints.gridy == 0) {
                     switch(gameConstraints.gridx) {
                     case 0: {
-                        
                         // Create the stock view 
                         StockView stockView = viewFactory.add(new StockView(), true);
-                        this.add(stockView, gameConstraints);
+                        GridBagConstraints stockConstraints = (GridBagConstraints)gameConstraints.clone();
+                        stockConstraints.insets = new Insets(gameConstraints.insets.top, 0, -5, -5);
+                        stockConstraints.ipadx = 5;
+                        stockConstraints.ipady = 5;
+                        this.add(stockView, stockConstraints);
                         break;
                     }
                     case 1: {
+                        // Create the talon view
                         TalonPileView talonView = viewFactory.add(new TalonPileView(cards), true);
                         GridBagConstraints talonConstraints = (GridBagConstraints)gameConstraints.clone();
-                        // Get a reference to the current constraints and subtract 20 from the right so that
-                        // it is positioned at an offset to the right of +20, then increase the size
-                        // by 20 to create enough room to potentially fit cards when playing in `draw three`
-                        talonConstraints.insets = new Insets(10, 0, 0, -30);
+                        talonConstraints.insets = new Insets(gameConstraints.insets.top, 0, 0, -30);
                         talonConstraints.ipadx = 30;
                         this.add(talonView, talonConstraints, 0);                        
                         break;

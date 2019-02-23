@@ -32,6 +32,7 @@ import java.awt.Point;
 
 import framework.api.IView;
 import framework.communication.internal.signal.arguments.EventArgs;
+import framework.core.graphics.IRenderable;
 import framework.core.physics.ICollidable;
 
 import game.controllers.CardController;
@@ -58,7 +59,8 @@ public final class FoundationPileView extends AbstractPileView implements IColli
         ViewHelper.registerForCardsAutocomplete(this);
     }
 
-    @Override public void preProcessGraphics(Graphics context) {
+    @Override public void preProcessGraphics(IRenderable renderableData, Graphics context) {
+        super.preProcessGraphics(renderableData, context);
         if(getIsHighlighted() && layeredPane.getComponentCount() == 0) {
             context.setXORMode(Color.WHITE);
         }

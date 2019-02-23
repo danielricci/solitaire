@@ -38,6 +38,7 @@ import java.util.logging.Level;
 import framework.api.IView;
 import framework.core.factories.AbstractFactory;
 import framework.core.factories.ViewFactory;
+import framework.core.graphics.IRenderable;
 import framework.core.mvc.view.PanelView;
 import framework.core.physics.ICollidable;
 import framework.utils.logging.Tracelog;
@@ -111,7 +112,8 @@ public class TableauPileView extends AbstractPileView implements ICollidable {
         }
     }
     
-    @Override public void preProcessGraphics(Graphics context) {
+    @Override public void preProcessGraphics(IRenderable renderableData, Graphics context) {
+        super.preProcessGraphics(renderableData, context);
         if(getIsHighlighted() && layeredPane.getComponentCount() == 0) {
             _preferences.load();
             if(_preferences.outlineDragging) {

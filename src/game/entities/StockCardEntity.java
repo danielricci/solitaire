@@ -28,6 +28,8 @@ import generated.DataLookup;
 
 public final class StockCardEntity extends AbstractCardEntity {
     
+    public static int identifier = 0;
+    public int identity = ++identifier;
     public StockCardEntity() {
         setBacksideVisible(true);
     }
@@ -44,5 +46,9 @@ public final class StockCardEntity extends AbstractCardEntity {
     
     @Override public boolean isOppositeSuite(AbstractCardEntity card) {
         return false;
+    }
+    
+    @Override public String toString() {
+        return "Identity: " + identity;
     }
 }

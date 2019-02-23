@@ -165,7 +165,10 @@ public abstract class AbstractCardEntity extends AbstractDataEntity {
     }
     
     @Override public String toString() {
-        return (!getBacksideVisible() ? "[F]" : "[B]") + ("\t") + (ordinal + 1) + " of " + layer.toString();
+        if(layer != null) {
+            return (!getBacksideVisible() ? "[F]" : "[B]") + ("\t") + (ordinal + 1) + " of " + layer.toString();    
+        }
+        return super.toString();
     }
 
     /**

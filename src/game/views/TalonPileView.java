@@ -129,6 +129,11 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
     private int _deckPlays;
     
     /**
+     * The total number of cards that this view contains by default
+     */
+    public static final int TOTAL_CARD_SIZE = 24;
+    
+    /**
      * The blank card associated to the talon view
      */
     private final PanelView _blankCard = new PanelView();
@@ -184,6 +189,10 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
      */
     public TalonPileView(List<CardModel> cards) {
         this();
+        
+        if(cards.size() > TOTAL_CARD_SIZE) {
+            Tracelog.log(Level.SEVERE, true, "Talon has been allocated more than the currently set max card size that can be allocated!");
+        }
         
         OptionsPreferences preferences = new OptionsPreferences();
         preferences.load();
@@ -275,6 +284,14 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
         layeredPane.add(_blankCard);
         layeredPane.setLayer(_blankCard, layeredPane.highestLayer() + 1);
     }
+    
+    /**
+     * @return The position of where the deck of this talon is currently at, which is
+     * based on the blank card location within all the components in the layered pane
+     */
+    public int getDeckPosition() {
+        return TOTAL_CARD_SIZE - layeredPane.getIndexOf(_blankCard);
+    }
      
     @Override public void addCard(CardView cardView) {
         OptionsPreferences preferences = new OptionsPreferences();
@@ -287,7 +304,7 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
             super.addCard(cardView);
         }
     }
-    
+       
     /**
      * Recycles the deck to the beginning
      */

@@ -25,8 +25,11 @@
 package game.views;
 
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.SwingUtilities;
 
@@ -35,6 +38,7 @@ import framework.communication.internal.signal.arguments.EventArgs;
 import framework.communication.internal.signal.arguments.ViewEventArgs;
 import framework.core.factories.AbstractFactory;
 import framework.core.factories.ViewFactory;
+import framework.core.graphics.IRenderable;
 import framework.core.mvc.view.PanelView;
 import framework.utils.MouseListenerEvent;
 import framework.utils.MouseListenerEvent.SupportedActions;
@@ -45,16 +49,20 @@ import game.views.TalonPileView.TalonCardState;
 import game.views.helpers.ViewHelper;
 
 public final class StockView extends PanelView implements IUndoable {
-
-    /**
-     * The backside card entity associated to this view
-     */
-    private StockCardEntity _stockCardEntity = new StockCardEntity();
+ 
+    private final List<StockCardEntity> _stockCardEntities = new ArrayList<StockCardEntity>();
         
+    private final TalonPileView _talonView = AbstractFactory.getFactory(ViewFactory.class).get(TalonPileView.class);
+    
     /**
      * Constructs a new instance of this class type
      */
     public StockView() {
+
+        for(int i = 0; i < 3; ++i) {
+            _stockCardEntities.add(new StockCardEntity());
+        }
+        
         setOpaque(false);
         
         ViewHelper.registerForCardsAutocomplete(this);
@@ -76,34 +84,67 @@ public final class StockView extends PanelView implements IUndoable {
                     return;
                 }
 
-                TalonPileView talonView = AbstractFactory.getFactory(ViewFactory.class).get(TalonPileView.class);
-                talonView.cycleNextHand();
+                _talonView.cycleNextHand();
                 
-                TalonCardState talonState = talonView.getState();
+                TalonCardState talonState = _talonView.getState();
                 if(talonState == TalonCardState.DECK_PLAYED) {
-                    if(talonView.isTalonEnded()) {
-                        _stockCardEntity.enableTalonEnd();
+                    if(_talonView.isTalonEnded()) {
+                        _stockCardEntities.get(0).enableTalonEnd();
                     }
                     else {
-                        _stockCardEntity.enableTalonRecycled();
+                        _stockCardEntities.get(0).enableTalonRecycled();
                     }
                 }
                 else {
-                    _stockCardEntity = new StockCardEntity();
+                    _stockCardEntities.remove(0);
+                    _stockCardEntities.add(0, new StockCardEntity());
                     if(!SwingUtilities.isRightMouseButton(event)) {
                         AbstractFactory.getFactory(ViewFactory.class).get(TimerView.class).startGameTimer();
                     }
                 }
                 
-                render();
+                // Force an update to occur. We dont really need to worry about data binding
+                // for something as straight forward as updating this view
+                update(new ViewEventArgs(StockView.this, ""));
             }
         });
         
         addSignal(BacksideCardEntity.DECK_BACKSIDE_UPDATED, new ISignalReceiver<EventArgs>() {
             @Override public void signalReceived(EventArgs event) {
-                _stockCardEntity.refresh();
+                _stockCardEntities.stream().forEach(z -> z.refresh());
             }
         });
+    }
+    
+    @Override public void preProcessGraphics(IRenderable renderableData, Graphics context) {
+        super.preProcessGraphics(renderableData, context);
+        
+        int index = -1;
+        for(StockCardEntity stockCardEntity : _stockCardEntities) {
+            if(stockCardEntity.equals(renderableData)) {
+                index = _stockCardEntities.indexOf(stockCardEntity);
+                break;
+            }
+        }
+        
+        switch(index)
+        {
+        case 0:
+            this.extents.canDraw = true;
+            this.extents.x = 0;
+            this.extents.y = 0;
+            break;
+        case 1:
+            this.extents.canDraw = _stockCardEntities.get(0).getBacksideVisible() && _talonView.getDeckPosition() > TalonPileView.TOTAL_CARD_SIZE - 14;
+            this.extents.x = 2; 
+            this.extents.y = 1;
+            break;
+        case 2:
+            this.extents.canDraw = _stockCardEntities.get(0).getBacksideVisible() && _talonView.getDeckPosition() > TalonPileView.TOTAL_CARD_SIZE - 4;
+            this.extents.x = 4;
+            this.extents.y = 2;
+            break;
+        }
     }
     
     @Override public Dimension getPreferredSize() {
@@ -112,24 +153,32 @@ public final class StockView extends PanelView implements IUndoable {
 
     @Override public void render() {
         super.render();
-        update(new ViewEventArgs(this, ""));
+        
+        // Because this view had to be stretched a bit in the contraints from the game view
+        // to be able to render cards collated, we need to specify the width and height of the
+        // extents, else the graphics pipeline will render the entire width and height of this view
+        // causing the cards to be out of proportion.
+        extents.width = this.getPreferredSize().width;
+        extents.height = this.getPreferredSize().height;
+        
+        update(new ViewEventArgs(StockView.this, ""));
     }
 
     @Override public void update(EventArgs event) {
         super.update(event);
-        addRenderableContent(_stockCardEntity);
+        _stockCardEntities.forEach(z -> addRenderableContent(z));
         repaint();
     }
 
     @Override public void undoLastAction() {
-        TalonPileView talonView = AbstractFactory.getFactory(ViewFactory.class).get(TalonPileView.class);
-        talonView.revertLastHand();
+        _talonView.revertLastHand();
 
-        if(talonView.isDeckPlayed()) {
-            _stockCardEntity.enableTalonRecycled();
+        if(_talonView.isDeckPlayed()) {
+            _stockCardEntities.get(0).enableTalonRecycled();
         }
         else {
-            _stockCardEntity = new StockCardEntity();
+            _stockCardEntities.remove(0);
+            _stockCardEntities.add(0, new StockCardEntity());
         }
         
         render();
