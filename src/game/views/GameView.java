@@ -117,8 +117,9 @@ public final class GameView extends PanelView {
                         // Create the talon view
                         TalonPileView talonView = viewFactory.add(new TalonPileView(cards), true);
                         GridBagConstraints talonConstraints = (GridBagConstraints)gameConstraints.clone();
-                        talonConstraints.insets = new Insets(gameConstraints.insets.top, 0, 0, -30);
+                        talonConstraints.insets = new Insets(gameConstraints.insets.top, 0, -5, -30);
                         talonConstraints.ipadx = 30;
+                        talonConstraints.ipady = 5;
                         this.add(talonView, talonConstraints, 0);                        
                         break;
                     }
@@ -160,6 +161,9 @@ public final class GameView extends PanelView {
         ViewHelper.registerForCardsAutocomplete(this);
     }
     
+    /**
+     * Adds the status bar view to this view
+     */
     private void addStatusBarView() {
         StatusBarView statusBarView = AbstractFactory.getFactory(ViewFactory.class).add(new StatusBarView(), true);
         GridBagConstraints barConstraints = new GridBagConstraints(); 
@@ -174,6 +178,12 @@ public final class GameView extends PanelView {
         add(statusBarView, barConstraints, 0);
     }
     
+    /**
+     * Gets the current card component used on this view. This is the card
+     * that would exist when performing a drag operation
+     *
+     * @return The currently dragged card of this view
+     */
     public CardView getCardComponent() {
         for(Component comp : getComponents()) {
             if(comp instanceof CardView) {
@@ -184,7 +194,10 @@ public final class GameView extends PanelView {
         return null;
     }
     
-    public static void scanBoardForWin() {
+    /**
+     * Scans the board for a win condition
+     */
+    public static void scanGameForWin() {
         boolean isWinner = true;
         for(FoundationPileView foundationView : AbstractFactory.getFactory(ViewFactory.class).getAll(FoundationPileView.class)) {
             if(foundationView.layeredPane.getComponentCount() != 13) {
@@ -198,6 +211,9 @@ public final class GameView extends PanelView {
         }
     }
     
+    /**
+     * Forces the game to win
+     */
     public static void forceGameWin() {
         
         List<CardView> cards = AbstractFactory.getFactory(ViewFactory.class).getAll(CardView.class);
@@ -221,6 +237,9 @@ public final class GameView extends PanelView {
         }
     }
     
+    /**
+     * Process the events that will occur after a win has been detected 
+     */
     private static void processWin() {
         // Stop the game timer
         TimerView gameTimerView = AbstractFactory.getFactory(ViewFactory.class).get(TimerView.class);
@@ -236,7 +255,10 @@ public final class GameView extends PanelView {
         WinAnimationHelper.processCards();
     }
     
-    public static void showGameOverAlert() {
+    /**
+     * Shows the game over dialog, prompting the user to choose what they would like to do
+     */
+    public static void showGameOverDialog() {
         // Show the dialog indicating that game has won
         if(JOptionPane.showConfirmDialog(Application.instance, Localization.instance().getLocalizedString(LocalizationStrings.GAME_OVER), Localization.instance().getLocalizedString(LocalizationStrings.GAME_OVER_HEADER), JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) { 
             MenuBuilder.search(Application.instance.getJMenuBar(), NewGameMenuItem.class).getComponent(AbstractButton.class).doClick();

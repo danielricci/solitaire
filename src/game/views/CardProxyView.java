@@ -303,7 +303,7 @@ public final class CardProxyView extends PanelView {
             _dragListener.setEnabled(true);
             
             // See if the board is in a winning state
-            GameView.scanBoardForWin();
+            GameView.scanGameForWin();
         }
     }
     

@@ -48,25 +48,38 @@ import game.entities.StockCardEntity;
 import game.views.TalonPileView.TalonCardState;
 import game.views.helpers.ViewHelper;
 
+/**
+ * This view handles the functionality related to the Stock. This view will show the 
+ * collated cards view based on the deck face, and when you click on this view it wil
+ * cause the Talon to update the card list that it holds.
+ * 
+ * @author Daniel Ricci <thedanny09@icloud.com>
+ */
 public final class StockView extends PanelView implements IUndoable {
  
-    private final List<StockCardEntity> _stockCardEntities = new ArrayList<StockCardEntity>();
+    /**
+     * The list of card entities that make up this view
+     */
+    private final List<StockCardEntity> _stockCardEntities = new ArrayList<StockCardEntity>() {{
+       add(new StockCardEntity());
+       add(new StockCardEntity());
+       add(new StockCardEntity());
+    }};
         
+    /**
+     * A reference to the talon view. This is stored so that we dont need to query the view factory to get the Talon
+     * which is costly given where it is being used
+     */
     private final TalonPileView _talonView = AbstractFactory.getFactory(ViewFactory.class).get(TalonPileView.class);
     
     /**
      * Constructs a new instance of this class type
      */
     public StockView() {
-
-        for(int i = 0; i < 3; ++i) {
-            _stockCardEntities.add(new StockCardEntity());
-        }
-        
         setOpaque(false);
-        
         ViewHelper.registerForCardsAutocomplete(this);
         
+        // Register a mouse listener to start the timer
         addMouseListener(new MouseAdapter() {
             @Override public void mousePressed(MouseEvent event) {
                 if(!SwingUtilities.isRightMouseButton(event)) {
@@ -76,6 +89,7 @@ public final class StockView extends PanelView implements IUndoable {
             }
         });
         
+        // Register a mouse listener to handle when the left click action occurs on the view
         addMouseListener(new MouseListenerEvent(SupportedActions.LEFT) {
             @Override public void mousePressed(MouseEvent event) {
                 
@@ -109,6 +123,8 @@ public final class StockView extends PanelView implements IUndoable {
             }
         });
         
+        // Add a signal to listen to when the deck backside has been changed so that this class can
+        // update all the card entities backside to reflect the newly selected deck face
         addSignal(BacksideCardEntity.DECK_BACKSIDE_UPDATED, new ISignalReceiver<EventArgs>() {
             @Override public void signalReceived(EventArgs event) {
                 _stockCardEntities.stream().forEach(z -> z.refresh());
@@ -135,12 +151,12 @@ public final class StockView extends PanelView implements IUndoable {
             this.extents.y = 0;
             break;
         case 1:
-            this.extents.canDraw = _stockCardEntities.get(0).getBacksideVisible() && _talonView.getDeckPosition() > TalonPileView.TOTAL_CARD_SIZE - 14;
+            this.extents.canDraw = _stockCardEntities.get(0).getBacksideVisible() && _talonView.isPhaseTwo();
             this.extents.x = 2; 
             this.extents.y = 1;
             break;
         case 2:
-            this.extents.canDraw = _stockCardEntities.get(0).getBacksideVisible() && _talonView.getDeckPosition() > TalonPileView.TOTAL_CARD_SIZE - 4;
+            this.extents.canDraw = _stockCardEntities.get(0).getBacksideVisible() && _talonView.isPhaseOne();
             this.extents.x = 4;
             this.extents.y = 2;
             break;
@@ -185,12 +201,10 @@ public final class StockView extends PanelView implements IUndoable {
     }
 
     @Override public void performBackup() {
-        // There is nothing here we need to backup, because the data can be easily
-        // retrieved.
-        // Also, this method gets called too early in this case, so we can't read
-        // the talon in time
+        // Not needed
     }
 
     @Override public void clearBackup() {
+        // Not needed
     }
 }

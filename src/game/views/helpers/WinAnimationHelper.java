@@ -70,7 +70,7 @@ public class WinAnimationHelper {
     private static KeyAdapter _keyAdapter = new KeyAdapter() {
         @Override public void keyPressed(KeyEvent event) {
             clear();
-            GameView.showGameOverAlert();
+            GameView.showGameOverDialog();
         }
     };
     
@@ -80,7 +80,7 @@ public class WinAnimationHelper {
     private static MouseAdapter _mouseAdapter = new MouseAdapter() {
         @Override public void mousePressed(MouseEvent event) {
             clear();
-            GameView.showGameOverAlert();
+            GameView.showGameOverDialog();
         }
     };
     
@@ -207,7 +207,7 @@ public class WinAnimationHelper {
                 else {
                     if(hadValues) {
                         clear();
-                        GameView.showGameOverAlert();
+                        GameView.showGameOverDialog();
                     }
                 }
             }
