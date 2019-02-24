@@ -352,9 +352,6 @@ public final class CardProxyView extends PanelView {
         addMouseListener(new CardSelectionEvents());
         addMouseMotionListener(new CardDragEvents());
         
-        // Set the collision style for this object
-        _collisionListener.setIsSingularCollision(true);
-        
         // Set the controller of this proxy to the same controller of the specified card
         _cardView = cardView;
         getViewProperties().setEntity(cardView.getViewProperties().getEntity());

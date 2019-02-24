@@ -294,9 +294,6 @@ public final class CardView extends PanelView implements ICollidable {
         setBackground(Color.BLACK);
         
         add(layeredPane);
-        
-        // Set the collision style for this object
-        _collisionListener.setIsSingularCollision(true);
     }
     
     /**
