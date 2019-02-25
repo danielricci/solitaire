@@ -467,6 +467,8 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
                 
                 // Set the layer of the card that is directly below the blank card, to the highest layer
                 layeredPane.setLayer(cardDirectlyBelowBlankCard, layeredPane.highestLayer() + 1);
+                
+                this.setBounds(cardDirectlyBelowBlankCard);
                 resyncDeck();
             }
             else if(preferences.drawOption == DrawOption.THREE) {
