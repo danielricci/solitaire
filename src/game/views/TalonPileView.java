@@ -361,8 +361,11 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
                 // Get the top-most component and set it underneath the blank card.
                 Component comp = layeredPane.getComponentsInLayer(layeredPane.highestLayer())[0];
                 comp.setEnabled(false);
+                comp.setVisible(false);
+
                 layeredPane.setLayer(comp, JLayeredPane.getLayer(_blankCard));
                 layeredPane.getComponentsInLayer(layeredPane.highestLayer())[0].setEnabled(true);
+                this.setBounds(comp);
     
                 // From the bottom upwards, re-order the layer of each card
                 Component[] components = layeredPane.getComponents();
@@ -641,14 +644,24 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
         preferences.load();
         if(preferences.drawOption == DrawOption.THREE) {
             
-            int modifierOffsetForYAxis = 1;
-            if(getDeckPosition() < TOTAL_CARD_SIZE - 14) {
-                modifierOffsetForYAxis = 3;
-            }
-            else if(getDeckPosition() < TOTAL_CARD_SIZE - 4) {
-                modifierOffsetForYAxis = 2;
-            }
+            int xModifier = 0;
+            int yModifier = 0;
 
+            int deckPosition = getDeckPosition();
+            if(deckPosition < 13) {
+                xModifier = 0;
+                yModifier = 0;
+            }
+            else if(deckPosition < 22) {
+                xModifier = 2;
+                yModifier = 1;
+                
+            }
+            else {
+                xModifier = 4;
+                yModifier = 2;
+            }            
+            
             // Re-order the cards that exist currently, before determining where this card should be placed.
             Component[] components = layeredPane.getComponentsInLayer(layeredPane.getLayer(component));
             for(int i = components.length - 1; i >= 0; --i) {
@@ -661,11 +674,11 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
                 switch(positionIndex + offset) {
                 case 0:
                     bounds.x = 2 * CARD_OFFSET;
-                    bounds.y = modifierOffsetForYAxis * 2;
+                    bounds.y = 2;
                     break;
                 case 1:
                     bounds.x = CARD_OFFSET;
-                    bounds.y = modifierOffsetForYAxis * 1;
+                    bounds.y = 1;
                     break;
                 case 2:
                     bounds.x = 0;
@@ -673,17 +686,36 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
                     break;
                 }
                 
+                bounds.x += xModifier;
+                bounds.y += yModifier;
+                
                 // Set the new bounds of the specified component
                 components[i].setBounds(bounds);
             }            
         }
         else {
+            int x = 0;
+            int y = 0;
+            
+            int deckPosition = getDeckPosition();
+            if(deckPosition < 12) {
+                x = 0;
+                y = 0;
+            }
+            else if (deckPosition < 22) {
+                x = 2;
+                y = 1;
+            }
+            else {
+                x = 4;
+                y = 2;
+            }
+            
             // Set the default bounds of the card view
-            Rectangle bounds = new Rectangle(0, 0, component.getPreferredSize().width, component.getPreferredSize().height);
+            Rectangle bounds = new Rectangle(x, y, component.getPreferredSize().width, component.getPreferredSize().height);
             component.setBounds(bounds);
         }
     }
-    
     
     @Override public void addCard(CardView cardView) {
         OptionsPreferences preferences = new OptionsPreferences();
