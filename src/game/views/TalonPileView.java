@@ -536,7 +536,7 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
             // If the component is visible then I have to do an upwards scan, else I need to do
             // a downwards scan
             if(component.isVisible()) {
-                
+                //layeredPane.highestLayer() - 
             }
             
             System.out.println("Component: " + component);
