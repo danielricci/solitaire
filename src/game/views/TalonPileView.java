@@ -347,15 +347,17 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
         
         if(preferences.drawOption == DrawOption.ONE) {
             if(JLayeredPane.getLayer(_blankCard) == layeredPane.highestLayer()) {
+                
+                // Get the list of components and make them all visible
                 Component[] components = layeredPane.getComponents();
                 for(int i = 0; i < components.length; ++i) {
                     layeredPane.setLayer(components[i], i);
+                    components[i].setVisible(true);
                 }
                 
                 // Enable the top-most card so that it can be used
                 Component comp = layeredPane.getComponentsInLayer(layeredPane.highestLayer())[0];
                 comp.setEnabled(true);
-                comp.setVisible(true);
             }
             else {
                 // Get the top-most component and set it underneath the blank card.
