@@ -348,12 +348,15 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
         if(preferences.drawOption == DrawOption.ONE) {
             if(JLayeredPane.getLayer(_blankCard) == layeredPane.highestLayer()) {
                 
-                // Get the list of components and make them all visible
+                // Get the list of components and set their layer accordingly and make them all visible
                 Component[] components = layeredPane.getComponents();
                 for(int i = 0; i < components.length; ++i) {
                     layeredPane.setLayer(components[i], i);
                     components[i].setVisible(true);
                 }
+                
+                // Once they are all visible, make sure they have proper alignment
+                Arrays.asList(components).stream().filter(z -> z instanceof CardView).forEach(z -> this.setBounds(z));
                 
                 // Enable the top-most card so that it can be used
                 Component comp = layeredPane.getComponentsInLayer(layeredPane.highestLayer())[0];
@@ -519,6 +522,32 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
      */
     private int getDeckPosition() {
         return layeredPane.getIndexOf(_blankCard);
+    }
+    
+    private int getDeckPosition2(Component component) {
+        
+        int position = 0;
+        
+        OptionsPreferences preferences = new OptionsPreferences();
+        preferences.load();
+        
+        if(preferences.drawOption == DrawOption.ONE) {
+            
+            // If the component is visible then I have to do an upwards scan, else I need to do
+            // a downwards scan
+            if(component.isVisible()) {
+                
+            }
+            
+            System.out.println("Component: " + component);
+        }
+        
+        
+        
+        
+        
+        
+        return position;
     }
     
     /**
@@ -700,6 +729,7 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
             int y = 0;
             
             int deckPosition = getDeckPosition();
+            getDeckPosition2(component);
             if(deckPosition < 12) {
                 x = 0;
                 y = 0;
