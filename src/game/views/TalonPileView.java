@@ -32,8 +32,10 @@ import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 import javax.swing.JLayeredPane;
 import javax.swing.SwingUtilities;
@@ -517,7 +519,7 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
     }
     
     /**
-     * @return The position of where the deck of this talon is currently at, which is
+     * @return The position of where the deck of this talon is CURRENTLY is at, which is
      *         based on the blank card location within all the components in the layered pane
      */
     private int getDeckPosition() {
@@ -533,30 +535,27 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
      */
     private int getDeckPosition(Component component) {
         
-        int position = 1;
+        int position = 0;
         
         OptionsPreferences preferences = new OptionsPreferences();
         preferences.load();
         
         if(preferences.drawOption == DrawOption.ONE) {
-            Component[] components = layeredPane.getComponents();
+            List<Component> components = Arrays.asList(layeredPane.getComponents());
+            Collections.reverse(components);
+
             if(component.isVisible()) {
-                // if the card is visible, go from the end to the beginninggo from the beginning to the end of the deck, counting +1 for each card found until you
-                // read your card.
-                for(int i = 0; i < components.length && components[i] instanceof CardView; ++i, ++position) {
-                    if(components[i] == component) {
-                        break;
-                    }
-                }
+                // From the beginning to the end, take the subset of CardView cards that 
+                // are visible and find your index position
+                position = components.stream().filter(z -> z.isVisible() && z instanceof CardView).collect(Collectors.toList()).indexOf(component) + 1;
             }
             else {
-                // If the card is not visible, go from 0 to the position of the card, and subtract that
-                // from the total number of cards left in the deck.
-                
+                // Take the total number of cards in the layered pane, subtract 1 to remove the special hidden
+                // card, and subtract the index of the component.
+                position = layeredPane.getComponentCount() - components.indexOf(component) - 1;
             }
         }
         
-        System.out.println(String.format("%s is at position %d", component, position));
         return position;
     }
     
@@ -680,15 +679,18 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
      */
     private void setBounds(Component component) {
 
+        // Calculate the deck position of the specified component
+        int deckPosition = getDeckPosition(component);
+        
         // The position of the card when playing with `three` is all that concerns us since position matters, vs `single` card which are all stacked.
         OptionsPreferences preferences = new OptionsPreferences();
         preferences.load();
+        
         if(preferences.drawOption == DrawOption.THREE) {
             
             int xModifier = 0;
             int yModifier = 0;
 
-            int deckPosition = getDeckPosition();
             if(deckPosition < 13) {
                 xModifier = 0;
                 yModifier = 0;
@@ -738,8 +740,6 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
             int x = 0;
             int y = 0;
             
-            int deckPosition = getDeckPosition();
-            getDeckPosition(component);
             if(deckPosition < 12) {
                 x = 0;
                 y = 0;
