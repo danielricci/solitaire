@@ -90,7 +90,7 @@ public final class GameView extends PanelView {
 
             if(gameConstraints.gridy ==  1) {
                 gameConstraints.weighty = 1;
-                gameConstraints.insets = new Insets(10, 0, 20, 0);
+                gameConstraints.insets = new Insets(10, 0, 0, 0);
                 gameConstraints.fill = GridBagConstraints.VERTICAL;
             }
             else {
