@@ -572,19 +572,24 @@ public final class CardView extends PanelView implements ICollidable {
         int layer = JLayeredPane.getLayer(this);
         
         // Attempt to get the position within the layer.
-        int positionWithinlayer = -1;
+        int positionWithinLayer = -1;
         if(this.getParent() instanceof JLayeredPane) {
             JLayeredPane parentLayeredPane = (JLayeredPane) this.getParent();
             List<Component> components = Arrays.asList(parentLayeredPane.getComponentsInLayer(layer));
-            positionWithinlayer = components.indexOf(CardView.this);
+            positionWithinLayer = components.indexOf(CardView.this);
         }
-
-        return (isVisible() ? "[V]" : "[H]") + getViewProperties().getEntity(CardController.class).getCard().toString() + "\t[" + layer + "][" + positionWithinlayer + "]";    
+        return String.format("%s%s%s\t[%d][%d]",
+            isVisible() ? "[V]" : "[H]",
+            isEnabled() ? "[E]" : "[D]",
+            getViewProperties().getEntity(CardController.class).getCard(),
+            layer,
+            positionWithinLayer
+        );
     }
     
     @Override public boolean isValidCollision(Component source) {
         IView view = (IView)source;
-        
+
         // A card is coming into this card, and we are on the foundation view
         if(getParent().getParent() instanceof FoundationPileView) {
             CardController thisCardViewController = view.getViewProperties().getEntity(CardController.class);
