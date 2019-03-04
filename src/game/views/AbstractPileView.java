@@ -49,11 +49,6 @@ import framework.core.mvc.view.PanelView;
 public abstract class AbstractPileView extends PanelView implements IUndoable {
         
     /**
-     * Specifies the offset of each card within this view
-     */
-    public int CARD_OFFSET = 12;
-    
-    /**
      * The layered pane that holds the list of cards
      */
     protected final JLayeredPane layeredPane = new JLayeredPane();

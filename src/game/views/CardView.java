@@ -130,7 +130,7 @@ public final class CardView extends PanelView implements ICollidable {
                     Collections.reverse(cardViews);
 
                     // Fixes a bug where the layered pane is chopped from the waist down
-                    CardView.this.layeredPane.setSize(layeredPane.getWidth(), layeredPane.getHeight() + (cardViews.size() * 12));
+                    CardView.this.layeredPane.setSize(layeredPane.getWidth(), layeredPane.getHeight() + (cardViews.size() * 15));
                     
                     // For each sibling add it into the associated layere pane and position it correctly within
                     // the pane, accounting for the fact that CardView.this is the temporary 'root'
@@ -139,7 +139,7 @@ public final class CardView extends PanelView implements ICollidable {
                         layeredPane.setLayer(cardViews.get(j), j);
                         
                         // Account for the border offsets of -1 for left and bottom
-                        cardViews.get(j).setBounds(new Rectangle(0, (12 * (j + 1)), cardViews.get(j).getPreferredSize().width, cardViews.get(j).getPreferredSize().height));
+                        cardViews.get(j).setBounds(new Rectangle(0, (15 * (j + 1)), cardViews.get(j).getPreferredSize().width, cardViews.get(j).getPreferredSize().height));
                         _parentLayeredPane.remove(cardViews.get(j));
                     }
 

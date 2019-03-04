@@ -68,6 +68,11 @@ import game.views.helpers.ViewHelper;
 public final class TalonPileView extends AbstractPileView implements ICollidable {
 
     /**
+     * Specifies the offset of each card within this view
+     */
+    private int CARD_OFFSET_X = 12;
+    
+    /**
      * The available states of the talon
      * 
      * @author Daniel Ricci <thedanny09@icloud.com>
@@ -166,10 +171,10 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
         OptionsPreferences preferences = new OptionsPreferences();
         preferences.load();
         if(preferences.drawOption == DrawOption.THREE) {
-            CARD_OFFSET = 12;
+            CARD_OFFSET_X = 12;
         }
         else {
-            CARD_OFFSET = 0;    
+            CARD_OFFSET_X = 0;    
         }
         
         // The blank card will always be in this view, so right clicking on it should autocomplete
@@ -773,11 +778,11 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
             int offset = 3 - components.length;
             switch(positionIndex + offset) {
             case 0:
-                bounds.x = 2 * CARD_OFFSET;
+                bounds.x = 2 * CARD_OFFSET_X;
                 bounds.y = 2;
                 break;
             case 1:
-                bounds.x = CARD_OFFSET;
+                bounds.x = CARD_OFFSET_X;
                 bounds.y = 1;
                 break;
             case 2:
