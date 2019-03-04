@@ -241,7 +241,7 @@ public class WinAnimationHelper {
         
         ViewFactory viewFactory = AbstractFactory.getFactory(ViewFactory.class);
         GameView gameView = viewFactory.get(GameView.class);
-        gameView.add(cardView, gameView.getComponentZOrder(viewFactory.get(StatusBarView.class)));
+        gameView.add(cardView, 0);
         cardView.setBounds(new Rectangle(point.x, point.y, _cardView.getWidth(), _cardView.getHeight()));        
     }
     
@@ -287,7 +287,6 @@ public class WinAnimationHelper {
             _timer = null;
         }
         
-        // TODO - remove both mouse and key adapters!!!!
         ViewFactory viewFactory = AbstractFactory.getFactory(ViewFactory.class);
         if(viewFactory != null) {
             GameView gameView = viewFactory.get(GameView.class);
