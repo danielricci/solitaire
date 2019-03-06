@@ -28,6 +28,7 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.util.List;
 
 import javax.swing.AbstractButton;
@@ -116,7 +117,6 @@ public final class Game extends Application {
                 }
             }
         });
-        
     }
     
     /**
@@ -165,11 +165,14 @@ public final class Game extends Application {
     @Override protected void onBeforeEngineDataInitialized() {
         EngineProperties.instance().setProperty(Property.DATA_PATH_XML, "/generated/tilemap.xml");
         EngineProperties.instance().setProperty(Property.DATA_PATH_SHEET, "/generated/tilemap.png");
-        //EngineProperties.instance().setProperty(Property.LOG_DIRECTORY,  System.getProperty("user.home") + File.separator + "desktop" + File.separator);
-        EngineProperties.instance().setProperty(Property.LOCALIZATION_PATH_CVS, "resources/localization.csv");
+        EngineProperties.instance().setProperty(Property.LOCALIZATION_PATH_CVS, "/resources/Localization.csv");
         EngineProperties.instance().setProperty(Property.ENGINE_OUTPUT, Boolean.toString(false));
         EngineProperties.instance().setProperty(Property.SUPPRESS_SIGNAL_REGISTRATION_OUTPUT, Boolean.toString(true));
         EngineProperties.instance().setProperty(Property.DISABLE_TRANSLATIONS_PLACEHOLDER, Boolean.toString(false));
+        EngineProperties.instance().setProperty(Property.DISPLAY_EXCEPTIONS, Boolean.toString(true));
+        
+        // TODO - this should be wherever the appliocation is running
+        EngineProperties.instance().setProperty(Property.LOG_DIRECTORY,  System.getProperty("user.home") + File.separator + "desktop" + File.separator);
     }
 
     @Override protected void onWindowInitialized() {
