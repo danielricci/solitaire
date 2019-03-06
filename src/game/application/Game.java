@@ -129,9 +129,11 @@ public final class Game extends Application {
             @Override public void run() {
                 boolean debugMode = false;
                 for(String arg : args) {
-                    if(arg.trim().equalsIgnoreCase("debug")) {
+                    switch(arg.trim()) {
+                    case "debug": {
                         debugMode = true;
                         break;
+                    }
                     }
                 }
                 new Game(debugMode);
@@ -166,22 +168,20 @@ public final class Game extends Application {
         EngineProperties.instance().setProperty(Property.DATA_PATH_XML, "/generated/tilemap.xml");
         EngineProperties.instance().setProperty(Property.DATA_PATH_SHEET, "/generated/tilemap.png");
         EngineProperties.instance().setProperty(Property.LOCALIZATION_PATH_CVS, "/resources/Localization.csv");
-        EngineProperties.instance().setProperty(Property.ENGINE_OUTPUT, Boolean.toString(false));
-        EngineProperties.instance().setProperty(Property.SUPPRESS_SIGNAL_REGISTRATION_OUTPUT, Boolean.toString(true));
+        EngineProperties.instance().setProperty(Property.ENGINE_OUTPUT, Boolean.toString(isDebug));
+        EngineProperties.instance().setProperty(Property.SUPPRESS_SIGNAL_REGISTRATION_OUTPUT, Boolean.toString(!isDebug));
         EngineProperties.instance().setProperty(Property.DISABLE_TRANSLATIONS_PLACEHOLDER, Boolean.toString(false));
-        EngineProperties.instance().setProperty(Property.DISPLAY_EXCEPTIONS, Boolean.toString(true));
+        EngineProperties.instance().setProperty(Property.DISPLAY_EXCEPTIONS, Boolean.toString(isDebug));
         
         // TODO - this should be wherever the appliocation is running
-        EngineProperties.instance().setProperty(Property.LOG_DIRECTORY,  System.getProperty("user.home") + File.separator + "desktop" + File.separator);
+        EngineProperties.instance().setProperty(Property.LOG_DIRECTORY,  System.getProperty("user.dir") + File.separator);
     }
 
     @Override protected void onWindowInitialized() {
         super.onWindowInitialized();
-
         
         // Set the title
         setTitle(Localization.instance().getLocalizedString(LocalizationStrings.TITLE));
-
         
         // Always show mnemonics in the menu system
         UIManager.put("Button.showMnemonics", Boolean.TRUE);
