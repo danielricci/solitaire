@@ -54,7 +54,7 @@ import game.views.StatusBarView;
  */
 public class WinAnimationHelper {
 
-    /**
+    /** 
      * The timer used to update the position of the cards associated to the foundations
      */
     private static Timer _timer;
@@ -175,10 +175,6 @@ public class WinAnimationHelper {
         // the animation so that the animation will stop and the dialog for starting a new game will get prompted
         gameView.addMouseListener(_mouseAdapter);
         Application.instance.addKeyListener(_keyAdapter);
-        
-        // Prevent the application from being resized during the animation phase. This is because
-        // if the user maximizes or changes the size it will cause the layout manager to explode everything
-        Application.instance.setResizable(false);
         
         _timer = new Timer(true);
         _timer.schedule(new TimerTask() {
@@ -302,9 +298,6 @@ public class WinAnimationHelper {
         }
         Application.instance.removeKeyListener(_keyAdapter);
         Application.instance.getJMenuBar().removeMouseListener(_mouseAdapter);
-        
-        // Put back the resizable property so that the game can be resized
-        Application.instance.setResizable(true);
         
         // Enable back all the menu items
         // TODO - Can this can actually be put within the MenuBuilder and then just be called from there?
