@@ -26,6 +26,8 @@ package game.views.helpers;
 
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -62,12 +64,12 @@ public class WinAnimationHelper {
     /**
      * The queue of foundation views, ordered in priority of rendering importance
      */
-    private static Queue<FoundationPileView> _foundations = new LinkedList<FoundationPileView>();
+    private static final Queue<FoundationPileView> _foundations = new LinkedList<FoundationPileView>();
     
     /**
      * The key adapter that handles when a key is pressed during the animation phase
      */
-    private static KeyAdapter _keyAdapter = new KeyAdapter() {
+    private static final KeyAdapter _keyAdapter = new KeyAdapter() {
         @Override public void keyPressed(KeyEvent event) {
             clear();
             GameView.showGameOverDialog();
@@ -77,11 +79,22 @@ public class WinAnimationHelper {
     /**
      * The mouse adapter that handles when a mouse button is pressed during the animation phase
      */
-    private static MouseAdapter _mouseAdapter = new MouseAdapter() {
+    private static final MouseAdapter _mouseAdapter = new MouseAdapter() {
         @Override public void mousePressed(MouseEvent event) {
             clear();
             GameView.showGameOverDialog();
         }
+    };
+    
+    /**
+     * The component adapter that handles when the window changes size during the animation phase
+     * which causes the layout manager to destroy the layout of the game
+     */
+    private static final ComponentAdapter _componentAdapter = new ComponentAdapter() {
+        @Override public void componentResized(ComponentEvent event) {
+            clear();
+            GameView.showGameOverDialog();
+        }        
     };
     
     /**
@@ -175,6 +188,7 @@ public class WinAnimationHelper {
         // the animation so that the animation will stop and the dialog for starting a new game will get prompted
         gameView.addMouseListener(_mouseAdapter);
         Application.instance.addKeyListener(_keyAdapter);
+        Application.instance.addComponentListener(_componentAdapter);
         
         _timer = new Timer(true);
         _timer.schedule(new TimerTask() {
@@ -298,7 +312,8 @@ public class WinAnimationHelper {
         }
         Application.instance.removeKeyListener(_keyAdapter);
         Application.instance.getJMenuBar().removeMouseListener(_mouseAdapter);
-        
+        Application.instance.removeComponentListener(_componentAdapter);
+
         // Enable back all the menu items
         // TODO - Can this can actually be put within the MenuBuilder and then just be called from there?
         for(int i = 0; i < Application.instance.getJMenuBar().getMenuCount(); ++i) {
