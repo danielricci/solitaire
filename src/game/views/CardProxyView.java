@@ -1,7 +1,7 @@
 /**
  * MIT License
  * 
- * Copyright (c) 2019 Daniel Ricci <thedanny09@icloud.com>
+ * Copyright (c) 2019 Daniel Ricci {@literal <thedanny09@icloud.com>}
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -56,7 +56,7 @@ import game.views.components.ExclusiveLineBorder;
 /**
  * This view represents the outline of a normal card view
  * 
- * @author Daniel Ricci <thedanny09@icloud.com>
+ * @author Daniel Ricci {@literal <thedanny09@icloud.com>}
  *
  */
 public final class CardProxyView extends PanelView {
@@ -69,7 +69,7 @@ public final class CardProxyView extends PanelView {
     /**
      * The card drag events for this proxy view
      * 
-     * @author Daniel Ricci <thedanny09@icloud.com>
+     * @author Daniel Ricci {@literal <thedanny09@icloud.com>}
      *
      */
     private class CardDragEvents extends MouseMotionAdapter {
@@ -123,7 +123,7 @@ public final class CardProxyView extends PanelView {
     /**
      * The card selection events for this proxy view
      * 
-     * @author Daniel Ricci <thedanny09@icloud.com>
+     * @author Daniel Ricci {@literal <thedanny09@icloud.com>}
      *
      */
     private class CardSelectionEvents extends MouseListenerEvent {

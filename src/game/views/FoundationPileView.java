@@ -1,7 +1,7 @@
 /**
  * MIT License
  * 
- * Copyright (c) 2019 Daniel Ricci <thedanny09@icloud.com>
+ * Copyright (c) 2019 Daniel Ricci {@literal <thedanny09@icloud.com>}
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -42,7 +42,7 @@ import game.views.helpers.ViewHelper;
 /**
  * This view represents the foundation pile view
  * 
- * @author Daniel Ricci <thedanny09@icloud.com>
+ * @author Daniel Ricci {@literal <thedanny09@icloud.com>}
  */
 public final class FoundationPileView extends AbstractPileView implements ICollidable {
 

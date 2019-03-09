@@ -1,7 +1,7 @@
 /**
  * MIT License
  * 
- * Copyright (c) 2019 Daniel Ricci <thedanny09@icloud.com>
+ * Copyright (c) 2019 Daniel Ricci {@literal <thedanny09@icloud.com>}
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -44,7 +44,7 @@ import framework.core.mvc.view.PanelView;
 /**
  * Abstract representation of a pile view
  * 
- * @author Daniel Ricci <thedanny09@icloud.com>
+ * @author Daniel Ricci {@literal <thedanny09@icloud.com>}
  */
 public abstract class AbstractPileView extends PanelView implements IUndoable {
         
@@ -99,8 +99,7 @@ public abstract class AbstractPileView extends PanelView implements IUndoable {
     /**
      * Adds the specified card view to this pile
      *
-     * @param card The card to add to this pile
-     * @param position The position of the card
+     * @param cardView The card to add to this pile
      * 
      */
     public void addCard(CardView cardView) {

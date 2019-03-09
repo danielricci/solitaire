@@ -1,7 +1,7 @@
 /**
  * MIT License
  * 
- * Copyright (c) 2019 Daniel Ricci <thedanny09@icloud.com>
+ * Copyright (c) 2019 Daniel Ricci {@literal <thedanny09@icloud.com>}
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -40,7 +40,7 @@ import game.views.IUndoable;
 /**
  * The controller that handles recording of movement
  * 
- * @author Daniel Ricci <thedanny09@icloud.com>
+ * @author Daniel Ricci {@literal <thedanny09@icloud.com>}
  */
 public class MovementRecorderController extends BaseController {
     

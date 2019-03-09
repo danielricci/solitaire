@@ -1,7 +1,7 @@
 /**
  * MIT License
  * 
- * Copyright (c) 2019 Daniel Ricci <thedanny09@icloud.com>
+ * Copyright (c) 2019 Daniel Ricci {@literal <thedanny09@icloud.com>}
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -113,6 +113,8 @@ public abstract class AbstractCardEntity extends AbstractDataEntity {
     
     /**
      * Indicates if this card's suite is opposite to the card specified. An opposite suite is one that is of different color
+     *
+     * @param card The abstract card entity
      *  
      * @return TRUE if this card's suite is opposite to the one specified, FALSE otherwise
      */
@@ -139,8 +141,7 @@ public abstract class AbstractCardEntity extends AbstractDataEntity {
     }
     
     /**
-     * Gets the visibility of the cards' backside
-     * @return
+     * @return TRUE if the backside is visible, FALSE othweise
      */
     public boolean getBacksideVisible() {
         return backsideCardEntity.getIsBacksideShowing();

@@ -1,7 +1,7 @@
 /**
  * MIT License
  * 
- * Copyright (c) 2019 Daniel Ricci <thedanny09@icloud.com>
+ * Copyright (c) 2019 Daniel Ricci {@literal <thedanny09@icloud.com>}
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -58,7 +58,7 @@ import generated.DataLookup.BACKSIDES;
 /**
  * The deck selection dialog view shows the list of deck images that the user can choose from while playing the game
  *
- * @author Daniel Ricci <thedanny09@icloud.com>
+ * @author Daniel Ricci {@literal <thedanny09@icloud.com>}
  *
  */
 public final class DeckSelectionDialogView extends DialogView {
@@ -66,7 +66,7 @@ public final class DeckSelectionDialogView extends DialogView {
     /**
      * This class represents a model that is used within one of the deck buttons
      * 
-     * @author Daniel Ricci <thedanny09@icloud.com>
+     * @author Daniel Ricci {@literal <thedanny09@icloud.com>}
      */
     private class FixedStateButtonModel extends DefaultButtonModel {
         @Override public boolean isPressed() {

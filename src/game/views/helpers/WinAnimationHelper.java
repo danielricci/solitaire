@@ -1,5 +1,5 @@
 /**
-* Daniel Ricci <thedanny09@icloud.com>
+* Daniel Ricci {@literal <thedanny09@icloud.com>}
 *
 * Permission is hereby granted, free of charge, to any person
 * obtaining a copy of this software and associated documentation
@@ -52,7 +52,7 @@ import game.views.StatusBarView;
 /**
  * This helper class performs a win animation on the specified card
  * 
- * @author Daniel Ricci <thedanny09@icloud.com>
+ * @author Daniel Ricci {@literal <thedanny09@icloud.com>}
  */
 public class WinAnimationHelper {
 

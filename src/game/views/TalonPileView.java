@@ -1,7 +1,7 @@
 /**
  * MIT License
  * 
- * Copyright (c) 2019 Daniel Ricci <thedanny09@icloud.com>
+ * Copyright (c) 2019 Daniel Ricci {@literal <thedanny09@icloud.com>}
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -63,7 +63,7 @@ import game.views.helpers.ViewHelper;
  * This views represents the talon pile view. This view will display cards whenever the user clicks on
  * the Stock view. This view will adapt itself based on the options set (draw three vs. draw one)
  * 
- * @author Daniel Ricci <thedanny09@icloud.com>
+ * @author Daniel Ricci {@literal <thedanny09@icloud.com>}
  */
 public final class TalonPileView extends AbstractPileView implements ICollidable {
 
@@ -75,7 +75,7 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
     /**
      * The available states of the talon
      * 
-     * @author Daniel Ricci <thedanny09@icloud.com>
+     * @author Daniel Ricci {@literal <thedanny09@icloud.com>}
      */
     public enum TalonCardState {
         // An Empty Deck
@@ -89,7 +89,7 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
     /**
      * A helper class for holding onto a layer and it's associated card state
      * 
-     * @author Daniel Ricci <thedanny09@icloud.com>
+     * @author Daniel Ricci {@literal <thedanny09@icloud.com>}
      */
     private class TalonCardReference {
         

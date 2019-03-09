@@ -1,7 +1,7 @@
 /**
  * MIT License
  * 
- * Copyright (c) 2019 Daniel Ricci <thedanny09@icloud.com>
+ * Copyright (c) 2019 Daniel Ricci {@literal <thedanny09@icloud.com>}
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -67,7 +67,7 @@ import game.views.helpers.ViewHelper;
 /**
  * This view represents the representation of a single card
  * 
- * @author Daniel Ricci <thedanny09@icloud.com>
+ * @author Daniel Ricci {@literal <thedanny09@icloud.com>}
  *
  */
 public final class CardView extends PanelView implements ICollidable {
@@ -75,7 +75,7 @@ public final class CardView extends PanelView implements ICollidable {
     /**
      * The card selection events for this proxy view
      * 
-     * @author Daniel Ricci <thedanny09@icloud.com>
+     * @author Daniel Ricci {@literal <thedanny09@icloud.com>}
      *
      */
     private final class CardSelectionEvents extends MouseListenerEvent {
@@ -414,6 +414,8 @@ public final class CardView extends PanelView implements ICollidable {
     
     /**
      * Attempts to uncover the backside of this view
+     * 
+     * @param forceBackside TRUE if the backside should be force uncovered, FALSE otherwise
      */
     public void uncoverBackside(boolean forceBackside) {
         if(_controller.getCard().getIsBackside()) {
