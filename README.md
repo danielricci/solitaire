@@ -8,4 +8,4 @@ The game was last implemented using
 + Java SE 8 JRE [1.8.0_181 SDK]
 + Java SE 8 JRE [1.8.0_201]
 
-Bugs and other issues/questions/concers/praises should be written to me at thedanny09@icloud.com
+Bugs and other issues should be written to me at thedanny09@icloud.com
