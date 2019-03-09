@@ -138,7 +138,7 @@ public abstract class AbstractPileView extends PanelView implements IUndoable {
     /**
      * Gets the offset that should be set to the specified card view
      *
-     * @param cardView The cardview
+     * @param cardView The cardView
      * 
      * @return The offset that this card should be at
      */
