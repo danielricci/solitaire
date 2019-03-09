@@ -1,0 +1,10 @@
+game.application
+game.config
+game.controllers
+game.entities
+game.menu
+game.models
+game.views
+game.views.components
+game.views.helpers
+resources
