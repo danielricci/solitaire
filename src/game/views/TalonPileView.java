@@ -145,6 +145,11 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
     private int _deckPlays;
     
     /**
+     * This flag indicates if the deck is in a recycled state
+     */
+    private boolean _isDeckInRecycledState;
+    
+    /**
      * The blank card associated to the talon view
      */
     private final PanelView _blankCard = new PanelView();
@@ -164,7 +169,8 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
      */
     private TalonPileView() {
         _blankCard.setBackground(new Color(0, 128, 0));
-        _blankCard.setPreferredSize(new Dimension(CardView.CARD_WIDTH, CardView.CARD_HEIGHT));
+        // Arbitrary number, big enough to do some damage
+        _blankCard.setPreferredSize(new Dimension(1000, 1000));
         _blankCard.setBounds(new Rectangle(0, 0, _blankCard.getPreferredSize().width, _blankCard.getPreferredSize().height));
         _blankCard.setVisible(true);
         
@@ -347,108 +353,73 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
      * Reverts the last hand played
      */
     public void revertLastHand() {
-        OptionsPreferences preferences = new OptionsPreferences();
-        preferences.load();
-
-        // Disable all the cards
-        Arrays.asList(layeredPane.getComponents()).forEach(z -> z.setEnabled(false));
-       
-        // If the blank card is at the top then make sure to reduce the deck plays by one.
-        if(JLayeredPane.getLayer(_blankCard) == layeredPane.highestLayer()) {
-            _deckPlays = Math.max(0, _deckPlays - 1);
-        }
-        
-        if(preferences.drawOption == DrawOption.ONE) {
-            if(JLayeredPane.getLayer(_blankCard) == layeredPane.highestLayer()) {
-                
-                // Get the list of components and set their layer accordingly and make them all visible
-                Component[] components = layeredPane.getComponents();
-                for(int i = 0; i < components.length; ++i) {
-                    layeredPane.setLayer(components[i], i);
-                    components[i].setVisible(true);
-                }
-                
-                // Once they are all visible, make sure they have proper alignment
-                Arrays.asList(components).stream().filter(z -> z instanceof CardView).forEach(z -> this.setBounds(z));
-                
-                // Enable the top-most card so that it can be used
-                Component comp = layeredPane.getComponentsInLayer(layeredPane.highestLayer())[0];
-                comp.setEnabled(true);
-            }
-            else {
-                // Get the top-most component and set it underneath the blank card.
-                Component comp = layeredPane.getComponentsInLayer(layeredPane.highestLayer())[0];
-                comp.setVisible(false);
-
-                layeredPane.setLayer(comp, JLayeredPane.getLayer(_blankCard));
-                layeredPane.getComponentsInLayer(layeredPane.highestLayer())[0].setEnabled(true);
-                this.setBounds(comp);
-    
-                // From the bottom upwards, re-order the layer of each card
-                Component[] components = layeredPane.getComponents();
-                for(int layer = 0, i = components.length - 1; i >= 0; --i, ++layer) {
-                    layeredPane.setLayer(components[i], layer);
-                }
-            }
-        }
-        else if(preferences.drawOption == DrawOption.THREE) {
-            if(JLayeredPane.getLayer(_blankCard) == layeredPane.highestLayer()) {
-                List<Component[]> components = getComponentsGroupedByLayer();
-                layeredPane.removeAll();
-                
-                for(int layer = 0, i = components.size() - 1; i >= 0; --i, ++layer) {
-                    Component[] comps = components.get(i);
-                    for(int j = 0; j < comps.length; ++j) {
-                        layeredPane.add(comps[j]);
-                        layeredPane.setLayer(comps[j], layer);
-                        comps[j].setVisible(true);
-                    }
-                }
-
-                // Show all the top-most cards, and set the first card to be enabled
-                Component[] highestLayerComps = layeredPane.getComponentsInLayer(layeredPane.highestLayer());
-                for(int i = 0; i < highestLayerComps.length; ++i) {
-                    highestLayerComps[i].setEnabled(i == 0);
-                }
-            }
-            else {
-                // From the blank card upwards, up each components layer by 1
-                int blankCardLayer = JLayeredPane.getLayer(_blankCard);
-                Component[] components = layeredPane.getComponents();
-                for(Component comp : components) {
-                    if(layeredPane.getLayer(comp) >= blankCardLayer) {
-                        layeredPane.setLayer(comp, layeredPane.getLayer(comp) + 1);
-                    }
-                }
-                
-                // Take the top three cards and move them to the original blank card index
-                //
-                //  Note: Because of how draw three works, we need to do this after all the cards of the layer have had
-                // their visibility properly set to false
-                Component[] cardsBeingReverted = layeredPane.getComponentsInLayer(layeredPane.highestLayer());
-                for(Component comp : cardsBeingReverted) {
-                    layeredPane.setLayer(comp, blankCardLayer);
-                    comp.setVisible(false);
-                }
-                Arrays.asList(cardsBeingReverted).stream().filter(z -> z instanceof CardView).forEach(z -> this.setBounds(z));
-                
-                // Take the highest layered cards at this point, set their screen position accordingly, and enable
-                // the first card to be moved
-                Component[] highestCards = layeredPane.getComponentsInLayer(layeredPane.highestLayer());
-                
-                // If the card is not the blank card, then remove the cards and re-add them, they will
-                // go through the process of being properly re-positioned
-                if(!(highestCards.length == 1 && highestCards[0] == _blankCard)) {
-                   for(Component comp : highestCards) {
-                       setBounds(comp);
-                   }
-                   
-                   highestCards[0].setEnabled(true);
-                }
-            }
+    	
+    	if(JLayeredPane.getLayer(_blankCard) == layeredPane.highestLayer()) {
+            _isDeckInRecycledState = false;
+            layeredPane.setLayer(_blankCard, layeredPane.lowestLayer() - 1);
         }
         else {
-            Tracelog.log(Level.WARNING, true, String.format("Invalid draw option %s trying to be reverted", preferences.drawOption));
+        	
+        	if(JLayeredPane.getLayer(_blankCard) == layeredPane.lowestLayer()) {
+        		_deckPlays = Math.max(0, --_deckPlays);
+        	}
+        	
+            // Disable all the cards
+	        Arrays.asList(layeredPane.getComponents()).forEach(z -> z.setEnabled(false));
+
+	        OptionsPreferences preferences = new OptionsPreferences();
+	        preferences.load();
+	        
+	        if(preferences.drawOption == DrawOption.ONE) {
+	            // Get the top-most component and set it underneath the blank card.
+	            Component comp = layeredPane.getComponentsInLayer(layeredPane.highestLayer())[0];
+	            comp.setVisible(false);
+	
+	            layeredPane.setLayer(comp, JLayeredPane.getLayer(_blankCard));
+	            layeredPane.getComponentsInLayer(layeredPane.highestLayer())[0].setEnabled(true);
+	            this.setBounds(comp);
+	
+	            // From the bottom upwards, re-order the layer of each card
+	            Component[] components = layeredPane.getComponents();
+	            for(int layer = 0, i = components.length - 1; i >= 0; --i, ++layer) {
+	                layeredPane.setLayer(components[i], layer);
+	            }
+	        }
+	        else {
+	            // From the blank card upwards, up each components layer by 1
+	            int blankCardLayer = JLayeredPane.getLayer(_blankCard);
+	            Component[] components = layeredPane.getComponents();
+	            for(Component comp : components) {
+	                if(layeredPane.getLayer(comp) >= blankCardLayer) {
+	                    layeredPane.setLayer(comp, layeredPane.getLayer(comp) + 1);
+	                }
+	            }
+	            
+	            // Take the top three cards and move them to the original blank card index
+	            //
+	            //  Note: Because of how draw three works, we need to do this after all the cards of the layer have had
+	            // their visibility properly set to false
+	            Component[] cardsBeingReverted = layeredPane.getComponentsInLayer(layeredPane.highestLayer());
+	            for(Component comp : cardsBeingReverted) {
+	                layeredPane.setLayer(comp, blankCardLayer);
+	                comp.setVisible(false);
+	            }
+	            Arrays.asList(cardsBeingReverted).stream().filter(z -> z instanceof CardView).forEach(z -> this.setBounds(z));
+	            
+	            // Take the highest layered cards at this point, set their screen position accordingly, and enable
+	            // the first card to be moved
+	            Component[] highestCards = layeredPane.getComponentsInLayer(layeredPane.highestLayer());
+	            
+	            // If the card is not the blank card, then remove the cards and re-add them, they will
+	            // go through the process of being properly re-positioned
+	            if(!(highestCards.length == 1 && highestCards[0] == _blankCard)) {
+	               for(Component comp : highestCards) {
+	                   setBounds(comp);
+	               }
+	               
+	               highestCards[0].setEnabled(true);
+	            }
+	        }
         }
     }
     
@@ -475,9 +446,23 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
         // Notify the movement controller that there was a movement that occured of the talon, from the stock view
         AbstractFactory.getFactory(ControllerFactory.class).get(MovementRecorderController.class).recordMovement(AbstractFactory.getFactory(ViewFactory.class).get(StockView.class), this);
         
+        // If we are in a recycle deck state then recycle the deck
+        if(_isDeckInRecycledState) {
+        	layeredPane.setLayer(_blankCard, layeredPane.lowestLayer() - 1);
+            recycleDeck();
+        }
+        
         // If we are at the end then restart the deck
         if(JLayeredPane.getLayer(_blankCard) == layeredPane.lowestLayer()) {
-            recycleDeck();  
+            // New deck has the score updated
+            AbstractFactory.getFactory(ViewFactory.class).get(ScoreView.class).updateScoreDeckFinished(_deckPlays);
+            
+            // The next pass will recycle the deck
+            _isDeckInRecycledState = true;
+            
+            // Mask the top layer of the deck to make it appear that the deck has reshuffled, this is to make undoing at this
+            // stage a million times easier, just flip the card back to the bottom
+            layeredPane.setLayer(_blankCard, layeredPane.highestLayer() + 1);
         }
         else {
             
@@ -590,55 +575,41 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
     }
      
     /**
-     * Recycles the deck to the beginning
+     * Recycles the deck
      */
     private void recycleDeck() {
-        // New deck has the score updated
-        AbstractFactory.getFactory(ViewFactory.class).get(ScoreView.class).updateScoreDeckFinished(_deckPlays);
-        
         OptionsPreferences preferences = new OptionsPreferences();
         preferences.load();
+
+        // Remove the blank card from the layered pane, put it back at the end, much easier
+        layeredPane.remove(_blankCard);
+    	
+        // The list of components
+        Component[] components = layeredPane.getComponents();
         
-        switch(preferences.drawOption) {
-        case ONE:
-            Component[] components = layeredPane.getComponents();
+        if(preferences.drawOption == DrawOption.ONE) {
             for(int i = components.length - 1; i >= 0; --i) {
                 Component component = components[i];
                 layeredPane.setLayer(component, i);
-                component.setBounds(new Rectangle(0, 0, component.getPreferredSize().width, component.getPreferredSize().height));
-
-                // Set the visible state of the component. This should make everything but the blank layer not visible
-                components[i].setVisible(components[i].equals(_blankCard));
+                component.setEnabled(false);
+                component.setVisible(false);
             }
-            break;
-        case THREE:
+        }
+        else {
+            for(int i = 0; i < components.length; ++i) {
+            	Component component = components[i];
+            	layeredPane.setLayer(component, i / 3);
+            	component.setEnabled(false);
+                component.setVisible(false);
+            }        	
+        }
+        
+        // Add back the blank card as the top-most card
+        layeredPane.add(_blankCard);
+        layeredPane.setLayer(_blankCard, layeredPane.highestLayer() + 1);
 
-            // Remove all the cards from the layered pane
-            layeredPane.remove(_blankCard);
-            Component[] allComponents = layeredPane.getComponents();
-            
-            // Re-populate the layered pane 
-            for(int i = 0, layer = 0; i < allComponents.length; ++i) {
-                // All cards are disabled by default, and should be disabled by default after a subsequent deck has been played through
-                allComponents[i].setEnabled(false);
-                
-                // Add the card to the layered pane and set it's layer accordingly
-                layeredPane.add(allComponents[i]);
-                
-                if(preferences.drawOption == DrawOption.THREE) {
-                    layeredPane.setLayer(allComponents[i], layer / 3);
-                    allComponents[i].setVisible(false);
-                    allComponents[i].setEnabled(false);
-                    ++layer;
-                }
-            }
-            
-            // Add back the blank card as the top-most card
-            layeredPane.add(_blankCard);
-            layeredPane.setLayer(_blankCard, layeredPane.highestLayer() + 1);
-            
-            break;
-        } 
+    	// Update the flag indicating that the deck is recycled
+    	_isDeckInRecycledState = false;
     }
      
     /*
@@ -835,6 +806,7 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
         builder.append("Last Card Hand State: " + _lastCardHandState + System.getProperty("line.separator"));
         builder.append("Undoable Card: " + String.valueOf(_undoableCard) + System.getProperty("line.separator"));
         builder.append("Last Card Interacted: " + String.valueOf(_lastCardInteracted) + System.getProperty("line.separator"));
+        builder.append("Is Deck In Recycle State: " + String.valueOf(_isDeckInRecycledState) + System.getProperty("line.separator"));
         builder.append(System.getProperty("line.separator"));
         builder.append(new String(new char[header.length()]).replace("\0", "="));
         
