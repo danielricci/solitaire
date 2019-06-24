@@ -44,6 +44,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
+import javax.swing.border.Border;
 
 import framework.core.mvc.view.DialogView;
 import framework.core.system.Application;
@@ -194,11 +196,13 @@ public final class DeckSelectionDialogView extends DialogView {
                 // Add a listener event for when the deck image is selected
                 button.addMouseListener(new MouseAdapter() {
                     @Override public void mousePressed(MouseEvent event) {
-                        _deckButtons.forEach(z -> z.setBorder(null));
+
+                    	Border defaultBorder = UIManager.getLookAndFeel().getDefaults().getBorder("Button.border");
+                        _deckButtons.forEach(z -> z.setBorder(defaultBorder));
                         button.setBorder(BorderFactory.createLineBorder(Color.BLUE, 2));
                         _activeButton = button;
                         // If more than one click count was registered, then do what the OK button would do.
-                        // Note that I don't call doClick because I dont want the OK button to look like it was clicked
+                        // Note that I don't call doClick because I don't want the OK button to look like it was clicked
                         if(event.getClickCount() > 1) {
                             ok();
                         }
