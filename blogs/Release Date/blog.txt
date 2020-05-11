@@ -1,0 +1,21 @@
+In my last post, I presented the win animation feature that I finished working on. This is the animation that happens when you win the game, similar to the one shown from the Win95 version of the game. This post is to update everyone on the hard release date that I have set for myself and to present what I have been doing for the past week. 
+The release date for the game will be March 15th, 2019.  
+Here is what I have left to do.  
+I have a few UI tweaks that I need to make.  
+I'm working on a cascading effect for the card when you play in `Draw Three` mode. 
+Draw three proportions don't properly line up on the third pass - https://github.com/danielricci/solitaire/issues/167 
+There are currently no new bugs that have been found as of yet, so that's good news going into the week-long stretch of testing. My testing will be done for both MacOS and Windows, so I'm going to come up with a quick test plan to run through.  
+I want to make sure that there is Javadoc and proper comments on all the code in my code base, which I have done a very good job at keeping that up to date however its always good to do a quick pass.  
+I need to build a version of the framework that I am using, and then build the 1.0 of the game and make sure that it runs well.  
+Here is what I have done in the past week.  
+I spent time working on various bug fixes and updating the game data to support transparent corners since until now the cards have just been squares with their corners rendered through. I also worked on and am currently finishing off the cascading effect for the Talon pile view 
+Stock Card Proportions
+https://github.com/danielricci/solitaire/issues/132 
+Just like in the original game, when you click the stock button, the cards will display a cascading effect that will `count down` as you go through the deck. 
+
+Talon Card Proportions
+https://github.com/danielricci/solitaire/issues/130 
+As shown above, notice how the cards cascade over each-other the more you go through the deck 
+There will be something similar done for Draw Three that I am working on right now. 
+You can always follow my progress by following the game located at https://github.com/danielricci/solitaire, and if you have any questions I will do my best to answer them. 
+Take care, until my next blog post.
