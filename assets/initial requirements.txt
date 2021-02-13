@@ -1,0 +1,26 @@
+Solitaire Requirements
+
+- Solitaire window icon
+- Game Menu (Deal F2 | Undo, Deck..., Options... | Exit)
+- Help Menu (About Solitaire)
+- Clicking on deal should start a new Game
+- Click on undo should undo the last move played
+- Display the number of cards remaining on the stack
+- Deck should display a list of predefined deck images
+- Clicking on Options should display the options window
+- Options window - draw one
+- Options window - draw three
+- Scoring - Standard
+- Scoring - Vegas
+- Scoring - None
+- There should be a way to display information at the botton of the Game
+- Timed game toggle display
+- Status bar on/off
+- Outline dragging on/off
+- Support for dragging a card and detecting edge hit
+- Support for dragging a card and the card image follows the mouse
+- When double clicking on a card, if there is a move it should perform it
+- When there are no more moves left to make, the game should be over
+- Game over
+- Game win animation
+- The game should support music and sound effects
