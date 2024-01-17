@@ -70,7 +70,7 @@ public class DeckMenuItem extends AbstractMenuItem {
             preferences.load();
 
             // Send out the signal to the stockview
-            AbstractFactory.getFactory(ViewFactory.class).multicastSignalListeners(StockView.class, new EventArgs(this, BacksideCardEntity.DECK_BACKSIDE_UPDATED));
+            AbstractFactory.getFactory(ViewFactory.class).multicastSignalListeners(StockView.class, new EventArgs(this, BacksideCardEntity.DECK_BACKSIDE_CHANGED));
         }
     }
 }
