@@ -1,3 +1,27 @@
+/**
+ * MIT License
+ * 
+ * Copyright (c) 2019 Daniel Ricci {@literal <thedanny09@icloud.com>}
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package game.views;
 
 import java.awt.Color;
@@ -23,12 +47,12 @@ import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
 
-import framework.core.entity.DataEntity;
 import framework.core.mvc.view.DialogView;
 import framework.core.system.Application;
 import framework.utils.globalisation.Localization;
 
 import game.config.OptionsPreferences;
+import game.entities.BacksideCardEntity;
 
 import generated.DataLookup;
 import generated.DataLookup.BACKSIDES;
@@ -151,8 +175,8 @@ public final class DeckSelectionDialogView extends DialogView {
             for(int column = 0; column < _cardColumns; ++column, ++index) {
                 
                 // Create the backside entity and assign it to the button
-                //BacksideCardEntity entity = new BacksideCardEntity();
-                DataEntity entity = new DataEntity(backsides[index].identifier);
+                BacksideCardEntity entity = new BacksideCardEntity();
+                entity.setActiveData(backsides[index].identifier);
                 
                 // Create the button and set the size we want it to be
                 JButton button = new JButton(new ImageIcon(entity.getRenderableContent().getScaledInstance(_buttonImageWidth, _buttonImageHeight, java.awt.Image.SCALE_SMOOTH)));

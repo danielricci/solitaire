@@ -1,3 +1,27 @@
+/**
+ * MIT License
+ * 
+ * Copyright (c) 2019 Daniel Ricci {@literal <thedanny09@icloud.com>}
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package game.views;
 
 import java.awt.Dimension;
@@ -55,6 +79,7 @@ public final class StockView extends PanelView implements IUndoable {
         setOpaque(false);
         ViewHelper.registerForCardsAutocomplete(this);
         
+        // Register a mouse listener to start the timer
         addMouseListener(new MouseAdapter() {
             @Override public void mousePressed(MouseEvent event) {
                 if(!SwingUtilities.isRightMouseButton(event)) {
@@ -62,7 +87,9 @@ public final class StockView extends PanelView implements IUndoable {
                     removeMouseListener(this);
                 }
             }
-        });        
+        });
+        
+        // Register a mouse listener to handle when the left click action occurs on the view
         addMouseListener(new MouseListenerEvent(SupportedActions.LEFT) {
             @Override public void mousePressed(MouseEvent event) {
                 
@@ -94,15 +121,13 @@ public final class StockView extends PanelView implements IUndoable {
                 // for something as straight forward as updating this view
                 update(new ViewEventArgs(StockView.this, ""));
             }
-        });        
+        });
+        
+        // Add a signal to listen to when the deck backside has been changed so that this class can
+        // update all the card entities backside to reflect the newly selected deck face
         addSignal(BacksideCardEntity.DECK_BACKSIDE_UPDATED, new ISignalReceiver<EventArgs>() {
             @Override public void signalReceived(EventArgs event) {
                 _stockCardEntities.stream().forEach(z -> z.refresh());
-            }
-        });
-        addSignal(BacksideCardEntity.DECK_ANIMATION_UPDATED, new ISignalReceiver<EventArgs>() {
-            @Override public void signalReceived(EventArgs event) {
-            	update(event);
             }
         });
     }
@@ -145,7 +170,7 @@ public final class StockView extends PanelView implements IUndoable {
     @Override public void render() {
         super.render();
         
-        // Because this view had to be stretched a bit in the constraints from the game view
+        // Because this view had to be stretched a bit in the contraints from the game view
         // to be able to render cards collated, we need to specify the width and height of the
         // extents, else the graphics pipeline will render the entire width and height of this view
         // causing the cards to be out of proportion.
