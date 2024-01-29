@@ -190,7 +190,7 @@
         <entry>
             <key>generated.TileMapData</key>
             <value>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
-&lt;root identifier="1fbbdf52-331a-47f7-8d1e-e84398cefda8" name="h6" layers="06be52cc-1d25-46cf-815f-2f47f0d4ae26" friendly="" x1="355" y1="192" x2="426" y2="288"/&gt;
+&lt;root identifier="1fbbdf52-331a-47f7-8d1e-e84398cefda8" name="d6" layers="06be52cc-1d25-46cf-815f-2f47f0d4ae26" friendly="" x1="355" y1="192" x2="426" y2="288"/&gt;
 </value>
         </entry>
         <entry>
@@ -401,18 +401,6 @@
             <key>generated.TileMapData</key>
             <value>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
 &lt;root identifier="25000200-ea3d-4912-9e83-cddddaf0d7df" name="talon_end" layers="69229e15-6b70-464b-806b-889732943899" friendly="" x1="1917" y1="0" x2="1988" y2="96"/&gt;
-</value>
-        </entry>
-        <entry>
-            <key>generated.TileMapData</key>
-            <value>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
-&lt;root identifier="5a0c5e61-f5b6-4db7-a2a9-405e5fe3c039" name="poker_1" layers="08b388db-1b65-4952-8dff-8664adacf4c8" friendly="" x1="2059" y1="0" x2="2091" y2="22"/&gt;
-</value>
-        </entry>
-        <entry>
-            <key>generated.TileMapData</key>
-            <value>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
-&lt;root identifier="1a6307f6-0806-496f-9b4f-afbd7cbd7bba" name="poker_2" layers="08b388db-1b65-4952-8dff-8664adacf4c8" friendly="" x1="2091" y1="0" x2="2123" y2="22"/&gt;
 </value>
         </entry>
     </data>
