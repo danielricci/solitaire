@@ -43,7 +43,7 @@ public final class StockView extends PanelView implements IUndoable {
     }};
         
     /**
-     * A reference to the Talon view. This is stored so that we don't need to query the view factory to get the Talon
+     * A reference to the talon view. This is stored so that we dont need to query the view factory to get the Talon
      * which is costly given where it is being used
      */
     private final TalonPileView _talonView = AbstractFactory.getFactory(ViewFactory.class).get(TalonPileView.class);
@@ -95,16 +95,16 @@ public final class StockView extends PanelView implements IUndoable {
                 update(new ViewEventArgs(StockView.this, ""));
             }
         });        
-        addSignal(BacksideCardEntity.DECK_BACKSIDE_CHANGED, new ISignalReceiver<EventArgs>() {
+        addSignal(BacksideCardEntity.DECK_BACKSIDE_UPDATED, new ISignalReceiver<EventArgs>() {
             @Override public void signalReceived(EventArgs event) {
                 _stockCardEntities.stream().forEach(z -> z.refresh());
             }
         });
-//        addSignal(BacksideCardEntity.DECK_ANIMATION_UPDATED, new ISignalReceiver<EventArgs>() {
-//            @Override public void signalReceived(EventArgs event) {
-//            	update(event);
-//            }
-//        });
+        addSignal(BacksideCardEntity.DECK_ANIMATION_UPDATED, new ISignalReceiver<EventArgs>() {
+            @Override public void signalReceived(EventArgs event) {
+            	update(event);
+            }
+        });
     }
     
     @Override public void preProcessGraphics(IRenderable renderableData, Graphics context) {
