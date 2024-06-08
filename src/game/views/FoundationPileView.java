@@ -35,8 +35,8 @@ public final class FoundationPileView extends AbstractPileView implements IColli
         ViewHelper.registerForCardsAutocomplete(this);
     }
 
-    @Override public void preProcessGraphics(IRenderable renderableData, Graphics context) {
-        super.preProcessGraphics(renderableData, context);
+    @Override public void preprocessGraphics(IRenderable renderableData, Graphics context) {
+        super.preprocessGraphics(renderableData, context);
         if(getIsHighlighted() && layeredPane.getComponentCount() == 0) {
             context.setXORMode(Color.WHITE);
         }

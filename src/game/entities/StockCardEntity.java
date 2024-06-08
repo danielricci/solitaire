@@ -3,15 +3,11 @@ package game.entities;
 import generated.DataLookup;
 
 public final class StockCardEntity extends AbstractCardEntity {
-
-	private static final SceneAnimationRenderer sceneAnimationRenderer = new SceneAnimationRenderer();
-	
     public static int identifier = 0;
     public int identity = ++identifier;
     
     public StockCardEntity() {
         setBacksideVisible(true);
-        System.out.println("Weeeee");
     }
     
     public void enableTalonRecycled() {

@@ -503,8 +503,8 @@ public final class CardView extends PanelView implements ICollidable {
         _collisionListener.setEnabled(enabled);
     }
     
-    @Override public void preProcessGraphics(IRenderable renderableData, Graphics context) {        
-        super.preProcessGraphics(renderableData, context);
+    @Override public void preprocessGraphics(IRenderable renderableData, Graphics context) {        
+        super.preprocessGraphics(renderableData, context);
         if(_highlightsEnabled && getIsHighlighted()) {
             context.setXORMode(Color.WHITE);
         }
@@ -518,10 +518,10 @@ public final class CardView extends PanelView implements ICollidable {
 
     @Override public void render() {
         super.render();
-        extents.x = 0;
-        extents.y = 0;
-        extents.width = this.getPreferredSize().width;
-        extents.height = this.getPreferredSize().height;
+        renderProperties.x = 0;
+        renderProperties.y = 0;
+        renderProperties.width = this.getPreferredSize().width;
+        renderProperties.height = this.getPreferredSize().height;
         
         if(_controller != null) {
             _controller.refresh();

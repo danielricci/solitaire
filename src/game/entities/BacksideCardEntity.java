@@ -9,7 +9,7 @@ import generated.DataLookup;
 public class BacksideCardEntity extends DataEntity {
 	
 	public static final String DECK_BACKSIDE_CHANGED = "DECK_BACKSIDE_CHANGED";
-
+	
 	private boolean isBacksideVisible = false;
 
 	private DataLookup.BACKSIDES _backside;
@@ -38,7 +38,7 @@ public class BacksideCardEntity extends DataEntity {
 			return;
 		}
 		_backside = preferences.deck;
-		super.setActiveData(preferences.deck.identifier);
+		super.setActiveData(preferences.deck.identifier);		
 	}
 		
 	@Override public void refresh() {

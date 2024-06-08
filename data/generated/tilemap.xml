@@ -406,6 +406,12 @@
         <entry>
             <key>generated.TileMapData</key>
             <value>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+&lt;root identifier="8eb12cd0-f6ca-4f8b-9d38-50ec2945dc41" name="backside_empty" layers="69229e15-6b70-464b-806b-889732943899" friendly="" x1="1988" y1="0" x2="2059" y2="96"/&gt;
+</value>
+        </entry>
+        <entry>
+            <key>generated.TileMapData</key>
+            <value>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
 &lt;root identifier="5a0c5e61-f5b6-4db7-a2a9-405e5fe3c039" name="poker_1" layers="08b388db-1b65-4952-8dff-8664adacf4c8" friendly="" x1="2059" y1="0" x2="2091" y2="22"/&gt;
 </value>
         </entry>
@@ -443,6 +449,48 @@
             <key>generated.TileMapData</key>
             <value>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
 &lt;root identifier="9200227b-5948-4d98-b64a-17846b71b717" name="sun_1" layers="08b388db-1b65-4952-8dff-8664adacf4c8" friendly="" x1="2211" y1="0" x2="2225" y2="12"/&gt;
+</value>
+        </entry>
+        <entry>
+            <key>generated.TileMapData</key>
+            <value>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+&lt;root identifier="fdf06b20-0845-4acd-9661-9d01d8efee4a" name="deck_7_1" layers="08b388db-1b65-4952-8dff-8664adacf4c8" friendly="" x1="2225" y1="0" x2="2296" y2="96"/&gt;
+</value>
+        </entry>
+        <entry>
+            <key>generated.TileMapData</key>
+            <value>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+&lt;root identifier="bc2a584b-5149-40cb-83d0-a5e67a69f9a6" name="deck_7_2" layers="08b388db-1b65-4952-8dff-8664adacf4c8" friendly="" x1="2296" y1="0" x2="2367" y2="96"/&gt;
+</value>
+        </entry>
+        <entry>
+            <key>generated.TileMapData</key>
+            <value>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+&lt;root identifier="90e8f2f4-80e9-46f3-b56c-f60c072aed88" name="deck_10_1" layers="08b388db-1b65-4952-8dff-8664adacf4c8" friendly="" x1="2367" y1="0" x2="2438" y2="96"/&gt;
+</value>
+        </entry>
+        <entry>
+            <key>generated.TileMapData</key>
+            <value>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+&lt;root identifier="4e0b645a-38fa-425e-bedb-c61c1061f714" name="deck_11_1" layers="08b388db-1b65-4952-8dff-8664adacf4c8" friendly="" x1="2438" y1="0" x2="2509" y2="96"/&gt;
+</value>
+        </entry>
+        <entry>
+            <key>generated.TileMapData</key>
+            <value>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+&lt;root identifier="722fa391-4a49-4ddf-b954-4a189cd2f562" name="deck_11_2" layers="08b388db-1b65-4952-8dff-8664adacf4c8" friendly="" x1="2509" y1="0" x2="2580" y2="96"/&gt;
+</value>
+        </entry>
+        <entry>
+            <key>generated.TileMapData</key>
+            <value>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+&lt;root identifier="e2ca4158-d3ec-468b-9afd-316d2e160587" name="deck_12_1" layers="08b388db-1b65-4952-8dff-8664adacf4c8" friendly="" x1="2580" y1="0" x2="2651" y2="96"/&gt;
+</value>
+        </entry>
+        <entry>
+            <key>generated.TileMapData</key>
+            <value>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+&lt;root identifier="b4d443c9-6606-44df-a294-a3a78e57bad2" name="deck_12_2" layers="08b388db-1b65-4952-8dff-8664adacf4c8" friendly="" x1="2651" y1="0" x2="2722" y2="96"/&gt;
 </value>
         </entry>
     </data>

@@ -206,8 +206,7 @@ public final class DeckSelectionDialogView extends DialogView {
         // The Cancel button action event        
         _cancelButton.addActionListener(new ActionListener() {
             @Override public void actionPerformed(ActionEvent event) {
-                setDialogResult(JOptionPane.CANCEL_OPTION);
-                setVisible(false);
+                cancel();
             }
         });
         
@@ -227,13 +226,24 @@ public final class DeckSelectionDialogView extends DialogView {
         super.render();
     }
     
+    private void cancel() {
+    	setDialogResult(JOptionPane.CANCEL_OPTION);
+        setVisible(false);
+    }
+    
     private void ok() {
         BACKSIDES back = (BACKSIDES) _activeButton.getClientProperty(_activeButton);
         OptionsPreferences preferences = new OptionsPreferences();
         preferences.load();
-        preferences.deck = back;
-        preferences.save();
-        setDialogResult(JOptionPane.OK_OPTION);
-        setVisible(false);
+        
+        if(preferences.deck == back) {
+        	cancel();
+        }
+        else {
+        	preferences.deck = back;
+	        preferences.save();
+	        setDialogResult(JOptionPane.OK_OPTION);
+	        setVisible(false);
+	    }
     }
 }

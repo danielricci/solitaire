@@ -88,8 +88,8 @@ public class TableauPileView extends AbstractPileView implements ICollidable {
         }
     }
     
-    @Override public void preProcessGraphics(IRenderable renderableData, Graphics context) {
-        super.preProcessGraphics(renderableData, context);
+    @Override public void preprocessGraphics(IRenderable renderableData, Graphics context) {
+        super.preprocessGraphics(renderableData, context);
         if(getIsHighlighted() && layeredPane.getComponentCount() == 0) {
             _preferences.load();
             if(_preferences.outlineDragging) {

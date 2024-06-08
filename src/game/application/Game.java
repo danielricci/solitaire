@@ -47,7 +47,7 @@ public final class Game extends Application {
         super(isDebug);
         setMinimumSize(new Dimension(620, 436));
         setLocationRelativeTo(null);
-        setAlwaysOnTop(isDebug);
+        setAlwaysOnTop(isDebug || true);
         setIconImage(Localization.instance().getLocalizedData(LocalizationStrings.GAME_ICON));
         
         if(isDebug) {
