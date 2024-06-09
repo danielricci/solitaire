@@ -1,11 +1,12 @@
 key,en_ca
 About,About Solitaire
-Github,https://github.com/danielricci/solitaire
+AboutMessage,Step into a nostalgic world with this homage to the classic Solitaire from Windows 95. Experience the same addictive gameplay now refined for a flawless journey. Immerse yourself in the timeless charm of this beloved card game brought back to life for new and old players alike.
 Title,Solitaire
 Game,Game
 GameIcon,content/solitaire_logo.png
-GameOver, Deal Again?
-GameOverHeader, Solitaire
+GameOver,Deal Again?
+GameOverHeader,Solitaire
+GitHub,https://github.com/danielricci/solitaire
 Help,Help
 Deal,Deal
 Undo,Undo

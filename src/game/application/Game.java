@@ -22,6 +22,7 @@ import game.config.OptionsPreferences;
 import game.menu.AboutMenuItem;
 import game.menu.DeckMenuItem;
 import game.menu.ExitMenuItem;
+import game.menu.GitHubMenuItem;
 import game.menu.NewGameMenuItem;
 import game.menu.OptionsMenuItem;
 import game.menu.UndoMenuItem;
@@ -47,7 +48,7 @@ public final class Game extends Application {
         super(isDebug);
         setMinimumSize(new Dimension(620, 436));
         setLocationRelativeTo(null);
-        setAlwaysOnTop(isDebug || true);
+        setAlwaysOnTop(isDebug);
         setIconImage(Localization.instance().getLocalizedData(LocalizationStrings.GAME_ICON));
         
         if(isDebug) {
@@ -176,7 +177,8 @@ public final class Game extends Application {
         // Help Menu
         MenuBuilder.start(getJMenuBar())
         .addMenu(Localization.instance().getLocalizedString(LocalizationStrings.HELP), KeyEvent.VK_H)
-        .addMenuItem(AboutMenuItem.class);
+        .addMenuItem(AboutMenuItem.class)
+        .addMenuItem(GitHubMenuItem.class);
 
         // Perform a new game programatically
         MenuBuilder.search(getJMenuBar(), NewGameMenuItem.class).getComponent(AbstractButton.class).doClick();

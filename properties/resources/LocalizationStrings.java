@@ -32,13 +32,14 @@ package resources;
  */
 public class LocalizationStrings {
      public static String ABOUT = "About";
-     public static String GITHUB = "Github";
+     public static String ABOUT_MESSAGE = "AboutMessage";
      public static String TITLE = "Title";
      public static String GAME = "Game";
      public static String GAME_ICON = "GameIcon";
      public static String GAME_OVER = "GameOver";
      public static String GAME_OVER_HEADER = "GameOverHeader";
      public static String GAME_WON_STATUS_BAR = "GameWonStatusBar";
+     public static String GITHUB = "GitHub";
      public static String HELP = "Help";
      public static String DEAL = "Deal";
      public static String UNDO = "Undo";

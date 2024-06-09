@@ -7,6 +7,10 @@ import java.util.EventObject;
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.UIManager;
 
 import framework.core.factories.AbstractFactory;
 import framework.core.factories.ViewFactory;
@@ -47,11 +51,23 @@ public class AboutMenuItem extends AbstractMenuItem {
     }
 
     @Override public void onExecute(ActionEvent actionEvent) {
+        JTextArea textArea = new JTextArea(8, 20);
+        textArea.setText(Localization.instance().getLocalizedString(LocalizationStrings.ABOUT_MESSAGE));
+        textArea.setEditable(false);
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+        textArea.setBackground(UIManager.getColor("OptionsPane.background"));
+        
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        scrollPane.setBorder(null);
+        JPanel panel = new JPanel();
+        panel.add(scrollPane);
+
+        // Create a custom dialog
         JOptionPane.showMessageDialog(
-            Application.instance,
-            Localization.instance().getLocalizedString(LocalizationStrings.GITHUB),
-            Localization.instance().getLocalizedString(LocalizationStrings.ABOUT),
-            JOptionPane.INFORMATION_MESSAGE
-        );
+        		Application.instance, 
+        		panel, 
+        		Localization.instance().getLocalizedString(LocalizationStrings.ABOUT), 
+        		JOptionPane.INFORMATION_MESSAGE);
     }
 }
