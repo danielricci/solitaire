@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.List;
 
@@ -50,7 +51,6 @@ public final class Game extends Application {
         setLocationRelativeTo(null);
         setAlwaysOnTop(isDebug);
         setIconImage(Localization.instance().getLocalizedData(LocalizationStrings.GAME_ICON));
-        
         if(isDebug) {
             addKeyListener(new KeyAdapter() {
                 @Override public void keyPressed(KeyEvent event) {
@@ -97,7 +97,7 @@ public final class Game extends Application {
     }
     
     /**
-     * Main entrypoint method
+     * Main entry-point method
      * 
      * @param args The arguments associated to the application entry point
      */
@@ -113,7 +113,21 @@ public final class Game extends Application {
                     }
                     }
                 }
-                (new Game(debugMode)).setVisible(true);;
+                
+                if(debugMode) {
+                    EngineProperties.instance().setProperty(Property.LOG_DIRECTORY,  System.getProperty("user.dir") + File.separator);
+                    EngineProperties.instance().setProperty(Property.ENGINE_OUTPUT, Boolean.toString(true));
+                    EngineProperties.instance().setProperty(Property.DISPLAY_EXCEPTIONS, Boolean.toString(true));    
+                }
+                
+                EngineProperties.instance().setProperty(Property.DATA_PATH_XML, "/generated/tilemap.xml");
+                EngineProperties.instance().setProperty(Property.DATA_PATH_SHEET, "/generated/tilemap.png");
+                EngineProperties.instance().setProperty(Property.LOCALIZATION_PATH_CVS, "/resources/Localization.csv");
+                EngineProperties.instance().setProperty(Property.SUPPRESS_SIGNAL_REGISTRATION_OUTPUT, Boolean.toString(false));
+                EngineProperties.instance().setProperty(Property.DISABLE_TRANSLATIONS_PLACEHOLDER, Boolean.toString(!debugMode));
+                
+                Game game = new Game(debugMode);
+                game.setVisible(true);   
             }
         });
     }
@@ -140,24 +154,14 @@ public final class Game extends Application {
         instance.setContentPane(gameView);
         gameView.render();
     }
-    
-    @Override protected void onBeforeEngineDataInitialized() {
-        if(isDebug) {
-            EngineProperties.instance().setProperty(Property.LOG_DIRECTORY,  System.getProperty("user.dir") + File.separator);
-            EngineProperties.instance().setProperty(Property.ENGINE_OUTPUT, Boolean.toString(true));
-            EngineProperties.instance().setProperty(Property.DISPLAY_EXCEPTIONS, Boolean.toString(true));    
-        }
-        EngineProperties.instance().setProperty(Property.DATA_PATH_XML, "/generated/tilemap.xml");
-        EngineProperties.instance().setProperty(Property.DATA_PATH_SHEET, "/generated/tilemap.png");
-        EngineProperties.instance().setProperty(Property.LOCALIZATION_PATH_CVS, "/resources/Localization.csv");
-        EngineProperties.instance().setProperty(Property.SUPPRESS_SIGNAL_REGISTRATION_OUTPUT, Boolean.toString(false));
-        EngineProperties.instance().setProperty(Property.DISABLE_TRANSLATIONS_PLACEHOLDER, Boolean.toString(!isDebug));
-    }
 
-    @Override protected void onWindowInitialized() {
-        super.onWindowInitialized();
-        
-        // Set the title
+
+    
+    @Override public void windowOpened(WindowEvent windowEvent) {
+    	System.out.println("Window Opened");    	
+    	super.windowOpened(windowEvent);
+    	
+    	   // Set the title
         setTitle(Localization.instance().getLocalizedString(LocalizationStrings.TITLE));
         
         // Always show mnemonics in the menu system
@@ -180,7 +184,7 @@ public final class Game extends Application {
         .addMenuItem(AboutMenuItem.class)
         .addMenuItem(GitHubMenuItem.class);
 
-        // Perform a new game programatically
+        // Perform a new game programmatically
         MenuBuilder.search(getJMenuBar(), NewGameMenuItem.class).getComponent(AbstractButton.class).doClick();
     }
 }
