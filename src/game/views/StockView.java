@@ -20,9 +20,9 @@ import framework.utils.MouseListenerEvent;
 import framework.utils.MouseListenerEvent.SupportedActions;
 
 import game.entities.BacksideCardEntity;
-import game.entities.SceneAnimationRenderer;
 import game.entities.StockCardEntity;
 import game.views.TalonPileView.TalonCardState;
+import game.views.helpers.DeckAnimationHelper;
 import game.views.helpers.ViewHelper;
 
 /**
@@ -34,8 +34,6 @@ import game.views.helpers.ViewHelper;
  */
 public final class StockView extends PanelView implements IUndoable {
  
-	private final SceneAnimationRenderer sceneAnimationRenderer = new SceneAnimationRenderer(); 
-	
     /**
      * The list of card entities that make up this view
      */
@@ -103,7 +101,7 @@ public final class StockView extends PanelView implements IUndoable {
                 _stockCardEntities.stream().forEach(z -> z.refresh());
             }
         });
-        addSignal(SceneAnimationRenderer.DECK_ANIMATION_UPDATED, new ISignalReceiver<EventArgs>() {
+        addSignal(DeckAnimationHelper.DECK_ANIMATION_UPDATED, new ISignalReceiver<EventArgs>() {
             @Override public void signalReceived(EventArgs event) {
             	//repaint();
             }
@@ -140,7 +138,7 @@ public final class StockView extends PanelView implements IUndoable {
             break;
         }
         
-        this.renderProperties.renderData = this.sceneAnimationRenderer.getRenderableContent();
+        this.renderProperties.renderData = DeckAnimationHelper.getInstance().getRenderableContent();
     }
     
     @Override public Dimension getPreferredSize() {
@@ -157,14 +155,14 @@ public final class StockView extends PanelView implements IUndoable {
         renderProperties.width = this.getPreferredSize().width;
         renderProperties.height = this.getPreferredSize().height;
         
-        this.sceneAnimationRenderer.setScene(_stockCardEntities);
+        DeckAnimationHelper.getInstance().setScene(_stockCardEntities);
         
         update(new ViewEventArgs(StockView.this, ""));
     }
 
     @Override public void update(EventArgs event) {
         super.update(event);
-        addRenderableContent(sceneAnimationRenderer);
+        addRenderableContent(DeckAnimationHelper.getInstance());
         repaint();
     }
 

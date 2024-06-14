@@ -1,4 +1,4 @@
-package game.entities;
+package game.views.helpers;
 
 import java.awt.Image;
 import java.util.ArrayList;
@@ -14,18 +14,17 @@ import framework.core.factories.ViewFactory;
 import framework.core.graphics.IRenderable;
 import framework.core.graphics.IRenderableContainer;
 
+import game.entities.StockCardEntity;
 import game.views.StockView;
 
 import generated.DataLookup;
 
-public class SceneAnimationRenderer implements IRenderableContainer {
+public class DeckAnimationHelper implements IRenderableContainer {
+	private List<StockCardEntity> stockCardEntities;
 	
 	private Image deckImageOriginal;
-	private List<Image> deckImageAnimations = new ArrayList<Image>();
 	private Image currentDeckImageAnimation;
 	
-	private List<StockCardEntity> stockCardEntities;
-
 	private int delay = 0;
 	private int period = 1000;
 
@@ -33,6 +32,32 @@ public class SceneAnimationRenderer implements IRenderableContainer {
 
 	public static final String DECK_ANIMATION_UPDATED = "DECK_ANIMATION_UPDATED";
 
+	private static volatile DeckAnimationHelper instance = null;
+	
+	private DeckAnimationHelper() {
+	}
+	
+	public static DeckAnimationHelper getInstance() {
+		synchronized(DeckAnimationHelper.class) {
+			if(instance == null) {
+				instance = new DeckAnimationHelper();
+			}
+		}
+		
+		return instance;
+	}
+	
+	public void clear() {
+		if(timer != null) {
+			timer.cancel();
+			timer = null;
+        }
+		
+		this.currentDeckImageAnimation = null;
+		this.deckImageOriginal = null;
+		this.stockCardEntities = null;
+	}
+	
 	public void setScene(List<StockCardEntity> stockCardEntities) {
 		this.stockCardEntities = stockCardEntities;
 		
@@ -90,7 +115,6 @@ public class SceneAnimationRenderer implements IRenderableContainer {
 		}
 		
 		this.deckImageOriginal = deckImageOriginal;
-		this.deckImageAnimations = deckImageAnimations;
 		this.currentDeckImageAnimation = null;
 		
 		this.timer = new Timer(true);

@@ -31,6 +31,7 @@ import game.views.FoundationPileView;
 import game.views.GameView;
 import game.views.TableauPileView;
 import game.views.TalonPileView;
+import game.views.helpers.DeckAnimationHelper;
 import game.views.helpers.WinAnimationHelper;
 
 import resources.LocalizationStrings;
@@ -148,6 +149,7 @@ public final class Game extends Application {
         }
 
         WinAnimationHelper.clear();
+        DeckAnimationHelper.getInstance().clear();
         
         // Spawn a new game view and render its contents
         GameView gameView = AbstractFactory.getFactory(ViewFactory.class).add(new GameView(), true);
