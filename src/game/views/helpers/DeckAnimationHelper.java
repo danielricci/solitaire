@@ -21,6 +21,7 @@ import generated.DataLookup;
 
 public class DeckAnimationHelper implements IRenderableContainer {
 	private List<StockCardEntity> stockCardEntities;
+	private List<Image> deckImageAnimations;
 	
 	private Image deckImageOriginal;
 	private Image currentDeckImageAnimation;
@@ -59,17 +60,18 @@ public class DeckAnimationHelper implements IRenderableContainer {
 	}
 	
 	public void setScene(List<StockCardEntity> stockCardEntities) {
-		this.stockCardEntities = stockCardEntities;
+		this.clear();
 		
+		this.stockCardEntities = stockCardEntities;
 		Image deckImageOriginal = stockCardEntities.get(0).backsideCardEntity.getRenderableContent();
 		if(this.deckImageOriginal == deckImageOriginal) {
 			return;
 		}
 		
-		ArrayList<Image> deckImageAnimations = new ArrayList<Image>();
+		this.deckImageAnimations = new ArrayList<Image>();
 		switch(stockCardEntities.get(0).backsideCardEntity.getBacksideData()) {
 			case DECK_7: // ROBOT
-				deckImageAnimations.addAll(
+				this.deckImageAnimations.addAll(
 					AbstractFactory.getFactory(DataFactory.class).getDataEntities(
 							DataLookup.ANIMATIONS.DECK_7_2.identifier,
 							DataLookup.ANIMATIONS.DECK_7_1.identifier,
@@ -81,7 +83,7 @@ public class DeckAnimationHelper implements IRenderableContainer {
 				this.delay = 0;
 				break;
 			case DECK_10: // CASTLE
-				deckImageAnimations.addAll(AbstractFactory.getFactory(DataFactory.class).getDataEntities(
+				this.deckImageAnimations.addAll(AbstractFactory.getFactory(DataFactory.class).getDataEntities(
 						null,
 						DataLookup.ANIMATIONS.DECK_10_1.identifier, null
 					));
@@ -89,7 +91,7 @@ public class DeckAnimationHelper implements IRenderableContainer {
 				this.delay = 0;
 				break;
 			case DECK_11: // BEACH
-				deckImageAnimations.addAll(AbstractFactory.getFactory(DataFactory.class).getDataEntities(
+				this.deckImageAnimations.addAll(AbstractFactory.getFactory(DataFactory.class).getDataEntities(
 						null,
 						DataLookup.ANIMATIONS.DECK_11_1.identifier,
 						DataLookup.ANIMATIONS.DECK_11_2.identifier
@@ -99,7 +101,7 @@ public class DeckAnimationHelper implements IRenderableContainer {
 				this.delay = 8500;
 				break;
 			case DECK_12: // POKER
-				deckImageAnimations.addAll(AbstractFactory.getFactory(DataFactory.class).getDataEntities(
+				this.deckImageAnimations.addAll(AbstractFactory.getFactory(DataFactory.class).getDataEntities(
 						null,
 						DataLookup.ANIMATIONS.DECK_12_1.identifier,
 						DataLookup.ANIMATIONS.DECK_12_2.identifier,
@@ -116,12 +118,14 @@ public class DeckAnimationHelper implements IRenderableContainer {
 		
 		this.deckImageOriginal = deckImageOriginal;
 		this.currentDeckImageAnimation = null;
-		
 		this.timer = new Timer(true);
 		this.timer.schedule(new TimerTask() {
 			private int index = 0;
 			@Override public void run() {
 				System.out.println(index);
+				if(deckImageAnimations.isEmpty()) {
+					return;
+				}
 				currentDeckImageAnimation = deckImageAnimations.get(index);	
 				index = (index + 1) % deckImageAnimations.size();
 				
