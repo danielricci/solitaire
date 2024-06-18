@@ -81,7 +81,7 @@ public class DeckAnimationHelper implements IRenderableContainer {
 							DataLookup.ANIMATIONS.DECK_7_1.identifier
 				));
 				
-				this.period = 700;
+				this.period = 800;
 				this.delay = 0;
 				break;
 			case DECK_10: // CASTLE
