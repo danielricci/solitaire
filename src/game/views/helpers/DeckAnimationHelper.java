@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import framework.communication.internal.signal.arguments.EventArgs;
@@ -13,6 +14,7 @@ import framework.core.factories.DataFactory;
 import framework.core.factories.ViewFactory;
 import framework.core.graphics.IRenderable;
 import framework.core.graphics.IRenderableContainer;
+import framework.utils.logging.Tracelog;
 
 import game.entities.StockCardEntity;
 import game.views.StockView;
@@ -85,7 +87,7 @@ public class DeckAnimationHelper implements IRenderableContainer {
 			case DECK_10: // CASTLE
 				this.deckImageAnimations.addAll(AbstractFactory.getFactory(DataFactory.class).getDataEntities(
 						null,
-						DataLookup.ANIMATIONS.DECK_10_1.identifier, null
+						DataLookup.ANIMATIONS.DECK_10_1.identifier
 					));
 				this.period = 1000;
 				this.delay = 0;
@@ -122,16 +124,25 @@ public class DeckAnimationHelper implements IRenderableContainer {
 		this.timer.schedule(new TimerTask() {
 			private int index = 0;
 			@Override public void run() {
-				System.out.println(index);
+				System.out.println(index + " of " + (deckImageAnimations.size() - 1));
 				if(deckImageAnimations.isEmpty()) {
 					return;
 				}
 				currentDeckImageAnimation = deckImageAnimations.get(index);	
-				index = (index + 1) % deckImageAnimations.size();
-				
 				AbstractFactory.getFactory(ViewFactory.class).multicastSignalListeners(StockView.class, new EventArgs(this, DECK_ANIMATION_UPDATED));
+				
+				if(index == 0) {
+					System.out.println("Sleeping for " + delay + " milliseconds");
+					try {
+						Thread.sleep(delay);
+					} catch (Exception exception){
+						Tracelog.log(Level.WARNING, true, exception);
+					}
+				}
+				
+				index = (index + 1) % deckImageAnimations.size();
 			}
-		}, 0, 1000);
+		}, 0, period);
 	}
 	
 	@Override public List<IRenderable> getRenderableContents() {
