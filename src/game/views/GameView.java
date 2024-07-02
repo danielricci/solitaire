@@ -82,11 +82,7 @@ public final class GameView extends PanelView {
                     case 0: {
                         // Create the stock view 
                         StockView stockView = viewFactory.add(new StockView(), true);
-                        GridBagConstraints stockConstraints = (GridBagConstraints)gameConstraints.clone();
-                        stockConstraints.insets = new Insets(gameConstraints.insets.top, 0, -5, -5);
-                        stockConstraints.ipadx = 5;
-                        stockConstraints.ipady = 5;
-                        this.add(stockView, stockConstraints);
+                        this.add(stockView, gameConstraints);
                         break;
                     }
                     case 1: {
