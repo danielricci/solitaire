@@ -124,7 +124,7 @@ public class DeckAnimationHelper implements IRenderableContainer {
 		this.timer.schedule(new TimerTask() {
 			private int index = 0;
 			@Override public void run() {
-				System.out.println(index + " of " + (deckImageAnimations.size() - 1));
+				//System.out.println(index + " of " + (deckImageAnimations.size() - 1));
 				if(deckImageAnimations.isEmpty()) {
 					return;
 				}
@@ -132,7 +132,7 @@ public class DeckAnimationHelper implements IRenderableContainer {
 				AbstractFactory.getFactory(ViewFactory.class).multicastSignalListeners(StockView.class, new EventArgs(this, DECK_ANIMATION_UPDATED));
 				
 				if(index == 0) {
-					System.out.println("Sleeping for " + delay + " milliseconds");
+					//System.out.println("Sleeping for " + delay + " milliseconds");
 					try {
 						Thread.sleep(delay);
 					} catch (Exception exception){

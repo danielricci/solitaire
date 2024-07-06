@@ -69,7 +69,7 @@ public class MovementRecorderController extends BaseController {
         MovementType fromMovement = MovementType.fromClass(source);
         MovementType toMovement = MovementType.fromClass(destination);
 
-        Tracelog.log(Level.INFO, true, String.format("Movement Detected: from [%s] to [%s]", fromMovement, toMovement));
+        //Tracelog.log(Level.INFO, true, String.format("Movement Detected: from [%s] to [%s]", fromMovement, toMovement));
             
         if(fromMovement == MovementType.NONE || toMovement == MovementType.NONE) {
             _canUndo = false;

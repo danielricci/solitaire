@@ -149,15 +149,7 @@ public final class StockView extends PanelView implements IUndoable {
     @Override public void render() { 	
         super.render();
         
-        // Because this view had to be stretched a bit in the constraints from the game view
-        // to be able to render cards collated, we need to specify the width and height of the
-        // extents, else the graphics pipeline will render the entire width and height of this view
-        // causing the cards to be out of proportion.
-        renderProperties.width = this.getPreferredSize().width;
-        renderProperties.height = this.getPreferredSize().height;
-        
         DeckAnimationHelper.getInstance().setScene(_stockCardEntities);
-        
         update(new ViewEventArgs(StockView.this, ""));
     }
 
