@@ -126,16 +126,24 @@ public final class StockView extends PanelView implements IUndoable {
             this.renderProperties.canDraw = true;
             this.renderProperties.x = 0;
             this.renderProperties.y = 0;
+            this.renderProperties.width = CardView.CARD_WIDTH;
+            this.renderProperties.height = CardView.CARD_HEIGHT;
             break;
         case 1:
             this.renderProperties.canDraw = _stockCardEntities.get(0).getBacksideVisible() && _talonView.isPhaseTwo();
             this.renderProperties.x = 2; 
             this.renderProperties.y = 1;
+            this.renderProperties.width = CardView.CARD_WIDTH;
+            this.renderProperties.height = CardView.CARD_HEIGHT;
+
             break;
         case 2:
             this.renderProperties.canDraw = _stockCardEntities.get(0).getBacksideVisible() && _talonView.isPhaseOne();
             this.renderProperties.x = 4;
             this.renderProperties.y = 2;
+            this.renderProperties.width = CardView.CARD_WIDTH;
+            this.renderProperties.height = CardView.CARD_HEIGHT;
+
             break;
         }
         
@@ -143,7 +151,7 @@ public final class StockView extends PanelView implements IUndoable {
     }
     
     @Override public Dimension getPreferredSize() {
-        return new Dimension(CardView.CARD_WIDTH, CardView.CARD_HEIGHT);
+        return new Dimension(CardView.CARD_WIDTH + 4, CardView.CARD_HEIGHT + 2);
     }
 
     @Override public void render() { 	
