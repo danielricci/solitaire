@@ -53,7 +53,7 @@ public class MovementRecorderController extends BaseController {
      * 
      */
     public void recordMovement(IUndoable source, IUndoable destination) {
-        // Do not preoceed with the record movement if the lock is enabled
+        // Do not proceed with the record movement if the lock is enabled
         if(_lockRecording) {
             return;
         }
