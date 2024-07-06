@@ -220,7 +220,7 @@ public final class CardView extends PanelView implements ICollidable {
     /**
      * The preferred height of this card
      */
-    public static final int CARD_HEIGHT = 100;
+    public static final int CARD_HEIGHT = 96;
 
     /**
      * The controller associated to this card view
