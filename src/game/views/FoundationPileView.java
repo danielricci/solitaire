@@ -5,9 +5,15 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
+import javax.swing.SwingUtilities;
 
 import framework.api.IView;
 import framework.communication.internal.signal.arguments.EventArgs;
+import framework.core.factories.AbstractFactory;
+import framework.core.factories.ViewFactory;
 import framework.core.graphics.IRenderable;
 import framework.core.physics.ICollidable;
 
@@ -33,6 +39,15 @@ public final class FoundationPileView extends AbstractPileView implements IColli
         this.setOpaque(true);
         addRenderableContent(new FoundationCardEntity());
         ViewHelper.registerForCardsAutocomplete(this);
+        
+        addMouseListener(new MouseAdapter() {
+            @Override public void mousePressed(MouseEvent event) {
+                if(!SwingUtilities.isRightMouseButton(event)) {
+                    AbstractFactory.getFactory(ViewFactory.class).get(TimerView.class).startGameTimer();
+                    removeMouseListener(this);
+                }
+            }
+        });
     }
 
     @Override public void preprocessGraphics(IRenderable renderableData, Graphics context) {
