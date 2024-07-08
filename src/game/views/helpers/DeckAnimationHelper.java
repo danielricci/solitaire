@@ -65,6 +65,13 @@ public class DeckAnimationHelper implements IRenderableContainer {
 		this.clear();
 		
 		this.stockCardEntities = stockCardEntities;
+		
+		StockCardEntity stockCardEntity = stockCardEntities.get(0);
+		if(stockCardEntity.getActiveDataIdentifier() == DataLookup.MISC.TALON_RESTART.identifier || stockCardEntity.getActiveDataIdentifier() == DataLookup.MISC.TALON_END.identifier) {
+			this.deckImageOriginal = stockCardEntity.getRenderableContent(); 
+			return;
+		}
+		
 		Image deckImageOriginal = stockCardEntities.get(0).backsideCardEntity.getRenderableContent();
 		if(this.deckImageOriginal == deckImageOriginal) {
 			return;
@@ -128,6 +135,7 @@ public class DeckAnimationHelper implements IRenderableContainer {
 				if(deckImageAnimations.isEmpty()) {
 					return;
 				}
+				
 				currentDeckImageAnimation = deckImageAnimations.get(index);	
 				AbstractFactory.getFactory(ViewFactory.class).multicastSignalListeners(StockView.class, new EventArgs(this, DECK_ANIMATION_UPDATED));
 				

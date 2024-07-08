@@ -25,6 +25,8 @@ import game.views.TalonPileView.TalonCardState;
 import game.views.helpers.DeckAnimationHelper;
 import game.views.helpers.ViewHelper;
 
+import generated.DataLookup;
+
 /**
  * This view handles the functionality related to the Stock. This view will show the 
  * collated cards view based on the deck face, and when you click on this view it will
@@ -82,10 +84,21 @@ public final class StockView extends PanelView implements IUndoable {
                     else {
                         _stockCardEntities.get(0).enableTalonRecycled();
                     }
+                    
+                    DeckAnimationHelper.getInstance().setScene(_stockCardEntities);
                 }
                 else {
+
+                	StockCardEntity stockCardEntity = _stockCardEntities.get(0);
+                	Boolean needsUpdate = stockCardEntity.getActiveDataIdentifier() == DataLookup.MISC.TALON_RESTART.identifier || stockCardEntity.getActiveDataIdentifier() == DataLookup.MISC.TALON_END.identifier;
+
                     _stockCardEntities.remove(0);
                     _stockCardEntities.add(0, new StockCardEntity());
+                    
+                    if(needsUpdate) {
+                        DeckAnimationHelper.getInstance().setScene(_stockCardEntities);
+                    }
+                    
                     if(!SwingUtilities.isRightMouseButton(event)) {
                         AbstractFactory.getFactory(ViewFactory.class).get(TimerView.class).startGameTimer();
                     }
