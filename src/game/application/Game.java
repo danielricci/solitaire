@@ -25,6 +25,7 @@ import game.menu.DeckMenuItem;
 import game.menu.ExitMenuItem;
 import game.menu.GitHubMenuItem;
 import game.menu.NewGameMenuItem;
+import game.menu.OnTopMenuItem;
 import game.menu.OptionsMenuItem;
 import game.menu.UndoMenuItem;
 import game.views.FoundationPileView;
@@ -49,8 +50,11 @@ public final class Game extends Application {
     private Game(boolean isDebug) {
         super(isDebug);
         setMinimumSize(new Dimension(620, 436));
+        
+        OptionsPreferences options = new OptionsPreferences();
+        options.load();
         setLocationRelativeTo(null);
-        setAlwaysOnTop(isDebug);
+        setAlwaysOnTop(options.alwaysOnTop);
         setIconImage(Localization.instance().getLocalizedData(LocalizationStrings.GAME_ICON));
         if(isDebug) {
             addKeyListener(new KeyAdapter() {
@@ -180,11 +184,17 @@ public final class Game extends Application {
         .addSeparator()
         .addMenuItem(ExitMenuItem.class);
                 
+        // Extras
+        MenuBuilder.start(getJMenuBar())
+        .addMenu("Extras")
+        .addMenuItem(OnTopMenuItem.class);
+
         // Help Menu
         MenuBuilder.start(getJMenuBar())
         .addMenu(Localization.instance().getLocalizedString(LocalizationStrings.HELP), KeyEvent.VK_H)
-        .addMenuItem(AboutMenuItem.class)
-        .addMenuItem(GitHubMenuItem.class);
+        .addMenuItem(GitHubMenuItem.class)
+        .addSeparator()
+        .addMenuItem(AboutMenuItem.class);
 
         // Perform a new game programmatically
         MenuBuilder.search(getJMenuBar(), NewGameMenuItem.class).getComponent(AbstractButton.class).doClick();

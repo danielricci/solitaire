@@ -164,7 +164,7 @@ public final class StockView extends PanelView implements IUndoable {
     }
     
     @Override public Dimension getPreferredSize() {
-        return new Dimension(CardView.CARD_WIDTH, CardView.CARD_HEIGHT);
+        return new Dimension(CardView.CARD_WIDTH + 4, CardView.CARD_HEIGHT + 2);
     }
 
     @Override public void render() { 	

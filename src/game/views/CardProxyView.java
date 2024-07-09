@@ -387,12 +387,14 @@ public final class CardProxyView extends PanelView {
     }
     
     @Override public void setBounds(int x, int y, int width, int height) {
-        // Prevent issues related to the view being updated because of other components, causing this component
+    	//System.out.printf("(%d,%d,%d%d)\n", x, y, width, height);
+
+    	// Prevent issues related to the view being updated because of other components, causing this component
         // to be position improperly.
         if(_bounds != null && !_dragListener.isDragging()) {
             super.setBounds(_bounds.x, _bounds.y, _bounds.width, _bounds.height);
         }
-        else if(y != 5) {
+        else if(y != 6) {
             super.setBounds(x, y, width, height);
         }
     }

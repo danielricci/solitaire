@@ -29,6 +29,8 @@ public final class OptionsPreferences extends GamePreferences {
     
     public DataLookup.BACKSIDES deck;
     
+    public boolean alwaysOnTop;
+    
     public OptionsPreferences() {
         super(OptionsDialogView.class);
     }
@@ -41,6 +43,7 @@ public final class OptionsPreferences extends GamePreferences {
         outlineDragging = preferences.getBoolean("outlineDragging", false);
         cumulativeScore = preferences.getBoolean("cumulativeScore", false);
         deck = DataLookup.BACKSIDES.values()[preferences.getInt("deck", DataLookup.BACKSIDES.DECK_1.ordinal())];
+        alwaysOnTop = preferences.getBoolean("alwaysOnTop", false);
     }
 
     @Override public void save() {
@@ -52,6 +55,7 @@ public final class OptionsPreferences extends GamePreferences {
             preferences.putBoolean("outlineDragging", outlineDragging);
             preferences.putBoolean("cumulativeScore", cumulativeScore);
             preferences.putInt("deck", deck.ordinal());
+            preferences.putBoolean("alwaysOnTop", alwaysOnTop);
             preferences.flush();
         } 
         catch (Exception exception) {
@@ -70,6 +74,7 @@ public final class OptionsPreferences extends GamePreferences {
         builder.append("Outline Dragging: " + Boolean.toString(outlineDragging) + System.getProperty("line.separator"));
         builder.append("Cumulative Score: " + Boolean.toString(cumulativeScore) + System.getProperty("line.separator"));
         builder.append("Deck: " + deck.toString() + System.getProperty("line.separator"));
+        builder.append("Always on Top: " + alwaysOnTop + System.getProperty("line.seperator"));
         builder.append(new String(new char[header.length()]).replace("\0", "="));
         return builder.toString();
     }

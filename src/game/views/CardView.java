@@ -124,7 +124,8 @@ public final class CardView extends PanelView implements ICollidable {
                     Point initialLocation = CardView.this.getLocation();
                     
                     // Note: Add +2 to the width and height because of the initial border size offset
-                    CardView.this.setBounds(new Rectangle(_parentLayeredPane.getParent().getLocation().x + initialLocation.x, _parentLayeredPane.getParent().getLocation().y + initialLocation.y, layeredPane.getWidth(), layeredPane.getHeight()));
+                    Rectangle rectangle = new Rectangle(_parentLayeredPane.getParent().getLocation().x + initialLocation.x, _parentLayeredPane.getParent().getLocation().y + initialLocation.y, layeredPane.getWidth(), layeredPane.getHeight());
+                    CardView.this.setBounds(rectangle);
 
                     // Remove the card view reference from it's initial parent
                     _parentLayeredPane.remove(CardView.this);
@@ -533,7 +534,9 @@ public final class CardView extends PanelView implements ICollidable {
         // For now, this is here to fix a bug where the timer updating on the status bar will
         // cause a revalidation of the gridbag that the game view has, causing the card that is dragging
         // to be reset to the `origin`.
-        if(y == 5) {
+    	//System.out.printf("(%d,%d,%d%d)\n", x, y, width, height);
+
+        if(x == 13 && y == 6) {
             return;
         }
 

@@ -101,7 +101,9 @@ public final class GameView extends PanelView {
                     case 6:
                         // Create the foundation view
                         FoundationPileView foundationView = viewFactory.add(new FoundationPileView());
-                        this.add(foundationView, gameConstraints);
+                        GridBagConstraints constraints = (GridBagConstraints)gameConstraints.clone();
+                        constraints.fill = GridBagConstraints.NONE;
+                        this.add(foundationView, constraints);
                     break;
                     }
                 }
