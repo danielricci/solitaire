@@ -82,17 +82,19 @@ public final class GameView extends PanelView {
                     case 0: {
                         // Create the stock view 
                         StockView stockView = viewFactory.add(new StockView(), true);
-                        this.add(stockView, gameConstraints);
+                        GridBagConstraints constraints = (GridBagConstraints)gameConstraints.clone();
+                        constraints.insets = new Insets(gameConstraints.insets.top, 4, 0, 0);
+                        this.add(stockView, constraints);
                         break;
                     }
                     case 1: {
                         // Create the talon view
                         TalonPileView talonView = viewFactory.add(new TalonPileView(cards), true);
-                        GridBagConstraints talonConstraints = (GridBagConstraints)gameConstraints.clone();
-                        talonConstraints.insets = new Insets(gameConstraints.insets.top, 0, -5, -30);
-                        talonConstraints.ipadx = 30;
-                        talonConstraints.ipady = 5;
-                        this.add(talonView, talonConstraints, 0);                        
+                        GridBagConstraints constraints = (GridBagConstraints)gameConstraints.clone();
+                        constraints.insets = new Insets(gameConstraints.insets.top, 0, -5, -30);
+                        constraints.ipadx = 30;
+                        constraints.ipady = 5;
+                        this.add(talonView, constraints, 0);                        
                         break;
                     }
                     case 3:
