@@ -172,9 +172,7 @@ public final class DeckSelectionDialogView extends DialogView {
                 // Add a listener event for when the deck image is selected
                 button.addMouseListener(new MouseAdapter() {
                     @Override public void mousePressed(MouseEvent event) {
-
-                    	Border defaultBorder = UIManager.getLookAndFeel().getDefaults().getBorder("Button.border");
-                        _deckButtons.forEach(z -> z.setBorder(defaultBorder));
+                        _deckButtons.forEach(z -> z.setBorder(BorderFactory.createEmptyBorder()));
                         button.setBorder(BorderFactory.createLineBorder(Color.BLUE, 2));
                         _activeButton = button;
                         // If more than one click count was registered, then do what the OK button would do.
