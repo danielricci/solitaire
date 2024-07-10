@@ -20,8 +20,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.UIManager;
-import javax.swing.border.Border;
 
 import framework.core.entity.DataEntity;
 import framework.core.mvc.view.DialogView;

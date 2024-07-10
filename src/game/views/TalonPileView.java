@@ -253,7 +253,7 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
                 }
             };
             cardView.addMouseListener(adapter);
-            cardView.getProxyView().addMouseListener(adapter);
+            cardView.getOutlineView().addMouseListener(adapter);
             
             // Set the default bounds of the card
             cardView.setBounds(new Rectangle(0, 0, cardView.getPreferredSize().width, cardView.getPreferredSize().height));
@@ -834,7 +834,7 @@ public final class TalonPileView extends AbstractPileView implements ICollidable
         if(cardView == null && layeredPane.highestLayer() != JLayeredPane.getLayer(_blankCard)) {
             
             // Take the card that is at the top-most of the talon. This is the case when we are
-            // playing in outline mode, and the card still exists on the talon, because the card proxy
+            // playing in outline mode, and the card still exists on the talon, because the card outline
             // is the thing that is actually movings
             cardView = (CardView) layeredPane.getComponentsInLayer(layeredPane.highestLayer())[0];
         }

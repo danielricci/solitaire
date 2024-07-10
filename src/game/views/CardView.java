@@ -49,7 +49,7 @@ import game.views.helpers.ViewHelper;
 public final class CardView extends PanelView implements ICollidable {
 
     /**
-     * The card selection events for this proxy view
+     * The card selection events for this outline view
      * 
      * @author Daniel Ricci {@literal <thedanny09@icloud.com>}
      *
@@ -74,7 +74,6 @@ public final class CardView extends PanelView implements ICollidable {
         }
         
         @Override public void mousePressed(MouseEvent event) {
-
             super.mousePressed(event);
             if(getIsConsumed() && event.isConsumed()) {
                 return;
@@ -108,7 +107,7 @@ public final class CardView extends PanelView implements ICollidable {
                     // Fixes a bug where the layered pane is chopped from the waist down
                     CardView.this.layeredPane.setSize(layeredPane.getWidth(), layeredPane.getHeight() + (cardViews.size() * 15));
                     
-                    // For each sibling add it into the associated layere pane and position it correctly within
+                    // For each sibling add it into the associated layered pane and position it correctly within
                     // the pane, accounting for the fact that CardView.this is the temporary 'root'
                     for(int j = 0; j < cardViews.size(); ++j) {
                         layeredPane.add(cardViews.get(j));
@@ -254,9 +253,9 @@ public final class CardView extends PanelView implements ICollidable {
     private final CardSelectionEvents _cardSelectionEvents = new CardSelectionEvents();
     
     /**
-     * The card proxy associated to this view
+     * The card outline associated to this view
      */
-    private CardProxyView _cardProxy;
+    private CardOutlineView _cardOutline;
     
     /**
      * Signal indicating that this view should synchronizr with the outline option
@@ -285,9 +284,9 @@ public final class CardView extends PanelView implements ICollidable {
         _controller = new CardController(cardModel);
         getViewProperties().setEntity(_controller);   
 
-        // Create the card proxy view and render it
-        _cardProxy = new CardProxyView(this);
-        _cardProxy.render();
+        // Create the card outline view and render it
+        _cardOutline = new CardOutlineView(this);
+        _cardOutline.render();
         
         addMouseListener(_dragListener);
         addMouseMotionListener(_dragListener);
@@ -296,10 +295,10 @@ public final class CardView extends PanelView implements ICollidable {
         addMouseMotionListener(_collisionListener);
         
         // Add the mouse listener responsible for handling single clicks and double clicks on this card.
-        // Note: This will sometimes not be called depending on if the proxy is enabled or not, since the 
-        //       proxy sits on top of this card. However, when the backside is being shown, this would indeed
+        // Note: This will sometimes not be called depending on if the outline is enabled or not, since the 
+        //       outline sits on top of this card. However, when the backside is being shown, this would indeed
         //       be called, however the double click will not be called since the single click will
-        //       initiate the proxy, thus the double click of the proxy will be called
+        //       initiate the outline, thus the double click of the outline will be called
         //
         // Note: This mouse listener should be before any other mouse listener within this class
         addMouseListener(_mouseActionListener);
@@ -313,9 +312,9 @@ public final class CardView extends PanelView implements ICollidable {
             }
         });
         
-        // Register this view and it's underlying proxy to perform auto moves
+        // Register this view and it's underlying outline to perform auto moves
         ViewHelper.registerForCardsAutocomplete(this);
-        ViewHelper.registerForCardsAutocomplete(_cardProxy);
+        ViewHelper.registerForCardsAutocomplete(_cardOutline);
         
         // Register this view to handle the events raised by the card selection events
         addMouseListener(_cardSelectionEvents);
@@ -366,14 +365,14 @@ public final class CardView extends PanelView implements ICollidable {
         
         // If the backside is not being shown, then add the event handler for card drag event
         // Note: In the event that the options preferences calls for outline mode, the entire
-        //       operation of performing a click-down, click-up, should be done by the proxy and
+        //       operation of performing a click-down, click-up, should be done by outline and
         //       not this card explicitely.
         if(!_controller.getCard().getIsBackside()) {
             if(!optionsPreferences.outlineDragging) {
-                remove(_cardProxy);
+                remove(_cardOutline);
             }
             else {
-                add(_cardProxy);
+                add(_cardOutline);
             }
         } 
         
@@ -383,10 +382,10 @@ public final class CardView extends PanelView implements ICollidable {
     }
     
     /**
-     * @return The card proxy associated to this view
+     * @return The card outline associated to this view
      */
-    public CardProxyView getProxyView() {
-        return _cardProxy;
+    public CardOutlineView getOutlineView() {
+        return _cardOutline;
     }
     
     /**
@@ -415,8 +414,8 @@ public final class CardView extends PanelView implements ICollidable {
             }
             
             if(preferences.outlineDragging) {
-                add(_cardProxy);
-                _cardProxy.setVisible(true);
+                add(_cardOutline);
+                _cardOutline.setVisible(true);
             }
             
             repaint();
@@ -495,9 +494,9 @@ public final class CardView extends PanelView implements ICollidable {
     @Override public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
         
-        // Propagate the state change to the proxy. Ensure that no circular reference could ever occur
-        if(_cardProxy != null && _cardProxy.isEnabled() != enabled) {
-            _cardProxy.setEnabled(enabled);
+        // Propagate the state change to the outline. Ensure that no circular reference could ever occur
+        if(_cardOutline != null && _cardOutline.isEnabled() != enabled) {
+            _cardOutline.setEnabled(enabled);
         }
 
         _dragListener.setEnabled(enabled);

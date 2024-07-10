@@ -35,15 +35,15 @@ import game.views.components.ExclusiveLineBorder;
  * @author Daniel Ricci {@literal <thedanny09@icloud.com>}
  *
  */
-public final class CardProxyView extends PanelView {
+public final class CardOutlineView extends PanelView {
 
     /**
-     * The current bounds that have been set to this proxy
+     * The current bounds that have been set to this outline
      */
     private Rectangle _bounds = null;
     
     /**
-     * The card drag events for this proxy view
+     * The card drag events for this outline view
      * 
      * @author Daniel Ricci {@literal <thedanny09@icloud.com>}
      *
@@ -97,7 +97,7 @@ public final class CardProxyView extends PanelView {
     }
 
     /**
-     * The card selection events for this proxy view
+     * The card selection events for this outline view
      * 
      * @author Daniel Ricci {@literal <thedanny09@icloud.com>}
      *
@@ -162,14 +162,14 @@ public final class CardProxyView extends PanelView {
                         // Fixes a bug where the layered pane is chopped from the waist down
                         _layeredPane.setSize(_layeredPane.getWidth(), _layeredPane.getHeight() + (cardViews.size() * 12));
                        
-                        // Go through the list of cards and add them to the layered pane within the proxy
+                        // Go through the list of cards and add them to the layered pane within the outline
                         for(int j = 0; j < cardViews.size(); ++j) {
-                            CardProxyView proxy = cardViews.get(j).getProxyView();
-                            _layeredPane.add(proxy);
-                            _layeredPane.setLayer(proxy, j);
+                            CardOutlineView outline = cardViews.get(j).getOutlineView();
+                            _layeredPane.add(outline);
+                            _layeredPane.setLayer(outline, j);
                             
                             // The bounds here contains `-1` because I want the border to be perfectly overlapped
-                            proxy.setBounds(new Rectangle(-1, 12 * (j + 1), cardViews.get(j).getPreferredSize().width, cardViews.get(j).getPreferredSize().height + _layeredPane.getHeight()));
+                            outline.setBounds(new Rectangle(-1, 12 * (j + 1), cardViews.get(j).getPreferredSize().width, cardViews.get(j).getPreferredSize().height + _layeredPane.getHeight()));
                         }
     
                         // Position the card at the same place where the drag was attempted from, because when you
@@ -185,7 +185,7 @@ public final class CardProxyView extends PanelView {
                         GameView gameView = viewFactory.get(GameView.class);
                         StatusBarView statusBarView = viewFactory.get(StatusBarView.class);
 
-                        gameView.add(CardProxyView.this, gameView.getComponentZOrder(statusBarView) + 1);
+                        gameView.add(CardOutlineView.this, gameView.getComponentZOrder(statusBarView) + 1);
                         gameView.repaint();
 
                         // Do not continue iterating, the card was found so there is nothing left to do
@@ -241,13 +241,13 @@ public final class CardProxyView extends PanelView {
                 List<Component> layeredComponents = Arrays.asList(_layeredPane.getComponents());
                 Collections.reverse(layeredComponents);
                 for(int i = 0; i < layeredComponents.size(); ++i) {
-                    CardProxyView proxy = (CardProxyView) layeredComponents.get(i);
-                    pileViewCollider.layeredPane.add(proxy._cardView);
-                    pileViewCollider.layeredPane.setLayer(proxy._cardView, initialSize + i);
-                    proxy._cardView.add(proxy);
-                    proxy.setBorder(null);
-                    Point offsetProxy = pileViewCollider.getCardOffset(proxy._cardView);
-                    proxy._cardView.setBounds(new Rectangle(offsetProxy.x, offsetProxy.y, proxy._cardView.getPreferredSize().width, proxy._cardView.getPreferredSize().height));
+                    CardOutlineView outline = (CardOutlineView) layeredComponents.get(i);
+                    pileViewCollider.layeredPane.add(outline._cardView);
+                    pileViewCollider.layeredPane.setLayer(outline._cardView, initialSize + i);
+                    outline._cardView.add(outline);
+                    outline.setBorder(null);
+                    Point offsetOutline = pileViewCollider.getCardOffset(outline._cardView);
+                    outline._cardView.setBounds(new Rectangle(offsetOutline.x, offsetOutline.y, outline._cardView.getPreferredSize().width, outline._cardView.getPreferredSize().height));
                 }
                 _layeredPane.removeAll();
                 pileViewCollider.repaint();
@@ -257,15 +257,15 @@ public final class CardProxyView extends PanelView {
             else {
                 Component[] layeredComponents = _layeredPane.getComponents();
                 for(int i = 0; i < layeredComponents.length; ++i) {
-                    CardProxyView proxy = (CardProxyView) layeredComponents[i];
-                    proxy._cardView.add(proxy);
-                    proxy.setBorder(null);
+                    CardOutlineView outline = (CardOutlineView) layeredComponents[i];
+                    outline._cardView.add(outline);
+                    outline.setBorder(null);
                 }
             }
 
-            // Add the this proxy back to it's underlying card view
-            CardProxyView.this.setBorder(null);
-            _cardView.add(CardProxyView.this);
+            // Add the this outline back to it's underlying card view
+            CardOutlineView.this.setBorder(null);
+            _cardView.add(CardOutlineView.this);
 
             // Repaint the components involved
             ViewFactory viewFactory = AbstractFactory.getFactory(ViewFactory.class);
@@ -299,7 +299,7 @@ public final class CardProxyView extends PanelView {
     private final CollisionListener _collisionListener = new CollisionListener(this, SupportedActions.LEFT);
     
     /**
-     * The card view associated to this proxy
+     * The card view associated to this outline
      */
     private final CardView _cardView;
     
@@ -311,9 +311,9 @@ public final class CardProxyView extends PanelView {
     /**
      * Constructs a new instance of this class type
      * 
-     * @param cardView The card view to associate to this proxy
+     * @param cardView The card view to associate to this outline
      */
-    public CardProxyView(CardView cardView) {
+    public CardOutlineView(CardView cardView) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setPreferredSize(new Dimension(CardView.CARD_WIDTH, CardView.CARD_HEIGHT));
         setOpaque(false);
@@ -328,7 +328,7 @@ public final class CardProxyView extends PanelView {
         addMouseListener(new CardSelectionEvents());
         addMouseMotionListener(new CardDragEvents());
         
-        // Set the controller of this proxy to the same controller of the specified card
+        // Set the controller of this outline to the same controller of the specified card
         _cardView = cardView;
         getViewProperties().setEntity(cardView.getViewProperties().getEntity());
 
@@ -346,7 +346,7 @@ public final class CardProxyView extends PanelView {
                 super.mouseDragged(event);
 
                 // 1. Event is consumed
-                // 2. This card proxy is not in an enabled state
+                // 2. This card outline is not in an enabled state
                 // 3. The drag listener component is not in the state of being dragged
                 // 4. The drag listener is not enabled
                 if(event.isConsumed() || !isEnabled() || !_dragListener.isDragging() || !_dragListener.getIsEnabled()) {
@@ -356,15 +356,15 @@ public final class CardProxyView extends PanelView {
                 // If the border has not yet been set
                 if(getBorder() != _border) {
                     
-                    // Set this border of this proxy
+                    // Set this border of this outline
                     setBorder(_border);
                     
-                    // Go through the list of proxies owned by this proxy and show their borders
+                    // Go through the list of outlines owned by this outline and show their borders
                     // Note: On mouse release should handle removing the borders set withint his drag event
                     for(Component component : _layeredPane.getComponents()) {
-                        if(component instanceof CardProxyView) {
-                            CardProxyView proxy = ((CardProxyView)component);
-                            proxy.setBorder(proxy._border);
+                        if(component instanceof CardOutlineView) {
+                            CardOutlineView outline = ((CardOutlineView)component);
+                            outline.setBorder(outline._border);
                         }
                     }
                 }                    

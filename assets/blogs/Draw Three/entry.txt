@@ -34,7 +34,7 @@ Here is some of the code that I wrote to achieve this.
 
 This was a little bit tricky because I didn't want to introduce a flag and then have to manage that depending on the different states of the game. Experience has taught me just how difficult it can be to manage the many different states of an object, and the more flags that you add to a class, the more things can go wrong.
 
-Therefore, I overwrote the setEnabled method of my view, and I would instead toggle mouse events associated with that view. I had to do this for both the CardView and the CardProxyView since they both do not have a common class that they inherit from as of yet, apart from the generic PanelView class that is Engine specific and I didn't want to put the game-specific code in the engine.
+Therefore, I overwrote the setEnabled method of my view, and I would instead toggle mouse events associated with that view. I had to do this for both the CardView and the CardOutline since they both do not have a common class that they inherit from as of yet, apart from the generic PanelView class that is Engine specific and I didn't want to put the game-specific code in the engine.
 
 <insert code here>
 
